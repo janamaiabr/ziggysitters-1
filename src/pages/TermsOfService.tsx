@@ -1,0 +1,159 @@
+export default function TermsOfService() {
+  return (
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <h1 className="text-4xl font-bold mb-8">Terms of Service</h1>
+      <div className="prose prose-lg max-w-none">
+        <p className="text-gray-600 mb-6">
+          <strong>Last updated:</strong> {new Date().toLocaleDateString()}
+        </p>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Agreement to Terms</h2>
+          <p className="mb-4">
+            By accessing and using ZiggySitters ("the Service"), you agree to be bound 
+            by these Terms of Service ("Terms"). If you disagree with any part of these 
+            terms, you may not access the Service.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Description of Service</h2>
+          <p className="mb-4">
+            ZiggySitters is a platform that connects pet owners with verified pet sitters. 
+            We provide a marketplace for pet care services including:
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Pet sitting and boarding</li>
+            <li>Dog walking services</li>
+            <li>Drop-in visits</li>
+            <li>Overnight care</li>
+            <li>Pet grooming and training</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">User Accounts</h2>
+          <h3 className="text-xl font-medium mb-3">Registration</h3>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>You must provide accurate and complete information</li>
+            <li>You are responsible for maintaining account security</li>
+            <li>You must be at least 18 years old to use our Service</li>
+            <li>One person may not maintain more than one account</li>
+          </ul>
+
+          <h3 className="text-xl font-medium mb-3">Account Responsibilities</h3>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Keep your login credentials confidential</li>
+            <li>Notify us immediately of unauthorized access</li>
+            <li>Update your information when it changes</li>
+            <li>You are liable for all activities under your account</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Pet Sitter Requirements</h2>
+          <p className="mb-4">Pet sitters must:</p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Complete verification process including background checks</li>
+            <li>Provide accurate information about experience and availability</li>
+            <li>Maintain appropriate insurance coverage</li>
+            <li>Follow all local laws and regulations</li>
+            <li>Provide safe and appropriate care for pets</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibent mb-4">Booking and Payments</h2>
+          <h3 className="text-xl font-medium mb-3">Booking Process</h3>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>All bookings are subject to sitter availability and acceptance</li>
+            <li>Pet owners must provide accurate pet and care information</li>
+            <li>Emergency contact information must be provided</li>
+            <li>Special requirements must be disclosed before booking</li>
+          </ul>
+
+          <h3 className="text-xl font-medium mb-3">Payment Terms</h3>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Payment is processed securely through our platform</li>
+            <li>Service fees and taxes will be clearly displayed</li>
+            <li>Payments are released to sitters after service completion</li>
+            <li>Refunds are subject to our cancellation policy</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Cancellation Policy</h2>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li><strong>24+ hours notice:</strong> Full refund</li>
+            <li><strong>12-24 hours notice:</strong> 50% refund</li>
+            <li><strong>Less than 12 hours:</strong> No refund</li>
+            <li><strong>Emergency situations:</strong> Case-by-case review</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Prohibited Conduct</h2>
+          <p className="mb-4">Users may not:</p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Provide false or misleading information</li>
+            <li>Use the platform for illegal activities</li>
+            <li>Harass, abuse, or threaten other users</li>
+            <li>Attempt to circumvent platform safety measures</li>
+            <li>Share personal contact information outside the platform initially</li>
+            <li>Use automated systems to access the Service</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Liability and Insurance</h2>
+          <p className="mb-4">
+            ZiggySitters provides a platform for connecting users but is not directly 
+            responsible for the care provided. Pet sitters are independent contractors, 
+            and pet owners use services at their own risk.
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Pet owners should verify sitter credentials and references</li>
+            <li>Sitters should maintain appropriate insurance coverage</li>
+            <li>Report any incidents or concerns immediately</li>
+            <li>Our liability is limited to the extent permitted by law</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Termination</h2>
+          <p className="mb-4">
+            We reserve the right to terminate or suspend accounts for violation 
+            of these Terms or for any reason at our discretion. Upon termination:
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Your access to the Service will cease immediately</li>
+            <li>Pending bookings may be cancelled</li>
+            <li>Outstanding payments will be processed according to our policies</li>
+            <li>Some provisions of these Terms will survive termination</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Changes to Terms</h2>
+          <p>
+            We reserve the right to modify these Terms at any time. We will notify 
+            users of material changes via email or platform notification. Continued 
+            use of the Service after changes constitutes acceptance of the new Terms.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>
+          <p className="mb-4">
+            For questions about these Terms of Service, please contact us:
+          </p>
+          <ul className="list-none space-y-2">
+            <li><strong>Email:</strong> legal@ziggysitters.co.nz</li>
+            <li><strong>Phone:</strong> +64 9 123 4567</li>
+            <li><strong>Address:</strong> Auckland, New Zealand</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+}

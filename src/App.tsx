@@ -15,6 +15,11 @@ import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
 import AdminDashboard from "./pages/AdminDashboard";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import Security from "./pages/Security";
 
 const queryClient = new QueryClient();
 
@@ -80,14 +85,14 @@ function AppContent() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/auth" 
-            element={
-              <PublicRoute>
-                <Auth />
-              </PublicRoute>
-            } 
-          />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/security" element={<Security />} />
+          <Route path="/safety" element={<Security />} />
+          <Route path="/help" element={<Contact />} />
+          <Route path="/cookies" element={<PrivacyPolicy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
