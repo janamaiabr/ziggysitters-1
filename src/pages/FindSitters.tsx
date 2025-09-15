@@ -258,15 +258,15 @@ export default function FindSitters() {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button className="flex-1">View Profile</Button>
+                  <Button className="flex-1" variant="outline">
+                    View Portfolio
+                  </Button>
                   <Button 
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      setSelectedSitter(sitter);
-                      setShowMessageDialog(true);
-                    }}
-                    className="px-3"
+                    disabled
+                    className="px-3 opacity-50 cursor-not-allowed"
+                    title="Messaging requires authentication and database setup"
                   >
                     <MessageCircle className="h-4 w-4" />
                   </Button>
