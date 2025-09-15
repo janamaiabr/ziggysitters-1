@@ -3,7 +3,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { PawPrint, Heart, Menu, User, Settings, LogOut } from 'lucide-react';
+import { Menu, User, Settings, LogOut } from 'lucide-react';
+import logoLight from '@/assets/logo-light.png';
+import logoDark from '@/assets/logo-dark.png';
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -17,10 +19,17 @@ export default function Header() {
   return (
     <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b border-border">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <PawPrint className="h-6 w-6" />
-          <Heart className="h-4 w-4" />
-          <span>ZiggySitters</span>
+        <Link to="/" className="flex items-center">
+          <img 
+            src={logoLight} 
+            alt="ZiggySitters" 
+            className="h-8 dark:hidden"
+          />
+          <img 
+            src={logoDark} 
+            alt="ZiggySitters" 
+            className="h-8 hidden dark:block"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -5,10 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Search, Star, Shield, Clock, Heart } from 'lucide-react';
+import heroImage from '@/assets/hero-image.jpg';
+import petServices from '@/assets/pet-services.jpg';
 
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [location, setLocation] = useState('');
 
   const popularServices = [
     { name: 'Dog Walking', icon: '🐕' },

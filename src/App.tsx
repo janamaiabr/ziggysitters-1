@@ -8,6 +8,9 @@ import Header from "@/components/layout/Header";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import FindSitters from "./pages/FindSitters";
+import BecomeSitter from "./pages/BecomeSitter";
+import HowItWorks from "./pages/HowItWorks";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +49,9 @@ function AppContent() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/find-sitters" element={<FindSitters />} />
+          <Route path="/become-sitter" element={<BecomeSitter />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route 
             path="/auth" 
             element={

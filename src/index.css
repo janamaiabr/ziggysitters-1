@@ -17,32 +17,32 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 24% 16%;
 
-    --primary: 142 76% 36%;
-    --primary-foreground: 355 25% 95%;
+    --primary: 207 89% 51%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 46 100% 77%;
-    --secondary-foreground: 25 95% 53%;
+    --secondary: 182 85% 39%;
+    --secondary-foreground: 210 40% 98%;
 
     --muted: 46 38% 90%;
     --muted-foreground: 210 16% 46%;
 
-    --accent: 142 40% 85%;
-    --accent-foreground: 142 76% 36%;
+    --accent: 207 89% 91%;
+    --accent-foreground: 207 89% 51%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 46 28% 88%;
     --input: 46 28% 88%;
-    --ring: 142 76% 36%;
+    --ring: 207 89% 51%;
 
-    /* Pet-friendly gradient colors */
-    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(46 100% 77%));
-    --gradient-secondary: linear-gradient(180deg, hsl(46 100% 77%), hsl(142 40% 85%));
+    /* ZiggySitters gradient colors */
+    --gradient-primary: linear-gradient(135deg, hsl(207 89% 51%), hsl(182 85% 39%));
+    --gradient-secondary: linear-gradient(180deg, hsl(207 89% 91%), hsl(182 85% 85%));
     
     /* Shadow colors */
-    --shadow-soft: 0 4px 20px hsl(142 76% 36% / 0.1);
-    --shadow-hover: 0 8px 30px hsl(142 76% 36% / 0.15);
+    --shadow-soft: 0 4px 20px hsl(207 89% 51% / 0.1);
+    --shadow-hover: 0 8px 30px hsl(207 89% 51% / 0.15);
 
     --radius: 0.5rem;
 
