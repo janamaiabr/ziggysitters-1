@@ -638,6 +638,14 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
+      can_access_sitter_contact_safe: {
+        Args: { sitter_profile_id: string }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       booking_status:

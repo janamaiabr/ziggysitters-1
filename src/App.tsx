@@ -14,6 +14,7 @@ import BecomeSitter from "./pages/BecomeSitter";
 import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Bookings />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
               </ProtectedRoute>
             } 
           />
