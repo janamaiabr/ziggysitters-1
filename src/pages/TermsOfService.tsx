@@ -63,7 +63,7 @@ export default function TermsOfService() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibent mb-4">Booking and Payments</h2>
+          <h2 className="text-2xl font-semibold mb-4">Booking and Payments</h2>
           <h3 className="text-xl font-medium mb-3">Booking Process</h3>
           <ul className="list-disc list-inside mb-4 space-y-2">
             <li>All bookings are subject to sitter availability and acceptance</li>

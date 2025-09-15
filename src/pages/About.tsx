@@ -192,7 +192,7 @@ export default function About() {
                 <p className="opacity-90">Meaningful work caring for animals while earning income</p>
               </div>
               <div>
-                <h3 className="text-xl font-semibent mb-3">For Pets</h3>
+                <h3 className="text-xl font-semibold mb-3">For Pets</h3>
                 <p className="opacity-90">Continued love, attention, and care in a safe environment</p>
               </div>
             </div>
