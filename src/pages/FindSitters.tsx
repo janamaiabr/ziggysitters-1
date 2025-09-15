@@ -65,39 +65,39 @@ export default function FindSitters() {
   return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-16">
+      <div className="bg-gradient-to-br from-slate-50 to-gray-100 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-6">Find Trusted Pet Sitters</h1>
-            <p className="text-xl mb-8 opacity-90">
+            <h1 className="text-4xl font-bold mb-6 text-gray-800">Find Trusted Pet Sitters</h1>
+            <p className="text-xl mb-8 text-gray-600">
               Discover verified, loving pet sitters in your area
             </p>
             
             {/* Enhanced Search Form */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 space-y-4 border border-white/20">
+            <div className="bg-white rounded-2xl p-6 space-y-4 border border-gray-200 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Location</label>
+                  <label className="text-sm font-medium text-gray-700">Location</label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-white/70" />
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                     <Input 
                       placeholder="Enter suburb or city"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      className="pl-9 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
+                      className="pl-9 border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-primary"
                     />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Check-in Date</label>
+                  <label className="text-sm font-medium text-gray-700">Check-in Date</label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full justify-start text-left font-normal bg-white/20 border-white/30 text-white hover:bg-white/30",
-                          !selectedDate && "text-white/70"
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
+                          !selectedDate && "text-gray-500"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -117,17 +117,17 @@ export default function FindSitters() {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Check-out Date</label>
+                  <label className="text-sm font-medium text-gray-700">Check-out Date</label>
                   <Input 
                     type="date"
-                    className="h-10 bg-white/20 border-white/30 text-white focus:bg-white/30"
+                    className="h-10 border-gray-300 text-gray-800 focus:border-primary"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Service Type</label>
+                  <label className="text-sm font-medium text-gray-700">Service Type</label>
                   <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30">
+                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
                       <SelectValue placeholder="Select service" />
                     </SelectTrigger>
                     <SelectContent>
@@ -142,9 +142,9 @@ export default function FindSitters() {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Pet Type</label>
+                  <label className="text-sm font-medium text-gray-700">Pet Type</label>
                   <Select value={petType} onValueChange={setPetType}>
-                    <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30">
+                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
                       <SelectValue placeholder="Select pet" />
                     </SelectTrigger>
                     <SelectContent>
@@ -161,14 +161,14 @@ export default function FindSitters() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button 
                   size="lg" 
-                  className="bg-white text-primary hover:bg-white/90 px-8 font-semibold"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 font-semibold"
                 >
                   Search Sitters
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   More Filters
