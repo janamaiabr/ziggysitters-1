@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, User, Settings, LogOut } from 'lucide-react';
-import logoLight from '@/assets/logo-light.png';
-import logoDark from '@/assets/logo-dark.png';
+import logoSvg from '@/assets/logo.svg';
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -20,16 +19,7 @@ export default function Header() {
     <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b border-border">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img 
-            src={logoLight} 
-            alt="ZiggySitters" 
-            className="h-8 dark:hidden"
-          />
-          <img 
-            src={logoDark} 
-            alt="ZiggySitters" 
-            className="h-8 hidden dark:block"
-          />
+          <img src={logoSvg} alt="ZiggySitters" className="h-8 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">

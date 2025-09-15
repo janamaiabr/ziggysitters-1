@@ -16,52 +16,55 @@ const Index = () => {
   const [location, setLocation] = useState('');
 
   const popularServices = [
-    { name: 'Dog Walking', icon: '🐕', description: 'Daily walks for your furry friend', price: 'From $25' },
-    { name: 'Pet Sitting', icon: '🏠', description: 'In-home pet care while you\'re away', price: 'From $30' },
-    { name: 'Overnight Care', icon: '🌙', description: '24/7 overnight pet care', price: 'From $60' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins and feeding', price: 'From $20' },
+    { name: 'Dog Walking', icon: '🐕', description: 'Daily walks for your furry friend', price: 'From $27.50' },
+    { name: 'Pet Sitting', icon: '🏠', description: 'In-home pet care while you\'re away', price: 'From $33' },
+    { name: 'Overnight Care', icon: '🌙', description: '24/7 overnight pet care', price: 'From $66' },
+    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins and feeding', price: 'From $22' },
   ];
 
   const featuredSitters = [
     {
       id: 1,
-      name: 'Sarah Johnson',
-      rating: 4.9,
-      reviews: 127,
-      location: 'Ponsonby, Auckland',
-      services: ['Dog Walking', 'Pet Sitting'],
-      verified: true,
-      hourlyRate: 28,
-      responseRate: 98,
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
-      bio: 'Experienced dog lover with 5+ years of pet care. I treat every pet like my own!'
-    },
-    {
-      id: 2,
-      name: 'Mike Chen',
-      rating: 4.8,
-      reviews: 89,
-      location: 'Newmarket, Auckland',
-      services: ['Pet Boarding', 'Grooming'],
-      verified: true,
-      hourlyRate: 32,
-      responseRate: 95,
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      bio: 'Professional groomer and pet care specialist. Your pets will love their stay!'
-    },
-    {
-      id: 3,
-      name: 'Emma Williams',
-      rating: 5.0,
-      reviews: 156,
-      location: 'Mount Eden, Auckland',
-      services: ['Pet Sitting', 'Training'],
-      verified: true,
-      hourlyRate: 35,
-      responseRate: 100,
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-      bio: 'Certified pet trainer with a passion for animal welfare and behavior.'
-    },
+    name: 'Sarah Johnson',
+    rating: 4.9,
+    reviews: 127,
+    location: 'Ponsonby, Auckland',
+    services: ['Dog Walking', 'Pet Sitting'],
+    verified: true,
+    baseRate: 28,
+    hourlyRate: 30.80, // Base rate + 10% platform fee
+    responseRate: 98,
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+    bio: 'Experienced dog lover with 5+ years of pet care. I treat every pet like my own!'
+  },
+  {
+    id: 2,
+    name: 'Mike Chen',
+    rating: 4.8,
+    reviews: 89,
+    location: 'Newmarket, Auckland',
+    services: ['Pet Boarding', 'Grooming'],
+    verified: true,
+    baseRate: 32,
+    hourlyRate: 35.20, // Base rate + 10% platform fee
+    responseRate: 95,
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    bio: 'Professional groomer and pet care specialist. Your pets will love their stay!'
+  },
+  {
+    id: 3,
+    name: 'Emma Williams',
+    rating: 5.0,
+    reviews: 156,
+    location: 'Mount Eden, Auckland',
+    services: ['Pet Sitting', 'Training'],
+    verified: true,
+    baseRate: 35,
+    hourlyRate: 38.50, // Base rate + 10% platform fee
+    responseRate: 100,
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    bio: 'Certified pet trainer with a passion for animal welfare and behavior.'
+  },
   ];
 
   const trustFeatures = [
@@ -85,14 +88,12 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary to-secondary text-primary-foreground py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div 
-          className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        ></div>
+      <section className="relative bg-gradient-to-br from-primary via-primary/90 to-secondary py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjEiPgogICAgICA8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSI0Ii8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4K')] opacity-20"></div>
+        </div>
         <div className="relative container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center">
+          <div className="max-w-5xl mx-auto text-center text-white">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Find Trusted Pet Sitters in Auckland
             </h1>
@@ -102,38 +103,38 @@ const Index = () => {
             </p>
             
             {/* Enhanced Search Bar */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-6 max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-4xl mx-auto border border-white/20">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 h-5 w-5 text-white/70" />
                   <Input 
                     placeholder="Enter suburb"
-                    className="pl-10 h-12 bg-white/20 border-white/20 text-white placeholder:text-white/70"
+                    className="pl-10 h-12 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
                 <Input 
-                  placeholder="Service date"
+                  placeholder="Check-in date"
                   type="date"
-                  className="h-12 bg-white/20 border-white/20 text-white"
+                  className="h-12 bg-white/20 border-white/30 text-white focus:bg-white/30"
                 />
-                <select className="h-12 bg-white/20 border border-white/20 text-white rounded-md px-3">
-                  <option value="">Service type</option>
-                  <option value="dog-walking">Dog Walking</option>
-                  <option value="pet-sitting">Pet Sitting</option>
-                  <option value="overnight">Overnight Care</option>
-                </select>
-                <select className="h-12 bg-white/20 border border-white/20 text-white rounded-md px-3">
-                  <option value="">Pet type</option>
-                  <option value="dogs">Dogs</option>
-                  <option value="cats">Cats</option>
-                  <option value="small-pets">Small Pets</option>
+                <Input 
+                  placeholder="Check-out date"
+                  type="date"
+                  className="h-12 bg-white/20 border-white/30 text-white focus:bg-white/30"
+                />
+                <select className="h-12 bg-white/20 border border-white/30 text-white rounded-md px-3 focus:bg-white/30">
+                  <option value="" className="text-gray-800">Service type</option>
+                  <option value="dog-walking" className="text-gray-800">Dog Walking</option>
+                  <option value="pet-sitting" className="text-gray-800">Pet Sitting</option>
+                  <option value="overnight" className="text-gray-800">Overnight Care</option>
+                  <option value="drop-in" className="text-gray-800">Drop-in Visits</option>
                 </select>
               </div>
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 px-8 h-12 w-full md:w-auto"
+                className="bg-white text-primary hover:bg-white/90 px-8 h-12 w-full md:w-auto font-semibold"
                 onClick={() => navigate('/find-sitters')}
               >
                 <Search className="mr-2 h-5 w-5" />
@@ -240,6 +241,7 @@ const Index = () => {
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-lg">${sitter.hourlyRate}/hr</div>
+                      <div className="text-xs text-muted-foreground">Includes platform fee</div>
                     </div>
                   </div>
                   

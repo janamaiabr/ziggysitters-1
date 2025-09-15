@@ -17,7 +17,8 @@ const mockSitters = [
     location: 'Ponsonby, Auckland',
     rating: 4.9,
     reviews: 127,
-    hourlyRate: 25,
+    baseRate: 25,
+    hourlyRate: 27.50, // Base rate + 10% platform fee
     services: ['Dog Walking', 'Pet Sitting', 'Overnight Care'],
     petTypes: ['Dogs', 'Cats'],
     avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
@@ -30,7 +31,8 @@ const mockSitters = [
     location: 'Newmarket, Auckland',
     rating: 4.8,
     reviews: 89,
-    hourlyRate: 30,
+    baseRate: 30,
+    hourlyRate: 33, // Base rate + 10% platform fee
     services: ['Dog Walking', 'Pet Boarding', 'Drop-in Visits'],
     petTypes: ['Dogs', 'Small Pets'],
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
@@ -43,7 +45,8 @@ const mockSitters = [
     location: 'Mount Eden, Auckland',
     rating: 5.0,
     reviews: 156,
-    hourlyRate: 28,
+    baseRate: 28,
+    hourlyRate: 30.80, // Base rate + 10% platform fee
     services: ['Pet Sitting', 'Grooming', 'Training'],
     petTypes: ['Dogs', 'Cats', 'Birds'],
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
@@ -71,29 +74,29 @@ export default function FindSitters() {
             </p>
             
             {/* Enhanced Search Form */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 space-y-4 border border-white/20">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Location</label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-white/70" />
                     <Input 
                       placeholder="Enter suburb or city"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      className="pl-9 bg-white/20 border-white/20 text-white placeholder:text-white/70"
+                      className="pl-9 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
                     />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Service Date</label>
+                  <label className="text-sm font-medium">Check-in Date</label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full justify-start text-left font-normal bg-white/20 border-white/20 text-white hover:bg-white/30",
+                          "w-full justify-start text-left font-normal bg-white/20 border-white/30 text-white hover:bg-white/30",
                           !selectedDate && "text-white/70"
                         )}
                       >
@@ -114,9 +117,17 @@ export default function FindSitters() {
                 </div>
                 
                 <div className="space-y-2">
+                  <label className="text-sm font-medium">Check-out Date</label>
+                  <Input 
+                    type="date"
+                    className="h-10 bg-white/20 border-white/30 text-white focus:bg-white/30"
+                  />
+                </div>
+                
+                <div className="space-y-2">
                   <label className="text-sm font-medium">Service Type</label>
                   <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="bg-white/20 border-white/20 text-white">
+                    <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30">
                       <SelectValue placeholder="Select service" />
                     </SelectTrigger>
                     <SelectContent>
@@ -133,7 +144,7 @@ export default function FindSitters() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Pet Type</label>
                   <Select value={petType} onValueChange={setPetType}>
-                    <SelectTrigger className="bg-white/20 border-white/20 text-white">
+                    <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30">
                       <SelectValue placeholder="Select pet" />
                     </SelectTrigger>
                     <SelectContent>
@@ -150,14 +161,14 @@ export default function FindSitters() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button 
                   size="lg" 
-                  className="bg-white text-primary hover:bg-white/90 px-8"
+                  className="bg-white text-primary hover:bg-white/90 px-8 font-semibold"
                 >
                   Search Sitters
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-white/30 text-white hover:bg-white/10"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   More Filters
@@ -226,9 +237,16 @@ export default function FindSitters() {
                     )}
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Starting at</span>
-                    <span className="font-bold text-lg">${sitter.hourlyRate}/hr</span>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Total rate</span>
+                      <div className="text-right">
+                        <span className="font-bold text-lg">${sitter.hourlyRate}/hr</span>
+                        <div className="text-xs text-muted-foreground">
+                          Includes 10% platform fee
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="text-sm text-muted-foreground">
