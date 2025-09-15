@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Star, Heart, Shield, Clock, Award, Search, DollarSign, CheckCircle } from 'lucide-react';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
@@ -14,6 +15,7 @@ const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [location, setLocation] = useState('');
+  const [serviceType, setServiceType] = useState('');
 
   const popularServices = [
     { name: 'Dog Walking', icon: '🐕', description: 'Daily walks for your furry friend', price: 'From $27.50' },
@@ -124,13 +126,17 @@ const Index = () => {
                   type="date"
                   className="h-12 border-gray-300 text-gray-800 focus:border-primary"
                 />
-                <select className="h-12 bg-white border border-gray-300 text-gray-800 rounded-md px-3 focus:border-primary">
-                  <option value="" className="text-gray-800">Service type</option>
-                  <option value="dog-walking" className="text-gray-800">Dog Walking</option>
-                  <option value="pet-sitting" className="text-gray-800">Pet Sitting</option>
-                  <option value="overnight" className="text-gray-800">Overnight Care</option>
-                  <option value="drop-in" className="text-gray-800">Drop-in Visits</option>
-                </select>
+                <Select value={serviceType} onValueChange={setServiceType}>
+                  <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary">
+                    <SelectValue placeholder="Service type" />
+                  </SelectTrigger>
+                  <SelectContent className="z-50 bg-white">
+                    <SelectItem value="dog-walking">Dog Walking</SelectItem>
+                    <SelectItem value="pet-sitting">Pet Sitting</SelectItem>
+                    <SelectItem value="overnight">Overnight Care</SelectItem>
+                    <SelectItem value="drop-in">Drop-in Visits</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Button 
                 size="lg" 
