@@ -88,7 +88,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-gradient-to-b from-background to-accent/20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-slate-50 to-gray-100 py-20 overflow-hidden">
         <div className="absolute inset-0">
@@ -326,7 +326,12 @@ const Index = () => {
               <Button size="lg" className="bg-white text-primary hover:bg-white/90 px-8" onClick={() => navigate('/find-sitters')}>
                 Find a Sitter Now
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10" onClick={() => navigate('/become-sitter')}>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-2 border-white text-white hover:bg-white hover:text-primary transition-colors px-8" 
+                onClick={() => navigate('/become-sitter')}
+              >
                 Become a Sitter
               </Button>
             </div>
