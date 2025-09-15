@@ -88,28 +88,28 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary via-primary/90 to-secondary py-20 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-slate-50 to-gray-100 py-20 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjEiPgogICAgICA8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSI0Ii8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4K')] opacity-20"></div>
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIj4KICAgICAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg==')] opacity-30"></div>
         </div>
         <div className="relative container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center text-white">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <div className="max-w-5xl mx-auto text-center text-gray-800">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Find Trusted Pet Sitters in Auckland
             </h1>
-            <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
+            <p className="text-xl mb-8 text-gray-600 max-w-3xl mx-auto">
               Connect with verified, loving pet sitters who will care for your furry friends like their own. 
               Book with confidence knowing your pets are in safe hands.
             </p>
             
             {/* Enhanced Search Bar */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-4xl mx-auto border border-white/20">
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-3 h-5 w-5 text-white/70" />
+                  <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
                   <Input 
                     placeholder="Enter suburb"
-                    className="pl-10 h-12 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
+                    className="pl-10 h-12 border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-primary"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -117,14 +117,14 @@ const Index = () => {
                 <Input 
                   placeholder="Check-in date"
                   type="date"
-                  className="h-12 bg-white/20 border-white/30 text-white focus:bg-white/30"
+                  className="h-12 border-gray-300 text-gray-800 focus:border-primary"
                 />
                 <Input 
                   placeholder="Check-out date"
                   type="date"
-                  className="h-12 bg-white/20 border-white/30 text-white focus:bg-white/30"
+                  className="h-12 border-gray-300 text-gray-800 focus:border-primary"
                 />
-                <select className="h-12 bg-white/20 border border-white/30 text-white rounded-md px-3 focus:bg-white/30">
+                <select className="h-12 bg-white border border-gray-300 text-gray-800 rounded-md px-3 focus:border-primary">
                   <option value="" className="text-gray-800">Service type</option>
                   <option value="dog-walking" className="text-gray-800">Dog Walking</option>
                   <option value="pet-sitting" className="text-gray-800">Pet Sitting</option>
@@ -134,7 +134,7 @@ const Index = () => {
               </div>
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 px-8 h-12 w-full md:w-auto font-semibold"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 w-full md:w-auto font-semibold"
                 onClick={() => navigate('/find-sitters')}
               >
                 <Search className="mr-2 h-5 w-5" />
@@ -145,8 +145,8 @@ const Index = () => {
             {/* Trust Indicators */}
             <div className="flex flex-wrap justify-center gap-8 mt-12">
               {trustFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center space-x-3 text-white/90">
-                  <feature.icon className="w-6 h-6" />
+                <div key={index} className="flex items-center space-x-3 text-gray-700">
+                  <feature.icon className="w-6 h-6 text-primary" />
                   <span className="font-medium">{feature.title}</span>
                 </div>
               ))}
