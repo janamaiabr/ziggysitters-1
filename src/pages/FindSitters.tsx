@@ -6,9 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter } from 'lucide-react';
+import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter, MessageCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import MessageDialog from '@/components/messaging/MessageDialog';
 
 const mockSitters = [
   {
@@ -61,6 +62,8 @@ export default function FindSitters() {
   const [serviceType, setServiceType] = useState('');
   const [petType, setPetType] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedSitter, setSelectedSitter] = useState<any>(null);
+  const [showMessageDialog, setShowMessageDialog] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -254,12 +257,38 @@ export default function FindSitters() {
                   </div>
                 </div>
                 
-                <Button className="w-full">View Profile</Button>
+                <div className="flex gap-2">
+                  <Button className="flex-1">View Profile</Button>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedSitter(sitter);
+                      setShowMessageDialog(true);
+                    }}
+                    className="px-3"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
+
+      {selectedSitter && (
+        <MessageDialog
+          isOpen={showMessageDialog}
+          onClose={() => {
+            setShowMessageDialog(false);
+            setSelectedSitter(null);
+          }}
+          recipientId={selectedSitter.id.toString()}
+          recipientName={selectedSitter.name}
+          recipientAvatar={selectedSitter.avatar}
+        />
+      )}
     </div>
   );
 }
