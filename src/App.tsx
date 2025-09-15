@@ -11,6 +11,8 @@ import NotFound from "./pages/NotFound";
 import FindSitters from "./pages/FindSitters";
 import BecomeSitter from "./pages/BecomeSitter";
 import HowItWorks from "./pages/HowItWorks";
+import Profile from "./pages/Profile";
+import Bookings from "./pages/Bookings";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +54,22 @@ function AppContent() {
           <Route path="/find-sitters" element={<FindSitters />} />
           <Route path="/become-sitter" element={<BecomeSitter />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/bookings" 
+            element={
+              <ProtectedRoute>
+                <Bookings />
+              </ProtectedRoute>
+            } 
+          />
           <Route 
             path="/auth" 
             element={
