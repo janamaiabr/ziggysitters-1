@@ -251,7 +251,12 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  <Button className="w-full">View Profile & Book</Button>
+                  <Button 
+                    className="w-full"
+                    onClick={() => navigate(`/sitter/${sitter.id}`)}
+                  >
+                    View Profile & Book
+                  </Button>
                 </CardContent>
               </Card>
             ))}
