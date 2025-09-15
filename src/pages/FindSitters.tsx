@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,7 @@ import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter, MessageCircle } 
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import MessageDialog from '@/components/messaging/MessageDialog';
+import FilterPanel from '@/components/search/FilterPanel';
 
 const mockSitters = [
   {
@@ -57,6 +59,7 @@ const mockSitters = [
 ];
 
 export default function FindSitters() {
+  const navigate = useNavigate();
   const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [serviceType, setServiceType] = useState('');
@@ -64,6 +67,94 @@ export default function FindSitters() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedSitter, setSelectedSitter] = useState<any>(null);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [filteredSitters, setFilteredSitters] = useState(mockSitters);
+  const [searchPerformed, setSearchPerformed] = useState(false);
+
+  const handleSearch = () => {
+    let filtered = [...mockSitters];
+    
+    // Filter by location
+    if (location) {
+      filtered = filtered.filter(sitter => 
+        sitter.location.toLowerCase().includes(location.toLowerCase())
+      );
+    }
+    
+    // Filter by service type
+    if (serviceType) {
+      const serviceMap: { [key: string]: string } = {
+        'dog-walking': 'Dog Walking',
+        'pet-sitting': 'Pet Sitting',
+        'overnight-care': 'Overnight Care',
+        'drop-in-visits': 'Drop-in Visits',
+        'pet-boarding': 'Pet Boarding',
+        'grooming': 'Grooming'
+      };
+      
+      const serviceName = serviceMap[serviceType];
+      if (serviceName) {
+        filtered = filtered.filter(sitter => 
+          sitter.services.includes(serviceName)
+        );
+      }
+    }
+    
+    // Filter by pet type
+    if (petType) {
+      const petMap: { [key: string]: string } = {
+        'dogs': 'Dogs',
+        'cats': 'Cats',
+        'birds': 'Birds',
+        'small-pets': 'Small Pets',
+        'reptiles': 'Reptiles'
+      };
+      
+      const petName = petMap[petType];
+      if (petName) {
+        filtered = filtered.filter(sitter => 
+          sitter.petTypes.includes(petName)
+        );
+      }
+    }
+    
+    setFilteredSitters(filtered);
+    setSearchPerformed(true);
+  };
+
+  const handleApplyFilters = (filters: any) => {
+    let filtered = [...mockSitters];
+    
+    // Apply price range filter
+    filtered = filtered.filter(sitter => 
+      sitter.hourlyRate >= filters.priceRange[0] && 
+      sitter.hourlyRate <= filters.priceRange[1]
+    );
+    
+    // Apply rating filter
+    filtered = filtered.filter(sitter => sitter.rating >= filters.rating);
+    
+    // Apply verified filter
+    if (filters.verifiedOnly) {
+      filtered = filtered.filter(sitter => sitter.verified);
+    }
+    
+    // Apply service filters
+    if (filters.selectedServices.length > 0) {
+      filtered = filtered.filter(sitter => 
+        filters.selectedServices.some((service: string) => sitter.services.includes(service))
+      );
+    }
+    
+    // Apply pet type filters
+    if (filters.selectedPetTypes.length > 0) {
+      filtered = filtered.filter(sitter => 
+        filters.selectedPetTypes.some((petType: string) => sitter.petTypes.includes(petType))
+      );
+    }
+    
+    setFilteredSitters(filtered);
+    setSearchPerformed(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -164,6 +255,7 @@ export default function FindSitters() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button 
                   size="lg" 
+                  onClick={handleSearch}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 font-semibold"
                 >
                   Search Sitters
@@ -185,12 +277,17 @@ export default function FindSitters() {
       {/* Results */}
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold">Available Sitters in Auckland</h2>
-          <p className="text-muted-foreground">{mockSitters.length} sitters found</p>
+          <h2 className="text-2xl font-bold">
+            {searchPerformed 
+              ? `${filteredSitters.length} Sitters Found` 
+              : 'Available Sitters in Auckland'
+            }
+          </h2>
+          <p className="text-muted-foreground">{filteredSitters.length} sitters found</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockSitters.map((sitter) => (
+          {filteredSitters.map((sitter) => (
             <Card key={sitter.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
@@ -258,15 +355,21 @@ export default function FindSitters() {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button className="flex-1" variant="outline">
+                  <Button 
+                    className="flex-1" 
+                    variant="outline"
+                    onClick={() => navigate(`/sitter/${sitter.id}`)}
+                  >
                     View Portfolio
                   </Button>
                   <Button 
                     variant="outline"
                     size="sm"
-                    disabled
-                    className="px-3 opacity-50 cursor-not-allowed"
-                    title="Messaging requires authentication and database setup"
+                    onClick={() => {
+                      setSelectedSitter(sitter);
+                      setShowMessageDialog(true);
+                    }}
+                    className="px-3"
                   >
                     <MessageCircle className="h-4 w-4" />
                   </Button>
@@ -276,6 +379,12 @@ export default function FindSitters() {
           ))}
         </div>
       </div>
+
+      <FilterPanel
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        onApplyFilters={handleApplyFilters}
+      />
 
       {selectedSitter && (
         <MessageDialog

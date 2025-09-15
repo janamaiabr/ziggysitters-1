@@ -20,6 +20,7 @@ import TermsOfService from "./pages/TermsOfService";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Security from "./pages/Security";
+import SitterProfile from "./pages/SitterProfile";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/find-sitters" element={<FindSitters />} />
+          <Route path="/sitter/:id" element={<SitterProfile />} />
           <Route path="/become-sitter" element={<BecomeSitter />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route 
