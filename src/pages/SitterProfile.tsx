@@ -18,7 +18,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import MessageDialog from '@/components/messaging/MessageDialog';
-import BookingDialog from '@/components/booking/BookingDialog';
+import BookingAccordion from '@/components/booking/BookingAccordion';
 
 const mockSitterData = {
   1: {
@@ -50,7 +50,6 @@ export default function SitterProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showMessageDialog, setShowMessageDialog] = useState(false);
-  const [showBookingDialog, setShowBookingDialog] = useState(false);
   
   const sitter = mockSitterData[parseInt(id || '1') as keyof typeof mockSitterData];
   
@@ -121,10 +120,6 @@ export default function SitterProfile() {
               </div>
               
               <div className="flex gap-3">
-                <Button onClick={() => setShowBookingDialog(true)} size="lg">
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Book Now
-                </Button>
                 <Button variant="outline" onClick={() => setShowMessageDialog(true)}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Message {sitter.name.split(' ')[0]}
@@ -144,6 +139,17 @@ export default function SitterProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Booking Form */}
+            <BookingAccordion
+              sitter={{
+                id: sitter.id,
+                name: sitter.name,
+                location: sitter.location,
+                hourlyRate: sitter.hourlyRate,
+                services: sitter.services,
+                avatar: sitter.avatar
+              }}
+            />
             {/* About */}
             <Card>
               <CardHeader>
@@ -235,12 +241,12 @@ export default function SitterProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Booking Card */}
+            {/* Quick Actions */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <DollarSign className="mr-2 h-5 w-5" />
-                  Book Now
+                  Starting Rate
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -250,11 +256,6 @@ export default function SitterProfile() {
                     Total rate (includes fees)
                   </div>
                 </div>
-                
-                <Button className="w-full" size="lg" onClick={() => setShowBookingDialog(true)}>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Book Now
-                </Button>
                 
                 <Button variant="outline" className="w-full" onClick={() => setShowMessageDialog(true)}>
                   <MessageCircle className="mr-2 h-4 w-4" />
@@ -307,18 +308,6 @@ export default function SitterProfile() {
         </div>
       </div>
 
-      <BookingDialog
-        isOpen={showBookingDialog}
-        onClose={() => setShowBookingDialog(false)}
-        sitter={{
-          id: sitter.id,
-          name: sitter.name,
-          location: sitter.location,
-          hourlyRate: sitter.hourlyRate,
-          services: sitter.services,
-          avatar: sitter.avatar
-        }}
-      />
 
       <MessageDialog
         isOpen={showMessageDialog}
