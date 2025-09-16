@@ -58,8 +58,8 @@ const Index = () => {
   const trustFeatures = [
     {
       icon: Shield,
-      title: 'Background Checked',
-      description: 'All sitters are verified and background checked'
+      title: 'Profile Verified',
+      description: 'All sitters complete identity verification and profile validation'
     },
     {
       icon: Star,

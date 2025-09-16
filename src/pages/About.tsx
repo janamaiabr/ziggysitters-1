@@ -20,7 +20,7 @@ export default function About() {
     {
       icon: Shield,
       title: 'Safety First',
-      description: "Comprehensive background checks, insurance coverage, and 24/7 support ensure your pet's safety."
+      description: "Verified sitters and secure platform ensure your pet's safety and your peace of mind."
     },
     {
       icon: Star,

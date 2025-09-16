@@ -58,11 +58,6 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/help" className="text-gray-300 hover:text-white transition-colors">
-                  Help Center
-                </Link>
-              </li>
-              <li>
                 <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
                   Contact Us
                 </Link>
@@ -84,10 +79,6 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Get in Touch</h3>
             <div className="space-y-3 text-sm">
-              <div className="flex items-center space-x-2 text-gray-300">
-                <Phone className="w-4 h-4" />
-                <span>+64 9 123 4567</span>
-              </div>
               <div className="flex items-center space-x-2 text-gray-300">
                 <Mail className="w-4 h-4" />
                 <span>hello@ziggysitters.co.nz</span>

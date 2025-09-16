@@ -1,19 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Lock, Eye, UserCheck, FileText, Bell, Key, Database } from 'lucide-react';
+import { Shield, Lock, Eye, UserCheck, Database, Star, CreditCard } from 'lucide-react';
 
 export default function Security() {
   const securityFeatures = [
     {
       icon: UserCheck,
       title: 'Identity Verification',
-      description: 'All sitters undergo thorough identity verification including government ID checks and address confirmation.',
+      description: 'All sitters complete thorough identity verification including government ID checks and address confirmation.',
       status: 'Active'
     },
     {
-      icon: FileText,
-      title: 'Background Checks',
-      description: 'Comprehensive background checks including criminal history and reference verification for all pet sitters.',
+      icon: Star,
+      title: 'Profile Validation',
+      description: 'Comprehensive profile review and validation to ensure genuine pet sitters join our platform.',
       status: 'Active'
     },
     {
@@ -29,9 +29,9 @@ export default function Security() {
       status: 'Active'
     },
     {
-      icon: Bell,
-      title: '24/7 Emergency Support',
-      description: 'Round-the-clock emergency support line for urgent safety concerns during active bookings.',
+      icon: CreditCard,
+      title: 'Payment Protection',
+      description: 'Secure payment processing with buyer protection and fraud prevention measures.',
       status: 'Active'
     },
     {
@@ -44,9 +44,9 @@ export default function Security() {
 
   const privacyMeasures = [
     {
-      title: 'Phone Number Protection',
-      description: 'Phone numbers are never shared publicly and remain private to profile owners only.',
-      icon: '📱'
+      title: 'Contact Information Protection',
+      description: 'Personal contact details are protected and only accessible through our secure platform.',
+      icon: '📧'
     },
     {
       title: 'Address Privacy',
@@ -54,9 +54,9 @@ export default function Security() {
       icon: '🏠'
     },
     {
-      title: 'Contact Information',
-      description: 'Personal contact details are protected and only accessible through our secure platform.',
-      icon: '📧'
+      title: 'Communication Security',
+      description: 'All communications between users are monitored for safety and kept secure.',
+      icon: '💬'
     },
     {
       title: 'Data Minimization',
@@ -89,7 +89,7 @@ export default function Security() {
             </div>
             <div>
               <div className="text-3xl font-bold text-primary mb-2">24/7</div>
-              <div className="text-gray-600">Emergency Support</div>
+              <div className="text-gray-600">Platform Monitoring</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-primary mb-2">256-bit</div>
@@ -175,27 +175,16 @@ export default function Security() {
               <div className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg">
                 <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold">3</div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Background Check</h3>
+                  <h3 className="text-xl font-semibold mb-2">Profile Validation</h3>
                   <p className="text-gray-600">
-                    Comprehensive background check including criminal history, 
-                    reference verification, and previous pet care experience.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold">4</div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Interview & Assessment</h3>
-                  <p className="text-gray-600">
-                    Personal interview and pet care knowledge assessment to ensure 
-                    competency and genuine care for animals.
+                    Comprehensive profile review including experience validation, 
+                    reference checks, and previous pet care experience verification.
                   </p>
                 </div>
               </div>
               
               <div className="flex items-start space-x-4 p-6 bg-primary text-primary-foreground rounded-lg">
-                <div className="flex items-center justify-center w-10 h-10 bg-white text-primary rounded-full font-bold">5</div>
+                <div className="flex items-center justify-center w-10 h-10 bg-white text-primary rounded-full font-bold">4</div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Approval & Monitoring</h3>
                   <p className="opacity-90">
@@ -217,13 +206,13 @@ export default function Security() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
                     <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                      <Key className="h-5 w-5 text-primary" />
+                      <Lock className="h-5 w-5 text-primary" />
                       Encryption & Security
                     </h3>
                     <ul className="space-y-2 text-gray-600">
                       <li>• 256-bit SSL encryption for all data transmission</li>
                       <li>• Encrypted database storage for sensitive information</li>
-                      <li>• Regular security audits and penetration testing</li>
+                      <li>• Regular security audits and vulnerability testing</li>
                       <li>• Secure payment processing (PCI DSS compliant)</li>
                     </ul>
                   </div>
@@ -246,46 +235,6 @@ export default function Security() {
           </div>
         </section>
 
-        {/* Emergency Procedures */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8">Emergency Procedures</h2>
-          <div className="bg-red-50 border border-red-200 rounded-lg p-8">
-            <div className="text-center mb-6">
-              <Bell className="h-12 w-12 text-red-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-semibold text-red-800">24/7 Emergency Support</h3>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-red-700">
-              <div>
-                <h4 className="font-semibold mb-3">For Pet Emergencies:</h4>
-                <ul className="space-y-2">
-                  <li>• Immediate veterinary care authorization</li>
-                  <li>• Emergency contact notification</li>
-                  <li>• Real-time updates and communication</li>
-                  <li>• Insurance claim assistance</li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-3">For Safety Concerns:</h4>
-                <ul className="space-y-2">
-                  <li>• Immediate incident reporting</li>
-                  <li>• Emergency responder coordination</li>
-                  <li>• User safety protocols activation</li>
-                  <li>• Law enforcement liaison when needed</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="text-center mt-6">
-              <p className="text-red-800 font-semibold">
-                Emergency Hotline: +64 9 999 0000
-              </p>
-              <p className="text-red-600">Available 24/7 for active bookings</p>
-            </div>
-          </div>
-        </section>
-
         {/* Reporting */}
         <section>
           <h2 className="text-3xl font-bold text-center mb-8">Report Security Concerns</h2>
@@ -299,9 +248,8 @@ export default function Security() {
               </p>
               <div className="space-y-3">
                 <p><strong>Security Email:</strong> security@ziggysitters.co.nz</p>
-                <p><strong>Emergency Line:</strong> +64 9 999 0000</p>
                 <p className="text-sm text-gray-500">
-                  For non-urgent security questions, please use our regular contact form.
+                  For all security-related questions and concerns.
                 </p>
               </div>
             </CardContent>

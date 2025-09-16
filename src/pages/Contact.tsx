@@ -177,13 +177,6 @@ export default function Contact() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Phone</p>
-                    <p className="text-gray-600">+64 9 123 4567</p>
-                  </div>
-                </div>
                 
                 <div className="flex items-center space-x-3">
                   <MapPin className="h-5 w-5 text-primary" />
@@ -234,24 +227,6 @@ export default function Contact() {
               </CardContent>
             </Card>
 
-            {/* Emergency Contact */}
-            <Card className="border-red-200 bg-red-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-red-700">
-                  <Shield className="h-5 w-5" />
-                  Emergency Support
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-red-600 mb-3">
-                  For urgent safety concerns or emergencies during active bookings:
-                </p>
-                <div className="space-y-2">
-                  <p className="font-medium text-red-700">Emergency Hotline: +64 9 999 0000</p>
-                  <p className="text-sm text-red-600">Available 24/7 for active bookings</p>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
@@ -268,10 +243,10 @@ export default function Contact() {
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold mb-2">Are all sitters background checked?</h3>
+                <h3 className="font-semibold mb-2">Are all sitters verified?</h3>
                 <p className="text-sm text-gray-600">
-                  Yes, all verified sitters undergo comprehensive background checks 
-                  and identity verification before joining our platform.
+                  Yes, all sitters complete identity verification and profile validation 
+                  before they can accept bookings on our platform.
                 </p>
               </div>
             </div>
@@ -279,8 +254,8 @@ export default function Contact() {
               <div>
                 <h3 className="font-semibold mb-2">What if something goes wrong?</h3>
                 <p className="text-sm text-gray-600">
-                  We provide 24/7 emergency support for active bookings and comprehensive 
-                  insurance coverage for peace of mind.
+                  Contact us immediately through our platform. We take all safety 
+                  concerns seriously and will help resolve any issues.
                 </p>
               </div>
               <div>

@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="list-disc list-inside mb-4 space-y-2">
             <li><strong>With other users:</strong> Profile information to facilitate pet sitting services</li>
-            <li><strong>Service providers:</strong> Payment processors, background check services</li>
+            <li><strong>Service providers:</strong> Payment processors and trusted service providers</li>
             <li><strong>Legal requirements:</strong> When required by law or to protect rights and safety</li>
             <li><strong>Business transfers:</strong> In case of merger, acquisition, or sale</li>
           </ul>
@@ -102,7 +102,6 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="list-none space-y-2">
             <li><strong>Email:</strong> privacy@ziggysitters.co.nz</li>
-            <li><strong>Phone:</strong> +64 9 123 4567</li>
             <li><strong>Address:</strong> Auckland, New Zealand</li>
           </ul>
         </section>

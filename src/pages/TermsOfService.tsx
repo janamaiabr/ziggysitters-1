@@ -54,9 +54,8 @@ export default function TermsOfService() {
           <h2 className="text-2xl font-semibold mb-4">Pet Sitter Requirements</h2>
           <p className="mb-4">Pet sitters must:</p>
           <ul className="list-disc list-inside mb-4 space-y-2">
-            <li>Complete verification process including background checks</li>
+            <li>Complete profile verification and identity confirmation</li>
             <li>Provide accurate information about experience and availability</li>
-            <li>Maintain appropriate insurance coverage</li>
             <li>Follow all local laws and regulations</li>
             <li>Provide safe and appropriate care for pets</li>
           </ul>
@@ -108,7 +107,7 @@ export default function TermsOfService() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Liability and Insurance</h2>
+          <h2 className="text-2xl font-semibold mb-4">Liability</h2>
           <p className="mb-4">
             ZiggySitters provides a platform for connecting users but is not directly 
             responsible for the care provided. Pet sitters are independent contractors, 
@@ -116,7 +115,6 @@ export default function TermsOfService() {
           </p>
           <ul className="list-disc list-inside mb-4 space-y-2">
             <li>Pet owners should verify sitter credentials and references</li>
-            <li>Sitters should maintain appropriate insurance coverage</li>
             <li>Report any incidents or concerns immediately</li>
             <li>Our liability is limited to the extent permitted by law</li>
           </ul>
@@ -152,7 +150,6 @@ export default function TermsOfService() {
           </p>
           <ul className="list-none space-y-2">
             <li><strong>Email:</strong> legal@ziggysitters.co.nz</li>
-            <li><strong>Phone:</strong> +64 9 123 4567</li>
             <li><strong>Address:</strong> Auckland, New Zealand</li>
           </ul>
         </section>

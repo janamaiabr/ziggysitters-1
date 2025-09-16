@@ -29,8 +29,8 @@ const benefits = [
   },
   {
     icon: Shield,
-    title: 'Insurance Coverage',
-    description: 'Protected by comprehensive insurance policies'
+    title: 'Platform Security',
+    description: 'Safe and secure platform with verified user profiles'
   }
 ];
 
@@ -43,7 +43,7 @@ const steps = [
   {
     step: 2,
     title: 'Get Verified',
-    description: 'Complete background check and identity verification'
+    description: 'Complete profile verification and identity confirmation'
   },
   {
     step: 3,

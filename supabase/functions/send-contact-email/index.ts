@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p>${message.replace(/\n/g, '<br>')}</p>
           </div>
           
-          <p>If you have any urgent concerns, please call our emergency line: +64 9 999 0000</p>
+          <p>If you have any urgent concerns, please email us directly for immediate assistance.</p>
           
           <p>Best regards,<br>The ZiggySitters Team</p>
           

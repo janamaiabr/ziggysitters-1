@@ -62,8 +62,8 @@ const forSitters = [
 const safetyFeatures = [
   {
     icon: Shield,
-    title: 'Background Checks',
-    description: 'All sitters undergo comprehensive background verification'
+    title: 'Profile Verification',
+    description: 'All sitters complete identity verification and profile validation'
   },
   {
     icon: UserCheck,
@@ -283,11 +283,11 @@ export default function HowItWorks() {
             {[
               {
                 question: 'How are sitters verified?',
-                answer: 'All sitters undergo background checks, identity verification, and reference checks before joining our platform.'
+                answer: 'All sitters complete identity verification and profile validation before joining our platform. We verify their information and ensure they meet our standards.'
               },
               {
                 question: 'What if something goes wrong?',
-                answer: 'We provide comprehensive insurance coverage and 24/7 support for all bookings made through our platform.'
+                answer: 'Contact us immediately through our platform. We take all safety concerns seriously and will help resolve any issues.'
               },
               {
                 question: 'How do payments work?',

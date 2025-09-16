@@ -34,11 +34,12 @@ interface OnboardingData {
   has_other_pets?: boolean;
   other_pets_description?: string;
   services?: Array<{
-    service_type: 'dog_walking' | 'daycare' | 'overnight_boarding';
+    service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting';
     rate: number;
     description?: string;
     what_included?: string;
   }>;
+  portfolio_photos?: string[];
 }
 
 export default function Onboarding() {
@@ -108,7 +109,7 @@ export default function Onboarding() {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleServiceChange = (serviceType: 'dog_walking' | 'daycare' | 'overnight_boarding', field: string, value: any) => {
+  const handleServiceChange = (serviceType: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting', field: string, value: any) => {
     setData(prev => {
       const services = prev.services || [];
       const existingServiceIndex = services.findIndex(s => s.service_type === serviceType);
@@ -169,6 +170,48 @@ export default function Onboarding() {
       toast({
         title: "Photo uploaded successfully!",
         description: "Your profile photo has been uploaded.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePortfolioUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    try {
+      const uploadPromises = Array.from(files).map(async (file, index) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user?.id}-portfolio-${Date.now()}-${index}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('profile-photos')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('profile-photos')
+          .getPublicUrl(fileName);
+
+        return publicUrl;
+      });
+
+      const uploadedUrls = await Promise.all(uploadPromises);
+      
+      setData(prev => ({ 
+        ...prev, 
+        portfolio_photos: [...(prev.portfolio_photos || []), ...uploadedUrls]
+      }));
+      
+      toast({
+        title: "Portfolio photos uploaded!",
+        description: `${uploadedUrls.length} photos added to your portfolio.`,
       });
     } catch (error: any) {
       toast({
@@ -688,6 +731,68 @@ export default function Onboarding() {
                   rows={2}
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Pet Sitting (Owner's Home)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Rate per visit/day (NZ$)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="50"
+                  onChange={(e) => handleServiceChange('pet_sitting', 'rate', parseFloat(e.target.value) || 0)}
+                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>What's included in your pet sitting service?</Label>
+                <Textarea
+                  placeholder="e.g., feeding, walks, playtime, house security, plant watering, mail collection..."
+                  onChange={(e) => handleServiceChange('pet_sitting', 'what_included', e.target.value)}
+                  rows={2}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Additional notes for pet sitting:</Label>
+                <Textarea
+                  placeholder="e.g., Happy to stay overnight, can handle multiple pets, experienced with senior pets..."
+                  onChange={(e) => handleServiceChange('pet_sitting', 'description', e.target.value)}
+                  rows={2}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Portfolio Photos</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="portfolio">Upload photos of you with pets (optional)</Label>
+                <Input
+                  id="portfolio"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handlePortfolioUpload}
+                  className="cursor-pointer"
+                />
+                <p className="text-sm text-muted-foreground">Add up to 5 photos showing your experience with pets</p>
+              </div>
+              {data.portfolio_photos && data.portfolio_photos.length > 0 && (
+                <div className="grid grid-cols-3 gap-2">
+                  {data.portfolio_photos.map((url, index) => (
+                    <img key={index} src={url} alt={`Portfolio ${index + 1}`} className="w-full h-20 object-cover rounded" />
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
