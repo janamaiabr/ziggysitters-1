@@ -25,6 +25,7 @@ interface BookingAccordionProps {
     services: string[];
     avatar: string;
   };
+  isOpen?: boolean;
 }
 
 const serviceRates = {
@@ -45,7 +46,7 @@ const serviceUnits = {
   'overnight-care': 'night',
 };
 
-export default function BookingAccordion({ sitter }: BookingAccordionProps) {
+export default function BookingAccordion({ sitter, isOpen = false }: BookingAccordionProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [startDateOpen, setStartDateOpen] = useState(false);
@@ -191,7 +192,7 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
       </CardHeader>
 
       <CardContent>
-        <Accordion type="single" collapsible defaultValue="booking-form">
+        <Accordion type="single" collapsible defaultValue={isOpen ? "booking-form" : undefined}>
           <AccordionItem value="booking-form">
             <AccordionTrigger className="text-lg font-medium">
               Book Your Service

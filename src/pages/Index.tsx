@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Star, Heart, Shield, Clock, Award, Search, DollarSign, CheckCircle } from 'lucide-react';
+import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
 
@@ -18,10 +19,10 @@ const Index = () => {
   const [serviceType, setServiceType] = useState('');
 
   const popularServices = [
-    { name: 'Dog Walking', icon: '🐕', description: 'Daily walks for your furry friend', price: 'From $27.50' },
-    { name: 'Pet Sitting', icon: '🏠', description: 'In-home pet care while you\'re away', price: 'From $33' },
-    { name: 'Overnight Care', icon: '🌙', description: '24/7 overnight pet care', price: 'From $66' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins and feeding', price: 'From $22' },
+    { name: 'Dog Walking', icon: '🐕', description: 'Daily walks for your furry friend' },
+    { name: 'Pet Sitting', icon: '🏠', description: 'In-home pet care while you\'re away' },
+    { name: 'Overnight Care', icon: '🌙', description: '24/7 overnight pet care' },
+    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins and feeding' },
   ];
 
   const featuredSitters = [
@@ -34,7 +35,6 @@ const Index = () => {
     services: ['Dog Walking', 'Pet Sitting'],
     verified: true,
     baseRate: 28,
-    hourlyRate: 30.80, // Base rate + 10% platform fee
     responseRate: 98,
     avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
     bio: 'Experienced dog lover with 5+ years of pet care. I treat every pet like my own!'
@@ -48,7 +48,6 @@ const Index = () => {
     services: ['Pet Boarding', 'Grooming'],
     verified: true,
     baseRate: 32,
-    hourlyRate: 35.20, // Base rate + 10% platform fee
     responseRate: 95,
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
     bio: 'Professional groomer and pet care specialist. Your pets will love their stay!'
@@ -62,7 +61,6 @@ const Index = () => {
     services: ['Pet Sitting', 'Training'],
     verified: true,
     baseRate: 35,
-    hourlyRate: 38.50, // Base rate + 10% platform fee
     responseRate: 100,
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
     bio: 'Certified pet trainer with a passion for animal welfare and behavior.'
@@ -107,15 +105,11 @@ const Index = () => {
       {/* Enhanced Search Bar */}
             <div className="bg-white rounded-2xl p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
-                  <Input 
-                    placeholder="Enter suburb"
-                    className="pl-10 h-12 border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-primary"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  />
-                </div>
+                <SuburbAutocomplete
+                  value={location}
+                  onChange={setLocation}
+                  placeholder="Enter suburb"
+                />
                 <Input 
                   placeholder="Check-in date"
                   type="date"
@@ -180,7 +174,6 @@ const Index = () => {
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{service.name}</h3>
                   <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Badge variant="secondary" className="text-sm">{service.price}</Badge>
                 </CardContent>
               </Card>
             ))}
@@ -245,15 +238,11 @@ const Index = () => {
                     <div className="text-sm text-muted-foreground">
                       {sitter.responseRate}% response rate
                     </div>
-                    <div className="text-right">
-                      <div className="font-bold text-lg">${sitter.hourlyRate}/hr</div>
-                      <div className="text-xs text-muted-foreground">Includes platform fee</div>
-                    </div>
                   </div>
                   
                   <Button 
                     className="w-full"
-                    onClick={() => navigate(`/sitter/${sitter.id}`)}
+                    onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
                   >
                     View Profile & Book
                   </Button>

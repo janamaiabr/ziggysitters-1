@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -49,7 +49,17 @@ const mockSitterData = {
 export default function SitterProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  
+  // Check if booking should be automatically opened
+  useEffect(() => {
+    const shouldOpenBooking = searchParams.get('booking') === 'true';
+    if (shouldOpenBooking) {
+      setIsBookingOpen(true);
+    }
+  }, [searchParams]);
   
   const sitter = mockSitterData[parseInt(id || '1') as keyof typeof mockSitterData];
   
@@ -145,10 +155,11 @@ export default function SitterProfile() {
                 id: sitter.id,
                 name: sitter.name,
                 location: sitter.location,
-                hourlyRate: sitter.hourlyRate,
+                hourlyRate: sitter.baseRate,
                 services: sitter.services,
                 avatar: sitter.avatar
               }}
+              isOpen={isBookingOpen}
             />
             {/* About */}
             <Card>
