@@ -55,20 +55,37 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const { toast } = useToast();
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
-    console.log(`Date selected: ${type}`, date);
+    console.log(`=== handleDateSelect called ===`);
+    console.log(`Type: ${type}`);
+    console.log(`Selected date:`, date);
+    console.log(`Date type:`, typeof date);
+    console.log(`Is valid date:`, date instanceof Date);
+    
     if (type === 'start') {
+      console.log(`Previous startDate:`, startDate);
       setStartDate(date);
-      setStartDateOpen(false); // Close the popover
-      console.log('Start date state updated to:', date);
-      // If end date is before new start date, reset it
+      setStartDateOpen(false);
+      console.log(`Setting startDate to:`, date);
+      
+      // Force a re-render check
+      setTimeout(() => {
+        console.log(`After setState - startDate should be:`, date);
+      }, 100);
+      
       if (date && endDate && endDate < date) {
         setEndDate(undefined);
         console.log('End date reset because it was before new start date');
       }
     } else {
+      console.log(`Previous endDate:`, endDate);
       setEndDate(date);
-      setEndDateOpen(false); // Close the popover
-      console.log('End date state updated to:', date);
+      setEndDateOpen(false);
+      console.log(`Setting endDate to:`, date);
+      
+      // Force a re-render check
+      setTimeout(() => {
+        console.log(`After setState - endDate should be:`, date);
+      }, 100);
     }
   };
 
@@ -178,8 +195,32 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const platformFee = Math.round(total * 0.1 * 100) / 100;
   const grandTotal = total + platformFee;
 
-  // Debug current state
-  console.log('Current state - startDate:', startDate, 'endDate:', endDate, 'serviceType:', serviceType);
+  // Debug render cycles
+  console.log(`=== BookingDialog render ===`);
+  console.log(`Current startDate:`, startDate);
+  console.log(`Current endDate:`, endDate);
+  console.log(`Current serviceType:`, serviceType);
+  console.log(`startDate type:`, typeof startDate);
+  console.log(`endDate type:`, typeof endDate);
+
+  // Test date formatting
+  if (startDate) {
+    try {
+      const formatted = format(startDate, "PPP");
+      console.log(`Formatted startDate:`, formatted);
+    } catch (error) {
+      console.error(`Error formatting startDate:`, error);
+    }
+  }
+  
+  if (endDate) {
+    try {
+      const formatted = format(endDate, "PPP");
+      console.log(`Formatted endDate:`, formatted);
+    } catch (error) {
+      console.error(`Error formatting endDate:`, error);
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -251,7 +292,16 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "PPP") : "Select start date"}
+                    {startDate ? (
+                      (() => {
+                        try {
+                          return format(startDate, "PPP");
+                        } catch (error) {
+                          console.error('Date formatting error:', error);
+                          return `Selected: ${startDate.toDateString()}`;
+                        }
+                      })()
+                    ) : "Select start date"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent 
@@ -291,7 +341,16 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? format(endDate, "PPP") : "Select end date"}
+                    {endDate ? (
+                      (() => {
+                        try {
+                          return format(endDate, "PPP");
+                        } catch (error) {
+                          console.error('Date formatting error:', error);
+                          return `Selected: ${endDate.toDateString()}`;
+                        }
+                      })()
+                    ) : "Select end date"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent 
