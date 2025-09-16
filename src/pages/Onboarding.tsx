@@ -232,7 +232,9 @@ export default function Onboarding() {
 
             const { error: serviceError } = await supabase
               .from('sitter_services')
-              .insert(serviceData);
+              .upsert(serviceData, {
+                onConflict: 'sitter_id,service_type'
+              });
 
             if (serviceError) throw serviceError;
           }
