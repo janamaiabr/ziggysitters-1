@@ -44,6 +44,8 @@ const serviceLabels = {
 export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialogProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState('');
@@ -56,12 +58,17 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
     console.log(`Date selected: ${type}`, date);
     if (type === 'start') {
       setStartDate(date);
+      setStartDateOpen(false); // Close the popover
+      console.log('Start date state updated to:', date);
       // If end date is before new start date, reset it
       if (date && endDate && endDate < date) {
         setEndDate(undefined);
+        console.log('End date reset because it was before new start date');
       }
     } else {
       setEndDate(date);
+      setEndDateOpen(false); // Close the popover
+      console.log('End date state updated to:', date);
     }
   };
 
@@ -154,6 +161,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const resetForm = () => {
     setStartDate(undefined);
     setEndDate(undefined);
+    setStartDateOpen(false);
+    setEndDateOpen(false);
     setStartTime('09:00');
     setEndTime('17:00');
     setServiceType('');
@@ -168,6 +177,9 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const total = calculateTotal();
   const platformFee = Math.round(total * 0.1 * 100) / 100;
   const grandTotal = total + platformFee;
+
+  // Debug current state
+  console.log('Current state - startDate:', startDate, 'endDate:', endDate, 'serviceType:', serviceType);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -228,7 +240,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">
               <label className="text-sm font-medium">Start Date *</label>
-              <Popover>
+              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
@@ -268,7 +280,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
 
             <div className="space-y-3">
               <label className="text-sm font-medium">End Date *</label>
-              <Popover>
+              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
