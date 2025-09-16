@@ -97,10 +97,10 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <div className="flex gap-2">
-              <Button variant="ghost" onClick={() => navigate('/auth')}>
+              <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')}>
                 Sign In
               </Button>
-              <Button onClick={() => navigate('/auth')}>
+              <Button onClick={() => navigate('/auth?tab=signup')}>
                 Get Started
               </Button>
             </div>
