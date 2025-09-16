@@ -214,22 +214,22 @@ export default function SitterProfile() {
             {/* Booking Form */}
             <BookingAccordion
               sitter={{
-                id: sitter.id,
-                name: sitter.name,
-                location: sitter.location,
-                hourlyRate: sitter.baseRate,
-                services: sitter.services,
-                avatar: sitter.avatar
+                id: sitterData.id,
+                name: sitterData.display_name,
+                location: sitterData.location,
+                hourlyRate: sitterData.hourlyRate,
+                services: sitterData.services,
+                avatar: sitterData.avatar
               }}
               isOpen={isBookingOpen}
             />
             {/* About */}
             <Card>
               <CardHeader>
-                <CardTitle>About {sitter.name.split(' ')[0]}</CardTitle>
+                <CardTitle>About {sitterData.display_name.split(' ')[0]}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{sitter.bio}</p>
+                <p className="text-muted-foreground">{sitterData.bio}</p>
               </CardContent>
             </Card>
 

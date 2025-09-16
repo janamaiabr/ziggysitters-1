@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 
 interface BookingAccordionProps {
   sitter: {
-    id: number;
+    id: string;
     name: string;
     location: string;
     hourlyRate: number;
@@ -115,7 +115,7 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
       const total = calculateTotal();
       
       const bookingData = {
-        sitterId: sitter.id.toString(),
+        sitterId: sitter.id,
         serviceType,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
