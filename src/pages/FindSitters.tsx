@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import MessageDialog from '@/components/messaging/MessageDialog';
 import FilterPanel from '@/components/search/FilterPanel';
+import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 
 const mockSitters = [
   {
@@ -172,15 +173,11 @@ export default function FindSitters() {
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Location</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                    <Input 
-                      placeholder="Enter suburb or city"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="pl-9 border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-primary"
-                    />
-                  </div>
+                  <SuburbAutocomplete
+                    value={location}
+                    onChange={setLocation}
+                    placeholder="Enter suburb or city"
+                  />
                 </div>
                 
                 <div className="space-y-2">
@@ -357,10 +354,9 @@ export default function FindSitters() {
                 <div className="flex gap-2">
                   <Button 
                     className="flex-1" 
-                    variant="outline"
                     onClick={() => navigate(`/sitter/${sitter.id}`)}
                   >
-                    View Portfolio
+                    Book Now
                   </Button>
                   <Button 
                     variant="outline"
