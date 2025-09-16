@@ -29,7 +29,7 @@ export default function Auth() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      navigate('/onboarding');
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -51,7 +51,7 @@ export default function Auth() {
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        navigate('/onboarding');
+        navigate('/');
       }
     } catch (error) {
       toast({
@@ -88,8 +88,10 @@ export default function Auth() {
       } else {
         toast({
           title: "Account Created!",
-          description: "Please check your email to verify your account.",
+          description: "Welcome to ZiggySitters! You can complete your profile later if needed.",
         });
+        // Take users to the main page instead of onboarding
+        navigate('/');
       }
     } catch (error) {
       toast({
