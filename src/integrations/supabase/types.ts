@@ -528,21 +528,7 @@ export type Database = {
       }
     }
     Views: {
-      public_sitter_profiles: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          city: string | null
-          created_at: string | null
-          first_name: string | null
-          id: string | null
-          rating: number | null
-          response_rate: number | null
-          role: Database["public"]["Enums"]["user_role"] | null
-          total_reviews: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       can_access_sitter_contact: {
@@ -552,21 +538,6 @@ export type Database = {
       can_access_sitter_contact_safe: {
         Args: { sitter_profile_id: string }
         Returns: boolean
-      }
-      get_public_sitter_profiles: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          avatar_url: string
-          bio: string
-          city: string
-          created_at: string
-          first_name: string
-          id: string
-          rating: number
-          response_rate: number
-          role: Database["public"]["Enums"]["user_role"]
-          total_reviews: number
-        }[]
       }
       is_admin: {
         Args: Record<PropertyKey, never>
