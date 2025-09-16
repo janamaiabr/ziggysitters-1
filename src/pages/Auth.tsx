@@ -29,7 +29,7 @@ export default function Auth() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/onboarding');
     }
   }, [user, navigate]);
 
@@ -51,7 +51,7 @@ export default function Auth() {
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        navigate('/');
+        navigate('/onboarding');
       }
     } catch (error) {
       toast({

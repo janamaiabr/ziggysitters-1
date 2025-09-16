@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AdminCreator } from "@/components/AdminCreator";
+import { OnboardingCheck } from "@/components/OnboardingCheck";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Index from "./pages/Index";
@@ -24,10 +25,25 @@ import About from "./pages/About";
 import Security from "./pages/Security";
 import SitterProfile from "./pages/SitterProfile";
 import BookingSuccess from "./pages/BookingSuccess";
+import Onboarding from "./pages/Onboarding";
 
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+  
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+  
+  return <>{children}</>;
+}
+
+function OnboardingRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   
   if (loading) {
@@ -57,10 +73,11 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function AppContent() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        <Routes>
+    <OnboardingCheck>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/find-sitters" element={<FindSitters />} />
           <Route path="/sitter/:id" element={<SitterProfile />} />
@@ -74,6 +91,16 @@ function AppContent() {
               <PublicRoute>
                 <Auth />
               </PublicRoute>
+            } 
+          />
+          
+          {/* Onboarding Route */}
+          <Route 
+            path="/onboarding" 
+            element={
+              <OnboardingRoute>
+                <Onboarding />
+              </OnboardingRoute>
             } 
           />
           
@@ -113,10 +140,11 @@ function AppContent() {
           <Route path="/cookies" element={<PrivacyPolicy />} />
           <Route path="/booking-success" element={<BookingSuccess />} />
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </OnboardingCheck>
   );
 }
 

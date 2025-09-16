@@ -1,0 +1,92 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from './useAuth';
+import { supabase } from '@/integrations/supabase/client';
+
+export interface Profile {
+  id: string;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin';
+  phone?: string;
+  address?: string;
+  suburb?: string;
+  city?: string;
+  postal_code?: string;
+  bio?: string;
+  avatar_url?: string;
+  is_verified?: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useProfile() {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    } else {
+      setProfile(null);
+      setLoading(false);
+      setNeedsOnboarding(false);
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        setNeedsOnboarding(true);
+      } else {
+        setProfile(data);
+        // Check if profile needs completion (basic onboarding check)
+        const isIncomplete = !data.phone || !data.address || !data.suburb;
+        setNeedsOnboarding(isIncomplete);
+      }
+    } catch (error) {
+      console.error('Error in fetchProfile:', error);
+      setNeedsOnboarding(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateProfile = async (updates: Partial<Profile>) => {
+    if (!user || !profile) return { error: 'No user or profile found' };
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setProfile(data);
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
+  };
+
+  return {
+    profile,
+    loading,
+    needsOnboarding,
+    updateProfile,
+    refetch: fetchProfile
+  };
+}
