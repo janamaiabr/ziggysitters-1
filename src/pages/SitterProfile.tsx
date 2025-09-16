@@ -20,31 +20,27 @@ import {
 import MessageDialog from '@/components/messaging/MessageDialog';
 import BookingAccordion from '@/components/booking/BookingAccordion';
 
-const mockSitterData = {
-  1: {
-    id: 1,
-    name: 'Emma Wilson',
-    location: 'Ponsonby, Auckland',
-    rating: 4.9,
-    reviews: 127,
-    baseRate: 25,
-    hourlyRate: 27.50,
-    services: ['Dog Walking', 'Pet Sitting', 'Overnight Care'],
-    petTypes: ['Dogs', 'Cats'],
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
-    verified: true,
-    responseRate: 98,
-    bio: 'Passionate pet lover with over 5 years of experience caring for furry friends. I treat every pet as if they were my own and provide personalized care tailored to their unique needs.',
-    experience: '5+ years',
-    availability: ['Weekdays', 'Weekends', 'Evenings'],
-    specialties: ['Puppy training', 'Senior pet care', 'Medication administration'],
-    gallery: [
-      'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=200&fit=crop',
-      'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=200&fit=crop',
-      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&h=200&fit=crop'
-    ]
-  }
-};
+import { supabase } from '@/integrations/supabase/client';
+
+interface SitterData {
+  id: string;
+  display_name: string;
+  location: string;
+  rating: number;
+  reviews: number;
+  baseRate: number;
+  hourlyRate: number;
+  services: string[];
+  petTypes: string[];
+  avatar: string;
+  verified: boolean;
+  responseRate: number;
+  bio: string;
+  experience: string;
+  availability: string[];
+  specialties: string[];
+  gallery: string[];
+}
 
 export default function SitterProfile() {
   const { id } = useParams();
@@ -52,6 +48,8 @@ export default function SitterProfile() {
   const [searchParams] = useSearchParams();
   const [showMessageDialog, setShowMessageDialog] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [sitterData, setSitterData] = useState<SitterData | null>(null);
+  const [loading, setLoading] = useState(true);
   
   // Check if booking should be automatically opened
   useEffect(() => {
@@ -60,10 +58,74 @@ export default function SitterProfile() {
       setIsBookingOpen(true);
     }
   }, [searchParams]);
+
+  // Load sitter data from the secure database view
+  useEffect(() => {
+    const fetchSitterData = async () => {
+      if (!id) return;
+      
+      try {
+        // Fetch from the secure public view
+        const { data, error } = await supabase
+          .from('public_sitter_profiles')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching sitter:', error);
+          setSitterData(null);
+        } else if (data) {
+          // Transform the data to match our interface
+          setSitterData({
+            id: data.id,
+            display_name: data.display_name, // Privacy-safe name
+            location: `${data.suburb}, ${data.city}`,
+            rating: data.rating || 4.8,
+            reviews: data.total_reviews || 0,
+            baseRate: 25,
+            hourlyRate: 27.50,
+            services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table
+            petTypes: ['Dogs', 'Cats'], // Would come from sitter preferences  
+            avatar: data.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+            verified: data.is_verified,
+            responseRate: data.response_rate || 95,
+            bio: data.bio || 'Experienced pet care provider',
+            experience: '3+ years',
+            availability: ['Weekdays', 'Weekends'],
+            specialties: ['General pet care', 'Friendly pets'],
+            gallery: [
+              'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=200&fit=crop',
+              'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=200&fit=crop',
+              'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&h=200&fit=crop'
+            ]
+          });
+        }
+      } catch (error) {
+        console.error('Error in fetchSitterData:', error);
+        setSitterData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSitterData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading sitter profile...</p>
+        </div>
+      </div>
+    );
+  }
   
-  const sitter = mockSitterData[parseInt(id || '1') as keyof typeof mockSitterData];
+  // sitterData is now loaded from the database via useEffect above
   
-  if (!sitter) {
+  if (!sitterData) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -93,16 +155,16 @@ export default function SitterProfile() {
           
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={sitter.avatar} />
+              <AvatarImage src={sitterData.avatar} />
               <AvatarFallback>
-                {sitter.name.split(' ').map(n => n[0]).join('')}
+                {sitterData.display_name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
             
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <h1 className="text-3xl font-bold">{sitter.name}</h1>
-                {sitter.verified && (
+                <h1 className="text-3xl font-bold">{sitterData.display_name}</h1>
+                {sitterData.verified && (
                   <Badge variant="secondary" className="text-xs">
                     <Shield className="mr-1 h-3 w-3" />
                     Verified
@@ -112,27 +174,27 @@ export default function SitterProfile() {
               
               <div className="flex items-center text-muted-foreground mb-4">
                 <MapPin className="w-4 h-4 mr-1" />
-                {sitter.location}
+                {sitterData.location}
               </div>
               
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center">
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="font-medium">{sitter.rating}</span>
+                  <span className="font-medium">{sitterData.rating}</span>
                   <span className="text-sm text-muted-foreground ml-1">
-                    ({sitter.reviews} reviews)
+                    ({sitterData.reviews} reviews)
                   </span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
-                  <span className="text-sm">{sitter.responseRate}% response rate</span>
+                  <span className="text-sm">{sitterData.responseRate}% response rate</span>
                 </div>
               </div>
               
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setShowMessageDialog(true)}>
                   <MessageCircle className="mr-2 h-4 w-4" />
-                  Message {sitter.name.split(' ')[0]}
+                  Message {sitterData.display_name.split(' ')[0]}
                 </Button>
                 <Button variant="outline">
                   <Heart className="mr-2 h-4 w-4" />
@@ -215,7 +277,7 @@ export default function SitterProfile() {
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-medium mb-2">Experience</h4>
-                  <p className="text-muted-foreground">{sitter.experience} of professional pet care</p>
+                  <p className="text-muted-foreground">{sitterData.experience} of professional pet care</p>
                 </div>
                 
                 <Separator />
@@ -223,7 +285,7 @@ export default function SitterProfile() {
                 <div>
                   <h4 className="font-medium mb-2">Specialties</h4>
                   <div className="flex flex-wrap gap-2">
-                    {sitter.specialties.map((specialty) => (
+                    {sitterData.specialties.map((specialty) => (
                       <Badge key={specialty} variant="outline">
                         {specialty}
                       </Badge>
@@ -236,7 +298,7 @@ export default function SitterProfile() {
                 <div>
                   <h4 className="font-medium mb-2">Pet Types</h4>
                   <div className="flex flex-wrap gap-2">
-                    {sitter.petTypes.map((type) => (
+                    {sitterData.petTypes.map((type) => (
                       <Badge key={type} variant="secondary">
                         {type}
                       </Badge>
@@ -253,7 +315,7 @@ export default function SitterProfile() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {sitter.gallery.map((photo, index) => (
+                  {sitterData.gallery.map((photo, index) => (
                     <img
                       key={index}
                       src={photo}
@@ -298,7 +360,7 @@ export default function SitterProfile() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {sitter.availability.map((time) => (
+                  {sitterData.availability.map((time) => (
                     <div key={time} className="flex items-center">
                       <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                       <span className="text-sm">{time}</span>
@@ -339,9 +401,9 @@ export default function SitterProfile() {
       <MessageDialog
         isOpen={showMessageDialog}
         onClose={() => setShowMessageDialog(false)}
-        recipientId={sitter.id.toString()}
-        recipientName={sitter.name}
-        recipientAvatar={sitter.avatar}
+        recipientId={sitterData.id.toString()}
+        recipientName={sitterData.display_name}
+        recipientAvatar={sitterData.avatar}
       />
     </div>
   );

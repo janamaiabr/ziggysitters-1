@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter, MessageCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 import MessageDialog from '@/components/messaging/MessageDialog';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
@@ -68,8 +69,42 @@ export default function FindSitters() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedSitter, setSelectedSitter] = useState<any>(null);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
-  const [filteredSitters, setFilteredSitters] = useState(mockSitters);
+  const [allSitters, setAllSitters] = useState<any[]>([]);
+  const [filteredSitters, setFilteredSitters] = useState<any[]>([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+
+  // Load sitters from the secure database view
+  useEffect(() => {
+    const fetchSitters = async () => {
+      const { data, error } = await supabase
+        .from('public_sitter_profiles')
+        .select('*')
+        .order('rating', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching sitters:', error);
+      } else if (data) {
+        const transformedSitters = data.map(sitter => ({
+          id: sitter.id,
+          name: sitter.display_name, // Privacy-safe display name (first name + last initial)
+          location: `${sitter.suburb}, ${sitter.city}`,
+          rating: sitter.rating || 4.8,
+          reviews: sitter.total_reviews || 0,
+          services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table in real implementation
+          petTypes: ['Dogs', 'Cats'], // Would come from sitter preferences in real implementation
+          verified: sitter.is_verified,
+          responseRate: sitter.response_rate || 95,
+          availability: 'Available',
+          avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+          bio: sitter.bio || 'Experienced pet care provider'
+        }));
+        setAllSitters(transformedSitters);
+        setFilteredSitters(transformedSitters);
+      }
+    };
+
+    fetchSitters();
+  }, []);
 
   const handleSearch = () => {
     let filtered = [...mockSitters];
@@ -123,7 +158,7 @@ export default function FindSitters() {
   };
 
   const handleApplyFilters = (filters: any) => {
-    let filtered = [...mockSitters];
+    let filtered = [...allSitters];
     
     // Apply price range filter
     filtered = filtered.filter(sitter => 

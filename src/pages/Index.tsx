@@ -39,7 +39,7 @@ const Index = () => {
       if (data) {
         setFeaturedSitters(data.map(sitter => ({
           id: sitter.id,
-          name: `${sitter.first_name} ${sitter.last_name}`,
+          name: sitter.display_name, // Now using privacy-safe display name
           rating: sitter.rating || 4.8,
           reviews: sitter.total_reviews || 0,
           location: `${sitter.suburb}, ${sitter.city}`,
