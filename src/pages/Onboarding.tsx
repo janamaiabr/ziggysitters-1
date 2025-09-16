@@ -16,19 +16,28 @@ type UserRole = 'pet_owner' | 'pet_sitter' | 'both';
 
 interface OnboardingData {
   role: UserRole | null;
+  first_name?: string;
+  last_name?: string;
   phone?: string;
   address?: string;
   suburb?: string;
   city?: string;
   postal_code?: string;
   bio?: string;
+  avatar_url?: string;
   experience_years?: number;
   has_fenced_yard?: boolean;
+  accepted_pet_species?: string[];
+  accepted_pet_sizes?: string[];
+  comfortable_with_medication?: boolean;
+  pet_sleeping_location?: string;
+  has_other_pets?: boolean;
+  other_pets_description?: string;
   services?: Array<{
-    service_type: string;
-    hourly_rate?: number;
-    daily_rate?: number;
-    overnight_rate?: number;
+    service_type: 'dog_walking' | 'daycare' | 'overnight_boarding';
+    rate: number;
+    description?: string;
+    what_included?: string;
   }>;
 }
 
@@ -41,7 +50,10 @@ export default function Onboarding() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<OnboardingData>({
     role: null,
-    city: 'Auckland'
+    city: 'Auckland',
+    accepted_pet_species: [],
+    accepted_pet_sizes: [],
+    services: []
   });
 
   useEffect(() => {
@@ -58,7 +70,7 @@ export default function Onboarding() {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleServiceChange = (serviceType: string, field: string, value: number) => {
+  const handleServiceChange = (serviceType: 'dog_walking' | 'daycare' | 'overnight_boarding', field: string, value: any) => {
     setData(prev => {
       const services = prev.services || [];
       const existingServiceIndex = services.findIndex(s => s.service_type === serviceType);
@@ -71,12 +83,62 @@ export default function Onboarding() {
         };
         return { ...prev, services: updatedServices };
       } else {
+        const newService = {
+          service_type: serviceType,
+          rate: field === 'rate' ? value : 0,
+          description: field === 'description' ? value : undefined,
+          what_included: field === 'what_included' ? value : undefined,
+          [field]: value
+        };
         return {
           ...prev,
-          services: [...services, { service_type: serviceType, [field]: value }]
+          services: [...services, newService]
         };
       }
     });
+  };
+
+  const handleArrayToggle = (field: 'accepted_pet_species' | 'accepted_pet_sizes', value: string) => {
+    setData(prev => {
+      const currentArray = prev[field] || [];
+      const newArray = currentArray.includes(value)
+        ? currentArray.filter(item => item !== value)
+        : [...currentArray, value];
+      return { ...prev, [field]: newArray };
+    });
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}-avatar.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(fileName);
+
+      setData(prev => ({ ...prev, avatar_url: publicUrl }));
+      
+      toast({
+        title: "Photo uploaded successfully!",
+        description: "Your profile photo has been uploaded.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const saveProfile = async () => {
@@ -87,12 +149,15 @@ export default function Onboarding() {
         .from('profiles')
         .update({
           role: data.role === 'both' ? 'pet_sitter' : data.role,
+          first_name: data.first_name,
+          last_name: data.last_name,
           phone: data.phone,
           address: data.address,
           suburb: data.suburb,
           city: data.city,
           postal_code: data.postal_code,
           bio: data.bio,
+          avatar_url: data.avatar_url,
         })
         .eq('user_id', user?.id);
 
@@ -108,22 +173,28 @@ export default function Onboarding() {
 
         if (profileData && data.services) {
           for (const service of data.services) {
-            const serviceTypeMap: Record<string, 'overnight_boarding' | 'daycare' | 'dog_walking' | 'drop_in_visits' | 'grooming' | 'medication_admin'> = {
-              'pet_sitting': 'overnight_boarding',
-              'dog_walking': 'dog_walking'
+            const rateField = service.service_type === 'dog_walking' ? 'hourly_rate' : 
+                             service.service_type === 'daycare' ? 'daily_rate' : 'overnight_rate';
+
+            const serviceData: any = {
+              sitter_id: profileData.id,
+              service_type: service.service_type,
+              description: service.description,
+              experience_years: data.experience_years || 0,
+              has_fenced_yard: data.has_fenced_yard || false,
+              accepted_pet_species: data.accepted_pet_species,
+              accepted_pet_sizes: data.accepted_pet_sizes,
+              allows_senior_pets: true,
+              allows_puppies: true,
+              max_pets: 3,
             };
+
+            // Set the appropriate rate field
+            serviceData[rateField] = service.rate;
 
             const { error: serviceError } = await supabase
               .from('sitter_services')
-              .insert({
-                sitter_id: profileData.id,
-                service_type: serviceTypeMap[service.service_type] || 'overnight_boarding' as const,
-                hourly_rate: service.hourly_rate,
-                daily_rate: service.daily_rate,
-                overnight_rate: service.overnight_rate,
-                experience_years: data.experience_years || 0,
-                has_fenced_yard: data.has_fenced_yard || false,
-              });
+              .insert(serviceData);
 
             if (serviceError) throw serviceError;
           }
@@ -248,6 +319,43 @@ export default function Onboarding() {
       <div className="grid gap-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
+            <Label htmlFor="first_name">First Name</Label>
+            <Input
+              id="first_name"
+              placeholder="Your first name"
+              value={data.first_name || ''}
+              onChange={(e) => handleInputChange('first_name', e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="last_name">Last Name</Label>
+            <Input
+              id="last_name"
+              placeholder="Your last name"
+              value={data.last_name || ''}
+              onChange={(e) => handleInputChange('last_name', e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="avatar">Profile Photo</Label>
+          <Input
+            id="avatar"
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            className="cursor-pointer"
+          />
+          {data.avatar_url && (
+            <div className="mt-2">
+              <img src={data.avatar_url} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
             <Label htmlFor="phone">Phone Number</Label>
             <Input
               id="phone"
@@ -326,9 +434,12 @@ export default function Onboarding() {
             <Input
               id="experience_years"
               type="number"
+              min="0"
+              max="50"
               placeholder="0"
               value={data.experience_years || ''}
               onChange={(e) => handleInputChange('experience_years', parseInt(e.target.value) || 0)}
+              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
           <div className="flex items-center space-x-2 pt-6">
@@ -342,35 +453,121 @@ export default function Onboarding() {
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-semibold">Service Rates (NZ$)</h3>
+          <h3 className="font-semibold">Pet Types & Sizes</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Pet Species I can care for:</Label>
+              <div className="space-y-2">
+                {['dog', 'cat', 'bird', 'rabbit', 'fish'].map((species) => (
+                  <div key={species} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`species-${species}`}
+                      checked={data.accepted_pet_species?.includes(species) || false}
+                      onCheckedChange={() => handleArrayToggle('accepted_pet_species', species)}
+                    />
+                    <Label htmlFor={`species-${species}`} className="capitalize">{species}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Pet Sizes I can care for:</Label>
+              <div className="space-y-2">
+                {['small', 'medium', 'large', 'extra_large'].map((size) => (
+                  <div key={size} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`size-${size}`}
+                      checked={data.accepted_pet_sizes?.includes(size) || false}
+                      onCheckedChange={() => handleArrayToggle('accepted_pet_sizes', size)}
+                    />
+                    <Label htmlFor={`size-${size}`} className="capitalize">{size.replace('_', ' ')}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="font-semibold">Care Details</h3>
+          <div className="grid gap-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="comfortable_with_medication"
+                checked={data.comfortable_with_medication || false}
+                onCheckedChange={(checked) => handleInputChange('comfortable_with_medication', checked)}
+              />
+              <Label htmlFor="comfortable_with_medication">I'm comfortable administering pet medication</Label>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="pet_sleeping_location">Where will pets sleep during overnight stays?</Label>
+              <Textarea
+                id="pet_sleeping_location"
+                placeholder="e.g., On their own bed in the living room, in my bedroom, wherever they're comfortable..."
+                value={data.pet_sleeping_location || ''}
+                onChange={(e) => handleInputChange('pet_sleeping_location', e.target.value)}
+                rows={2}
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="has_other_pets"
+                checked={data.has_other_pets || false}
+                onCheckedChange={(checked) => handleInputChange('has_other_pets', checked)}
+              />
+              <Label htmlFor="has_other_pets">I have other pets at home</Label>
+            </div>
+
+            {data.has_other_pets && (
+              <div className="space-y-2">
+                <Label htmlFor="other_pets_description">Tell us about your other pets:</Label>
+                <Textarea
+                  id="other_pets_description"
+                  placeholder="e.g., 2 friendly golden retrievers, 1 cat who loves attention..."
+                  value={data.other_pets_description || ''}
+                  onChange={(e) => handleInputChange('other_pets_description', e.target.value)}
+                  rows={2}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="font-semibold">Service Rates & Details</h3>
           
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Pet Sitting (at owner's home)</CardTitle>
+              <CardTitle className="text-lg">Dog Walking</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-3 gap-4">
+            <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Hourly Rate</Label>
+                <Label>Rate per walk (NZ$)</Label>
                 <Input
                   type="number"
+                  min="0"
+                  step="0.01"
                   placeholder="25"
-                  onChange={(e) => handleServiceChange('pet_sitting', 'hourly_rate', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => handleServiceChange('dog_walking', 'rate', parseFloat(e.target.value) || 0)}
+                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Daily Rate</Label>
-                <Input
-                  type="number"
-                  placeholder="60"
-                  onChange={(e) => handleServiceChange('pet_sitting', 'daily_rate', parseFloat(e.target.value) || 0)}
+                <Label>What's included in your dog walking service?</Label>
+                <Textarea
+                  placeholder="e.g., 30-45 minute walks, fresh water refill, basic exercise, updates with photos..."
+                  onChange={(e) => handleServiceChange('dog_walking', 'what_included', e.target.value)}
+                  rows={2}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Overnight Rate</Label>
-                <Input
-                  type="number"
-                  placeholder="80"
-                  onChange={(e) => handleServiceChange('pet_sitting', 'overnight_rate', parseFloat(e.target.value) || 0)}
+                <Label>Additional notes for dog walking:</Label>
+                <Textarea
+                  placeholder="e.g., Happy to follow specific routes, can handle reactive dogs with proper notice..."
+                  onChange={(e) => handleServiceChange('dog_walking', 'description', e.target.value)}
+                  rows={2}
                 />
               </div>
             </CardContent>
@@ -378,23 +575,69 @@ export default function Onboarding() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Dog Walking</CardTitle>
+              <CardTitle className="text-lg">Daycare</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-3 gap-4">
+            <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Hourly Rate</Label>
+                <Label>Rate per day (NZ$)</Label>
                 <Input
                   type="number"
-                  placeholder="20"
-                  onChange={(e) => handleServiceChange('dog_walking', 'hourly_rate', parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="0.01"
+                  placeholder="60"
+                  onChange={(e) => handleServiceChange('daycare', 'rate', parseFloat(e.target.value) || 0)}
+                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Daily Rate</Label>
+                <Label>What's included in your daycare service?</Label>
+                <Textarea
+                  placeholder="e.g., 8-10 hours of care, feeding, playtime, walks, regular updates..."
+                  onChange={(e) => handleServiceChange('daycare', 'what_included', e.target.value)}
+                  rows={2}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Additional notes for daycare:</Label>
+                <Textarea
+                  placeholder="e.g., Pets will be supervised at all times, lots of garden space for play..."
+                  onChange={(e) => handleServiceChange('daycare', 'description', e.target.value)}
+                  rows={2}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Overnight Boarding</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Rate per night (NZ$)</Label>
                 <Input
                   type="number"
-                  placeholder="40"
-                  onChange={(e) => handleServiceChange('dog_walking', 'daily_rate', parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="0.01"
+                  placeholder="80"
+                  onChange={(e) => handleServiceChange('overnight_boarding', 'rate', parseFloat(e.target.value) || 0)}
+                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>What's included in your overnight boarding?</Label>
+                <Textarea
+                  placeholder="e.g., 24-hour care, feeding, walks, playtime, sleeping arrangements, regular updates..."
+                  onChange={(e) => handleServiceChange('overnight_boarding', 'what_included', e.target.value)}
+                  rows={2}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Additional notes for overnight boarding:</Label>
+                <Textarea
+                  placeholder="e.g., Pets will have full access to the house, treated like family members..."
+                  onChange={(e) => handleServiceChange('overnight_boarding', 'description', e.target.value)}
+                  rows={2}
                 />
               </div>
             </CardContent>
