@@ -64,6 +64,18 @@ function AppContent() {
           <Route path="/sitter/:id" element={<SitterProfile />} />
           <Route path="/become-sitter" element={<BecomeSitter />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          
+          {/* Auth Route - Public only */}
+          <Route 
+            path="/auth" 
+            element={
+              <PublicRoute>
+                <Auth />
+              </PublicRoute>
+            } 
+          />
+          
+          {/* Protected Routes */}
           <Route 
             path="/profile" 
             element={
@@ -88,6 +100,7 @@ function AppContent() {
               </ProtectedRoute>
             } 
           />
+          
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/contact" element={<Contact />} />
@@ -97,7 +110,6 @@ function AppContent() {
           <Route path="/help" element={<Contact />} />
           <Route path="/cookies" element={<PrivacyPolicy />} />
           <Route path="/booking-success" element={<BookingSuccess />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
