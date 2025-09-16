@@ -612,10 +612,9 @@ export type Database = {
           bio: string | null
           city: string | null
           created_at: string | null
-          first_name: string | null
+          display_name: string | null
           id: string | null
           is_verified: boolean | null
-          last_name: string | null
           rating: number | null
           response_rate: number | null
           role: Database["public"]["Enums"]["user_role"] | null
@@ -631,10 +630,9 @@ export type Database = {
           bio?: string | null
           city?: string | null
           created_at?: string | null
-          first_name?: string | null
+          display_name?: never
           id?: string | null
           is_verified?: boolean | null
-          last_name?: string | null
           rating?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"] | null
@@ -650,10 +648,9 @@ export type Database = {
           bio?: string | null
           city?: string | null
           created_at?: string | null
-          first_name?: string | null
+          display_name?: never
           id?: string | null
           is_verified?: boolean | null
-          last_name?: string | null
           rating?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"] | null
@@ -671,9 +668,32 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
+      can_access_sitter_contact_details: {
+        Args: { sitter_profile_id: string }
+        Returns: boolean
+      }
       can_access_sitter_contact_safe: {
         Args: { sitter_profile_id: string }
         Returns: boolean
+      }
+      get_safe_sitter_profiles: {
+        Args: { limit_count?: number }
+        Returns: {
+          avatar_url: string
+          background_check_verified: boolean
+          bio: string
+          city: string
+          created_at: string
+          display_name: string
+          id: string
+          is_verified: boolean
+          rating: number
+          response_rate: number
+          role: Database["public"]["Enums"]["user_role"]
+          suburb: string
+          total_reviews: number
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }[]
       }
       is_admin: {
         Args: Record<PropertyKey, never>
