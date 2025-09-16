@@ -668,14 +668,6 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
-      can_access_sitter_contact_details: {
-        Args: { sitter_profile_id: string }
-        Returns: boolean
-      }
-      can_access_sitter_contact_safe: {
-        Args: { sitter_profile_id: string }
-        Returns: boolean
-      }
       get_safe_sitter_profiles: {
         Args: { limit_count?: number }
         Returns: {
