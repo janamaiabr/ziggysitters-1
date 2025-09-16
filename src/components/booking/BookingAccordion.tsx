@@ -49,8 +49,6 @@ const serviceUnits = {
 export default function BookingAccordion({ sitter, isOpen = false }: BookingAccordionProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const [startDateOpen, setStartDateOpen] = useState(false);
-  const [endDateOpen, setEndDateOpen] = useState(false);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState('');
@@ -62,13 +60,11 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
     if (type === 'start') {
       setStartDate(date);
-      setStartDateOpen(false);
       if (date && endDate && endDate < date) {
         setEndDate(undefined);
       }
     } else {
       setEndDate(date);
-      setEndDateOpen(false);
     }
   };
 
@@ -158,8 +154,6 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
   const resetForm = () => {
     setStartDate(undefined);
     setEndDate(undefined);
-    setStartDateOpen(false);
-    setEndDateOpen(false);
     setStartTime('09:00');
     setEndTime('17:00');
     setServiceType('');
@@ -229,69 +223,36 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Start Date *</label>
-                  <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !startDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {startDate ? format(startDate, "PPP") : "Select start date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={startDate}
-                        onSelect={(date) => handleDateSelect(date, 'start')}
-                        disabled={(date) => {
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          return date < today;
-                        }}
-                        initialFocus
-                        className="pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <div className="relative">
+                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="date"
+                      value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
+                      onChange={(e) => {
+                        const date = e.target.value ? new Date(e.target.value) : undefined;
+                        handleDateSelect(date, 'start');
+                      }}
+                      className="pl-10"
+                      min={format(new Date(), 'yyyy-MM-dd')}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-3">
                   <label className="text-sm font-medium">End Date *</label>
-                  <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !endDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {endDate ? format(endDate, "PPP") : "Select end date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={endDate}
-                        onSelect={(date) => handleDateSelect(date, 'end')}
-                        disabled={(date) => {
-                          if (!startDate) return true;
-                          const minDate = new Date(startDate);
-                          minDate.setHours(0, 0, 0, 0);
-                          return date < minDate;
-                        }}
-                        initialFocus
-                        className="pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <div className="relative">
+                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="date"
+                      value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
+                      onChange={(e) => {
+                        const date = e.target.value ? new Date(e.target.value) : undefined;
+                        handleDateSelect(date, 'end');
+                      }}
+                      className="pl-10"
+                      min={startDate ? format(startDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')}
+                    />
+                  </div>
                 </div>
               </div>
 
