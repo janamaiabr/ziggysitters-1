@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,6 +51,19 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
+    console.log(`Date selected: ${type}`, date);
+    if (type === 'start') {
+      setStartDate(date);
+      // If end date is before new start date, reset it
+      if (date && endDate && endDate < date) {
+        setEndDate(undefined);
+      }
+    } else {
+      setEndDate(date);
+    }
+  };
 
   const calculateTotal = () => {
     if (!startDate || !endDate || !serviceType) return 0;
@@ -108,6 +121,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
         specialInstructions,
         totalAmount: total
       };
+
+      console.log('Sending booking data:', bookingData);
 
       const { data, error } = await supabase.functions.invoke('create-booking', {
         body: bookingData
@@ -174,13 +189,19 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
               </div>
             </div>
           </DialogTitle>
+          <DialogDescription>
+            Select your preferred service, dates, and times to book with {sitter.name}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Service Selection */}
           <div className="space-y-3">
             <label className="text-sm font-medium">Service Type *</label>
-            <Select value={serviceType} onValueChange={setServiceType}>
+            <Select value={serviceType} onValueChange={(value) => {
+              console.log('Service type selected:', value);
+              setServiceType(value);
+            }}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
@@ -215,19 +236,24 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                       "w-full justify-start text-left font-normal",
                       !startDate && "text-muted-foreground"
                     )}
+                    onClick={() => console.log('Start date button clicked')}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {startDate ? format(startDate, "PPP") : "Select date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 z-50" align="start">
                   <Calendar
                     mode="single"
                     selected={startDate}
-                    onSelect={setStartDate}
-                    disabled={(date) => date < new Date()}
+                    onSelect={(date) => handleDateSelect(date, 'start')}
+                    disabled={(date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      return date < today;
+                    }}
                     initialFocus
-                    className="p-3 pointer-events-auto"
+                    className="p-3"
                   />
                 </PopoverContent>
               </Popover>
@@ -243,19 +269,25 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                       "w-full justify-start text-left font-normal",
                       !endDate && "text-muted-foreground"
                     )}
+                    onClick={() => console.log('End date button clicked')}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {endDate ? format(endDate, "PPP") : "Select date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 z-50" align="start">
                   <Calendar
                     mode="single"
                     selected={endDate}
-                    onSelect={setEndDate}
-                    disabled={(date) => !startDate || date < startDate}
+                    onSelect={(date) => handleDateSelect(date, 'end')}
+                    disabled={(date) => {
+                      if (!startDate) return true;
+                      const startDateTime = new Date(startDate);
+                      startDateTime.setHours(0, 0, 0, 0);
+                      return date < startDateTime;
+                    }}
                     initialFocus
-                    className="p-3 pointer-events-auto"
+                    className="p-3"
                   />
                 </PopoverContent>
               </Popover>
@@ -272,7 +304,10 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                   <Input
                     type="time"
                     value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
+                    onChange={(e) => {
+                      console.log('Start time changed:', e.target.value);
+                      setStartTime(e.target.value);
+                    }}
                     className="pl-10"
                   />
                 </div>
@@ -285,7 +320,10 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                   <Input
                     type="time"
                     value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
+                    onChange={(e) => {
+                      console.log('End time changed:', e.target.value);
+                      setEndTime(e.target.value);
+                    }}
                     className="pl-10"
                   />
                 </div>
