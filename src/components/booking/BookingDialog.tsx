@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
@@ -231,29 +231,36 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    type="button"
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
                       !startDate && "text-muted-foreground"
                     )}
-                    onClick={() => console.log('Start date button clicked')}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "PPP") : "Select date"}
+                    {startDate ? format(startDate, "PPP") : "Select start date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-50" align="start">
+                <PopoverContent 
+                  className="w-auto p-0" 
+                  align="start"
+                  side="bottom"
+                  sideOffset={4}
+                >
                   <Calendar
                     mode="single"
                     selected={startDate}
-                    onSelect={(date) => handleDateSelect(date, 'start')}
+                    onSelect={(date) => {
+                      console.log('Start date selected:', date);
+                      handleDateSelect(date, 'start');
+                    }}
                     disabled={(date) => {
                       const today = new Date();
                       today.setHours(0, 0, 0, 0);
                       return date < today;
                     }}
                     initialFocus
-                    className="p-3"
                   />
                 </PopoverContent>
               </Popover>
@@ -264,30 +271,37 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    type="button"
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
                       !endDate && "text-muted-foreground"
                     )}
-                    onClick={() => console.log('End date button clicked')}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? format(endDate, "PPP") : "Select date"}
+                    {endDate ? format(endDate, "PPP") : "Select end date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-50" align="start">
+                <PopoverContent 
+                  className="w-auto p-0" 
+                  align="start"
+                  side="bottom"
+                  sideOffset={4}
+                >
                   <Calendar
                     mode="single"
                     selected={endDate}
-                    onSelect={(date) => handleDateSelect(date, 'end')}
+                    onSelect={(date) => {
+                      console.log('End date selected:', date);
+                      handleDateSelect(date, 'end');
+                    }}
                     disabled={(date) => {
                       if (!startDate) return true;
-                      const startDateTime = new Date(startDate);
-                      startDateTime.setHours(0, 0, 0, 0);
-                      return date < startDateTime;
+                      const minDate = new Date(startDate);
+                      minDate.setHours(0, 0, 0, 0);
+                      return date < minDate;
                     }}
                     initialFocus
-                    className="p-3"
                   />
                 </PopoverContent>
               </Popover>
