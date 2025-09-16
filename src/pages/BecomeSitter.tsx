@@ -160,12 +160,13 @@ export default function BecomeSitter() {
             <p className="text-xl mb-8 opacity-90">
               Join thousands of pet sitters earning money while caring for adorable pets in their community
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 px-8">
-                Get Started Today
-              </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-                Learn More
+            <div className="flex justify-center">
+              <Button 
+                size="lg" 
+                className="bg-white text-primary hover:bg-white/90 px-12"
+                onClick={() => navigate('/auth')}
+              >
+                Join Now
               </Button>
             </div>
           </div>
@@ -227,122 +228,21 @@ export default function BecomeSitter() {
         </div>
       </div>
 
-      {/* Application Form */}
+      {/* Call to Action - Simplified */}
       <div className="py-20 bg-accent/5">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Start Your Application</CardTitle>
-                <p className="text-muted-foreground">
-                  Tell us about yourself to get started as a pet sitter
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Full Name</label>
-                    <Input 
-                      placeholder="Enter your full name"
-                      value={formData.name}
-                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <Input 
-                      type="email"
-                      placeholder="your@email.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Phone Number</label>
-                    <Input 
-                      placeholder="+64 21 123 456"
-                      value={formData.phone}
-                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Location</label>
-                    <Input 
-                      placeholder="Auckland, New Zealand"
-                      value={formData.location}
-                      onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Pet Experience</label>
-                  <Select value={formData.petExperience} onValueChange={(value) => setFormData(prev => ({ ...prev, petExperience: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your experience level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="beginner">New to pet sitting</SelectItem>
-                      <SelectItem value="some">Some experience with pets</SelectItem>
-                      <SelectItem value="experienced">Very experienced</SelectItem>
-                      <SelectItem value="professional">Professional pet care background</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Tell us about yourself</label>
-                  <Textarea 
-                    placeholder="Share your experience with pets, what makes you a great sitter, and why you want to join ZiggySitters..."
-                    value={formData.bio}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                    rows={4}
-                  />
-                </div>
-                
-                <div className="space-y-4">
-                  <label className="text-sm font-medium">Services you'd like to offer:</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['Dog Walking', 'Pet Sitting', 'Overnight Care', 'Drop-in Visits', 'Pet Boarding', 'Grooming'].map((service) => (
-                      <div key={service} className="flex items-center space-x-2">
-                        <Checkbox 
-                          id={service}
-                          checked={formData.services.includes(service)}
-                          onCheckedChange={() => handleServiceToggle(service)}
-                        />
-                        <label htmlFor={service} className="text-sm">{service}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="yard"
-                    checked={formData.hasYard}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, hasYard: !!checked }))}
-                  />
-                  <label htmlFor="yard" className="text-sm">I have a secure, fenced yard</label>
-                </div>
-                
-                <Button 
-                  className="w-full" 
-                  size="lg"
-                  onClick={handleSubmitApplication}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
-                </Button>
-                
-                <p className="text-xs text-muted-foreground text-center">
-                  By submitting this application, you agree to our Terms of Service and Privacy Policy.
-                  All sitters are subject to background checks and verification.
-                </p>
-              </CardContent>
-            </Card>
+            <h2 className="text-3xl font-bold mb-6">Ready to Start Earning?</h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Join our community of trusted pet sitters and start caring for pets in your area.
+            </p>
+            <Button 
+              size="lg" 
+              className="px-12"
+              onClick={() => navigate('/auth')}
+            >
+              Join Now
+            </Button>
           </div>
         </div>
       </div>

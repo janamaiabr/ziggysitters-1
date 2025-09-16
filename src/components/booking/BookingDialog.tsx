@@ -30,15 +30,15 @@ interface BookingDialogProps {
 }
 
 const serviceRates = {
-  'dog-walking': 27.50,
-  'pet-sitting': 33.00,
-  'overnight-care': 66.00,
+  'pet_sitting_sitters_home': 66.00, // per day
+  'pet_sitting_owners_home': 55.00,  // per day
+  'drop_in_visits': 27.50,           // per hour
 };
 
 const serviceLabels = {
-  'dog-walking': 'Dog Walking',
-  'pet-sitting': 'Pet Sitting', 
-  'overnight-care': 'Overnight Care',
+  'pet_sitting_sitters_home': 'Pet Sitting in Sitter\'s Home',
+  'pet_sitting_owners_home': 'Pet Sitting in Owner\'s Home', 
+  'drop_in_visits': 'Drop-in Visits',
 };
 
 export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialogProps) {
@@ -95,9 +95,9 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
     const rate = serviceRates[serviceType as keyof typeof serviceRates];
     if (!rate) return 0;
 
-    if (serviceType === 'overnight-care') {
-      const nights = differenceInDays(endDate, startDate);
-      return Math.max(1, nights) * rate;
+    if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
+      const days = differenceInDays(endDate, startDate) || 1;
+      return Math.max(1, days) * rate;
     } else {
       const startDateTime = new Date(startDate);
       startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
@@ -112,11 +112,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
 
   const handleBooking = async () => {
     if (!user) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please log in to book a sitter.',
-        variant: 'destructive'
-      });
+      // Redirect to login instead of showing message
+      window.location.href = '/auth';
       return;
     }
 
@@ -139,8 +136,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
         serviceType,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
-        startTime: serviceType !== 'overnight-care' ? startTime : undefined,
-        endTime: serviceType !== 'overnight-care' ? endTime : undefined,
+        startTime: serviceType === 'drop_in_visits' ? startTime : undefined,
+        endTime: serviceType === 'drop_in_visits' ? endTime : undefined,
         petIds: [], // This would come from user's pets in a real implementation
         specialInstructions,
         totalAmount: total
@@ -267,7 +264,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                       <div className="flex justify-between w-full">
                         <span>{service}</span>
                         <span className="text-muted-foreground ml-4">
-                          ${rate}/{serviceKey === 'overnight-care' ? 'night' : 'hour'}
+                          ${rate}/{serviceKey === 'drop_in_visits' ? 'hour' : 'day'}
                         </span>
                       </div>
                     </SelectItem>
@@ -379,8 +376,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
             </div>
           </div>
 
-          {/* Time Selection - Only for non-overnight services */}
-          {serviceType && serviceType !== 'overnight-care' && (
+          {/* Time Selection - Only for drop-in visits */}
+          {serviceType && serviceType === 'drop_in_visits' && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-3">
                 <label className="text-sm font-medium">Start Time</label>
@@ -442,11 +439,11 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                   <span>{serviceLabels[serviceType as keyof typeof serviceLabels]}</span>
                 </div>
                 
-                {serviceType === 'overnight-care' ? (
+                {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') ? (
                   <div className="flex justify-between">
                     <span>Duration</span>
                     <span>
-                      {startDate && endDate ? differenceInDays(endDate, startDate) : 0} nights
+                      {startDate && endDate ? (differenceInDays(endDate, startDate) || 1) : 1} days
                     </span>
                   </div>
                 ) : (

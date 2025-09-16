@@ -35,6 +35,7 @@ All colors MUST be HSL.
     --border: 46 28% 88%;
     --input: 46 28% 88%;
     --ring: 207 89% 51%;
+    --success: 142 76% 36%;
 
     /* ZiggySitters gradient colors */
     --gradient-primary: linear-gradient(135deg, hsl(207 89% 51%), hsl(182 85% 39%));
@@ -91,6 +92,7 @@ All colors MUST be HSL.
     --border: 210 20% 18%;
     --input: 210 20% 18%;
     --ring: 142 76% 36%;
+    --success: 142 76% 36%;
 
     /* Dark mode gradients */
     --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 40% 25%));

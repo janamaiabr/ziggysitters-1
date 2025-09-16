@@ -36,21 +36,15 @@ export default function About() {
 
   const team = [
     {
-      name: 'Sarah Williams',
-      role: 'Founder & CEO',
-      bio: "Animal lover with 10+ years in pet care industry. Started ZiggySitters after struggling to find reliable pet care for her rescue dogs.",
+      name: 'Jana Maia',
+      role: 'Co-Founder & CEO',
+      bio: "Pet parent to a high-needs rescue dog requiring daily medication and specialized care. Understands the challenges of finding reliable pet sitters for special-needs animals.",
       image: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face'
     },
     {
-      name: 'Michael Chen',
-      role: 'Head of Safety',
-      bio: 'Former veterinarian turned safety advocate. Ensures all our sitters meet the highest standards of pet care.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-    },
-    {
-      name: 'Emma Thompson',
-      role: 'Community Manager',
-      bio: 'Passionate about building connections between pet parents and sitters. Dog mom to three rescue pups.',
+      name: 'Rachel Nottingham',
+      role: 'Co-Founder & COO',
+      bio: 'Experienced with anxious and reactive pets. Rachel\'s background in animal behavior helps ensure our platform serves pets with unique emotional and physical needs.',
       image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
     }
   ];
@@ -83,16 +77,21 @@ export default function About() {
             <h2 className="text-3xl font-bold text-center mb-12">Our Story</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h3 className="text-2xl font-semibold mb-4">Born from a Pet Parent's Need</h3>
+                <h3 className="text-2xl font-semibold mb-4">Born from High-Needs Pet Parents</h3>
                 <p className="text-gray-600 mb-4">
-                  ZiggySitters was founded in 2022 when our founder Sarah couldn't find reliable, 
-                  trustworthy pet care for her rescue dogs while traveling for work. After one too 
-                  many disappointing experiences with unreliable sitters, she decided to create 
-                  the platform she wished existed.
+                  ZiggySitters was founded in 2022 by Jana Maia and Rachel Nottingham, two pet parents 
+                  with high-needs animals who struggled to find reliable, understanding pet care. Jana's 
+                  rescue dog required medication and special attention, while Rachel's anxious cat needed 
+                  patient, experienced care.
                 </p>
                 <p className="text-gray-600 mb-4">
-                  What started as a personal frustration became a mission to connect pet parents 
-                  with verified, passionate pet sitters who truly care about animals' wellbeing.
+                  After countless disappointing experiences with pet sitters who didn't understand their 
+                  pets' unique needs, they decided to create a platform that truly prioritizes the 
+                  wellbeing of every pet, especially those requiring extra care and attention.
+                </p>
+                <p className="text-gray-600 mb-4">
+                  What started as a personal mission became a thriving community where pet parents with 
+                  special-needs animals can find sitters who genuinely understand and care.
                 </p>
                 <div className="flex items-center space-x-4">
                   <Badge variant="secondary" className="flex items-center gap-2">
@@ -155,7 +154,7 @@ export default function About() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {team.map((member, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                 <CardContent className="p-8">

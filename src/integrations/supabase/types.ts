@@ -703,6 +703,8 @@ export type Database = {
         | "drop_in_visits"
         | "grooming"
         | "medication_admin"
+        | "pet_sitting_owners_home"
+        | "pet_sitting_sitters_home"
       user_role: "pet_owner" | "pet_sitter" | "both" | "admin"
       verification_status: "pending" | "verified" | "rejected"
     }
@@ -848,6 +850,8 @@ export const Constants = {
         "drop_in_visits",
         "grooming",
         "medication_admin",
+        "pet_sitting_owners_home",
+        "pet_sitting_sitters_home",
       ],
       user_role: ["pet_owner", "pet_sitter", "both", "admin"],
       verification_status: ["pending", "verified", "rejected"],

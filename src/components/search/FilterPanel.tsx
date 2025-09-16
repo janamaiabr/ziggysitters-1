@@ -92,46 +92,7 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters }: FilterP
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* Price Range */}
-            <div>
-              <h3 className="font-medium mb-4">Price Range (per hour)</h3>
-              <div className="px-2">
-                <Slider
-                  value={priceRange}
-                  onValueChange={setPriceRange}
-                  max={100}
-                  min={10}
-                  step={5}
-                  className="mb-4"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>${priceRange[0]}</span>
-                  <span>${priceRange[1]}</span>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Rating */}
-            <div>
-              <h3 className="font-medium mb-4">Minimum Rating</h3>
-              <div className="px-2">
-                <Slider
-                  value={rating}
-                  onValueChange={setRating}
-                  max={5}
-                  min={3}
-                  step={0.5}
-                  className="mb-4"
-                />
-                <div className="text-center text-sm text-muted-foreground">
-                  {rating[0]}+ stars
-                </div>
-              </div>
-            </div>
-
-            <Separator />
+            {/* Removed price and rating filters */}
 
             {/* Services */}
             <div>

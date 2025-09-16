@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { MapPin, Star, Heart, Shield, Clock, Award, Search, DollarSign, CheckCir
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const { user } = useAuth();
@@ -19,53 +20,40 @@ const Index = () => {
   const [serviceType, setServiceType] = useState('');
 
   const popularServices = [
-    { name: 'Dog Walking', icon: '🐕', description: 'Daily walks for your furry friend' },
-    { name: 'Pet Sitting', icon: '🏠', description: 'In-home pet care while you\'re away' },
-    { name: 'Overnight Care', icon: '🌙', description: '24/7 overnight pet care' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins and feeding' },
+    { name: 'Pet Sitting in Sitter\'s Home', icon: '🏠', description: 'Your pet stays at the sitter\'s home with 24/7 care' },
+    { name: 'Pet Sitting in Owner\'s Home', icon: '🏡', description: 'Sitter comes to your home for personalized care' },
+    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins, feeding, and playtime' },
   ];
 
-  const featuredSitters = [
-    {
-      id: 1,
-    name: 'Sarah Johnson',
-    rating: 4.9,
-    reviews: 127,
-    location: 'Ponsonby, Auckland',
-    services: ['Dog Walking', 'Pet Sitting'],
-    verified: true,
-    baseRate: 28,
-    responseRate: 98,
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
-    bio: 'Experienced dog lover with 5+ years of pet care. I treat every pet like my own!'
-  },
-  {
-    id: 2,
-    name: 'Mike Chen',
-    rating: 4.8,
-    reviews: 89,
-    location: 'Newmarket, Auckland',
-    services: ['Pet Boarding', 'Grooming'],
-    verified: true,
-    baseRate: 32,
-    responseRate: 95,
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    bio: 'Professional groomer and pet care specialist. Your pets will love their stay!'
-  },
-  {
-    id: 3,
-    name: 'Emma Williams',
-    rating: 5.0,
-    reviews: 156,
-    location: 'Mount Eden, Auckland',
-    services: ['Pet Sitting', 'Training'],
-    verified: true,
-    baseRate: 35,
-    responseRate: 100,
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-    bio: 'Certified pet trainer with a passion for animal welfare and behavior.'
-  },
-  ];
+  // Replace with real data from database
+  const [featuredSitters, setFeaturedSitters] = useState([]);
+
+  useEffect(() => {
+    const fetchSitters = async () => {
+      const { data } = await supabase
+        .from('public_sitter_profiles')
+        .select('*')
+        .eq('is_verified', true)
+        .limit(3);
+      
+      if (data) {
+        setFeaturedSitters(data.map(sitter => ({
+          id: sitter.id,
+          name: `${sitter.first_name} ${sitter.last_name}`,
+          rating: sitter.rating || 4.8,
+          reviews: sitter.total_reviews || 0,
+          location: `${sitter.suburb}, ${sitter.city}`,
+          services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table
+          verified: sitter.is_verified,
+          responseRate: sitter.response_rate || 95,
+          avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+          bio: sitter.bio || 'Experienced pet care provider'
+        })));
+      }
+    };
+
+    fetchSitters();
+  }, []);
 
   const trustFeatures = [
     {
@@ -125,10 +113,9 @@ const Index = () => {
                     <SelectValue placeholder="Service type" />
                   </SelectTrigger>
                   <SelectContent className="z-50 bg-white">
-                    <SelectItem value="dog-walking">Dog Walking</SelectItem>
-                    <SelectItem value="pet-sitting">Pet Sitting</SelectItem>
-                    <SelectItem value="overnight">Overnight Care</SelectItem>
-                    <SelectItem value="drop-in">Drop-in Visits</SelectItem>
+                    <SelectItem value="pet_sitting_sitters_home">Pet Sitting in Sitter's Home</SelectItem>
+                    <SelectItem value="pet_sitting_owners_home">Pet Sitting in Owner's Home</SelectItem>
+                    <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -217,9 +204,7 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm">
-                      <Heart className="w-4 h-4" />
-                    </Button>
+                    {/* Removed save sitter functionality */}
                   </div>
                 </CardHeader>
                 
@@ -326,7 +311,7 @@ const Index = () => {
                 className="border-2 border-white text-white hover:bg-white hover:text-primary transition-colors px-8" 
                 onClick={() => navigate('/become-sitter')}
               >
-                Become a Sitter
+                Join as a Sitter
               </Button>
             </div>
           </div>

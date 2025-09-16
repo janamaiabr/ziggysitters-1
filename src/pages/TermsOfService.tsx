@@ -84,11 +84,14 @@ export default function TermsOfService() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Cancellation Policy</h2>
           <ul className="list-disc list-inside mb-4 space-y-2">
-            <li><strong>24+ hours notice:</strong> Full refund</li>
-            <li><strong>12-24 hours notice:</strong> 50% refund</li>
-            <li><strong>Less than 12 hours:</strong> No refund</li>
-            <li><strong>Emergency situations:</strong> Case-by-case review</li>
+            <li><strong>48+ hours notice:</strong> Full refund of service cost only (platform fee non-refundable)</li>
+            <li><strong>Less than 48 hours:</strong> No refund (platform fee is always non-refundable)</li>
+            <li><strong>Emergency situations:</strong> Case-by-case review at our discretion</li>
           </ul>
+          <p className="mb-4">
+            <strong>Important:</strong> Our 10% platform fee is non-refundable under all circumstances 
+            to cover payment processing and administrative costs.
+          </p>
         </section>
 
         <section className="mb-8">

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, PawPrint } from 'lucide-react';
+import TermsAcceptance from '@/components/TermsAcceptance';
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -17,6 +18,8 @@ export default function Auth() {
   
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [pendingAuthAction, setPendingAuthAction] = useState<(() => Promise<void>) | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -64,8 +67,7 @@ export default function Auth() {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const executeSignUp = async () => {
     setIsLoading(true);
 
     try {
@@ -90,7 +92,6 @@ export default function Auth() {
           title: "Account Created!",
           description: "Welcome to ZiggySitters! You can complete your profile later if needed.",
         });
-        // Take users to the main page instead of onboarding
         navigate('/');
       }
     } catch (error) {
@@ -102,6 +103,32 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Show terms acceptance dialog
+    setPendingAuthAction(() => executeSignUp);
+    setShowTerms(true);
+  };
+
+  const handleTermsAccept = async () => {
+    setShowTerms(false);
+    if (pendingAuthAction) {
+      await pendingAuthAction();
+      setPendingAuthAction(null);
+    }
+  };
+
+  const handleTermsDecline = () => {
+    setShowTerms(false);
+    setPendingAuthAction(null);
+    toast({
+      title: "Terms Required",
+      description: "You must accept the Terms of Service to create an account.",
+      variant: "destructive",
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -252,6 +279,12 @@ export default function Auth() {
           </CardContent>
         </Card>
       </div>
+
+      <TermsAcceptance 
+        isOpen={showTerms}
+        onAccept={handleTermsAccept}
+        onDecline={handleTermsDecline}
+      />
     </div>
   );
 }
