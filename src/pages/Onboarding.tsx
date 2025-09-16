@@ -59,7 +59,45 @@ export default function Onboarding() {
   useEffect(() => {
     if (!user) {
       navigate('/auth');
+      return;
     }
+
+    // Pre-fill with existing user data if available
+    const fetchExistingProfile = async () => {
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!error && profile) {
+          setData(prev => ({
+            ...prev,
+            first_name: profile.first_name || user.user_metadata?.first_name || '',
+            last_name: profile.last_name || user.user_metadata?.last_name || '',
+            phone: profile.phone || '',
+            address: profile.address || '',
+            suburb: profile.suburb || '',
+            city: profile.city || 'Auckland',
+            postal_code: profile.postal_code || '',
+            bio: profile.bio || '',
+            avatar_url: profile.avatar_url || '',
+          }));
+        } else {
+          // If no profile exists, use signup metadata
+          setData(prev => ({
+            ...prev,
+            first_name: user.user_metadata?.first_name || '',
+            last_name: user.user_metadata?.last_name || '',
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchExistingProfile();
   }, [user, navigate]);
 
   const handleRoleSelection = (role: UserRole) => {
@@ -325,7 +363,11 @@ export default function Onboarding() {
               placeholder="Your first name"
               value={data.first_name || ''}
               onChange={(e) => handleInputChange('first_name', e.target.value)}
+              disabled={!!(data.first_name)} // Disable if already filled from signup
             />
+            {data.first_name && (
+              <p className="text-xs text-muted-foreground">From your signup information</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="last_name">Last Name</Label>
@@ -334,7 +376,11 @@ export default function Onboarding() {
               placeholder="Your last name"
               value={data.last_name || ''}
               onChange={(e) => handleInputChange('last_name', e.target.value)}
+              disabled={!!(data.last_name)} // Disable if already filled from signup
             />
+            {data.last_name && (
+              <p className="text-xs text-muted-foreground">From your signup information</p>
+            )}
           </div>
         </div>
 
