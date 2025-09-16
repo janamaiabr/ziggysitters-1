@@ -21,6 +21,7 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Security from "./pages/Security";
 import SitterProfile from "./pages/SitterProfile";
+import BookingSuccess from "./pages/BookingSuccess";
 
 const queryClient = new QueryClient();
 
@@ -95,6 +96,7 @@ function AppContent() {
           <Route path="/safety" element={<Security />} />
           <Route path="/help" element={<Contact />} />
           <Route path="/cookies" element={<PrivacyPolicy />} />
+          <Route path="/booking-success" element={<BookingSuccess />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

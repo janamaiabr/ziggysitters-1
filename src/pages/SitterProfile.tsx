@@ -18,6 +18,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import MessageDialog from '@/components/messaging/MessageDialog';
+import BookingDialog from '@/components/booking/BookingDialog';
 
 const mockSitterData = {
   1: {
@@ -49,6 +50,7 @@ export default function SitterProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [showBookingDialog, setShowBookingDialog] = useState(false);
   
   const sitter = mockSitterData[parseInt(id || '1') as keyof typeof mockSitterData];
   
@@ -119,7 +121,11 @@ export default function SitterProfile() {
               </div>
               
               <div className="flex gap-3">
-                <Button onClick={() => setShowMessageDialog(true)}>
+                <Button onClick={() => setShowBookingDialog(true)} size="lg">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Book Now
+                </Button>
+                <Button variant="outline" onClick={() => setShowMessageDialog(true)}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Message {sitter.name.split(' ')[0]}
                 </Button>
@@ -245,13 +251,14 @@ export default function SitterProfile() {
                   </div>
                 </div>
                 
-                <Button className="w-full" size="lg">
+                <Button className="w-full" size="lg" onClick={() => setShowBookingDialog(true)}>
                   <Calendar className="mr-2 h-4 w-4" />
-                  Check Availability
+                  Book Now
                 </Button>
                 
-                <Button variant="outline" className="w-full">
-                  Request Quote
+                <Button variant="outline" className="w-full" onClick={() => setShowMessageDialog(true)}>
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  Send Message
                 </Button>
               </CardContent>
             </Card>
@@ -299,6 +306,19 @@ export default function SitterProfile() {
           </div>
         </div>
       </div>
+
+      <BookingDialog
+        isOpen={showBookingDialog}
+        onClose={() => setShowBookingDialog(false)}
+        sitter={{
+          id: sitter.id,
+          name: sitter.name,
+          location: sitter.location,
+          hourlyRate: sitter.hourlyRate,
+          services: sitter.services,
+          avatar: sitter.avatar
+        }}
+      />
 
       <MessageDialog
         isOpen={showMessageDialog}

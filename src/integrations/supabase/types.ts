@@ -16,12 +16,14 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          booking_reference: string | null
           created_at: string
           end_date: string
           end_time: string | null
           id: string
           owner_id: string
           owner_notes: string | null
+          payment_status: string | null
           pet_ids: string[]
           platform_fee: number
           service_type: Database["public"]["Enums"]["service_type"]
@@ -31,16 +33,20 @@ export type Database = {
           start_date: string
           start_time: string | null
           status: Database["public"]["Enums"]["booking_status"] | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
           total_amount: number
           updated_at: string
         }
         Insert: {
+          booking_reference?: string | null
           created_at?: string
           end_date: string
           end_time?: string | null
           id?: string
           owner_id: string
           owner_notes?: string | null
+          payment_status?: string | null
           pet_ids: string[]
           platform_fee?: number
           service_type: Database["public"]["Enums"]["service_type"]
@@ -50,16 +56,20 @@ export type Database = {
           start_date: string
           start_time?: string | null
           status?: Database["public"]["Enums"]["booking_status"] | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           total_amount: number
           updated_at?: string
         }
         Update: {
+          booking_reference?: string | null
           created_at?: string
           end_date?: string
           end_time?: string | null
           id?: string
           owner_id?: string
           owner_notes?: string | null
+          payment_status?: string | null
           pet_ids?: string[]
           platform_fee?: number
           service_type?: Database["public"]["Enums"]["service_type"]
@@ -69,6 +79,8 @@ export type Database = {
           start_date?: string
           start_time?: string | null
           status?: Database["public"]["Enums"]["booking_status"] | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           total_amount?: number
           updated_at?: string
         }
