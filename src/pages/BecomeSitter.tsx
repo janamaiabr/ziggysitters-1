@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import heroImage from '@/assets/hero-image.jpg';
 
 const benefits = [
@@ -58,6 +59,8 @@ const steps = [
 
 export default function BecomeSitter() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -77,6 +80,67 @@ export default function BecomeSitter() {
         ? prev.services.filter(s => s !== service)
         : [...prev.services, service]
     }));
+  };
+
+  const handleSubmitApplication = async () => {
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.phone || !formData.bio || !formData.petExperience) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields to submit your application.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.services.length === 0) {
+      toast({
+        title: "Services Required",
+        description: "Please select at least one service you'd like to offer.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call - replace with actual submission logic later
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast({
+        title: "Application Submitted!",
+        description: "Thank you for your application. We'll review it and get back to you within 48 hours.",
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        location: '',
+        experience: '',
+        bio: '',
+        services: [],
+        hasYard: false,
+        petExperience: ''
+      });
+
+      // Navigate to success page or home
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your application. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -264,8 +328,13 @@ export default function BecomeSitter() {
                   <label htmlFor="yard" className="text-sm">I have a secure, fenced yard</label>
                 </div>
                 
-                <Button className="w-full" size="lg">
-                  Submit Application
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={handleSubmitApplication}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Application"}
                 </Button>
                 
                 <p className="text-xs text-muted-foreground text-center">
