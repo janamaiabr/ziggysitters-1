@@ -166,17 +166,33 @@ export default function SitterProfile() {
                 <CardTitle>Services & Rates</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {sitter.services.map((service) => (
-                  <div key={service} className="flex justify-between items-center">
-                    <span>{service}</span>
-                    <div className="text-right">
-                      <div className="font-semibold">${sitter.hourlyRate}/hr</div>
-                      <div className="text-xs text-muted-foreground">
-                        Includes platform fee
-                      </div>
+                <div className="flex justify-between items-center">
+                  <span>Dog Walking</span>
+                  <div className="text-right">
+                    <div className="font-semibold">$25.00/service</div>
+                    <div className="text-xs text-muted-foreground">
+                      30-60 minute walks
                     </div>
                   </div>
-                ))}
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Pet Sitting</span>
+                  <div className="text-right">
+                    <div className="font-semibold">$45.00/day</div>
+                    <div className="text-xs text-muted-foreground">
+                      Daily visits & care
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Overnight Care</span>
+                  <div className="text-right">
+                    <div className="font-semibold">$75.00/night</div>
+                    <div className="text-xs text-muted-foreground">
+                      24-hour in-home care
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -251,9 +267,9 @@ export default function SitterProfile() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">${sitter.hourlyRate}/hr</div>
+                  <div className="text-2xl font-bold">From $25</div>
                   <div className="text-sm text-muted-foreground">
-                    Total rate (includes fees)
+                    Per service (varies by type)
                   </div>
                 </div>
                 

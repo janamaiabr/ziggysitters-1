@@ -28,15 +28,21 @@ interface BookingAccordionProps {
 }
 
 const serviceRates = {
-  'dog-walking': 27.50,
-  'pet-sitting': 33.00,
-  'overnight-care': 66.00,
+  'dog-walking': 25.00,     // per service
+  'pet-sitting': 45.00,     // per day
+  'overnight-care': 75.00,  // per night
 };
 
 const serviceLabels = {
   'dog-walking': 'Dog Walking',
   'pet-sitting': 'Pet Sitting', 
   'overnight-care': 'Overnight Care',
+};
+
+const serviceUnits = {
+  'dog-walking': 'service',
+  'pet-sitting': 'day',
+  'overnight-care': 'night',
 };
 
 export default function BookingAccordion({ sitter }: BookingAccordionProps) {
@@ -71,19 +77,20 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
     const rate = serviceRates[serviceType as keyof typeof serviceRates];
     if (!rate) return 0;
 
-    if (serviceType === 'overnight-care') {
-      const nights = differenceInDays(endDate, startDate);
-      return Math.max(1, nights) * rate;
-    } else {
-      const startDateTime = new Date(startDate);
-      startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
-      
-      const endDateTime = new Date(endDate);
-      endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
-      
-      const hours = differenceInHours(endDateTime, startDateTime);
-      return Math.max(1, hours) * rate;
+    if (serviceType === 'dog-walking') {
+      // Dog walking is per service - user selects number of services
+      return 1 * rate; // For now, assume 1 service. Could add quantity selector later
+    } else if (serviceType === 'pet-sitting') {
+      // Pet sitting is per day
+      const days = Math.max(1, differenceInDays(endDate, startDate) + 1); // +1 to include both start and end day
+      return days * rate;
+    } else if (serviceType === 'overnight-care') {
+      // Overnight care is per night
+      const nights = Math.max(1, differenceInDays(endDate, startDate));
+      return nights * rate;
     }
+    
+    return 0;
   };
 
   const handleBooking = async () => {
@@ -115,8 +122,8 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
         serviceType,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
-        startTime: serviceType !== 'overnight-care' ? startTime : undefined,
-        endTime: serviceType !== 'overnight-care' ? endTime : undefined,
+        startTime: serviceType === 'dog-walking' ? startTime : undefined,
+        endTime: serviceType === 'dog-walking' ? endTime : undefined,
         petIds: [],
         specialInstructions,
         totalAmount: total
@@ -201,12 +208,13 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
                     {sitter.services.map((service) => {
                       const serviceKey = service.toLowerCase().replace(' ', '-');
                       const rate = serviceRates[serviceKey as keyof typeof serviceRates];
+                      const unit = serviceUnits[serviceKey as keyof typeof serviceUnits];
                       return (
                         <SelectItem key={serviceKey} value={serviceKey}>
                           <div className="flex justify-between w-full">
                             <span>{service}</span>
                             <span className="text-muted-foreground ml-4">
-                              ${rate}/{serviceKey === 'overnight-care' ? 'night' : 'hour'}
+                              ${rate}/{unit}
                             </span>
                           </div>
                         </SelectItem>
@@ -245,6 +253,7 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
                           return date < today;
                         }}
                         initialFocus
+                        className="pointer-events-auto"
                       />
                     </PopoverContent>
                   </Popover>
@@ -278,14 +287,15 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
                           return date < minDate;
                         }}
                         initialFocus
+                        className="pointer-events-auto"
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
               </div>
 
-              {/* Time Selection - Only for non-overnight services */}
-              {serviceType && serviceType !== 'overnight-care' && (
+              {/* Time Selection - Only for dog walking */}
+              {serviceType && serviceType === 'dog-walking' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <label className="text-sm font-medium">Start Time</label>
@@ -341,21 +351,27 @@ export default function BookingAccordion({ sitter }: BookingAccordionProps) {
                       <span>{serviceLabels[serviceType as keyof typeof serviceLabels]}</span>
                     </div>
                     
-                    {serviceType === 'overnight-care' ? (
+                    {serviceType === 'dog-walking' && (
+                      <div className="flex justify-between">
+                        <span>Duration</span>
+                        <span>1 service</span>
+                      </div>
+                    )}
+                    
+                    {serviceType === 'pet-sitting' && (
+                      <div className="flex justify-between">
+                        <span>Duration</span>
+                        <span>
+                          {startDate && endDate ? differenceInDays(endDate, startDate) + 1 : 0} days
+                        </span>
+                      </div>
+                    )}
+                    
+                    {serviceType === 'overnight-care' && (
                       <div className="flex justify-between">
                         <span>Duration</span>
                         <span>
                           {startDate && endDate ? differenceInDays(endDate, startDate) : 0} nights
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="flex justify-between">
-                        <span>Duration</span>
-                        <span>
-                          {startDate && endDate ? differenceInHours(
-                            new Date(`${format(endDate, 'yyyy-MM-dd')} ${endTime}`),
-                            new Date(`${format(startDate, 'yyyy-MM-dd')} ${startTime}`)
-                          ) : 0} hours
                         </span>
                       </div>
                     )}
