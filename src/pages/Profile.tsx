@@ -90,7 +90,7 @@ export default function Profile() {
     try {
       const { data, error } = await supabase.storage
         .from('profile-photos')
-        .list(`${profile.id}/portfolio`, {
+        .list(`${profile.user_id}/portfolio`, {
           limit: 100,
           offset: 0,
           sortBy: { column: 'created_at', order: 'desc' }
@@ -100,7 +100,7 @@ export default function Profile() {
         const photoUrls = data.map(file => {
           const { data: { publicUrl } } = supabase.storage
             .from('profile-photos')
-            .getPublicUrl(`${profile.id}/portfolio/${file.name}`);
+            .getPublicUrl(`${profile.user_id}/portfolio/${file.name}`);
           return publicUrl;
         });
         setPortfolioPhotos(photoUrls);
@@ -145,7 +145,7 @@ export default function Profile() {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${profile.id}/portfolio/${fileName}`;
+      const filePath = `${profile.user_id}/portfolio/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
@@ -164,6 +164,50 @@ export default function Profile() {
       toast({
         title: 'Error',
         description: 'Failed to upload photo. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleProfilePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !profile) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `avatar.${fileExt}`;
+      const filePath = `${profile.user_id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', profile.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: 'Profile photo updated',
+        description: 'Your profile photo has been updated.',
+      });
+
+      // Refresh the page to show new photo
+      window.location.reload();
+    } catch (error) {
+      console.error('Error uploading profile photo:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload profile photo. Please try again.',
         variant: 'destructive',
       });
     }
@@ -196,12 +240,31 @@ export default function Profile() {
         <Card className="mb-8">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-8">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
-                <AvatarFallback className="text-2xl">
-                  {userProfile.name.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
+                  <AvatarFallback className="text-2xl">
+                    {userProfile.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-2 -right-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePhotoUpload}
+                    className="hidden"
+                    id="profile-photo-upload"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => document.getElementById('profile-photo-upload')?.click()}
+                    className="h-8 w-8 rounded-full p-0"
+                  >
+                    <Camera className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
               
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
