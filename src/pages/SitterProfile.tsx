@@ -46,6 +46,7 @@ export default function SitterProfile() {
   const [searchParams] = useSearchParams();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
+  const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Check if booking should be automatically opened
@@ -74,25 +75,70 @@ export default function SitterProfile() {
           console.error('Error fetching sitter:', error);
           setSitterData(null);
         } else if (data) {
-          // Transform the data to match our interface
+          // Fetch actual services for this sitter
+          const { data: servicesData } = await supabase
+            .from('sitter_services')
+            .select('*')
+            .eq('sitter_id', id)
+            .eq('is_offered', true);
+
+          // Store services data for displaying rates
+          setServicesData(servicesData || []);
+
+          // Fetch portfolio photos from storage
+          const { data: portfolioFiles } = await supabase.storage
+            .from('profile-photos')
+            .list(`${id}/portfolio`, {
+              limit: 10,
+              sortBy: { column: 'created_at', order: 'desc' }
+            });
+
+          // Generate portfolio URLs
+          const portfolioUrls = portfolioFiles?.map(file => {
+            const { data: { publicUrl } } = supabase.storage
+              .from('profile-photos')
+              .getPublicUrl(`${id}/portfolio/${file.name}`);
+            return publicUrl;
+          }) || [];
+
+          // Transform services data
+          const serviceNames = servicesData?.map(service => {
+            switch (service.service_type) {
+              case 'dog_walking': return 'Dog Walking';
+              case 'daycare': return 'Pet Sitting';
+              case 'overnight_boarding': return 'Overnight Care';
+              case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
+              case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
+              default: return 'Pet Care';
+            }
+          }) || ['Pet Sitting', 'Drop-in Visits'];
+
+          // Get the lowest rate from actual services
+          const rates = servicesData?.map(service => 
+            service.hourly_rate || service.daily_rate || service.overnight_rate || 25
+          ).filter(Boolean) || [25];
+          const baseRate = Math.min(...rates);
+
+          // Transform the data to match our interface using real data
           setSitterData({
             id: data.id,
-            display_name: data.display_name, // Privacy-safe name
+            display_name: data.display_name,
             location: `${data.suburb}, ${data.city}`,
             rating: data.rating || 4.8,
             reviews: data.total_reviews || 0,
-            baseRate: 25,
-            hourlyRate: 27.50,
-            services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table
-            petTypes: ['Dogs', 'Cats'], // Would come from sitter preferences  
+            baseRate: baseRate,
+            hourlyRate: baseRate,
+            services: serviceNames,
+            petTypes: ['Dogs', 'Cats'], // This could be expanded to use real accepted_pet_species
             avatar: data.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
             verified: data.is_verified,
             responseRate: data.response_rate || 95,
             bio: data.bio || 'Experienced pet care provider',
-            experience: '3+ years',
-            availability: ['Weekdays', 'Weekends'],
-            specialties: ['General pet care', 'Friendly pets'],
-            gallery: [
+            experience: '3+ years', // This could come from services data
+            availability: ['Weekdays', 'Weekends'], // This could be expanded to use real availability data
+            specialties: ['General pet care', 'Friendly pets'], // This could be expanded
+            gallery: portfolioUrls.length > 0 ? portfolioUrls : [
+              // Fallback images if no portfolio uploaded
               'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=200&fit=crop',
               'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=200&fit=crop',
               'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&h=200&fit=crop'
@@ -247,33 +293,52 @@ export default function SitterProfile() {
                 <CardTitle>Services & Rates</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Dog Walking</span>
-                  <div className="text-right">
-                    <div className="font-semibold">$25.00/service</div>
-                    <div className="text-xs text-muted-foreground">
-                      30-60 minute walks
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Pet Sitting</span>
-                  <div className="text-right">
-                    <div className="font-semibold">$45.00/day</div>
-                    <div className="text-xs text-muted-foreground">
-                      Daily visits & care
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Overnight Care</span>
-                  <div className="text-right">
-                    <div className="font-semibold">$75.00/night</div>
-                    <div className="text-xs text-muted-foreground">
-                      24-hour in-home care
-                    </div>
-                  </div>
-                </div>
+                {servicesData.length > 0 ? (
+                  servicesData.map((service) => {
+                    const getServiceDisplayName = (type: string) => {
+                      switch (type) {
+                        case 'dog_walking': return 'Dog Walking';
+                        case 'daycare': return 'Pet Sitting';
+                        case 'overnight_boarding': return 'Overnight Care';
+                        case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
+                        case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
+                        default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                      }
+                    };
+
+                    const getServiceDescription = (type: string) => {
+                      switch (type) {
+                        case 'dog_walking': return '30-60 minute walks';
+                        case 'daycare': return 'Daily visits & care';
+                        case 'overnight_boarding': return '24-hour boarding care';
+                        case 'pet_sitting_owners_home': return 'Pet care in your home';
+                        case 'pet_sitting_sitters_home': return 'Pet care in sitter\'s home';
+                        default: return 'Professional pet care service';
+                      }
+                    };
+
+                    const getRate = (service: any) => {
+                      if (service.hourly_rate) return `NZ$${service.hourly_rate.toFixed(2)}/hour`;
+                      if (service.daily_rate) return `NZ$${service.daily_rate.toFixed(2)}/day`;
+                      if (service.overnight_rate) return `NZ$${service.overnight_rate.toFixed(2)}/night`;
+                      return 'Contact for pricing';
+                    };
+
+                    return (
+                      <div key={service.id} className="flex justify-between items-center">
+                        <span>{getServiceDisplayName(service.service_type)}</span>
+                        <div className="text-right">
+                          <div className="font-semibold">{getRate(service)}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {getServiceDescription(service.service_type)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-muted-foreground">No services configured yet.</p>
+                )}
               </CardContent>
             </Card>
 
@@ -348,7 +413,7 @@ export default function SitterProfile() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">From $25</div>
+                  <div className="text-2xl font-bold">From NZ${sitterData.baseRate}</div>
                   <div className="text-sm text-muted-foreground">
                     Per service (varies by type)
                   </div>
