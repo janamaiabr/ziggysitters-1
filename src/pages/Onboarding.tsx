@@ -34,7 +34,7 @@ interface OnboardingData {
   has_other_pets?: boolean;
   other_pets_description?: string;
   services?: Array<{
-    service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting';
+    service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
     rate: number;
     description?: string;
     what_included?: string;
@@ -109,7 +109,7 @@ export default function Onboarding() {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleServiceChange = (serviceType: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting', field: string, value: any) => {
+  const handleServiceChange = (serviceType: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home', field: string, value: any) => {
     setData(prev => {
       const services = prev.services || [];
       const existingServiceIndex = services.findIndex(s => s.service_type === serviceType);
@@ -746,7 +746,7 @@ export default function Onboarding() {
                   min="0"
                   step="0.01"
                   placeholder="50"
-                  onChange={(e) => handleServiceChange('pet_sitting', 'rate', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => handleServiceChange('pet_sitting_owners_home', 'rate', parseFloat(e.target.value) || 0)}
                   className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
@@ -754,7 +754,7 @@ export default function Onboarding() {
                 <Label>What's included in your pet sitting service?</Label>
                 <Textarea
                   placeholder="e.g., feeding, walks, playtime, house security, plant watering, mail collection..."
-                  onChange={(e) => handleServiceChange('pet_sitting', 'what_included', e.target.value)}
+                  onChange={(e) => handleServiceChange('pet_sitting_owners_home', 'what_included', e.target.value)}
                   rows={2}
                 />
               </div>
@@ -762,7 +762,7 @@ export default function Onboarding() {
                 <Label>Additional notes for pet sitting:</Label>
                 <Textarea
                   placeholder="e.g., Happy to stay overnight, can handle multiple pets, experienced with senior pets..."
-                  onChange={(e) => handleServiceChange('pet_sitting', 'description', e.target.value)}
+                  onChange={(e) => handleServiceChange('pet_sitting_owners_home', 'description', e.target.value)}
                   rows={2}
                 />
               </div>
