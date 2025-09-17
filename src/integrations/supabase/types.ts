@@ -605,111 +605,6 @@ export type Database = {
       }
     }
     Views: {
-      pet_basic_info: {
-        Row: {
-          age: number | null
-          breed: string | null
-          created_at: string | null
-          exercise_needs: string | null
-          feeding_instructions: string | null
-          gender: string | null
-          id: string | null
-          name: string | null
-          owner_id: string | null
-          personality_traits: string[] | null
-          photo_urls: string[] | null
-          size: Database["public"]["Enums"]["pet_size"] | null
-          special_care_notes: string | null
-          species: Database["public"]["Enums"]["pet_species"] | null
-          updated_at: string | null
-          weight: number | null
-        }
-        Insert: {
-          age?: number | null
-          breed?: string | null
-          created_at?: string | null
-          exercise_needs?: string | null
-          feeding_instructions?: string | null
-          gender?: string | null
-          id?: string | null
-          name?: string | null
-          owner_id?: string | null
-          personality_traits?: string[] | null
-          photo_urls?: string[] | null
-          size?: Database["public"]["Enums"]["pet_size"] | null
-          special_care_notes?: string | null
-          species?: Database["public"]["Enums"]["pet_species"] | null
-          updated_at?: string | null
-          weight?: number | null
-        }
-        Update: {
-          age?: number | null
-          breed?: string | null
-          created_at?: string | null
-          exercise_needs?: string | null
-          feeding_instructions?: string | null
-          gender?: string | null
-          id?: string | null
-          name?: string | null
-          owner_id?: string | null
-          personality_traits?: string[] | null
-          photo_urls?: string[] | null
-          size?: Database["public"]["Enums"]["pet_size"] | null
-          special_care_notes?: string | null
-          species?: Database["public"]["Enums"]["pet_species"] | null
-          updated_at?: string | null
-          weight?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "pets_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pets_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      pet_sensitive_info: {
-        Row: {
-          emergency_contact_name: string | null
-          emergency_contact_phone: string | null
-          id: string | null
-          is_neutered: boolean | null
-          medical_conditions: string[] | null
-          medications: string[] | null
-          vaccination_expiry: string | null
-          vaccination_status: boolean | null
-        }
-        Insert: {
-          emergency_contact_name?: string | null
-          emergency_contact_phone?: string | null
-          id?: string | null
-          is_neutered?: boolean | null
-          medical_conditions?: string[] | null
-          medications?: string[] | null
-          vaccination_expiry?: string | null
-          vaccination_status?: boolean | null
-        }
-        Update: {
-          emergency_contact_name?: string | null
-          emergency_contact_phone?: string | null
-          id?: string | null
-          is_neutered?: boolean | null
-          medical_conditions?: string[] | null
-          medications?: string[] | null
-          vaccination_expiry?: string | null
-          vaccination_status?: boolean | null
-        }
-        Relationships: []
-      }
       public_sitter_profiles: {
         Row: {
           avatar_url: string | null
@@ -780,6 +675,24 @@ export type Database = {
       can_access_sitter_contact: {
         Args: { sitter_profile_id: string }
         Returns: boolean
+      }
+      get_pet_basic_info_for_booking: {
+        Args: { booking_id: string }
+        Returns: {
+          age: number
+          breed: string
+          exercise_needs: string
+          feeding_instructions: string
+          gender: string
+          id: string
+          name: string
+          personality_traits: string[]
+          photo_urls: string[]
+          size: Database["public"]["Enums"]["pet_size"]
+          special_care_notes: string
+          species: Database["public"]["Enums"]["pet_species"]
+          weight: number
+        }[]
       }
       get_safe_sitter_profiles: {
         Args: { limit_count?: number }
