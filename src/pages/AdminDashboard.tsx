@@ -9,28 +9,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail } from 'lucide-react';
 
-interface Profile {
-  id: string;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string | null;
-  bio: string | null;
+// Use the safe public sitter profiles type that doesn't expose sensitive data
+type PublicSitterProfile = {
+  id: string | null;
+  display_name: string | null;
+  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin' | null;
+  suburb: string | null;
   city: string | null;
-  address: string | null;
-  role: string;
-  is_verified: boolean;
-  verification_status: 'pending' | 'verified' | 'rejected' | null;
-  background_check_verified: boolean;
-  created_at: string;
+  bio: string | null;
   avatar_url: string | null;
+  is_verified: boolean | null;
+  rating: number | null;
+  total_reviews: number | null;
+  response_rate: number | null;
+  background_check_verified: boolean | null;
+  verification_status: 'pending' | 'verified' | 'rejected' | null;
+  created_at: string | null;
 }
 
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [profiles, setProfiles] = useState<PublicSitterProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -59,10 +59,11 @@ export default function AdminDashboard() {
     if (!user) return;
     
     try {
+      // Use the safe public view that doesn't expose sensitive data
       const { data, error } = await supabase
-        .from('profiles')
+        .from('public_sitter_profiles')
         .select('*')
-        .eq('role', 'pet_sitter')
+        .neq('role', 'admin')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -81,6 +82,7 @@ export default function AdminDashboard() {
 
   const updateVerificationStatus = async (profileId: string, isVerified: boolean, verificationStatus: string) => {
     try {
+      // Admin function - this requires special admin privileges to update the profiles table
       const { error } = await supabase
         .from('profiles')
         .update({ 
@@ -168,8 +170,8 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onApprove={() => updateVerificationStatus(profile.id, true, 'approved')}
-                onReject={() => updateVerificationStatus(profile.id, false, 'rejected')}
+                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'approved')}
+                onReject={() => profile.id && updateVerificationStatus(profile.id, false, 'rejected')}
                 showActions={true}
               />
             ))}
@@ -200,7 +202,7 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onApprove={() => updateVerificationStatus(profile.id, true, 'approved')}
+                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'approved')}
                 showActions={true}
                 isRejected={true}
               />
@@ -213,7 +215,7 @@ export default function AdminDashboard() {
 }
 
 interface SitterCardProps {
-  profile: Profile;
+  profile: PublicSitterProfile;
   onApprove?: () => void;
   onReject?: () => void;
   showActions: boolean;
@@ -227,14 +229,14 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={profile.avatar_url || ''} alt={profile.first_name} />
-              <AvatarFallback>{profile.first_name[0]}{profile.last_name[0]}</AvatarFallback>
+              <AvatarImage src={profile.avatar_url || ''} alt={profile.display_name || 'User'} />
+              <AvatarFallback>{profile.display_name?.[0] || 'U'}</AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-lg">{profile.first_name} {profile.last_name}</CardTitle>
+              <CardTitle className="text-lg">{profile.display_name || 'Unknown User'}</CardTitle>
               <div className="flex items-center text-sm text-muted-foreground">
                 <MapPin className="w-3 h-3 mr-1" />
-                {profile.city || 'Location not provided'}
+                {profile.suburb && profile.city ? `${profile.suburb}, ${profile.city}` : profile.city || 'Location not provided'}
               </div>
             </div>
           </div>
@@ -253,21 +255,21 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
         
         <div className="space-y-2">
           <div className="flex items-center text-sm">
-            <Mail className="w-4 h-4 mr-2 text-gray-500" />
-            <span className="text-gray-600">{profile.email}</span>
+            <Shield className="w-4 h-4 mr-2 text-gray-500" />
+            <span className="text-gray-600">Rating: {profile.rating ? `${profile.rating}/5` : 'No ratings yet'}</span>
           </div>
           
-          {profile.phone && (
+          {profile.total_reviews !== null && profile.total_reviews > 0 && (
             <div className="flex items-center text-sm">
-              <Phone className="w-4 h-4 mr-2 text-gray-500" />
-              <span className="text-gray-600">{profile.phone}</span>
+              <CheckCircle className="w-4 h-4 mr-2 text-gray-500" />
+              <span className="text-gray-600">{profile.total_reviews} reviews</span>
             </div>
           )}
           
-          {profile.address && (
+          {profile.background_check_verified && (
             <div className="flex items-center text-sm">
-              <MapPin className="w-4 h-4 mr-2 text-gray-500" />
-              <span className="text-gray-600 line-clamp-2">{profile.address}</span>
+              <Shield className="w-4 h-4 mr-2 text-green-500" />
+              <span className="text-green-600">Background check verified</span>
             </div>
           )}
         </div>
