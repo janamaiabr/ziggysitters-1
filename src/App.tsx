@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { AdminCreator } from "@/components/AdminCreator";
+// import { AdminCreator } from "@/components/AdminCreator"; // Temporarily disabled
 import { OnboardingCheck } from "@/components/OnboardingCheck";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -152,7 +152,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AdminCreator />
+        {/* <AdminCreator /> Temporarily disabled to fix welcome page issue */}
         <TooltipProvider>
           <Toaster />
           <Sonner />

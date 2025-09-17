@@ -44,6 +44,7 @@ export function useProfile() {
   }, [user]);
 
   const fetchProfile = async () => {
+    console.log('useProfile: Fetching profile for user:', user?.id);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -53,17 +54,26 @@ export function useProfile() {
 
       if (error) {
         console.error('Error fetching profile:', error);
+        console.log('useProfile: Setting needsOnboarding to true due to error');
         setNeedsOnboarding(true);
       } else {
+        console.log('useProfile: Profile found:', data);
         setProfile(data);
         // Check if profile needs completion (basic onboarding check)
         const isIncomplete = !data.phone || !data.address || !data.suburb;
+        console.log('useProfile: Profile incomplete?', isIncomplete, {
+          hasPhone: !!data.phone,
+          hasAddress: !!data.address,
+          hasSuburb: !!data.suburb
+        });
         setNeedsOnboarding(isIncomplete);
       }
     } catch (error) {
       console.error('Error in fetchProfile:', error);
+      console.log('useProfile: Setting needsOnboarding to true due to catch error');
       setNeedsOnboarding(true);
     } finally {
+      console.log('useProfile: Setting loading to false');
       setLoading(false);
     }
   };
