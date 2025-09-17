@@ -333,11 +333,13 @@ export type Database = {
           avatar_url: string | null
           background_check_verified: boolean | null
           bio: string | null
+          blue_card_document_url: string | null
           city: string | null
           created_at: string
           email: string
           first_name: string
           id: string
+          id_document_url: string | null
           is_verified: boolean | null
           last_name: string
           latitude: number | null
@@ -351,6 +353,7 @@ export type Database = {
           total_reviews: number | null
           updated_at: string
           user_id: string
+          verification_documents_uploaded_at: string | null
           verification_status:
             | Database["public"]["Enums"]["verification_status"]
             | null
@@ -360,11 +363,13 @@ export type Database = {
           avatar_url?: string | null
           background_check_verified?: boolean | null
           bio?: string | null
+          blue_card_document_url?: string | null
           city?: string | null
           created_at?: string
           email: string
           first_name: string
           id?: string
+          id_document_url?: string | null
           is_verified?: boolean | null
           last_name: string
           latitude?: number | null
@@ -378,6 +383,7 @@ export type Database = {
           total_reviews?: number | null
           updated_at?: string
           user_id: string
+          verification_documents_uploaded_at?: string | null
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
             | null
@@ -387,11 +393,13 @@ export type Database = {
           avatar_url?: string | null
           background_check_verified?: boolean | null
           bio?: string | null
+          blue_card_document_url?: string | null
           city?: string | null
           created_at?: string
           email?: string
           first_name?: string
           id?: string
+          id_document_url?: string | null
           is_verified?: boolean | null
           last_name?: string
           latitude?: number | null
@@ -405,6 +413,7 @@ export type Database = {
           total_reviews?: number | null
           updated_at?: string
           user_id?: string
+          verification_documents_uploaded_at?: string | null
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
             | null

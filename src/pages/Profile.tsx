@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Star, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus } from 'lucide-react';
+import { Calendar, Star, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 
@@ -42,7 +42,8 @@ export default function Profile() {
         phone: profile.phone || '',
         suburb: profile.suburb || '',
         city: profile.city || '',
-        address: profile.address || ''
+        address: profile.address || '',
+        email: profile.email || ''
       });
     }
   }, [profile]);
@@ -99,16 +100,65 @@ export default function Profile() {
         });
 
       if (!error && data) {
-        const photoUrls = data.map(file => {
-          const { data: { publicUrl } } = supabase.storage
-            .from('profile-photos')
-            .getPublicUrl(`${profile.user_id}/portfolio/${file.name}`);
-          return publicUrl;
-        });
-        setPortfolioPhotos(photoUrls);
+        const photos = await Promise.all(
+          data.map(async (file) => {
+            const { data: { publicUrl } } = supabase.storage
+              .from('profile-photos')
+              .getPublicUrl(`${profile.user_id}/portfolio/${file.name}`);
+            return publicUrl;
+          })
+        );
+        setPortfolioPhotos(photos);
       }
     } catch (error) {
       console.error('Error fetching portfolio photos:', error);
+    }
+  };
+
+  const uploadVerificationDocument = async (file: File, type: 'id' | 'blue_card') => {
+    if (!user || !profile) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${type}_document_${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('verification-docs')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('verification-docs')
+        .getPublicUrl(filePath);
+
+      // Update profile with document URL
+      const updateField = type === 'id' ? 'id_document_url' : 'blue_card_document_url';
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ 
+          [updateField]: publicUrl,
+          verification_documents_uploaded_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Document uploaded successfully",
+        description: `${type === 'id' ? 'ID' : 'Blue card'} document uploaded for verification.`,
+      });
+
+      // Refresh profile data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload document. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -116,26 +166,27 @@ export default function Profile() {
     if (!profile) return;
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update(editData)
-        .eq('id', profile.id);
+        .eq('user_id', user?.id)
+        .select()
+        .single();
 
-      if (error) throw error;
-
-      toast({
-        title: 'Profile updated',
-        description: 'Your profile has been successfully updated.',
-      });
-
-      setIsEditing(false);
-      window.location.reload(); // Refresh to show updated data
+      if (!error) {
+        setIsEditing(false);
+        toast({
+          title: "Profile updated",
+          description: "Your profile has been successfully updated.",
+        });
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to update profile. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -143,76 +194,69 @@ export default function Profile() {
   const handleEditService = (service: any) => {
     setEditingService(service.id);
     setServiceEditData({
-      hourly_rate: service.hourly_rate || '',
-      daily_rate: service.daily_rate || '',
-      overnight_rate: service.overnight_rate || '',
-      description: service.description || '',
-      max_pets: service.max_pets || 1,
-      is_offered: service.is_offered || true
+      daily_rate: service.daily_rate,
+      overnight_rate: service.overnight_rate,
+      description: service.description,
+      max_pets: service.max_pets,
+      is_offered: service.is_offered
     });
   };
 
   const handleSaveService = async () => {
-    if (!editingService) return;
+    if (!editingService || !profile) return;
 
     try {
       const { error } = await supabase
         .from('sitter_services')
-        .update({
-          hourly_rate: serviceEditData.hourly_rate ? parseFloat(serviceEditData.hourly_rate) : null,
-          daily_rate: serviceEditData.daily_rate ? parseFloat(serviceEditData.daily_rate) : null,
-          overnight_rate: serviceEditData.overnight_rate ? parseFloat(serviceEditData.overnight_rate) : null,
-          description: serviceEditData.description || null,
-          max_pets: parseInt(serviceEditData.max_pets) || 1,
-          is_offered: serviceEditData.is_offered
-        })
-        .eq('id', editingService);
+        .update(serviceEditData)
+        .eq('id', editingService)
+        .eq('sitter_id', profile.id);
 
-      if (error) throw error;
-
-      toast({
-        title: 'Service updated',
-        description: 'Your service has been successfully updated.',
-      });
-
-      setEditingService(null);
-      fetchSitterServices(); // Refresh services
+      if (!error) {
+        setSitterServices(prev => 
+          prev.map(service => 
+            service.id === editingService 
+              ? { ...service, ...serviceEditData }
+              : service
+          )
+        );
+        setEditingService(null);
+        setServiceEditData({});
+        toast({
+          title: "Service updated",
+          description: "Your service has been successfully updated.",
+        });
+      }
     } catch (error) {
       console.error('Error updating service:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to update service. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to update service. Please try again.",
+        variant: "destructive",
       });
     }
   };
 
-  const getRateLabel = (serviceType: string, rateType: 'hourly' | 'daily' | 'overnight') => {
-    if (serviceType === 'dog_walking' && rateType === 'hourly') {
-      return 'Per Walk';
+  const getRateLabel = (serviceType: string) => {
+    switch (serviceType) {
+      case 'dog_walking': return 'Per Walk';
+      case 'pet_sitting_owners_home': return 'Per Day / Per Night';
+      case 'pet_sitting_sitters_home': return 'Per Day / Per Night';
+      case 'dog_daycare': return 'Per Day';
+      case 'overnight_boarding': return 'Per Night';
+      default: return 'Rate';
     }
-    
-    const labels = {
-      hourly: 'Hourly Rate',
-      daily: 'Daily Rate', 
-      overnight: 'Overnight Rate'
-    };
-    
-    return labels[rateType];
   };
 
-  const getRateDisplay = (serviceType: string, rateType: 'hourly' | 'daily' | 'overnight', rate: number) => {
-    if (serviceType === 'dog_walking' && rateType === 'hourly') {
-      return `$${rate}/walk`;
+  const getRateDisplay = (service: any) => {
+    const rates = [];
+    if (service.daily_rate) {
+      rates.push(`$${service.daily_rate}/day`);
     }
-    
-    const suffixes = {
-      hourly: '/hr',
-      daily: '/day',
-      overnight: '/night'
-    };
-    
-    return `$${rate}${suffixes[rateType]}`;
+    if (service.overnight_rate) {
+      rates.push(`$${service.overnight_rate}/night`);
+    }
+    return rates.join(' • ') || 'Rate not set';
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,18 +274,18 @@ export default function Profile() {
 
       if (uploadError) throw uploadError;
 
-      fetchPortfolioPhotos(); // Refresh photos
-      
       toast({
-        title: 'Photo uploaded',
-        description: 'Your portfolio photo has been added.',
+        title: "Photo uploaded",
+        description: "Your portfolio photo has been uploaded successfully.",
       });
+
+      fetchPortfolioPhotos();
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to upload photo. Please try again.',
-        variant: 'destructive',
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -265,49 +309,68 @@ export default function Profile() {
         .from('profile-photos')
         .getPublicUrl(filePath);
 
-      // Update profile with new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: publicUrl })
-        .eq('id', profile.id);
+        .eq('user_id', user?.id);
 
       if (updateError) throw updateError;
 
       toast({
-        title: 'Profile photo updated',
-        description: 'Your profile photo has been updated.',
+        title: "Profile photo updated",
+        description: "Your profile photo has been updated successfully.",
       });
 
-      // Refresh the page to show new photo
       window.location.reload();
     } catch (error) {
       console.error('Error uploading profile photo:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to upload profile photo. Please try again.',
-        variant: 'destructive',
+        title: "Upload failed",
+        description: "Failed to upload profile photo. Please try again.",
+        variant: "destructive",
       });
     }
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background py-8 flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Profile not found</h1>
+          <p className="text-muted-foreground">Please complete your onboarding process.</p>
+        </div>
+      </div>
+    );
   }
 
   const userProfile = {
-    name: profile ? `${profile.first_name} ${profile.last_name}` : 'User',
-    email: profile?.email || user?.email || '',
-    location: profile ? `${profile.suburb ? profile.suburb + ', ' : ''}${profile.city || 'Auckland'}` : 'Auckland',
-    memberSince: profile ? new Date(profile.created_at).getFullYear().toString() : '2024',
-    rating: (profile as any)?.rating || 0,
-    reviews: (profile as any)?.total_reviews || 0,
-    completedBookings: recentBookings.filter(b => b.status === 'completed').length,
-    responseRate: (profile as any)?.response_rate || 100,
-    verified: profile?.is_verified || false,
-    avatar: profile?.avatar_url || '',
-    bio: profile?.bio || 'No bio added yet.',
-    services: sitterServices.map(s => s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())),
-    hourlyRate: sitterServices.length > 0 ? Math.min(...sitterServices.map(s => s.hourly_rate || s.daily_rate || 0)) : 0
+    name: `${profile.first_name} ${profile.last_name}`,
+    email: profile.email,
+    phone: profile.phone || 'Not provided',
+    bio: profile.bio || 'No bio provided yet.',
+    location: `${profile.suburb || ''}, ${profile.city || 'Auckland'}`.replace(/^,\s*/, ''),
+    avatar: profile.avatar_url,
+    verified: profile.is_verified,
+    rating: profile.rating || 0,
+    reviews: profile.total_reviews || 0,
+    responseRate: profile.response_rate || 100,
+    memberSince: format(new Date(profile.created_at), 'MMM yyyy'),
+    completedBookings: recentBookings.length,
+    hourlyRate: sitterServices.find(s => s.daily_rate)?.daily_rate || 0,
+    services: sitterServices.filter(s => s.is_offered).map(s => 
+      s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    )
   };
 
   return (
@@ -316,7 +379,7 @@ export default function Profile() {
         {/* Profile Header */}
         <Card className="mb-8">
           <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8">
               <div className="relative">
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
@@ -401,7 +464,7 @@ export default function Profile() {
             <TabsTrigger value="services">Services & Pricing</TabsTrigger>
             <TabsTrigger value="calendar">My Calendar</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="earnings">Earnings</TabsTrigger>
+            <TabsTrigger value="verification">Verification</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -432,6 +495,90 @@ export default function Profile() {
                         </Badge>
                       ))}
                     </div>
+                  </CardContent>
+                </Card>
+
+                {/* Contact Information */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {isEditing ? (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="first_name">First Name</Label>
+                            <Input
+                              id="first_name"
+                              value={editData.first_name}
+                              onChange={(e) => setEditData({...editData, first_name: e.target.value})}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="last_name">Last Name</Label>
+                            <Input
+                              id="last_name"
+                              value={editData.last_name}
+                              onChange={(e) => setEditData({...editData, last_name: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="email">Email</Label>
+                          <Input
+                            id="email"
+                            value={editData.email}
+                            onChange={(e) => setEditData({...editData, email: e.target.value})}
+                            placeholder="Your email address"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="phone">Phone Number</Label>
+                          <Input
+                            id="phone"
+                            value={editData.phone}
+                            onChange={(e) => setEditData({...editData, phone: e.target.value})}
+                            placeholder="Your phone number"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="suburb">Suburb</Label>
+                            <Input
+                              id="suburb"
+                              value={editData.suburb}
+                              onChange={(e) => setEditData({...editData, suburb: e.target.value})}
+                              placeholder="Your suburb"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="city">City</Label>
+                            <Input
+                              id="city"
+                              value={editData.city}
+                              onChange={(e) => setEditData({...editData, city: e.target.value})}
+                              placeholder="Your city"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex items-center">
+                          <Mail className="w-4 h-4 mr-3 text-muted-foreground" />
+                          <span>{userProfile.email}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Phone className="w-4 h-4 mr-3 text-muted-foreground" />
+                          <span>{userProfile.phone}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <MapPin className="w-4 h-4 mr-3 text-muted-foreground" />
+                          <span>{userProfile.location}</span>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -481,64 +628,6 @@ export default function Profile() {
                     )}
                   </CardContent>
                 </Card>
-
-                {/* Contact Information */}
-                {isEditing && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Contact Information</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="first_name">First Name</Label>
-                          <Input
-                            id="first_name"
-                            value={editData.first_name}
-                            onChange={(e) => setEditData({...editData, first_name: e.target.value})}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="last_name">Last Name</Label>
-                          <Input
-                            id="last_name"
-                            value={editData.last_name}
-                            onChange={(e) => setEditData({...editData, last_name: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="phone">Phone Number</Label>
-                        <Input
-                          id="phone"
-                          value={editData.phone}
-                          onChange={(e) => setEditData({...editData, phone: e.target.value})}
-                          placeholder="Your phone number"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="suburb">Suburb</Label>
-                          <Input
-                            id="suburb"
-                            value={editData.suburb}
-                            onChange={(e) => setEditData({...editData, suburb: e.target.value})}
-                            placeholder="Your suburb"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="city">City</Label>
-                          <Input
-                            id="city"
-                            value={editData.city}
-                            onChange={(e) => setEditData({...editData, city: e.target.value})}
-                            placeholder="Your city"
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
               </div>
 
               {/* Right Column - Stats */}
@@ -560,7 +649,7 @@ export default function Profile() {
                     {userProfile.hourlyRate > 0 && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Starting Rate</span>
-                        <span className="font-medium">${userProfile.hourlyRate}/hr</span>
+                        <span className="font-medium">${userProfile.hourlyRate}/day</span>
                       </div>
                     )}
                     {userProfile.reviews > 0 && (
@@ -606,266 +695,266 @@ export default function Profile() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent>
                     {editingService === service.id ? (
-                      <>
-                        {/* Editing Mode */}
-                        <div>
-                          <Label htmlFor="description">Description</Label>
-                          <Textarea
-                            id="description"
-                            value={serviceEditData.description}
-                            onChange={(e) => setServiceEditData({...serviceEditData, description: e.target.value})}
-                            placeholder="Describe your service..."
-                            rows={2}
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          {/* Hourly/Per Walk Rate */}
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="hourly_rate">{getRateLabel(service.service_type, 'hourly')}</Label>
+                            <Label>Daily Rate ($)</Label>
                             <Input
-                              id="hourly_rate"
                               type="number"
-                              step="0.01"
-                              value={serviceEditData.hourly_rate}
-                              onChange={(e) => setServiceEditData({...serviceEditData, hourly_rate: e.target.value})}
+                              value={serviceEditData.daily_rate || ''}
+                              onChange={(e) => setServiceEditData(prev => ({
+                                ...prev,
+                                daily_rate: parseFloat(e.target.value) || null
+                              }))}
                               placeholder="0.00"
                             />
                           </div>
-
-                          {/* Daily Rate - only for certain services */}
-                          {service.service_type !== 'dog_walking' && (
-                            <div>
-                              <Label htmlFor="daily_rate">Daily Rate</Label>
-                              <Input
-                                id="daily_rate"
-                                type="number"
-                                step="0.01"
-                                value={serviceEditData.daily_rate}
-                                onChange={(e) => setServiceEditData({...serviceEditData, daily_rate: e.target.value})}
-                                placeholder="0.00"
-                              />
-                            </div>
-                          )}
-
-                          {/* Overnight Rate - only for sitting services */}
-                          {(service.service_type.includes('sitting') || service.service_type === 'pet_boarding') && (
-                            <div>
-                              <Label htmlFor="overnight_rate">Overnight Rate</Label>
-                              <Input
-                                id="overnight_rate"
-                                type="number"
-                                step="0.01"
-                                value={serviceEditData.overnight_rate}
-                                onChange={(e) => setServiceEditData({...serviceEditData, overnight_rate: e.target.value})}
-                                placeholder="0.00"
-                              />
-                            </div>
-                          )}
-
                           <div>
-                            <Label htmlFor="max_pets">Max Pets</Label>
+                            <Label>Overnight Rate ($)</Label>
                             <Input
-                              id="max_pets"
                               type="number"
-                              min="1"
-                              value={serviceEditData.max_pets}
-                              onChange={(e) => setServiceEditData({...serviceEditData, max_pets: e.target.value})}
+                              value={serviceEditData.overnight_rate || ''}
+                              onChange={(e) => setServiceEditData(prev => ({
+                                ...prev,
+                                overnight_rate: parseFloat(e.target.value) || null
+                              }))}
+                              placeholder="0.00"
                             />
                           </div>
                         </div>
-
+                        <div>
+                          <Label>Description</Label>
+                          <Textarea
+                            value={serviceEditData.description || ''}
+                            onChange={(e) => setServiceEditData(prev => ({
+                              ...prev,
+                              description: e.target.value
+                            }))}
+                            placeholder="Describe your service..."
+                          />
+                        </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
-                            id="is_offered"
+                            id={`offered-${service.id}`}
                             checked={serviceEditData.is_offered}
-                            onCheckedChange={(checked) => setServiceEditData({...serviceEditData, is_offered: checked})}
+                            onCheckedChange={(checked) => setServiceEditData(prev => ({
+                              ...prev,
+                              is_offered: checked
+                            }))}
                           />
-                          <Label htmlFor="is_offered">Service is active</Label>
+                          <Label htmlFor={`offered-${service.id}`}>Service offered</Label>
                         </div>
-                      </>
+                      </div>
                     ) : (
-                      <>
-                        {/* Display Mode */}
+                      <div className="space-y-3">
+                        <div className="text-2xl font-bold text-primary">
+                          {getRateDisplay(service)}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {getRateLabel(service.service_type)}
+                        </p>
                         {service.description && (
-                          <p className="text-muted-foreground">{service.description}</p>
+                          <p className="text-sm">{service.description}</p>
                         )}
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          {service.hourly_rate && (
-                            <div>
-                              <Label className="text-sm font-medium">{getRateLabel(service.service_type, 'hourly')}</Label>
-                              <p className="text-lg font-bold">{getRateDisplay(service.service_type, 'hourly', service.hourly_rate)}</p>
-                            </div>
-                          )}
-                          {service.daily_rate && service.service_type !== 'dog_walking' && (
-                            <div>
-                              <Label className="text-sm font-medium">Daily Rate</Label>
-                              <p className="text-lg font-bold">${service.daily_rate}/day</p>
-                            </div>
-                          )}
-                          {service.overnight_rate && (service.service_type.includes('sitting') || service.service_type === 'pet_boarding') && (
-                            <div>
-                              <Label className="text-sm font-medium">Overnight Rate</Label>
-                              <p className="text-lg font-bold">${service.overnight_rate}/night</p>
-                            </div>
-                          )}
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span>Max pets: {service.max_pets || 1}</span>
+                          <span>{service.experience_years || 0} years experience</span>
                         </div>
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Max Pets</span>
-                            <span>{service.max_pets}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Experience</span>
-                            <span>{service.experience_years} years</span>
-                          </div>
-                          {service.has_fenced_yard && (
-                            <div className="flex justify-between">
-                              <span className="text-sm text-muted-foreground">Fenced Yard</span>
-                              <span>✓ Yes</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Senior Pets</span>
-                            <span>{service.allows_senior_pets ? '✓ Yes' : '✗ No'}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Puppies</span>
-                            <span>{service.allows_puppies ? '✓ Yes' : '✗ No'}</span>
-                          </div>
-                        </div>
-
-                        {service.accepted_pet_species && service.accepted_pet_species.length > 0 && (
-                          <div>
-                            <Label className="text-sm font-medium">Accepted Pet Types</Label>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {service.accepted_pet_species.map((species) => (
-                                <Badge key={species} variant="outline" className="text-xs">
-                                  {species.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {service.accepted_pet_sizes && service.accepted_pet_sizes.length > 0 && (
-                          <div>
-                            <Label className="text-sm font-medium">Accepted Pet Sizes</Label>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {service.accepted_pet_sizes.map((size) => (
-                                <Badge key={size} variant="outline" className="text-xs">
-                                  {size.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
               ))}
             </div>
-
-            {sitterServices.length === 0 && (
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>No services configured yet</p>
-                    <p className="text-sm">Complete your sitter registration to add services</p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </TabsContent>
 
           {/* Calendar Tab */}
-          <TabsContent value="calendar">
-            {profile?.role === 'pet_owner' ? (
+          <TabsContent value="calendar" className="space-y-6">
+            {profile.role === 'pet_sitter' || profile.role === 'both' ? (
               <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>Calendar is available for pet sitters</p>
-                    <p className="text-sm">Switch to pet sitter mode to manage your availability</p>
-                  </div>
+                <CardHeader>
+                  <CardTitle>My Availability</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AvailabilityCalendar sitterId={profile.id} />
                 </CardContent>
               </Card>
             ) : (
-              <AvailabilityCalendar sitterId={profile?.id || ''} />
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                  <h3 className="text-xl font-semibold mb-2">Calendar Access</h3>
+                  <p className="text-muted-foreground">
+                    Calendar features are available for pet sitters only.
+                  </p>
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
 
           {/* Bookings Tab */}
-          <TabsContent value="bookings">
+          <TabsContent value="bookings" className="space-y-6">
+            {recentBookings.length > 0 ? (
+              <div className="space-y-4">
+                {recentBookings.map((booking) => (
+                  <Card key={booking.id}>
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-semibold text-lg mb-2">
+                            {booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </h3>
+                          <div className="space-y-1 text-sm text-muted-foreground">
+                            <p>From: {format(new Date(booking.start_date), 'MMM dd, yyyy')}</p>
+                            <p>To: {format(new Date(booking.end_date), 'MMM dd, yyyy')}</p>
+                            <p>Amount: ${booking.total_amount}</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
+                            {booking.status}
+                          </Badge>
+                          <Button variant="outline" size="sm">
+                            Message Client
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                  <h3 className="text-xl font-semibold mb-2">No bookings yet</h3>
+                  <p className="text-muted-foreground">
+                    Your booking history will appear here once you start getting bookings.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Verification Tab */}
+          <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>My Bookings</CardTitle>
+                <CardTitle>Sitter Verification</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Upload your ID and Blue Card for verification to increase trust with pet owners.
+                </p>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentBookings.length > 0 ? recentBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
-                          <span className="text-lg">🐕</span>
-                        </div>
-                        <div>
-                          <h3 className="font-medium">{booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h3>
-                          <p className="text-sm text-muted-foreground">{new Date(booking.start_date).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge 
-                          variant={booking.status === 'completed' ? 'default' : 'secondary'}
-                          className="mb-2"
-                        >
-                          {booking.status}
-                        </Badge>
-                        <p className="font-medium">${booking.total_amount}</p>
-                      </div>
+              <CardContent className="space-y-6">
+                {/* ID Document Upload */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">ID Document</h4>
+                      <p className="text-sm text-muted-foreground">Valid government-issued photo ID</p>
                     </div>
-                  )) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                      <p>No bookings yet</p>
-                      <Button className="mt-3" onClick={() => window.location.href = '/find-sitters'}>
-                        {profile?.role === 'pet_owner' ? 'Find Sitters' : 'Browse Available Services'}
+                    {profile.id_document_url ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                    )}
+                  </div>
+                  {profile.id_document_url ? (
+                    <div className="flex items-center gap-2 text-sm text-green-600">
+                      <CheckCircle className="w-4 h-4" />
+                      ID document uploaded - pending review
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadVerificationDocument(file, 'id');
+                        }}
+                        className="hidden"
+                        id="id-upload"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => document.getElementById('id-upload')?.click()}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload ID Document
                       </Button>
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          {/* Earnings Tab */}
-          <TabsContent value="earnings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Earnings Overview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center p-6 bg-accent/50 rounded-lg">
-                    <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <h3 className="text-2xl font-bold">$0</h3>
-                    <p className="text-muted-foreground">This Month</p>
+                {/* Blue Card Upload */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Blue Card</h4>
+                      <p className="text-sm text-muted-foreground">Working with Children Check (Blue Card)</p>
+                    </div>
+                    {profile.blue_card_document_url ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                    )}
                   </div>
-                  <div className="text-center p-6 bg-accent/50 rounded-lg">
-                    <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <h3 className="text-2xl font-bold">$0</h3>
-                    <p className="text-muted-foreground">Total Earned</p>
-                  </div>
-                  <div className="text-center p-6 bg-accent/50 rounded-lg">
-                    <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <h3 className="text-2xl font-bold">${userProfile.hourlyRate}</h3>
-                    <p className="text-muted-foreground">Your Rate</p>
+                  {profile.blue_card_document_url ? (
+                    <div className="flex items-center gap-2 text-sm text-green-600">
+                      <CheckCircle className="w-4 h-4" />
+                      Blue Card uploaded - pending review
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadVerificationDocument(file, 'blue_card');
+                        }}
+                        className="hidden"
+                        id="blue-card-upload"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => document.getElementById('blue-card-upload')?.click()}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload Blue Card
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Verification Status */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center gap-3">
+                    {profile.is_verified ? (
+                      <>
+                        <Shield className="w-5 h-5 text-green-500" />
+                        <div>
+                          <h4 className="font-medium text-green-700">Verified Sitter</h4>
+                          <p className="text-sm text-muted-foreground">Your account has been verified</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-5 h-5 text-yellow-500" />
+                        <div>
+                          <h4 className="font-medium text-yellow-700">Verification Pending</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {profile.verification_documents_uploaded_at 
+                              ? 'Your documents are under review'
+                              : 'Upload your documents to start the verification process'
+                            }
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </CardContent>

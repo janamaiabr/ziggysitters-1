@@ -17,6 +17,12 @@ export interface Profile {
   bio?: string;
   avatar_url?: string;
   is_verified?: boolean;
+  rating?: number;
+  total_reviews?: number;
+  response_rate?: number;
+  id_document_url?: string;
+  blue_card_document_url?: string;
+  verification_documents_uploaded_at?: string;
   created_at: string;
   updated_at: string;
 }
