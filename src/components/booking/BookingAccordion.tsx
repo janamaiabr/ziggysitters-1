@@ -29,21 +29,30 @@ interface BookingAccordionProps {
 }
 
 const serviceRates = {
-  'dog-walking': 25.00,     // per service
-  'pet-sitting': 45.00,     // per day
+  'dog-walking': 27.50,     // per service
+  'pet-sitting': 55.00,     // per day
   'overnight-care': 75.00,  // per night
+  'drop-in-visits': 27.50,  // per service
+  'pet-boarding': 75.00,    // per night
+  'grooming': 27.50,        // per service
 };
 
 const serviceLabels = {
   'dog-walking': 'Dog Walking',
   'pet-sitting': 'Pet Sitting', 
   'overnight-care': 'Overnight Care',
+  'drop-in-visits': 'Drop-in Visits',
+  'pet-boarding': 'Pet Boarding',
+  'grooming': 'Grooming',
 };
 
 const serviceUnits = {
   'dog-walking': 'service',
   'pet-sitting': 'day',
   'overnight-care': 'night',
+  'drop-in-visits': 'service',
+  'pet-boarding': 'night',
+  'grooming': 'service',
 };
 
 export default function BookingAccordion({ sitter, isOpen = false }: BookingAccordionProps) {
@@ -74,15 +83,15 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
     const rate = serviceRates[serviceType as keyof typeof serviceRates];
     if (!rate) return 0;
 
-    if (serviceType === 'dog-walking') {
-      // Dog walking is per service - user selects number of services
+    if (serviceType === 'dog-walking' || serviceType === 'drop-in-visits' || serviceType === 'grooming') {
+      // Per service - user selects number of services
       return 1 * rate; // For now, assume 1 service. Could add quantity selector later
     } else if (serviceType === 'pet-sitting') {
       // Pet sitting is per day
       const days = Math.max(1, differenceInDays(endDate, startDate) + 1); // +1 to include both start and end day
       return days * rate;
-    } else if (serviceType === 'overnight-care') {
-      // Overnight care is per night
+    } else if (serviceType === 'overnight-care' || serviceType === 'pet-boarding') {
+      // Overnight care/boarding is per night
       const nights = Math.max(1, differenceInDays(endDate, startDate));
       return nights * rate;
     }
@@ -119,8 +128,8 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
         serviceType,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
-        startTime: serviceType === 'dog-walking' ? startTime : undefined,
-        endTime: serviceType === 'dog-walking' ? endTime : undefined,
+        startTime: (serviceType === 'dog-walking' || serviceType === 'drop-in-visits') ? startTime : undefined,
+        endTime: (serviceType === 'dog-walking' || serviceType === 'drop-in-visits') ? endTime : undefined,
         petIds: [],
         specialInstructions,
         totalAmount: total
@@ -162,7 +171,8 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
 
   const total = calculateTotal();
   const platformFee = Math.round(total * 0.1 * 100) / 100;
-  const grandTotal = total + platformFee;
+  const sitterAmount = total - platformFee;
+  const grandTotal = total; // Total stays the same, platform fee comes out of sitter's portion
 
   return (
     <Card>
@@ -313,7 +323,7 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
                       <span>{serviceLabels[serviceType as keyof typeof serviceLabels]}</span>
                     </div>
                     
-                    {serviceType === 'dog-walking' && (
+                    {(serviceType === 'dog-walking' || serviceType === 'drop-in-visits' || serviceType === 'grooming') && (
                       <div className="flex justify-between">
                         <span>Duration</span>
                         <span>1 service</span>
@@ -329,7 +339,7 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
                       </div>
                     )}
                     
-                    {serviceType === 'overnight-care' && (
+                    {(serviceType === 'overnight-care' || serviceType === 'pet-boarding') && (
                       <div className="flex justify-between">
                         <span>Duration</span>
                         <span>
@@ -338,15 +348,20 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
                       </div>
                     )}
 
-                    <div className="flex justify-between">
-                      <span>Service Cost</span>
-                      <span>${total.toFixed(2)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span>Platform Fee (10%)</span>
-                      <span>${platformFee.toFixed(2)}</span>
-                    </div>
+                     <div className="flex justify-between">
+                       <span>Service Cost</span>
+                       <span>${total.toFixed(2)}</span>
+                     </div>
+                     
+                     <div className="flex justify-between text-sm text-green-600">
+                       <span>Sitter receives (90%)</span>
+                       <span>${sitterAmount.toFixed(2)}</span>
+                     </div>
+                     
+                     <div className="flex justify-between text-sm text-gray-500">
+                       <span>Platform fee (10%)</span>
+                       <span>${platformFee.toFixed(2)}</span>
+                     </div>
                     
                     <Separator />
                     
@@ -368,7 +383,7 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
                   disabled={!startDate || !endDate || !serviceType || loading}
                   className="flex-1"
                 >
-                  {loading ? 'Creating Booking...' : `Book Now - $${grandTotal.toFixed(2)}`}
+                  {loading ? 'Creating Booking...' : `Pay with Stripe - $${grandTotal.toFixed(2)}`}
                 </Button>
               </div>
             </AccordionContent>

@@ -64,19 +64,37 @@ serve(async (req) => {
     const bookingData: BookingRequest = await req.json();
     logStep("Booking request received", bookingData);
 
-    // Service type to price mapping and database enum mapping
-    const servicePrices = {
-      'dog_walking': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Dog Walking - $27.50
-      'pet_sitting_owners_home': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Pet Sitting - $55.00
-      'pet_sitting_sitters_home': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Pet Sitting - $66.00
-      'drop_in_visits': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Drop-in Visits - $27.50
+    // Service type mapping from frontend to database enum
+    const serviceTypeMapping = {
+      'dog-walking': 'dog_walking',
+      'pet-sitting': 'pet_sitting_owners_home', // Default to owners home
+      'overnight-care': 'pet_sitting_sitters_home',
+      'drop-in-visits': 'drop_in_visits',
+      'pet-boarding': 'overnight_boarding',
+      'grooming': 'grooming'
     };
 
-    const priceId = servicePrices[bookingData.serviceType as keyof typeof servicePrices];
-    if (!priceId) {
+    // Map frontend service type to database enum
+    const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping];
+    if (!dbServiceType) {
       throw new Error(`Invalid service type: ${bookingData.serviceType}`);
     }
-    logStep("Price ID determined", { serviceType: bookingData.serviceType, priceId });
+
+    // Service type to price mapping using new Stripe prices
+    const servicePrices = {
+      'dog_walking': 'price_1S8CDWGNy6CMpdXT5YulRb1K', // Dog Walking - $27.50
+      'pet_sitting_owners_home': 'price_1S8CDIGNy6CMpdXT8JFPGc8k', // Pet Sitting - $55.00
+      'pet_sitting_sitters_home': 'price_1S8CDkGNy6CMpdXTeASEfot6', // Overnight Care - $75.00
+      'drop_in_visits': 'price_1S8CDWGNy6CMpdXT5YulRb1K', // Drop-in Visits - $27.50
+      'overnight_boarding': 'price_1S8CDkGNy6CMpdXTeASEfot6', // Pet Boarding - $75.00
+      'grooming': 'price_1S8CDWGNy6CMpdXT5YulRb1K', // Grooming - $27.50
+    };
+
+    const priceId = servicePrices[dbServiceType as keyof typeof servicePrices];
+    if (!priceId) {
+      throw new Error(`Invalid service type: ${bookingData.serviceType} -> ${dbServiceType}`);
+    }
+    logStep("Price ID determined", { frontendServiceType: bookingData.serviceType, dbServiceType, priceId });
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -99,7 +117,7 @@ serve(async (req) => {
       .insert([{
         owner_id: profile.id,
         sitter_id: bookingData.sitterId,
-        service_type: bookingData.serviceType,
+        service_type: dbServiceType,
         start_date: bookingData.startDate,
         end_date: bookingData.endDate,
         start_time: bookingData.startTime,
@@ -119,19 +137,21 @@ serve(async (req) => {
     }
     logStep("Booking created", { bookingId: booking.id, reference: booking.booking_reference });
 
-    // Calculate hours for line item quantity
+    // Calculate quantity for line item based on service rates
     const getServiceRate = (serviceType: string) => {
       switch (serviceType) {
-        case 'pet_sitting_sitters_home': return 66;
+        case 'pet_sitting_sitters_home': return 75;
+        case 'overnight_boarding': return 75;
         case 'pet_sitting_owners_home': return 55;
         case 'drop_in_visits': return 27.5;
         case 'dog_walking': return 27.5;
+        case 'grooming': return 27.5;
         default: return 27.5;
       }
     };
     
-    const rate = getServiceRate(bookingData.serviceType);
-    const hours = Math.max(1, Math.ceil(bookingData.totalAmount / rate));
+    const rate = getServiceRate(dbServiceType);
+    const quantity = Math.max(1, Math.ceil(bookingData.totalAmount / rate));
 
     // Create a one-time payment session
     const session = await stripe.checkout.sessions.create({
@@ -140,7 +160,7 @@ serve(async (req) => {
       line_items: [
         {
           price: priceId,
-          quantity: hours,
+          quantity: quantity,
         },
       ],
       mode: "payment",
