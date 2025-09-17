@@ -82,7 +82,7 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters }: FilterP
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex justify-end">
-      <div className="bg-background w-full max-w-md h-full overflow-y-auto">
+      <div className="bg-background w-full max-w-sm md:max-w-md h-full overflow-y-auto">
         <Card className="h-full rounded-none border-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <CardTitle>Filters</CardTitle>
