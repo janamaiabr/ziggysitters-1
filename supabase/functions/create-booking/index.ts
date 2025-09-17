@@ -81,14 +81,14 @@ serve(async (req) => {
       throw new Error(`Invalid service type: ${bookingData.serviceType}`);
     }
 
-    // Service type to price mapping using new Stripe prices
+    // Service type to price mapping using NZD Stripe prices
     const servicePrices = {
-      'dog_walking': 'price_1S8CDWGNy6CMpdXT5YulRb1K', // Dog Walking - $27.50
-      'pet_sitting_owners_home': 'price_1S8CDIGNy6CMpdXT8JFPGc8k', // Pet Sitting - $55.00
-      'pet_sitting_sitters_home': 'price_1S8CDkGNy6CMpdXTeASEfot6', // Overnight Care - $75.00
-      'drop_in_visits': 'price_1S8CDWGNy6CMpdXT5YulRb1K', // Drop-in Visits - $27.50
-      'overnight_boarding': 'price_1S8CDkGNy6CMpdXTeASEfot6', // Pet Boarding - $75.00
-      'grooming': 'price_1S8CDWGNy6CMpdXT5YulRb1K', // Grooming - $27.50
+      'dog_walking': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Dog Walking - NZ$27.50
+      'pet_sitting_owners_home': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Pet Sitting - NZ$33.00
+      'pet_sitting_sitters_home': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Overnight Care - NZ$66.00
+      'drop_in_visits': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Drop-in Visits - NZ$27.50
+      'overnight_boarding': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Pet Boarding - NZ$66.00
+      'grooming': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Grooming - NZ$27.50
     };
 
     const priceId = servicePrices[dbServiceType as keyof typeof servicePrices];
