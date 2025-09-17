@@ -163,7 +163,8 @@ export default function BecomeSitter() {
             <div className="flex justify-center">
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 px-12"
+                variant="solid-white"
+                className="px-12"
                 onClick={() => navigate('/auth')}
               >
                 Join Now

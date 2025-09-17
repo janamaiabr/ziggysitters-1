@@ -99,10 +99,10 @@ export default function HowItWorks() {
               Connecting pet owners with trusted, verified pet sitters in your local community
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 px-8">
+              <Button size="lg" variant="solid-white" className="px-8">
                 Find a Sitter
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <Button variant="outline-white" size="lg" className="px-8">
                 Become a Sitter
               </Button>
             </div>
@@ -319,10 +319,10 @@ export default function HowItWorks() {
             Join thousands of happy pet owners and trusted sitters in our community
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 px-8">
+            <Button size="lg" variant="solid-white" className="px-8">
               Find a Sitter
             </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+            <Button variant="outline-white" size="lg" className="px-8">
               Become a Sitter
             </Button>
           </div>
