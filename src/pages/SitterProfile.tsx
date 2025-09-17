@@ -9,7 +9,6 @@ import {
   MapPin, 
   Star, 
   Heart, 
-  MessageCircle, 
   Calendar,
   DollarSign,
   Award,
@@ -17,7 +16,6 @@ import {
   Clock,
   ArrowLeft
 } from 'lucide-react';
-import MessageDialog from '@/components/messaging/MessageDialog';
 import BookingAccordion from '@/components/booking/BookingAccordion';
 
 import { supabase } from '@/integrations/supabase/client';
@@ -46,7 +44,6 @@ export default function SitterProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [showMessageDialog, setShowMessageDialog] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -192,14 +189,7 @@ export default function SitterProfile() {
               </div>
               
               <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setShowMessageDialog(true)}>
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Message {sitterData.display_name.split(' ')[0]}
-                </Button>
-                <Button variant="outline">
-                  <Heart className="mr-2 h-4 w-4" />
-                  Save Sitter
-                </Button>
+                {/* Removed save sitter and message functionality */}
               </div>
             </div>
           </div>
@@ -363,10 +353,7 @@ export default function SitterProfile() {
                   </div>
                 </div>
                 
-                <Button variant="outline" className="w-full" onClick={() => setShowMessageDialog(true)}>
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Send Message
-                </Button>
+                {/* Removed send message functionality */}
               </CardContent>
             </Card>
 
@@ -413,15 +400,6 @@ export default function SitterProfile() {
           </div>
         </div>
       </div>
-
-
-      <MessageDialog
-        isOpen={showMessageDialog}
-        onClose={() => setShowMessageDialog(false)}
-        recipientId={sitterData.id.toString()}
-        recipientName={sitterData.display_name}
-        recipientAvatar={sitterData.avatar}
-      />
     </div>
   );
 }

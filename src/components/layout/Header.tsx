@@ -12,28 +12,34 @@ export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    checkAdminStatus();
+    if (user) {
+      checkAdminStatusAndProfile();
+    }
   }, [user]);
 
-  const checkAdminStatus = async () => {
+  const checkAdminStatusAndProfile = async () => {
     if (!user) {
       setIsAdmin(false);
+      setProfile(null);
       return;
     }
     
     try {
       const { data } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, avatar_url, first_name, last_name')
         .eq('user_id', user.id)
         .single();
       
       setIsAdmin(data?.role === 'admin');
+      setProfile(data);
     } catch (error) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);
+      setProfile(null);
     }
   };
 
@@ -67,9 +73,9 @@ export default function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.user_metadata?.avatar_url} />
+                    <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
                     <AvatarFallback>
-                      {user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
+                      {profile?.first_name?.[0] || user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

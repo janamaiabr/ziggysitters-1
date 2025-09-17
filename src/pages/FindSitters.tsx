@@ -7,11 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter, MessageCircle } from 'lucide-react';
+import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import MessageDialog from '@/components/messaging/MessageDialog';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 
@@ -24,8 +23,6 @@ export default function FindSitters() {
   const [serviceType, setServiceType] = useState('');
   const [petType, setPetType] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedSitter, setSelectedSitter] = useState<any>(null);
-  const [showMessageDialog, setShowMessageDialog] = useState(false);
   const [allSitters, setAllSitters] = useState<any[]>([]);
   const [filteredSitters, setFilteredSitters] = useState<any[]>([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
@@ -386,17 +383,7 @@ export default function FindSitters() {
                   >
                     🐾 Book Now
                   </Button>
-                  <Button 
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedSitter(sitter);
-                      setShowMessageDialog(true);
-                    }}
-                    className="px-3"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                  </Button>
+                  {/* Removed messaging functionality */}
                 </div>
               </CardContent>
             </Card>
@@ -410,18 +397,6 @@ export default function FindSitters() {
         onApplyFilters={handleApplyFilters}
       />
 
-      {selectedSitter && (
-        <MessageDialog
-          isOpen={showMessageDialog}
-          onClose={() => {
-            setShowMessageDialog(false);
-            setSelectedSitter(null);
-          }}
-          recipientId={selectedSitter.id.toString()}
-          recipientName={selectedSitter.name}
-          recipientAvatar={selectedSitter.avatar}
-        />
-      )}
     </div>
   );
 }

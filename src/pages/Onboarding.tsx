@@ -63,6 +63,27 @@ export default function Onboarding() {
       return;
     }
 
+    // Check if user is admin - if so, skip onboarding
+    const checkAdminStatus = async () => {
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!error && profile?.role === 'admin') {
+          // Admin users skip onboarding and go directly to admin dashboard
+          navigate('/admin');
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+      }
+    };
+
+    checkAdminStatus();
+
     // Pre-fill with existing user data if available
     const fetchExistingProfile = async () => {
       try {

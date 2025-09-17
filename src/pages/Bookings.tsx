@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Calendar as CalendarIcon, Clock, MapPin, Star, MessageSquare, User, Phone, Mail } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail } from 'lucide-react';
 import { format } from 'date-fns';
-import MessageDialog from '@/components/messaging/MessageDialog';
 
 export default function Bookings() {
   const { user } = useAuth();
@@ -18,8 +17,6 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-  const [showMessageDialog, setShowMessageDialog] = useState(false);
-  const [messageRecipient, setMessageRecipient] = useState(null);
 
   useEffect(() => {
     if (profile) {
@@ -97,19 +94,6 @@ export default function Bookings() {
   const handleViewDetails = (booking) => {
     setSelectedBooking(booking);
     setShowDetailsDialog(true);
-  };
-
-  const handleMessage = (booking) => {
-    // Determine who to message based on the current user's role in this booking
-    const isOwner = booking.owner_id === profile.id;
-    const recipientProfile = isOwner ? booking.sitter : booking.owner;
-    
-    setMessageRecipient({
-      id: recipientProfile.id,
-      name: `${recipientProfile.first_name} ${recipientProfile.last_name}`,
-      avatar: recipientProfile.avatar_url
-    });
-    setShowMessageDialog(true);
   };
 
   const filteredBookings = bookings.filter(booking => {
@@ -217,10 +201,6 @@ export default function Bookings() {
                     
                     <div className="flex flex-col space-y-2 lg:items-end">
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleMessage(booking)}>
-                          <MessageSquare className="w-4 h-4 mr-2" />
-                          Message
-                        </Button>
                         <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
                           View Details
                         </Button>
@@ -336,17 +316,6 @@ export default function Bookings() {
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Message Dialog */}
-      {messageRecipient && (
-        <MessageDialog
-          isOpen={showMessageDialog}
-          onClose={() => setShowMessageDialog(false)}
-          recipientId={messageRecipient.id}
-          recipientName={messageRecipient.name}
-          recipientAvatar={messageRecipient.avatar}
-        />
-      )}
     </div>
   );
 }

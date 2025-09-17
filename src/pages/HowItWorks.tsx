@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, UserCheck, MessageCircle, CreditCard, Shield, Heart, Star, Clock } from 'lucide-react';
+import { Search, UserCheck, CreditCard, Shield, Heart, Star, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
@@ -21,9 +21,9 @@ const forOwners = [
   },
   {
     step: 3,
-    icon: MessageCircle,
-    title: 'Meet & Greet',
-    description: 'Message sitters directly and arrange a meet & greet with your pet'
+    icon: Heart,
+    title: 'Connect & Book',
+    description: 'Connect with sitters and book securely through our platform'
   },
   {
     step: 4,
@@ -48,9 +48,9 @@ const forSitters = [
   },
   {
     step: 3,
-    icon: MessageCircle,
-    title: 'Get Requests',
-    description: 'Receive booking requests from pet owners in your area'
+    icon: Heart,
+    title: 'Get Bookings',
+    description: 'Receive and accept booking requests from pet owners in your area'
   },
   {
     step: 4,
