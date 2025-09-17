@@ -703,25 +703,6 @@ export type Database = {
           weight: number
         }[]
       }
-      get_safe_sitter_profiles: {
-        Args: { limit_count?: number }
-        Returns: {
-          avatar_url: string
-          background_check_verified: boolean
-          bio: string
-          city: string
-          created_at: string
-          display_name: string
-          id: string
-          is_verified: boolean
-          rating: number
-          response_rate: number
-          role: Database["public"]["Enums"]["user_role"]
-          suburb: string
-          total_reviews: number
-          verification_status: Database["public"]["Enums"]["verification_status"]
-        }[]
-      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
