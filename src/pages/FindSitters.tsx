@@ -245,14 +245,14 @@ export default function FindSitters() {
                     <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
                       <SelectValue placeholder="Select service" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dog-walking">Dog Walking</SelectItem>
-                      <SelectItem value="pet-sitting">Pet Sitting</SelectItem>
-                      <SelectItem value="overnight-care">Overnight Care</SelectItem>
-                      <SelectItem value="drop-in-visits">Drop-in Visits</SelectItem>
-                      <SelectItem value="pet-boarding">Pet Boarding</SelectItem>
-                      <SelectItem value="grooming">Grooming</SelectItem>
-                    </SelectContent>
+                     <SelectContent>
+                       <SelectItem value="dog-walking">🚶‍♂️ Dog Walking</SelectItem>
+                       <SelectItem value="pet-sitting">🏠 Pet Sitting</SelectItem>
+                       <SelectItem value="overnight-care">🌙 Overnight Care</SelectItem>
+                       <SelectItem value="drop-in-visits">🏃‍♀️ Drop-in Visits</SelectItem>
+                       <SelectItem value="pet-boarding">🏨 Pet Boarding</SelectItem>
+                       <SelectItem value="grooming">✂️ Grooming</SelectItem>
+                     </SelectContent>
                   </Select>
                 </div>
                 
@@ -262,13 +262,13 @@ export default function FindSitters() {
                     <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
                       <SelectValue placeholder="Select pet" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dogs">Dogs</SelectItem>
-                      <SelectItem value="cats">Cats</SelectItem>
-                      <SelectItem value="birds">Birds</SelectItem>
-                      <SelectItem value="small-pets">Small Pets</SelectItem>
-                      <SelectItem value="reptiles">Reptiles</SelectItem>
-                    </SelectContent>
+                     <SelectContent>
+                       <SelectItem value="dogs">🐕 Dogs</SelectItem>
+                       <SelectItem value="cats">🐱 Cats</SelectItem>
+                       <SelectItem value="birds">🦜 Birds</SelectItem>
+                       <SelectItem value="small-pets">🐹 Small Pets</SelectItem>
+                       <SelectItem value="reptiles">🦎 Reptiles</SelectItem>
+                     </SelectContent>
                   </Select>
                 </div>
               </div>
@@ -332,17 +332,19 @@ export default function FindSitters() {
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{sitter.rating}</span>
-                    <span className="text-sm text-muted-foreground">({sitter.reviews} reviews)</span>
-                  </div>
-                  {sitter.verified && (
-                    <Badge variant="secondary" className="text-xs">Verified</Badge>
-                  )}
-                </div>
+               <CardContent className="space-y-4">
+                 {sitter.rating > 0 && (
+                   <div className="flex items-center justify-between">
+                     <div className="flex items-center space-x-1">
+                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                       <span className="font-medium">{sitter.rating}</span>
+                       <span className="text-sm text-muted-foreground">⭐ Verified</span>
+                     </div>
+                     {sitter.verified && (
+                       <Badge variant="secondary" className="text-xs">✅ Verified</Badge>
+                     )}
+                   </div>
+                 )}
                 
                 <div className="space-y-2">
                   <div className="flex flex-wrap gap-1">
@@ -357,22 +359,24 @@ export default function FindSitters() {
                       </Badge>
                     )}
                   </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Total rate</span>
-                      <div className="text-right">
-                        <span className="font-bold text-lg">${sitter.hourlyRate}/hr</span>
-                        <div className="text-xs text-muted-foreground">
-                          Includes 10% platform fee
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="text-sm text-muted-foreground">
-                    {sitter.responseRate}% response rate
-                  </div>
+                   
+                   {sitter.baseRate > 0 && (
+                     <div className="space-y-1">
+                       <div className="flex items-center justify-between">
+                         <span className="text-sm text-muted-foreground">Starting from</span>
+                         <div className="text-right">
+                           <span className="font-bold text-lg">${sitter.baseRate}/day</span>
+                           <div className="text-xs text-muted-foreground">
+                             💰 Best rates in area
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   )}
+                   
+                   <div className="text-sm text-muted-foreground">
+                     📞 {sitter.responseRate}% response rate
+                   </div>
                 </div>
                 
                 <div className="flex gap-2">
@@ -380,7 +384,7 @@ export default function FindSitters() {
                     className="flex-1" 
                     onClick={() => navigate(`/sitter/${sitter.id}`)}
                   >
-                    Book Now
+                    🐾 Book Now
                   </Button>
                   <Button 
                     variant="outline"

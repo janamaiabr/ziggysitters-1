@@ -128,7 +128,7 @@ export default function Bookings() {
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
                     <div className="flex items-start space-x-4">
                       <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-2xl">
-                        🐕
+                        {booking.service_type.includes('dog') ? '🐕' : booking.service_type.includes('cat') ? '🐱' : '🐾'}
                       </div>
                       
                       <div className="flex-1">

@@ -367,7 +367,7 @@ export default function Profile() {
     responseRate: profile.response_rate || 100,
     memberSince: format(new Date(profile.created_at), 'MMM yyyy'),
     completedBookings: recentBookings.length,
-    hourlyRate: sitterServices.find(s => s.daily_rate)?.daily_rate || 0,
+    hourlyRate: 0, // Removed hourly rates
     services: sitterServices.filter(s => s.is_offered).map(s => 
       s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
     )
@@ -646,16 +646,10 @@ export default function Profile() {
                       <span className="text-muted-foreground">Total Bookings</span>
                       <span className="font-medium">{recentBookings.length}</span>
                     </div>
-                    {userProfile.hourlyRate > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Starting Rate</span>
-                        <span className="font-medium">${userProfile.hourlyRate}/day</span>
-                      </div>
-                    )}
                     {userProfile.reviews > 0 && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Average Rating</span>
-                        <span className="font-medium">{userProfile.rating}/5</span>
+                        <span className="font-medium">{userProfile.rating}/5 ⭐</span>
                       </div>
                     )}
                   </CardContent>
@@ -759,8 +753,8 @@ export default function Profile() {
                           <p className="text-sm">{service.description}</p>
                         )}
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          <span>Max pets: {service.max_pets || 1}</span>
-                          <span>{service.experience_years || 0} years experience</span>
+                          <span>🐾 Max pets: {service.max_pets || 1}</span>
+                          <span>📅 {service.experience_years || 0} years experience</span>
                         </div>
                       </div>
                     )}

@@ -20,9 +20,9 @@ const Index = () => {
   const [serviceType, setServiceType] = useState('');
 
   const popularServices = [
-    { name: 'Pet Sitting in Sitter\'s Home', icon: '🏠', description: 'Your pet stays at the sitter\'s home with 24/7 care' },
-    { name: 'Pet Sitting in Owner\'s Home', icon: '🏡', description: 'Sitter comes to your home for personalized care' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins, feeding, and playtime' },
+    { name: '🏠 Pet Sitting in Sitter\'s Home', icon: '🏠', description: 'Your pet stays at the sitter\'s home with 24/7 care' },
+    { name: '🏡 Pet Sitting in Owner\'s Home', icon: '🏡', description: 'Sitter comes to your home for personalized care' },
+    { name: '⏰ Drop-in Visits', icon: '⏰', description: 'Quick check-ins, feeding, and playtime 🐾' },
   ];
 
   // Replace with real data from database
@@ -112,11 +112,11 @@ const Index = () => {
                   <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary">
                     <SelectValue placeholder="Service type" />
                   </SelectTrigger>
-                  <SelectContent className="z-50 bg-white">
-                    <SelectItem value="pet_sitting_sitters_home">Pet Sitting in Sitter's Home</SelectItem>
-                    <SelectItem value="pet_sitting_owners_home">Pet Sitting in Owner's Home</SelectItem>
-                    <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
-                  </SelectContent>
+                   <SelectContent className="z-50 bg-white">
+                     <SelectItem value="pet_sitting_sitters_home">🏠 Pet Sitting in Sitter's Home</SelectItem>
+                     <SelectItem value="pet_sitting_owners_home">🏡 Pet Sitting in Owner's Home</SelectItem>
+                     <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
+                   </SelectContent>
                 </Select>
               </div>
               <Button 
@@ -124,8 +124,8 @@ const Index = () => {
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 w-full md:w-auto font-semibold"
                 onClick={() => navigate('/find-sitters')}
               >
-                <Search className="mr-2 h-5 w-5" />
-                Find Perfect Sitters
+                 <Search className="mr-2 h-5 w-5" />
+                 🐾 Find Perfect Sitters
               </Button>
             </div>
             
@@ -194,10 +194,10 @@ const Index = () => {
                           <MapPin className="w-3 h-3 mr-1" />
                           {sitter.location}
                         </div>
-                        <div className="flex items-center mt-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                          <span className="font-medium">{sitter.rating}</span>
-                          <span className="text-sm text-muted-foreground ml-1">({sitter.reviews})</span>
+                         <div className="flex items-center mt-1">
+                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                           <span className="font-medium">{sitter.rating}</span>
+                           <span className="text-sm text-muted-foreground ml-1">⭐ Top rated</span>
                           {sitter.verified && (
                             <CheckCircle className="w-4 h-4 text-green-500 ml-2" />
                           )}
@@ -220,16 +220,16 @@ const Index = () => {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <div className="text-sm text-muted-foreground">
-                      {sitter.responseRate}% response rate
+                     <div className="text-sm text-muted-foreground">
+                       📞 {sitter.responseRate}% response rate
                     </div>
                   </div>
                   
                   <Button 
                     className="w-full"
                     onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
-                  >
-                    View Profile & Book
+                   >
+                     🐾 View Profile & Book
                   </Button>
                 </CardContent>
               </Card>
@@ -237,8 +237,8 @@ const Index = () => {
           </div>
           
           <div className="text-center mt-12">
-            <Button variant="outline" size="lg" onClick={() => navigate('/find-sitters')}>
-              View All Sitters
+           <Button variant="outline" size="lg" onClick={() => navigate('/find-sitters')}>
+             🔍 View All Sitters
             </Button>
           </div>
         </div>
