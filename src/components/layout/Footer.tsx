@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Facebook, Twitter, Instagram } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import logoSvg from '@/assets/logo.svg';
 
 export default function Footer() {
@@ -90,12 +90,6 @@ export default function Footer() {
               <div className="flex space-x-3">
                 <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   <Facebook className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                  <Instagram className="w-5 h-5" />
                 </a>
               </div>
             </div>

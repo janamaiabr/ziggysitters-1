@@ -20,9 +20,10 @@ const Index = () => {
   const [serviceType, setServiceType] = useState('');
 
   const popularServices = [
-    { name: '🏠 Pet Sitting in Sitter\'s Home', icon: '🏠', description: 'Your pet stays at the sitter\'s home with 24/7 care' },
-    { name: '🏡 Pet Sitting in Owner\'s Home', icon: '🏡', description: 'Sitter comes to your home for personalized care' },
-    { name: '⏰ Drop-in Visits', icon: '⏰', description: 'Quick check-ins, feeding, and playtime 🐾' },
+    { name: 'Pet Sitting in Sitter\'s Home', icon: '🏠', description: 'Your pet stays at the sitter\'s home with 24/7 care' },
+    { name: 'Pet Sitting in Owner\'s Home', icon: '🏡', description: 'Sitter comes to your home for personalized care' },
+    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins, feeding, and playtime 🐾' },
+    { name: 'Dog Walking', icon: '🚶‍♂️', description: 'Regular walks to keep your dog happy and healthy' },
   ];
 
   // Replace with real data from database
@@ -33,8 +34,8 @@ const Index = () => {
       const { data } = await supabase
         .from('public_sitter_profiles')
         .select('*')
-        .eq('is_verified', true)
-        .limit(3);
+        .order('rating', { ascending: false })
+        .limit(6);
       
       if (data) {
         setFeaturedSitters(data.map(sitter => ({
@@ -152,7 +153,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {popularServices.map((service, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow cursor-pointer group">
                 <CardContent className="p-8">
@@ -283,12 +284,6 @@ const Index = () => {
                 <p className="text-muted-foreground">{step.description}</p>
               </div>
             ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Button size="lg" onClick={() => navigate('/how-it-works')}>
-              Learn More
-            </Button>
           </div>
         </div>
       </section>
