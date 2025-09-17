@@ -1,69 +1,87 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Star, Heart, Shield, DollarSign, Calendar, MessageCircle, CheckCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Profile() {
   const { user } = useAuth();
+  const { profile, loading } = useProfile();
   const [activeTab, setActiveTab] = useState('overview');
+  const [recentBookings, setRecentBookings] = useState([]);
+  const [sitterServices, setSitterServices] = useState([]);
 
-  const userProfile = {
-    name: user?.user_metadata?.first_name ? `${user.user_metadata.first_name} ${user.user_metadata.last_name || ''}` : 'John Doe',
-    email: user?.email || 'john@example.com',
-    location: 'Ponsonby, Auckland',
-    memberSince: '2023',
-    rating: 4.9,
-    reviews: 127,
-    completedBookings: 89,
-    responseRate: 98,
-    verified: true,
-    avatar: user?.user_metadata?.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    bio: 'Pet lover with 5+ years of experience. I treat every pet like my own family member.',
-    services: ['Dog Walking', 'Pet Sitting', 'Overnight Care'],
-    hourlyRate: 28
+  useEffect(() => {
+    if (profile) {
+      fetchBookings();
+      fetchSitterServices();
+    }
+  }, [profile]);
+
+  const fetchBookings = async () => {
+    if (!profile) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select(`
+          id, service_type, start_date, end_date, total_amount, status,
+          pet_ids
+        `)
+        .or(`owner_id.eq.${profile.id},sitter_id.eq.${profile.id}`)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (!error && data) {
+        setRecentBookings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    }
   };
 
-  const recentBookings = [
-    {
-      id: 1,
-      petName: 'Max',
-      petType: 'Golden Retriever',
-      service: 'Dog Walking',
-      date: '2024-01-15',
-      status: 'completed',
-      amount: 25
-    },
-    {
-      id: 2,
-      petName: 'Luna',
-      petType: 'Persian Cat',
-      service: 'Pet Sitting',
-      date: '2024-01-10',
-      status: 'completed',
-      amount: 60
-    }
-  ];
+  const fetchSitterServices = async () => {
+    if (!profile || profile.role === 'pet_owner') return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('sitter_services')
+        .select('*')
+        .eq('sitter_id', profile.id);
 
-  const reviews = [
-    {
-      id: 1,
-      reviewer: 'Sarah M.',
-      rating: 5,
-      comment: 'Amazing sitter! Max loved his walks and Sarah was so professional.',
-      date: '2024-01-16'
-    },
-    {
-      id: 2,
-      reviewer: 'Mike T.',
-      rating: 5,
-      comment: 'Highly recommend! Great communication and care for our cat.',
-      date: '2024-01-12'
+      if (!error && data) {
+        setSitterServices(data);
+      }
+    } catch (error) {
+      console.error('Error fetching sitter services:', error);
     }
-  ];
+  };
+
+  if (loading) {
+    return <div className="min-h-screen bg-background py-8 flex items-center justify-center">Loading...</div>;
+  }
+
+  const userProfile = {
+    name: profile ? `${profile.first_name} ${profile.last_name}` : 'User',
+    email: profile?.email || user?.email || '',
+    location: profile ? `${profile.suburb ? profile.suburb + ', ' : ''}${profile.city || 'Auckland'}` : 'Auckland',
+    memberSince: profile ? new Date(profile.created_at).getFullYear().toString() : '2024',
+    rating: (profile as any)?.rating || 0,
+    reviews: (profile as any)?.total_reviews || 0,
+    completedBookings: recentBookings.filter(b => b.status === 'completed').length,
+    responseRate: (profile as any)?.response_rate || 100,
+    verified: profile?.is_verified || false,
+    avatar: profile?.avatar_url || '',
+    bio: profile?.bio || 'No bio added yet.',
+    services: sitterServices.map(s => s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())),
+    hourlyRate: sitterServices.length > 0 ? Math.min(...sitterServices.map(s => s.hourly_rate || s.daily_rate || 0)) : 0
+  };
+
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -115,12 +133,10 @@ export default function Profile() {
           </CardContent>
         </Card>
 
-        {/* Tab Navigation */}
         <div className="flex flex-wrap gap-2 mb-8">
           {[
             { id: 'overview', label: 'Overview' },
             { id: 'bookings', label: 'My Bookings' },
-            { id: 'reviews', label: 'Reviews' },
             { id: 'earnings', label: 'Earnings' },
             { id: 'settings', label: 'Settings' }
           ].map((tab) => (
@@ -156,33 +172,23 @@ export default function Profile() {
                 </CardContent>
               </Card>
 
-              {/* Recent Reviews */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Reviews</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="border-b last:border-b-0 pb-4 last:pb-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium">{review.reviewer}</span>
-                          <div className="flex">
-                            {[...Array(review.rating)].map((_, i) => (
-                              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            ))}
-                          </div>
-                        </div>
-                        <span className="text-sm text-muted-foreground">{review.date}</span>
-                      </div>
-                      <p className="text-muted-foreground">{review.comment}</p>
+              {/* Services */}
+              {userProfile.services.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Services Offered</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {userProfile.services.map((service) => (
+                        <Badge key={service} variant="secondary">
+                          {service}
+                        </Badge>
+                      ))}
                     </div>
-                  ))}
-                  <Button variant="outline" className="w-full">
-                    View All Reviews
-                  </Button>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Right Column - Stats */}
@@ -199,16 +205,20 @@ export default function Profile() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Total Bookings</span>
-                    <span className="font-medium">{userProfile.completedBookings}</span>
+                    <span className="font-medium">{recentBookings.length}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Hourly Rate</span>
-                    <span className="font-medium">${userProfile.hourlyRate}/hr</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Average Rating</span>
-                    <span className="font-medium">{userProfile.rating}/5</span>
-                  </div>
+                  {userProfile.hourlyRate > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Starting Rate</span>
+                      <span className="font-medium">${userProfile.hourlyRate}/hr</span>
+                    </div>
+                  )}
+                  {userProfile.reviews > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Average Rating</span>
+                      <span className="font-medium">{userProfile.rating}/5</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -238,16 +248,15 @@ export default function Profile() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentBookings.map((booking) => (
+                {recentBookings.length > 0 ? recentBookings.map((booking) => (
                   <div key={booking.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
                         <span className="text-lg">🐕</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{booking.petName} - {booking.service}</h3>
-                        <p className="text-sm text-muted-foreground">{booking.petType}</p>
-                        <p className="text-sm text-muted-foreground">{booking.date}</p>
+                        <h3 className="font-medium">{booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h3>
+                        <p className="text-sm text-muted-foreground">{new Date(booking.start_date).toLocaleDateString()}</p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -257,10 +266,18 @@ export default function Profile() {
                       >
                         {booking.status}
                       </Badge>
-                      <p className="font-medium">${booking.amount}</p>
+                      <p className="font-medium">${booking.total_amount}</p>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>No bookings yet</p>
+                    <Button className="mt-3" onClick={() => window.location.href = '/find-sitters'}>
+                      {profile?.role === 'pet_owner' ? 'Find Sitters' : 'Browse Available Services'}
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -275,18 +292,18 @@ export default function Profile() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center p-6 bg-accent/50 rounded-lg">
                   <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <h3 className="text-2xl font-bold">$1,240</h3>
+                  <h3 className="text-2xl font-bold">$0</h3>
                   <p className="text-muted-foreground">This Month</p>
                 </div>
                 <div className="text-center p-6 bg-accent/50 rounded-lg">
                   <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <h3 className="text-2xl font-bold">$4,890</h3>
+                  <h3 className="text-2xl font-bold">$0</h3>
                   <p className="text-muted-foreground">Total Earned</p>
                 </div>
                 <div className="text-center p-6 bg-accent/50 rounded-lg">
                   <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <h3 className="text-2xl font-bold">$28</h3>
-                  <p className="text-muted-foreground">Avg. per Hour</p>
+                  <h3 className="text-2xl font-bold">${userProfile.hourlyRate}</h3>
+                  <p className="text-muted-foreground">Your Rate</p>
                 </div>
               </div>
               <Button>View Detailed Report</Button>
