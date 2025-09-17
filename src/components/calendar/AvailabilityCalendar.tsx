@@ -56,6 +56,9 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
   };
 
   const getAvailabilityForDate = (date: Date) => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+      return undefined;
+    }
     return availability.find(a => a.date === format(date, 'yyyy-MM-dd'));
   };
 
