@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Star, Heart, Shield, DollarSign, Calendar, MessageCircle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -137,6 +138,7 @@ export default function Profile() {
           {[
             { id: 'overview', label: 'Overview' },
             { id: 'bookings', label: 'My Bookings' },
+            { id: 'calendar', label: 'My Calendar' },
             { id: 'earnings', label: 'Earnings' },
             { id: 'settings', label: 'Settings' }
           ].map((tab) => (
@@ -281,6 +283,24 @@ export default function Profile() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {activeTab === 'calendar' && (
+          <div>
+            {profile?.role === 'pet_owner' ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>Calendar is available for pet sitters</p>
+                    <p className="text-sm">Switch to pet sitter mode to manage your availability</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <AvailabilityCalendar sitterId={profile?.id || ''} />
+            )}
+          </div>
         )}
 
         {activeTab === 'earnings' && (
