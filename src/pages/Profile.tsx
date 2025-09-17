@@ -27,6 +27,8 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<any>({});
   const [portfolioPhotos, setPortfolioPhotos] = useState([]);
+  const [editingService, setEditingService] = useState<string | null>(null);
+  const [serviceEditData, setServiceEditData] = useState<any>({});
 
   useEffect(() => {
     if (profile) {
@@ -136,6 +138,81 @@ export default function Profile() {
         variant: 'destructive',
       });
     }
+  };
+
+  const handleEditService = (service: any) => {
+    setEditingService(service.id);
+    setServiceEditData({
+      hourly_rate: service.hourly_rate || '',
+      daily_rate: service.daily_rate || '',
+      overnight_rate: service.overnight_rate || '',
+      description: service.description || '',
+      max_pets: service.max_pets || 1,
+      is_offered: service.is_offered || true
+    });
+  };
+
+  const handleSaveService = async () => {
+    if (!editingService) return;
+
+    try {
+      const { error } = await supabase
+        .from('sitter_services')
+        .update({
+          hourly_rate: serviceEditData.hourly_rate ? parseFloat(serviceEditData.hourly_rate) : null,
+          daily_rate: serviceEditData.daily_rate ? parseFloat(serviceEditData.daily_rate) : null,
+          overnight_rate: serviceEditData.overnight_rate ? parseFloat(serviceEditData.overnight_rate) : null,
+          description: serviceEditData.description || null,
+          max_pets: parseInt(serviceEditData.max_pets) || 1,
+          is_offered: serviceEditData.is_offered
+        })
+        .eq('id', editingService);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Service updated',
+        description: 'Your service has been successfully updated.',
+      });
+
+      setEditingService(null);
+      fetchSitterServices(); // Refresh services
+    } catch (error) {
+      console.error('Error updating service:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update service. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const getRateLabel = (serviceType: string, rateType: 'hourly' | 'daily' | 'overnight') => {
+    if (serviceType === 'dog_walking' && rateType === 'hourly') {
+      return 'Per Walk';
+    }
+    
+    const labels = {
+      hourly: 'Hourly Rate',
+      daily: 'Daily Rate', 
+      overnight: 'Overnight Rate'
+    };
+    
+    return labels[rateType];
+  };
+
+  const getRateDisplay = (serviceType: string, rateType: 'hourly' | 'daily' | 'overnight', rate: number) => {
+    if (serviceType === 'dog_walking' && rateType === 'hourly') {
+      return `$${rate}/walk`;
+    }
+    
+    const suffixes = {
+      hourly: '/hr',
+      daily: '/day',
+      overnight: '/night'
+    };
+    
+    return `$${rate}${suffixes[rateType]}`;
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -504,88 +581,190 @@ export default function Profile() {
               {sitterServices.map((service) => (
                 <Card key={service.id}>
                   <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      {service.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                      <Badge variant={service.is_offered ? 'default' : 'secondary'}>
-                        {service.is_offered ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>
+                        {service.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </CardTitle>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={service.is_offered ? 'default' : 'secondary'}>
+                          {service.is_offered ? 'Active' : 'Inactive'}
+                        </Badge>
+                        {editingService === service.id ? (
+                          <div className="flex gap-1">
+                            <Button size="sm" onClick={handleSaveService}>
+                              <Save className="w-3 h-3" />
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => setEditingService(null)}>
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button size="sm" variant="outline" onClick={() => handleEditService(service)}>
+                            <Edit3 className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {service.description && (
-                      <p className="text-muted-foreground">{service.description}</p>
-                    )}
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      {service.hourly_rate && (
+                    {editingService === service.id ? (
+                      <>
+                        {/* Editing Mode */}
                         <div>
-                          <Label className="text-sm font-medium">Hourly Rate</Label>
-                          <p className="text-lg font-bold">${service.hourly_rate}/hr</p>
+                          <Label htmlFor="description">Description</Label>
+                          <Textarea
+                            id="description"
+                            value={serviceEditData.description}
+                            onChange={(e) => setServiceEditData({...serviceEditData, description: e.target.value})}
+                            placeholder="Describe your service..."
+                            rows={2}
+                          />
                         </div>
-                      )}
-                      {service.daily_rate && (
-                        <div>
-                          <Label className="text-sm font-medium">Daily Rate</Label>
-                          <p className="text-lg font-bold">${service.daily_rate}/day</p>
-                        </div>
-                      )}
-                      {service.overnight_rate && (
-                        <div>
-                          <Label className="text-sm font-medium">Overnight Rate</Label>
-                          <p className="text-lg font-bold">${service.overnight_rate}/night</p>
-                        </div>
-                      )}
-                    </div>
 
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Max Pets</span>
-                        <span>{service.max_pets}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Experience</span>
-                        <span>{service.experience_years} years</span>
-                      </div>
-                      {service.has_fenced_yard && (
-                        <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">Fenced Yard</span>
-                          <span>✓ Yes</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Senior Pets</span>
-                        <span>{service.allows_senior_pets ? '✓ Yes' : '✗ No'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Puppies</span>
-                        <span>{service.allows_puppies ? '✓ Yes' : '✗ No'}</span>
-                      </div>
-                    </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          {/* Hourly/Per Walk Rate */}
+                          <div>
+                            <Label htmlFor="hourly_rate">{getRateLabel(service.service_type, 'hourly')}</Label>
+                            <Input
+                              id="hourly_rate"
+                              type="number"
+                              step="0.01"
+                              value={serviceEditData.hourly_rate}
+                              onChange={(e) => setServiceEditData({...serviceEditData, hourly_rate: e.target.value})}
+                              placeholder="0.00"
+                            />
+                          </div>
 
-                    {service.accepted_pet_species && service.accepted_pet_species.length > 0 && (
-                      <div>
-                        <Label className="text-sm font-medium">Accepted Pet Types</Label>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {service.accepted_pet_species.map((species) => (
-                            <Badge key={species} variant="outline" className="text-xs">
-                              {species.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                          {/* Daily Rate - only for certain services */}
+                          {service.service_type !== 'dog_walking' && (
+                            <div>
+                              <Label htmlFor="daily_rate">Daily Rate</Label>
+                              <Input
+                                id="daily_rate"
+                                type="number"
+                                step="0.01"
+                                value={serviceEditData.daily_rate}
+                                onChange={(e) => setServiceEditData({...serviceEditData, daily_rate: e.target.value})}
+                                placeholder="0.00"
+                              />
+                            </div>
+                          )}
 
-                    {service.accepted_pet_sizes && service.accepted_pet_sizes.length > 0 && (
-                      <div>
-                        <Label className="text-sm font-medium">Accepted Pet Sizes</Label>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {service.accepted_pet_sizes.map((size) => (
-                            <Badge key={size} variant="outline" className="text-xs">
-                              {size.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                            </Badge>
-                          ))}
+                          {/* Overnight Rate - only for sitting services */}
+                          {(service.service_type.includes('sitting') || service.service_type === 'pet_boarding') && (
+                            <div>
+                              <Label htmlFor="overnight_rate">Overnight Rate</Label>
+                              <Input
+                                id="overnight_rate"
+                                type="number"
+                                step="0.01"
+                                value={serviceEditData.overnight_rate}
+                                onChange={(e) => setServiceEditData({...serviceEditData, overnight_rate: e.target.value})}
+                                placeholder="0.00"
+                              />
+                            </div>
+                          )}
+
+                          <div>
+                            <Label htmlFor="max_pets">Max Pets</Label>
+                            <Input
+                              id="max_pets"
+                              type="number"
+                              min="1"
+                              value={serviceEditData.max_pets}
+                              onChange={(e) => setServiceEditData({...serviceEditData, max_pets: e.target.value})}
+                            />
+                          </div>
                         </div>
-                      </div>
+
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="is_offered"
+                            checked={serviceEditData.is_offered}
+                            onCheckedChange={(checked) => setServiceEditData({...serviceEditData, is_offered: checked})}
+                          />
+                          <Label htmlFor="is_offered">Service is active</Label>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Display Mode */}
+                        {service.description && (
+                          <p className="text-muted-foreground">{service.description}</p>
+                        )}
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          {service.hourly_rate && (
+                            <div>
+                              <Label className="text-sm font-medium">{getRateLabel(service.service_type, 'hourly')}</Label>
+                              <p className="text-lg font-bold">{getRateDisplay(service.service_type, 'hourly', service.hourly_rate)}</p>
+                            </div>
+                          )}
+                          {service.daily_rate && service.service_type !== 'dog_walking' && (
+                            <div>
+                              <Label className="text-sm font-medium">Daily Rate</Label>
+                              <p className="text-lg font-bold">${service.daily_rate}/day</p>
+                            </div>
+                          )}
+                          {service.overnight_rate && (service.service_type.includes('sitting') || service.service_type === 'pet_boarding') && (
+                            <div>
+                              <Label className="text-sm font-medium">Overnight Rate</Label>
+                              <p className="text-lg font-bold">${service.overnight_rate}/night</p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Max Pets</span>
+                            <span>{service.max_pets}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Experience</span>
+                            <span>{service.experience_years} years</span>
+                          </div>
+                          {service.has_fenced_yard && (
+                            <div className="flex justify-between">
+                              <span className="text-sm text-muted-foreground">Fenced Yard</span>
+                              <span>✓ Yes</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Senior Pets</span>
+                            <span>{service.allows_senior_pets ? '✓ Yes' : '✗ No'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Puppies</span>
+                            <span>{service.allows_puppies ? '✓ Yes' : '✗ No'}</span>
+                          </div>
+                        </div>
+
+                        {service.accepted_pet_species && service.accepted_pet_species.length > 0 && (
+                          <div>
+                            <Label className="text-sm font-medium">Accepted Pet Types</Label>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {service.accepted_pet_species.map((species) => (
+                                <Badge key={species} variant="outline" className="text-xs">
+                                  {species.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {service.accepted_pet_sizes && service.accepted_pet_sizes.length > 0 && (
+                          <div>
+                            <Label className="text-sm font-medium">Accepted Pet Sizes</Label>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {service.accepted_pet_sizes.map((size) => (
+                                <Badge key={size} variant="outline" className="text-xs">
+                                  {size.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </CardContent>
                 </Card>
