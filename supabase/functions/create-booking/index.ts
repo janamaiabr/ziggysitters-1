@@ -30,10 +30,11 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Create Supabase client using the anon key for user authentication.
+  // Create Supabase client using the service role key for admin access
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
   );
 
   try {
@@ -112,6 +113,14 @@ serve(async (req) => {
     }
 
     // Create a booking record in pending state
+    logStep("About to create booking", { 
+      owner_id: profile.id, 
+      sitter_id: bookingData.sitterId,
+      service_type: dbServiceType,
+      user_id: user.id,
+      profile_user_id: profile.user_id 
+    });
+
     const { data: booking, error: bookingError } = await supabaseClient
       .from('bookings')
       .insert([{
