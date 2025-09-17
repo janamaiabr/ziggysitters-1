@@ -302,14 +302,14 @@ const Index = () => {
               Join thousands of happy pet owners who trust ZiggySitters with their furry family members
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/find-sitters')}>
+              <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
                 Find a Sitter Now
               </Button>
               <Button 
                 variant="outline-white"
                 size="lg" 
                 className="px-8" 
-                onClick={() => navigate('/become-sitter')}
+                onClick={() => navigate('/auth')}
               >
                 Join as a Sitter
               </Button>

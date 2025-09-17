@@ -102,10 +102,10 @@ export default function HowItWorks() {
               Connecting pet owners with trusted, verified pet sitters in your local community
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/find-sitters')}>
+              <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
                 Find a Sitter
               </Button>
-              <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/become-sitter')}>
+              <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/auth')}>
                 Become a Sitter
               </Button>
             </div>
@@ -322,10 +322,10 @@ export default function HowItWorks() {
             Join thousands of happy pet owners and trusted sitters in our community
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/find-sitters')}>
+            <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
               Find a Sitter
             </Button>
-            <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/become-sitter')}>
+            <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/auth')}>
               Become a Sitter
             </Button>
           </div>

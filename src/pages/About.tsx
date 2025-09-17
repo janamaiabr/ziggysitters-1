@@ -1,9 +1,13 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Heart, Shield, Star, Users, CheckCircle, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function About() {
+  const navigate = useNavigate();
+  
   const stats = [
     { number: '10,000+', label: 'Happy Pet Parents' },
     { number: '2,500+', label: 'Verified Sitters' },
@@ -209,12 +213,19 @@ export default function About() {
               animals and wants to help, we'd love to have you join our growing community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+              <Button 
+                className="px-8 py-3" 
+                onClick={() => navigate('/auth')}
+              >
                 Find a Sitter
-              </button>
-              <button className="border border-primary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary/10 transition-colors">
+              </Button>
+              <Button 
+                variant="outline" 
+                className="px-8 py-3" 
+                onClick={() => navigate('/auth')}
+              >
                 Become a Sitter
-              </button>
+              </Button>
             </div>
           </div>
         </div>
