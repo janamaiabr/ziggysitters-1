@@ -15,50 +15,7 @@ import MessageDialog from '@/components/messaging/MessageDialog';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 
-const mockSitters = [
-  {
-    id: 1,
-    name: 'Emma Wilson',
-    location: 'Ponsonby, Auckland',
-    rating: 4.9,
-    reviews: 127,
-    baseRate: 25,
-    hourlyRate: 27.50, // Base rate + 10% platform fee
-    services: ['Dog Walking', 'Pet Sitting', 'Overnight Care'],
-    petTypes: ['Dogs', 'Cats'],
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
-    verified: true,
-    responseRate: 98
-  },
-  {
-    id: 2,
-    name: 'James Thompson',
-    location: 'Newmarket, Auckland',
-    rating: 4.8,
-    reviews: 89,
-    baseRate: 30,
-    hourlyRate: 33, // Base rate + 10% platform fee
-    services: ['Dog Walking', 'Pet Boarding', 'Drop-in Visits'],
-    petTypes: ['Dogs', 'Small Pets'],
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    verified: true,
-    responseRate: 95
-  },
-  {
-    id: 3,
-    name: 'Sarah Chen',
-    location: 'Mount Eden, Auckland',
-    rating: 5.0,
-    reviews: 156,
-    baseRate: 28,
-    hourlyRate: 30.80, // Base rate + 10% platform fee
-    services: ['Pet Sitting', 'Grooming', 'Training'],
-    petTypes: ['Dogs', 'Cats', 'Birds'],
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-    verified: true,
-    responseRate: 100
-  }
-];
+// No more mock data - using real database profiles
 
 export default function FindSitters() {
   const navigate = useNavigate();
@@ -76,30 +33,62 @@ export default function FindSitters() {
   // Load sitters from the secure database view
   useEffect(() => {
     const fetchSitters = async () => {
-      const { data, error } = await supabase
-        .from('public_sitter_profiles')
-        .select('*')
-        .order('rating', { ascending: false });
-      
-      if (error) {
-        console.error('Error fetching sitters:', error);
-      } else if (data) {
-        const transformedSitters = data.map(sitter => ({
-          id: sitter.id,
-          name: sitter.display_name, // Privacy-safe display name (first name + last initial)
-          location: `${sitter.suburb}, ${sitter.city}`,
-          rating: sitter.rating || 4.8,
-          reviews: sitter.total_reviews || 0,
-          services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table in real implementation
-          petTypes: ['Dogs', 'Cats'], // Would come from sitter preferences in real implementation
-          verified: sitter.is_verified,
-          responseRate: sitter.response_rate || 95,
-          availability: 'Available',
-          avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
-          bio: sitter.bio || 'Experienced pet care provider'
-        }));
+      try {
+        // Fetch profiles
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('public_sitter_profiles')
+          .select('*')
+          .order('rating', { ascending: false });
+        
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+          setAllSitters([]);
+          setFilteredSitters([]);
+          return;
+        }
+
+        // Fetch services for each sitter
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('sitter_services')
+          .select('*')
+          .eq('is_offered', true);
+
+        if (servicesError) {
+          console.error('Error fetching services:', servicesError);
+        }
+
+        // Transform data
+        const transformedSitters = (profilesData || []).map(sitter => {
+          const sitterServices = (servicesData || []).filter(s => s.sitter_id === sitter.id);
+          const serviceNames = sitterServices.map(s => 
+            s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+          );
+          const minRate = Math.min(...sitterServices.map(s => s.hourly_rate || s.daily_rate || 25));
+
+          return {
+            id: sitter.id,
+            name: sitter.display_name,
+            location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
+            rating: sitter.rating || 4.8,
+            reviews: sitter.total_reviews || 0,
+            baseRate: minRate,
+            hourlyRate: minRate * 1.1, // Add 10% platform fee
+            services: serviceNames.length > 0 ? serviceNames : ['Pet Sitting'],
+            petTypes: ['Dogs', 'Cats'], // Could be enhanced with actual pet preferences
+            verified: sitter.is_verified || false,
+            responseRate: sitter.response_rate || 95,
+            availability: 'Available',
+            avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+            bio: sitter.bio || 'Experienced pet care provider'
+          };
+        });
+
         setAllSitters(transformedSitters);
         setFilteredSitters(transformedSitters);
+      } catch (error) {
+        console.error('Error in fetchSitters:', error);
+        setAllSitters([]);
+        setFilteredSitters([]);
       }
     };
 
@@ -107,7 +96,7 @@ export default function FindSitters() {
   }, []);
 
   const handleSearch = () => {
-    let filtered = [...mockSitters];
+    let filtered = [...allSitters]; // Use real data instead of mockSitters
     
     // Filter by location
     if (location) {
