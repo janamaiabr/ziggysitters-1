@@ -83,6 +83,8 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
           date: dateStr,
           is_available: isAvailable,
           notes: notes.trim() || null
+        }, {
+          onConflict: 'sitter_id,date'
         });
 
       if (error) throw error;
