@@ -64,11 +64,12 @@ serve(async (req) => {
     const bookingData: BookingRequest = await req.json();
     logStep("Booking request received", bookingData);
 
-    // Service type to price mapping
+    // Service type to price mapping and database enum mapping
     const servicePrices = {
-      'dog-walking': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Dog Walking - $27.50
-      'pet-sitting': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Pet Sitting - $33.00
-      'overnight-care': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Overnight Care - $66.00
+      'dog_walking': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Dog Walking - $27.50
+      'pet_sitting_owners_home': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Pet Sitting - $55.00
+      'pet_sitting_sitters_home': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Pet Sitting - $66.00
+      'drop_in_visits': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Drop-in Visits - $27.50
     };
 
     const priceId = servicePrices[bookingData.serviceType as keyof typeof servicePrices];
@@ -119,7 +120,18 @@ serve(async (req) => {
     logStep("Booking created", { bookingId: booking.id, reference: booking.booking_reference });
 
     // Calculate hours for line item quantity
-    const hours = Math.max(1, Math.ceil(bookingData.totalAmount / (bookingData.serviceType === 'overnight-care' ? 66 : bookingData.serviceType === 'pet-sitting' ? 33 : 27.5)));
+    const getServiceRate = (serviceType: string) => {
+      switch (serviceType) {
+        case 'pet_sitting_sitters_home': return 66;
+        case 'pet_sitting_owners_home': return 55;
+        case 'drop_in_visits': return 27.5;
+        case 'dog_walking': return 27.5;
+        default: return 27.5;
+      }
+    };
+    
+    const rate = getServiceRate(bookingData.serviceType);
+    const hours = Math.max(1, Math.ceil(bookingData.totalAmount / rate));
 
     // Create a one-time payment session
     const session = await stripe.checkout.sessions.create({
