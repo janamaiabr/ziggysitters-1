@@ -2,3 +2,6 @@ project_id = "qermxzepyzbenemcordv"
 
 [functions.create-admin]
 verify_jwt = false
+
+[functions.check-refund-status]
+verify_jwt = false

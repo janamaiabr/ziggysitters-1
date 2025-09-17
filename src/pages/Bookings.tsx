@@ -5,8 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar as CalendarIcon, Clock, MapPin, Star, MessageSquare } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Calendar as CalendarIcon, Clock, MapPin, Star, MessageSquare, User, Phone, Mail } from 'lucide-react';
 import { format } from 'date-fns';
+import MessageDialog from '@/components/messaging/MessageDialog';
 
 export default function Bookings() {
   const { user } = useAuth();
@@ -14,6 +16,10 @@ export default function Bookings() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [messageRecipient, setMessageRecipient] = useState(null);
 
   useEffect(() => {
     if (profile) {
@@ -36,22 +42,45 @@ export default function Bookings() {
           end_time,
           total_amount, 
           status,
+          payment_status,
           owner_notes,
           sitter_notes,
+          special_instructions,
           created_at,
           owner_id,
-          sitter_id
+          sitter_id,
+          stripe_payment_intent_id,
+          booking_reference,
+          owner:profiles!owner_id(id, first_name, last_name, email, phone, address, suburb, city),
+          sitter:profiles!sitter_id(id, first_name, last_name, email, phone, address, suburb, city, avatar_url)
         `)
         .or(`owner_id.eq.${profile.id},sitter_id.eq.${profile.id}`)
         .order('created_at', { ascending: false });
 
       if (!error && data) {
         setBookings(data);
+        
+        // Check for refunded payments periodically
+        checkRefundStatus();
       }
     } catch (error) {
       console.error('Error fetching bookings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkRefundStatus = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('check-refund-status');
+      if (error) {
+        console.error('Error checking refund status:', error);
+      } else if (data?.updatedBookings > 0) {
+        // Refresh bookings if any were updated
+        fetchBookings();
+      }
+    } catch (error) {
+      console.error('Error checking refund status:', error);
     }
   };
 
@@ -63,6 +92,24 @@ export default function Bookings() {
       case 'cancelled': return 'destructive';
       default: return 'secondary';
     }
+  };
+
+  const handleViewDetails = (booking) => {
+    setSelectedBooking(booking);
+    setShowDetailsDialog(true);
+  };
+
+  const handleMessage = (booking) => {
+    // Determine who to message based on the current user's role in this booking
+    const isOwner = booking.owner_id === profile.id;
+    const recipientProfile = isOwner ? booking.sitter : booking.owner;
+    
+    setMessageRecipient({
+      id: recipientProfile.id,
+      name: `${recipientProfile.first_name} ${recipientProfile.last_name}`,
+      avatar: recipientProfile.avatar_url
+    });
+    setShowMessageDialog(true);
   };
 
   const filteredBookings = bookings.filter(booking => {
@@ -170,16 +217,22 @@ export default function Bookings() {
                     
                     <div className="flex flex-col space-y-2 lg:items-end">
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleMessage(booking)}>
                           <MessageSquare className="w-4 h-4 mr-2" />
                           Message
                         </Button>
-                        {booking.status === 'confirmed' && (
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                        )}
+                        <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
+                          View Details
+                        </Button>
                       </div>
+                      
+                      {/* Show sitter address if booking is confirmed and user is owner */}
+                      {booking.status === 'confirmed' && booking.owner_id === profile.id && booking.sitter?.address && (
+                        <div className="text-sm text-muted-foreground">
+                          <MapPin className="w-3 h-3 inline mr-1" />
+                          Sitter: {booking.sitter.address}, {booking.sitter.suburb}, {booking.sitter.city}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -208,6 +261,92 @@ export default function Bookings() {
           )}
         </div>
       </div>
+
+      {/* Booking Details Dialog */}
+      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Booking Details</DialogTitle>
+          </DialogHeader>
+          
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium mb-2">Service Information</h4>
+                  <p><strong>Service:</strong> {selectedBooking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                  <p><strong>Reference:</strong> {selectedBooking.booking_reference}</p>
+                  <p><strong>Date:</strong> {format(new Date(selectedBooking.start_date), 'MMM dd, yyyy')} - {format(new Date(selectedBooking.end_date), 'MMM dd, yyyy')}</p>
+                  {selectedBooking.start_time && (
+                    <p><strong>Time:</strong> {selectedBooking.start_time} - {selectedBooking.end_time}</p>
+                  )}
+                  <p><strong>Amount:</strong> ${selectedBooking.total_amount}</p>
+                  <p><strong>Status:</strong> <Badge variant={getStatusColor(selectedBooking.status)}>{selectedBooking.status}</Badge></p>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-2">Contact Information</h4>
+                  {selectedBooking.owner_id === profile.id ? (
+                    // Show sitter info to owner
+                    <div>
+                      <p><strong>Sitter:</strong> {selectedBooking.sitter?.first_name} {selectedBooking.sitter?.last_name}</p>
+                      {selectedBooking.status === 'confirmed' && (
+                        <>
+                          <p><strong>Email:</strong> {selectedBooking.sitter?.email}</p>
+                          <p><strong>Phone:</strong> {selectedBooking.sitter?.phone}</p>
+                          <p><strong>Address:</strong> {selectedBooking.sitter?.address}, {selectedBooking.sitter?.suburb}, {selectedBooking.sitter?.city}</p>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    // Show owner info to sitter
+                    <div>
+                      <p><strong>Owner:</strong> {selectedBooking.owner?.first_name} {selectedBooking.owner?.last_name}</p>
+                      {selectedBooking.status === 'confirmed' && (
+                        <>
+                          <p><strong>Email:</strong> {selectedBooking.owner?.email}</p>
+                          <p><strong>Phone:</strong> {selectedBooking.owner?.phone}</p>
+                          <p><strong>Address:</strong> {selectedBooking.owner?.address}, {selectedBooking.owner?.suburb}, {selectedBooking.owner?.city}</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {selectedBooking.special_instructions && (
+                <div>
+                  <h4 className="font-medium mb-2">Special Instructions</h4>
+                  <p className="text-muted-foreground bg-muted p-3 rounded">{selectedBooking.special_instructions}</p>
+                </div>
+              )}
+              
+              {(selectedBooking.owner_notes || selectedBooking.sitter_notes) && (
+                <div>
+                  <h4 className="font-medium mb-2">Notes</h4>
+                  {selectedBooking.owner_notes && (
+                    <p className="text-sm mb-2"><strong>Owner notes:</strong> {selectedBooking.owner_notes}</p>
+                  )}
+                  {selectedBooking.sitter_notes && (
+                    <p className="text-sm"><strong>Sitter notes:</strong> {selectedBooking.sitter_notes}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Message Dialog */}
+      {messageRecipient && (
+        <MessageDialog
+          isOpen={showMessageDialog}
+          onClose={() => setShowMessageDialog(false)}
+          recipientId={messageRecipient.id}
+          recipientName={messageRecipient.name}
+          recipientAvatar={messageRecipient.avatar}
+        />
+      )}
     </div>
   );
 }

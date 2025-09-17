@@ -211,18 +211,35 @@ export default function SitterProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Booking Form */}
-            <BookingAccordion
-              sitter={{
-                id: sitterData.id,
-                name: sitterData.display_name,
-                location: sitterData.location,
-                hourlyRate: sitterData.hourlyRate,
-                services: sitterData.services,
-                avatar: sitterData.avatar
-              }}
-              isOpen={isBookingOpen}
-            />
+            {/* Booking CTA Button */}
+            <Card className="mb-6">
+              <CardContent className="p-6 text-center">
+                <h3 className="text-xl font-semibold mb-3">Ready to book {sitterData.display_name.split(' ')[0]}?</h3>
+                <p className="text-muted-foreground mb-4">Secure, reliable pet care from a verified sitter</p>
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+                  onClick={() => setIsBookingOpen(true)}
+                >
+                  Book Your Service
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Booking Form - Hidden Accordion */}
+            <div className={isBookingOpen ? 'block' : 'hidden'}>
+              <BookingAccordion
+                sitter={{
+                  id: sitterData.id,
+                  name: sitterData.display_name,
+                  location: sitterData.location,
+                  hourlyRate: sitterData.hourlyRate,
+                  services: sitterData.services,
+                  avatar: sitterData.avatar
+                }}
+                isOpen={true}
+                onBookingComplete={() => navigate('/bookings')}
+              />
+            </div>
             {/* About */}
             <Card>
               <CardHeader>

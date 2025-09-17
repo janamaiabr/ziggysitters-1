@@ -26,6 +26,7 @@ interface BookingAccordionProps {
     avatar: string;
   };
   isOpen?: boolean;
+  onBookingComplete?: () => void;
 }
 
 const serviceRates = {
@@ -55,7 +56,7 @@ const serviceUnits = {
   'grooming': 'service',
 };
 
-export default function BookingAccordion({ sitter, isOpen = false }: BookingAccordionProps) {
+export default function BookingAccordion({ sitter, isOpen = false, onBookingComplete }: BookingAccordionProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [startTime, setStartTime] = useState('09:00');
@@ -147,6 +148,13 @@ export default function BookingAccordion({ sitter, isOpen = false }: BookingAcco
           title: 'Redirecting to Payment',
           description: `Booking reference: ${data.booking_reference}`,
         });
+        
+        // Call the callback to redirect to bookings after successful booking creation
+        if (onBookingComplete) {
+          setTimeout(() => {
+            onBookingComplete();
+          }, 1000);
+        }
       }
     } catch (error) {
       console.error('Booking error:', error);
