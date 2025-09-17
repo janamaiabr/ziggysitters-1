@@ -67,6 +67,7 @@ export default function SitterProfile() {
           .from('public_sitter_profiles')
           .select('*')
           .eq('id', id)
+          .neq('role', 'admin')  // Extra filter to ensure no admin users
           .single();
 
         if (error) {

@@ -35,6 +35,7 @@ export default function FindSitters() {
         const { data: profilesData, error: profilesError } = await supabase
           .from('public_sitter_profiles')
           .select('*')
+          .neq('role', 'admin')  // Extra filter to ensure no admin users
           .order('rating', { ascending: false });
         
         if (profilesError) {
