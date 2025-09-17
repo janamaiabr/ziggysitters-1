@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Search, UserCheck, MessageCircle, CreditCard, Shield, Heart, Star, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
 
@@ -83,6 +84,8 @@ const safetyFeatures = [
 ];
 
 export default function HowItWorks() {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -99,10 +102,10 @@ export default function HowItWorks() {
               Connecting pet owners with trusted, verified pet sitters in your local community
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="solid-white" className="px-8">
+              <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/find-sitters')}>
                 Find a Sitter
               </Button>
-              <Button variant="outline-white" size="lg" className="px-8">
+              <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/become-sitter')}>
                 Become a Sitter
               </Button>
             </div>
@@ -319,10 +322,10 @@ export default function HowItWorks() {
             Join thousands of happy pet owners and trusted sitters in our community
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="solid-white" className="px-8">
+            <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/find-sitters')}>
               Find a Sitter
             </Button>
-            <Button variant="outline-white" size="lg" className="px-8">
+            <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/become-sitter')}>
               Become a Sitter
             </Button>
           </div>
