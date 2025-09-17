@@ -153,7 +153,7 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
 
   const getDayClassName = (date: Date) => {
     const availability = getAvailabilityForDate(date);
-    if (!availability) return '';
+    if (!availability) return 'bg-green-50 hover:bg-green-100 border-green-200'; // Default to available
     
     return availability.is_available 
       ? 'bg-green-100 hover:bg-green-200 border-green-300' 
@@ -162,7 +162,13 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
 
   const getDayContent = (date: Date) => {
     const availability = getAvailabilityForDate(date);
-    if (!availability) return null;
+    if (!availability) {
+      return (
+        <div className="absolute top-0 right-0 p-1">
+          <Check className="h-3 w-3 text-green-600" />
+        </div>
+      );
+    }
     
     return (
       <div className="absolute top-0 right-0 p-1">
