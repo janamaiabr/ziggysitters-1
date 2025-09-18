@@ -98,52 +98,74 @@ const Index = () => {
             
       {/* Enhanced Search Bar */}
             <div className="bg-white rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 mb-4">
-                <SuburbAutocomplete
-                  value={location}
-                  onChange={setLocation}
-                  placeholder="Enter suburb"
-                />
-                <Input 
-                  placeholder="Check-in date"
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="h-12 border-gray-300 text-gray-800 focus:border-primary"
-                />
-                <Input 
-                  placeholder="Check-out date"
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="h-12 border-gray-300 text-gray-800 focus:border-primary"
-                />
-                <Select value={serviceType} onValueChange={setServiceType}>
-                  <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary">
-                    <SelectValue placeholder="Service type" />
-                  </SelectTrigger>
-                   <SelectContent className="z-50 bg-white">
-                     <SelectItem value="pet_sitting_sitters_home">🏠 Pet Sitting in Sitter's Home</SelectItem>
-                     <SelectItem value="pet_sitting_owners_home">🏡 Pet Sitting in Owner's Home</SelectItem>
-                     <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
-                   </SelectContent>
-                </Select>
+              {/* Mobile Optimized: Stack fields properly */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Where?</label>
+                    <SuburbAutocomplete
+                      value={location}
+                      onChange={setLocation}
+                      placeholder="Enter suburb or city"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Service</label>
+                    <Select value={serviceType} onValueChange={setServiceType}>
+                      <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white">
+                        <SelectValue placeholder="What do you need?" />
+                      </SelectTrigger>
+                       <SelectContent className="z-50 bg-white border shadow-lg">
+                         <SelectItem value="pet_sitting_sitters_home">🏠 Pet Sitting (Sitter's Home)</SelectItem>
+                         <SelectItem value="pet_sitting_owners_home">🏡 Pet Sitting (Your Home)</SelectItem>
+                         <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
+                         <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
+                       </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Check-in</label>
+                    <Input 
+                      type="date"
+                      value={checkIn}
+                      onChange={(e) => setCheckIn(e.target.value)}
+                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Check-out</label>
+                    <Input 
+                      type="date"
+                      value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                    />
+                  </div>
+                </div>
               </div>
-              <Button 
-                size="lg" 
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 w-full md:w-auto font-semibold"
-                onClick={() => {
-                  const params = new URLSearchParams();
-                  if (location) params.set('location', location);
-                  if (serviceType) params.set('serviceType', serviceType);
-                  if (checkIn) params.set('checkIn', checkIn);
-                  if (checkOut) params.set('checkOut', checkOut);
-                  navigate(`/find-sitters?${params.toString()}`);
-                }}
-              >
-                 <Search className="mr-2 h-5 w-5" />
-                 🐾 Find Perfect Sitters
-              </Button>
+              
+              <div className="mt-6">
+                <Button 
+                  size="lg" 
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 w-full md:w-auto font-semibold text-base"
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    if (location) params.set('location', location);
+                    if (serviceType) params.set('serviceType', serviceType);
+                    if (checkIn) params.set('checkIn', checkIn);
+                    if (checkOut) params.set('checkOut', checkOut);
+                    navigate(`/find-sitters?${params.toString()}`);
+                  }}
+                >
+                   <Search className="mr-2 h-5 w-5" />
+                   🐾 Find Perfect Sitters
+                </Button>
+              </div>
             </div>
             
             {/* Trust Indicators */}

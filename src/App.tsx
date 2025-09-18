@@ -26,6 +26,7 @@ import Security from "./pages/Security";
 import SitterProfile from "./pages/SitterProfile";
 import BookingSuccess from "./pages/BookingSuccess";
 import Onboarding from "./pages/Onboarding";
+import OnboardingComplete from "./pages/OnboardingComplete";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +104,8 @@ function AppContent() {
               </OnboardingRoute>
             } 
           />
+          
+          <Route path="/onboarding-complete" element={<OnboardingComplete />} />
           
           {/* Protected Routes */}
           <Route 

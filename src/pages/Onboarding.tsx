@@ -190,7 +190,7 @@ export default function Onboarding() {
       title: "Profile completed!",
       description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
     });
-    navigate('/');
+    navigate('/onboarding-complete');
   };
 
   const nextStep = () => {

@@ -3,9 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { X } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface FilterPanelProps {
   isOpen: boolean;
@@ -14,30 +17,28 @@ interface FilterPanelProps {
 }
 
 export default function FilterPanel({ isOpen, onClose, onApplyFilters }: FilterPanelProps) {
-  const [priceRange, setPriceRange] = useState([20, 50]);
+  const isMobile = useIsMobile();
+  const [priceRange, setPriceRange] = useState([10, 100]);
+  const [rating, setRating] = useState(4);
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedPetTypes, setSelectedPetTypes] = useState<string[]>([]);
-  const [rating, setRating] = useState([4]);
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [availableToday, setAvailableToday] = useState(false);
 
   const services = [
     'Dog Walking',
-    'Pet Sitting',
+    'Pet Sitting', 
     'Overnight Care',
     'Drop-in Visits',
     'Pet Boarding',
-    'Grooming',
-    'Training'
+    'Grooming'
   ];
 
   const petTypes = [
     'Dogs',
-    'Cats',
+    'Cats', 
     'Birds',
     'Small Pets',
-    'Reptiles',
-    'Fish'
+    'Reptiles'
   ];
 
   const handleServiceToggle = (service: string) => {
@@ -59,156 +60,193 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters }: FilterP
   const handleApplyFilters = () => {
     const filters = {
       priceRange,
-      selectedServices,
-      selectedPetTypes,
-      rating: rating[0],
+      rating,
       verifiedOnly,
-      availableToday
+      selectedServices,
+      selectedPetTypes
     };
     onApplyFilters(filters);
     onClose();
   };
 
-  const handleClearAll = () => {
-    setPriceRange([20, 50]);
+  const clearFilters = () => {
+    setPriceRange([10, 100]);
+    setRating(4);
+    setVerifiedOnly(false);
     setSelectedServices([]);
     setSelectedPetTypes([]);
-    setRating([4]);
-    setVerifiedOnly(false);
-    setAvailableToday(false);
   };
 
-  if (!isOpen) return null;
+  const FilterContent = () => (
+    <div className="space-y-6">
+      {/* Price Range */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Price Range (per hour)</Label>
+        <Slider
+          value={priceRange}
+          onValueChange={setPriceRange}
+          max={150}
+          min={10}
+          step={5}
+          className="w-full"
+        />
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>${priceRange[0]}</span>
+          <span>${priceRange[1]}</span>
+        </div>
+      </div>
 
-  return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex justify-end">
-      <div className="bg-background w-full max-w-sm md:max-w-md h-full overflow-y-auto">
-        <Card className="h-full rounded-none border-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-            <CardTitle>Filters</CardTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            {/* Removed price and rating filters */}
+      <Separator />
 
-            {/* Services */}
-            <div>
-              <h3 className="font-medium mb-4">Services</h3>
-              <div className="space-y-3">
-                {services.map((service) => (
-                  <div key={service} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={service}
-                      checked={selectedServices.includes(service)}
-                      onCheckedChange={() => handleServiceToggle(service)}
-                    />
-                    <label htmlFor={service} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      {service}
-                    </label>
-                  </div>
-                ))}
-              </div>
+      {/* Rating */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Minimum Rating</Label>
+        <Slider
+          value={[rating]}
+          onValueChange={(value) => setRating(value[0])}
+          max={5}
+          min={1}
+          step={0.5}
+          className="w-full"
+        />
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>1 star</span>
+          <span>{rating} stars</span>
+          <span>5 stars</span>
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Services */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium">Services</Label>
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-2`}>
+          {services.map((service) => (
+            <div key={service} className="flex items-center space-x-2">
+              <Checkbox
+                id={service}
+                checked={selectedServices.includes(service)}
+                onCheckedChange={() => handleServiceToggle(service)}
+              />
+              <Label htmlFor={service} className="text-sm">{service}</Label>
             </div>
+          ))}
+        </div>
+      </div>
 
-            <Separator />
+      <Separator />
 
-            {/* Pet Types */}
-            <div>
-              <h3 className="font-medium mb-4">Pet Types</h3>
-              <div className="space-y-3">
-                {petTypes.map((petType) => (
-                  <div key={petType} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={petType}
-                      checked={selectedPetTypes.includes(petType)}
-                      onCheckedChange={() => handlePetTypeToggle(petType)}
-                    />
-                    <label htmlFor={petType} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      {petType}
-                    </label>
-                  </div>
-                ))}
-              </div>
+      {/* Pet Types */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium">Pet Types</Label>
+        <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-3'} gap-2`}>
+          {petTypes.map((petType) => (
+            <div key={petType} className="flex items-center space-x-2">
+              <Checkbox
+                id={petType}
+                checked={selectedPetTypes.includes(petType)}
+                onCheckedChange={() => handlePetTypeToggle(petType)}
+              />
+              <Label htmlFor={petType} className="text-sm">{petType}</Label>
             </div>
+          ))}
+        </div>
+      </div>
 
-            <Separator />
+      <Separator />
 
-            {/* Additional Options */}
-            <div>
-              <h3 className="font-medium mb-4">Additional Options</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="verified"
-                      checked={verifiedOnly}
-                      onCheckedChange={(checked) => setVerifiedOnly(checked === true)}
-                    />
-                  <label htmlFor="verified" className="text-sm font-medium leading-none">
-                    Verified sitters only
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="available"
-                      checked={availableToday}
-                      onCheckedChange={(checked) => setAvailableToday(checked === true)}
-                    />
-                  <label htmlFor="available" className="text-sm font-medium leading-none">
-                    Available today
-                  </label>
-                </div>
-              </div>
+      {/* Additional Options */}
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="verified"
+          checked={verifiedOnly}
+          onCheckedChange={(checked) => setVerifiedOnly(checked === true)}
+        />
+        <Label htmlFor="verified" className="text-sm">Verified sitters only</Label>
+      </div>
+
+      {/* Active Filters */}
+      {(selectedServices.length > 0 || selectedPetTypes.length > 0) && (
+        <>
+          <Separator />
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Active Filters</Label>
+            <div className="flex flex-wrap gap-2">
+              {selectedServices.map((service) => (
+                <Badge key={service} variant="secondary" className="text-xs">
+                  {service}
+                  <button
+                    onClick={() => handleServiceToggle(service)}
+                    className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+              {selectedPetTypes.map((petType) => (
+                <Badge key={petType} variant="outline" className="text-xs">
+                  {petType}
+                  <button
+                    onClick={() => handlePetTypeToggle(petType)}
+                    className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
             </div>
-
-            {/* Active Filters */}
-            {(selectedServices.length > 0 || selectedPetTypes.length > 0) && (
-              <>
-                <Separator />
-                <div>
-                  <h3 className="font-medium mb-4">Active Filters</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedServices.map((service) => (
-                      <Badge key={service} variant="secondary" className="text-xs">
-                        {service}
-                        <button
-                          onClick={() => handleServiceToggle(service)}
-                          className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                    {selectedPetTypes.map((petType) => (
-                      <Badge key={petType} variant="outline" className="text-xs">
-                        {petType}
-                        <button
-                          onClick={() => handlePetTypeToggle(petType)}
-                          className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </CardContent>
-
-          {/* Footer */}
-          <div className="p-6 pt-0 space-y-3">
-            <Button className="w-full" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-            <Button variant="outline" className="w-full" onClick={handleClearAll}>
-              Clear All
-            </Button>
           </div>
-        </Card>
+        </>
+      )}
+
+      {/* Action Buttons */}
+      <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-3 pt-4`}>
+        <Button onClick={handleApplyFilters} className="flex-1">
+          Apply Filters
+        </Button>
+        <Button variant="outline" onClick={clearFilters} className="flex-1">
+          Clear All
+        </Button>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Mobile: Sheet overlay */}
+      {isMobile ? (
+        <Sheet open={isOpen} onOpenChange={onClose}>
+          <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>Filter Sitters</SheetTitle>
+            </SheetHeader>
+            <div className="mt-6">
+              <FilterContent />
+            </div>
+          </SheetContent>
+        </Sheet>
+      ) : (
+        /* Desktop: Fixed sidebar */
+        isOpen && (
+          <div className="fixed inset-0 z-50">
+            <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+            <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl">
+              <Card className="h-full border-0 rounded-none">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>Filter Sitters</CardTitle>
+                  <Button variant="ghost" size="sm" onClick={onClose}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent className="overflow-y-auto flex-1 pb-24">
+                  <FilterContent />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )
+      )}
+    </>
   );
 }
