@@ -290,16 +290,6 @@ export default function PetOwnerOnboarding({ userId, onComplete }: PetOwnerOnboa
               </div>
             </div>
 
-            {pet.vaccination_status && (
-              <div className="space-y-2">
-                <Label>Vaccination Expiry Date</Label>
-                <Input
-                  type="date"
-                  value={pet.vaccination_expiry || ''}
-                  onChange={(e) => updatePet(index, 'vaccination_expiry', e.target.value)}
-                />
-              </div>
-            )}
 
             {/* Emergency Contact */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

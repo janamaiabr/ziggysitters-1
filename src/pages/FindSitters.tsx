@@ -27,6 +27,7 @@ export default function FindSitters() {
   const [allSitters, setAllSitters] = useState<any[]>([]);
   const [filteredSitters, setFilteredSitters] = useState<any[]>([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [currentFilters, setCurrentFilters] = useState<any>(null);
 
   // Load sitters from the secure database view
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function FindSitters() {
             services: serviceNames.length > 0 ? serviceNames : ['Pet Sitting'],
             petTypes: ['Dogs', 'Cats'], // Could be enhanced with actual pet preferences
             verified: sitter.is_verified || false,
-            responseRate: sitter.response_rate || 95,
+            
             availability: 'Available',
             avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
             bio: sitter.bio || 'Experienced pet care provider'
@@ -143,9 +144,18 @@ export default function FindSitters() {
     
     setFilteredSitters(filtered);
     setSearchPerformed(true);
+    
+    // Scroll to results section after search
+    setTimeout(() => {
+      const resultsSection = document.querySelector('.results-section');
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const handleApplyFilters = (filters: any) => {
+    setCurrentFilters(filters);
     let filtered = [...allSitters];
     
     // Apply price range filter
@@ -178,6 +188,14 @@ export default function FindSitters() {
     
     setFilteredSitters(filtered);
     setSearchPerformed(true);
+    
+    // Scroll to results section after applying filters
+    setTimeout(() => {
+      const resultsSection = document.querySelector('.results-section');
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
@@ -335,7 +353,7 @@ export default function FindSitters() {
       </div>
 
       {/* Results */}
-      <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="container mx-auto px-4 py-8 md:py-12 results-section">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-2">
           <h2 className="text-xl md:text-2xl font-bold">
             {searchPerformed 
@@ -365,9 +383,6 @@ export default function FindSitters() {
                       </div>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm">
-                    <Heart className="w-4 h-4" />
-                  </Button>
                 </div>
               </CardHeader>
               
@@ -414,7 +429,7 @@ export default function FindSitters() {
                    )}
                    
                    <div className="text-xs md:text-sm text-muted-foreground">
-                     📞 {sitter.responseRate}% response rate
+                     
                    </div>
                 </div>
                 
@@ -437,6 +452,7 @@ export default function FindSitters() {
         isOpen={showFilters}
         onClose={() => setShowFilters(false)}
         onApplyFilters={handleApplyFilters}
+        currentFilters={currentFilters}
       />
 
     </div>

@@ -250,10 +250,11 @@ export default function Auth() {
                         id="signup-password"
                         name="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
+                        placeholder="Create a password (min 6 characters)"
                         value={formData.password}
                         onChange={handleInputChange}
                         required
+                        minLength={6}
                       />
                       <Button
                         type="button"
@@ -265,8 +266,15 @@ export default function Auth() {
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                     </div>
+                    {formData.password && formData.password.length > 0 && formData.password.length < 6 && (
+                      <p className="text-sm text-destructive">Password must be at least 6 characters</p>
+                    )}
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading || (formData.password && formData.password.length < 6)}
+                  >
                     {isLoading ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>

@@ -51,7 +51,7 @@ const Index = () => {
           location: `${sitter.suburb}, ${sitter.city}`,
           services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table
           verified: sitter.is_verified,
-          responseRate: sitter.response_rate || 95,
+          
           avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
           bio: sitter.bio || 'Experienced pet care provider'
         })));
@@ -260,7 +260,7 @@ const Index = () => {
                   
                    <div className="flex items-center justify-between">
                       <div className="text-xs md:text-sm text-muted-foreground">
-                        📞 {sitter.responseRate}% response rate
+                        
                      </div>
                    </div>
                   

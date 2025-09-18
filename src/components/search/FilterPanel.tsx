@@ -14,15 +14,16 @@ interface FilterPanelProps {
   isOpen: boolean;
   onClose: () => void;
   onApplyFilters: (filters: any) => void;
+  currentFilters?: any;
 }
 
-export default function FilterPanel({ isOpen, onClose, onApplyFilters }: FilterPanelProps) {
+export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFilters }: FilterPanelProps) {
   const isMobile = useIsMobile();
-  const [priceRange, setPriceRange] = useState([10, 100]);
-  const [rating, setRating] = useState(4);
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedPetTypes, setSelectedPetTypes] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState(currentFilters?.priceRange || [10, 100]);
+  const [rating, setRating] = useState(currentFilters?.rating || 4);
+  const [verifiedOnly, setVerifiedOnly] = useState(currentFilters?.verifiedOnly || false);
+  const [selectedServices, setSelectedServices] = useState<string[]>(currentFilters?.selectedServices || []);
+  const [selectedPetTypes, setSelectedPetTypes] = useState<string[]>(currentFilters?.selectedPetTypes || []);
 
   const services = [
     'Dog Walking',

@@ -21,7 +21,7 @@ type PublicSitterProfile = {
   is_verified: boolean | null;
   rating: number | null;
   total_reviews: number | null;
-  response_rate: number | null;
+  
   background_check_verified: boolean | null;
   verification_status: 'pending' | 'verified' | 'rejected' | null;
   created_at: string | null;

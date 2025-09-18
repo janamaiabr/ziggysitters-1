@@ -32,7 +32,7 @@ interface SitterData {
   petTypes: string[];
   avatar: string;
   verified: boolean;
-  responseRate: number;
+  
   bio: string;
   experience: string;
   availability: string[];
@@ -132,7 +132,7 @@ export default function SitterProfile() {
             petTypes: ['Dogs', 'Cats'], // This could be expanded to use real accepted_pet_species
             avatar: data.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
             verified: data.is_verified,
-            responseRate: data.response_rate || 95,
+            
             bio: data.bio || 'Experienced pet care provider',
             experience: '3+ years', // This could come from services data
             availability: ['Weekdays', 'Weekends'], // This could be expanded to use real availability data
@@ -231,7 +231,7 @@ export default function SitterProfile() {
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
-                  <span className="text-sm">{sitterData.responseRate}% response rate</span>
+                  
                 </div>
               </div>
               

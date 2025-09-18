@@ -256,7 +256,6 @@ export type Database = {
           special_care_notes: string | null
           species: Database["public"]["Enums"]["pet_species"]
           updated_at: string
-          vaccination_expiry: string | null
           vaccination_status: boolean | null
           weight: number | null
         }
@@ -281,7 +280,6 @@ export type Database = {
           special_care_notes?: string | null
           species: Database["public"]["Enums"]["pet_species"]
           updated_at?: string
-          vaccination_expiry?: string | null
           vaccination_status?: boolean | null
           weight?: number | null
         }
@@ -306,7 +304,6 @@ export type Database = {
           special_care_notes?: string | null
           species?: Database["public"]["Enums"]["pet_species"]
           updated_at?: string
-          vaccination_expiry?: string | null
           vaccination_status?: boolean | null
           weight?: number | null
         }

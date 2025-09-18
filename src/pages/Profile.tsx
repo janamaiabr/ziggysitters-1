@@ -364,7 +364,7 @@ export default function Profile() {
     verified: profile.is_verified,
     rating: profile.rating || 0,
     reviews: profile.total_reviews || 0,
-    responseRate: profile.response_rate || 100,
+    
     memberSince: format(new Date(profile.created_at), 'MMM yyyy'),
     completedBookings: recentBookings.length,
     hourlyRate: 0, // Removed hourly rates
@@ -640,7 +640,7 @@ export default function Profile() {
                   <CardContent className="space-y-4">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Response Rate</span>
-                      <span className="font-medium">{userProfile.responseRate}%</span>
+                      
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Total Bookings</span>

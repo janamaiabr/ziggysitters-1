@@ -19,7 +19,7 @@ interface PetData {
   photo_urls: string[];
   is_neutered: boolean;
   vaccination_status: boolean;
-  vaccination_expiry?: string;
+  
   emergency_contact_name: string;
   emergency_contact_phone: string;
 }
@@ -132,7 +132,7 @@ export function usePetOwnerOnboarding() {
           photo_urls: pet.photo_urls,
           is_neutered: pet.is_neutered,
           vaccination_status: pet.vaccination_status,
-          vaccination_expiry: pet.vaccination_expiry || null,
+          
           emergency_contact_name: pet.emergency_contact_name,
           emergency_contact_phone: pet.emergency_contact_phone
         };
@@ -141,11 +141,25 @@ export function usePetOwnerOnboarding() {
           .from('pets')
           .insert(petData);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Pet insert error:', error);
+          throw error;
+        }
       }
 
+      toast({
+        title: "Pets saved successfully!",
+        description: "Your pet information has been saved.",
+      });
+      
       return { success: true };
     } catch (error: any) {
+      console.error('Save pets error:', error);
+      toast({
+        title: "Failed to save pets",
+        description: error.message,
+        variant: "destructive",
+      });
       return { success: false, error: error.message };
     }
   };
