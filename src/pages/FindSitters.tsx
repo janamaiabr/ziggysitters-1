@@ -33,12 +33,17 @@ export default function FindSitters() {
   useEffect(() => {
     const fetchSitters = async () => {
       try {
+        console.log('Fetching sitters...');
+        
         // Fetch profiles
         const { data: profilesData, error: profilesError } = await supabase
           .from('public_sitter_profiles')
           .select('*')
           .neq('role', 'admin')  // Extra filter to ensure no admin users
           .order('rating', { ascending: false });
+        
+        console.log('Profiles data:', profilesData);
+        console.log('Profiles error:', profilesError);
         
         if (profilesError) {
           console.error('Error fetching profiles:', profilesError);
@@ -53,6 +58,9 @@ export default function FindSitters() {
           .select('*')
           .eq('is_offered', true);
 
+        console.log('Services data:', servicesData);
+        console.log('Services error:', servicesError);
+
         if (servicesError) {
           console.error('Error fetching services:', servicesError);
         }
@@ -63,9 +71,12 @@ export default function FindSitters() {
           const serviceNames = sitterServices.map(s => 
             s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
           );
-          const minRate = Math.min(...sitterServices.map(s => s.hourly_rate || s.daily_rate || 25));
+          
+          // Calculate rates from services
+          const rates = sitterServices.map(s => s.hourly_rate || s.daily_rate || s.overnight_rate || 25).filter(r => r > 0);
+          const minRate = rates.length > 0 ? Math.min(...rates) : 25;
 
-          return {
+          const transformed = {
             id: sitter.id,
             name: sitter.display_name,
             location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
@@ -81,8 +92,12 @@ export default function FindSitters() {
             avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
             bio: sitter.bio || 'Experienced pet care provider'
           };
+          
+          console.log('Transformed sitter:', transformed);
+          return transformed;
         });
 
+        console.log('All transformed sitters:', transformedSitters);
         setAllSitters(transformedSitters);
         setFilteredSitters(transformedSitters);
       } catch (error) {
@@ -365,86 +380,114 @@ export default function FindSitters() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {filteredSitters.map((sitter) => (
-            <Card key={sitter.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3 md:pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-2 md:space-x-3">
-                    <img 
-                      src={sitter.avatar} 
-                      alt={sitter.name}
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <CardTitle className="text-base md:text-lg">{sitter.name}</CardTitle>
-                      <div className="flex items-center text-xs md:text-sm text-muted-foreground">
-                        <MapPin className="w-3 h-3 mr-1" />
-                        {sitter.location}
+          {filteredSitters.length > 0 ? (
+            filteredSitters.map((sitter) => (
+              <Card key={sitter.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-3 md:pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-2 md:space-x-3">
+                      <img 
+                        src={sitter.avatar} 
+                        alt={sitter.name}
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <CardTitle className="text-base md:text-lg">{sitter.name}</CardTitle>
+                        <div className="flex items-center text-xs md:text-sm text-muted-foreground">
+                          <MapPin className="w-3 h-3 mr-1" />
+                          {sitter.location}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardHeader>
-              
-               <CardContent className="space-y-3 md:space-y-4">
-                 {sitter.rating > 0 && (
-                   <div className="flex items-center justify-between">
-                     <div className="flex items-center space-x-1">
-                       <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
-                       <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
-                       <span className="text-xs md:text-sm text-muted-foreground">⭐ Verified</span>
-                     </div>
-                     {sitter.verified && (
-                       <Badge variant="secondary" className="text-xs">✅ Verified</Badge>
-                     )}
-                   </div>
-                 )}
+                </CardHeader>
                 
-                <div className="space-y-2">
-                  <div className="flex flex-wrap gap-1">
-                    {sitter.services.slice(0, 2).map((service) => (
-                      <Badge key={service} variant="outline" className="text-xs">
-                        {service}
-                      </Badge>
-                    ))}
-                    {sitter.services.length > 2 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{sitter.services.length - 2} more
-                      </Badge>
-                    )}
-                  </div>
-                   
-                    {sitter.baseRate > 0 && (
-                     <div className="space-y-1">
-                       <div className="flex items-center justify-between">
-                         <span className="text-xs md:text-sm text-muted-foreground">Starting from</span>
-                         <div className="text-right">
-                           <span className="font-bold text-base md:text-lg">${sitter.baseRate}/day</span>
-                           <div className="text-xs text-muted-foreground">
-                             💰 Best rates in area
+                 <CardContent className="space-y-3 md:space-y-4">
+                   {sitter.rating > 0 && (
+                     <div className="flex items-center justify-between">
+                       <div className="flex items-center space-x-1">
+                         <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
+                         <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
+                         <span className="text-xs md:text-sm text-muted-foreground">({sitter.reviews} reviews)</span>
+                       </div>
+                       {sitter.verified && (
+                         <Badge variant="secondary" className="text-xs">✅ Verified</Badge>
+                       )}
+                     </div>
+                   )}
+                  
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-1">
+                      {sitter.services.slice(0, 2).map((service) => (
+                        <Badge key={service} variant="outline" className="text-xs">
+                          {service}
+                        </Badge>
+                      ))}
+                      {sitter.services.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{sitter.services.length - 2} more
+                        </Badge>
+                      )}
+                    </div>
+                     
+                      {sitter.baseRate > 0 && (
+                       <div className="space-y-1">
+                         <div className="flex items-center justify-between">
+                           <span className="text-xs md:text-sm text-muted-foreground">Starting from</span>
+                           <div className="text-right">
+                             <span className="font-bold text-base md:text-lg">${sitter.baseRate}/day</span>
+                             <div className="text-xs text-muted-foreground">
+                               💰 Best rates in area
+                             </div>
                            </div>
                          </div>
                        </div>
-                     </div>
-                   )}
-                   
-                   <div className="text-xs md:text-sm text-muted-foreground">
+                     )}
                      
-                   </div>
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button 
-                    className="flex-1 text-sm md:text-base" 
-                    onClick={() => navigate(`/sitter/${sitter.id}`)}
-                  >
-                    🐾 Book Now
-                  </Button>
-                  {/* Removed messaging functionality */}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                     <div className="text-xs md:text-sm text-muted-foreground">
+                       {sitter.bio}
+                     </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1 text-sm md:text-base" 
+                      onClick={() => navigate(`/sitter/${sitter.id}`)}
+                    >
+                      🐾 Book Now
+                    </Button>
+                    {/* Removed messaging functionality */}
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full">
+              <Card className="text-center py-8">
+                <CardContent>
+                  <div className="text-6xl mb-4">🐾</div>
+                  <h3 className="text-xl font-semibold mb-2">No sitters found</h3>
+                  <p className="text-muted-foreground mb-4">
+                    {searchPerformed 
+                      ? "Try adjusting your search criteria or filters to find more sitters in your area."
+                      : "Loading available sitters..."
+                    }
+                  </p>
+                  {searchPerformed && (
+                    <Button variant="outline" onClick={() => {
+                      setLocation('');
+                      setServiceType('');
+                      setPetType('');
+                      setFilteredSitters(allSitters);
+                      setSearchPerformed(false);
+                    }}>
+                      Clear Search
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
 
