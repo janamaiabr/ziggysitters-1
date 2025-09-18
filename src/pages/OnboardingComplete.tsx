@@ -1,37 +1,96 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Star, Shield, Phone, Heart, Award } from 'lucide-react';
+import { CheckCircle, Star, Shield, Phone, Heart, Award, Search, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function OnboardingComplete() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { profile, loading } = useProfile();
 
-  const nextSteps = [
-    {
-      icon: Star,
-      title: 'Complete Your Profile',
-      description: 'Add more details to attract pet owners',
-      action: 'Go to Profile',
-      path: '/profile'
-    },
-    {
-      icon: Shield,
-      title: 'Get Verified',
-      description: 'Upload verification documents for trust',
-      action: 'Upload Documents',
-      path: '/profile?tab=verification'
-    },
-    {
-      icon: Heart,
-      title: 'Browse Opportunities',
-      description: 'Start finding pets to care for',
-      action: 'Find Pets',
-      path: '/find-sitters'
+  // Different next steps based on user role
+  const getNextSteps = () => {
+    if (!profile) return [];
+
+    if (profile.role === 'pet_owner') {
+      return [
+        {
+          icon: Search,
+          title: 'Find Pet Sitters',
+          description: 'Browse and book trusted pet sitters in your area',
+          action: 'Find Sitters',
+          path: '/find-sitters'
+        },
+        {
+          icon: Star,
+          title: 'Complete Your Profile',
+          description: 'Add more details about yourself and your pets',
+          action: 'Go to Profile',
+          path: '/profile'
+        },
+        {
+          icon: Users,
+          title: 'Manage Your Pets',
+          description: 'Add your pets information for sitters',
+          action: 'Add Pets',
+          path: '/profile?tab=pets'
+        }
+      ];
+    } else if (profile.role === 'pet_sitter') {
+      return [
+        {
+          icon: Star,
+          title: 'Complete Your Profile',
+          description: 'Add more details to attract pet owners',
+          action: 'Go to Profile',
+          path: '/profile'
+        },
+        {
+          icon: Shield,
+          title: 'Get Verified',
+          description: 'Upload verification documents for trust',
+          action: 'Upload Documents',
+          path: '/profile?tab=verification'
+        },
+        {
+          icon: Heart,
+          title: 'Set Your Services',
+          description: 'Configure your services and pricing',
+          action: 'Set Services',
+          path: '/profile?tab=services'
+        }
+      ];
+    } else { // 'both'
+      return [
+        {
+          icon: Search,
+          title: 'Find Pet Sitters',
+          description: 'Browse trusted pet sitters when you need care',
+          action: 'Find Sitters',
+          path: '/find-sitters'
+        },
+        {
+          icon: Shield,
+          title: 'Get Verified',
+          description: 'Upload verification documents to offer services',
+          action: 'Upload Documents',
+          path: '/profile?tab=verification'
+        },
+        {
+          icon: Star,
+          title: 'Complete Your Profile',
+          description: 'Set up both pet owner and sitter profiles',
+          action: 'Go to Profile',
+          path: '/profile'
+        }
+      ];
     }
-  ];
+  };
+
+  const nextSteps = getNextSteps();
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 ${isMobile ? 'p-4' : 'py-12'}`}>
@@ -50,7 +109,12 @@ export default function OnboardingComplete() {
               </CardTitle>
               
               <p className={`text-muted-foreground ${isMobile ? 'text-base' : 'text-lg'} max-w-md mx-auto`}>
-                Your profile has been successfully created. You're now part of our trusted community of pet lovers!
+                {profile?.role === 'pet_owner' 
+                  ? "Your profile has been successfully created. You're now ready to find trusted pet sitters!"
+                  : profile?.role === 'pet_sitter'
+                  ? "Your sitter profile has been created. Complete your verification to start accepting bookings!"
+                  : "Your profile has been created. You can now find sitters or offer pet sitting services!"
+                }
               </p>
             </CardHeader>
             
@@ -65,38 +129,50 @@ export default function OnboardingComplete() {
                   <Shield className="w-4 h-4" />
                   Community Member
                 </Badge>
+                {(profile?.role === 'pet_sitter' || profile?.role === 'both') && (
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    <Star className="w-4 h-4" />
+                    {profile?.is_verified ? 'Verified Sitter' : 'Pending Verification'}
+                  </Badge>
+                )}
               </div>
 
               {/* Next Steps */}
-              <div className="space-y-4">
-                <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold`}>Next Steps</h3>
-                
-                <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-3'} gap-4`}>
-                  {nextSteps.map((step, index) => (
-                    <Card key={index} className="hover:shadow-md transition-shadow">
-                      <CardContent className={isMobile ? 'p-4' : 'p-6'}>
-                        <div className="flex flex-col items-center text-center space-y-3">
-                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                            <step.icon className="w-6 h-6 text-primary" />
+              {loading ? (
+                <div className="text-center">Loading...</div>
+              ) : (
+                <div className="space-y-4">
+                  <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold`}>
+                    {profile?.role === 'pet_owner' ? 'Get Started' : 'Next Steps'}
+                  </h3>
+                  
+                  <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-3'} gap-4`}>
+                    {nextSteps.map((step, index) => (
+                      <Card key={index} className="hover:shadow-md transition-shadow">
+                        <CardContent className={isMobile ? 'p-4' : 'p-6'}>
+                          <div className="flex flex-col items-center text-center space-y-3">
+                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                              <step.icon className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium">{step.title}</h4>
+                              <p className="text-sm text-muted-foreground">{step.description}</p>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => navigate(step.path)}
+                              className="w-full"
+                            >
+                              {step.action}
+                            </Button>
                           </div>
-                          <div>
-                            <h4 className="font-medium">{step.title}</h4>
-                            <p className="text-sm text-muted-foreground">{step.description}</p>
-                          </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => navigate(step.path)}
-                            className="w-full"
-                          >
-                            {step.action}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Support Information */}
               <div className="bg-muted/50 rounded-lg p-4">
@@ -114,13 +190,23 @@ export default function OnboardingComplete() {
                 >
                   🏠 Go to Homepage
                 </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigate('/profile')}
-                  className={isMobile ? 'w-full' : 'px-8'}
-                >
-                  👤 Complete Profile
-                </Button>
+                {profile?.role === 'pet_owner' ? (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/find-sitters')}
+                    className={isMobile ? 'w-full' : 'px-8'}
+                  >
+                    🔍 Find Sitters
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/profile')}
+                    className={isMobile ? 'w-full' : 'px-8'}
+                  >
+                    👤 Complete Profile
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
