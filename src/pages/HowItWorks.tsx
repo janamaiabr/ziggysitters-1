@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, UserCheck, CreditCard, Shield, Heart, Star, Clock } from 'lucide-react';
+import { Search, UserCheck, CreditCard, Shield, Heart, Star, Clock, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
@@ -11,25 +11,25 @@ const forOwners = [
     step: 1,
     icon: Search,
     title: 'Search & Browse',
-    description: 'Find verified pet sitters in your area using our advanced search filters'
+    description: 'Find sitters who MUST send daily photo updates or get 50% pay'
   },
   {
     step: 2,
-    icon: UserCheck,
-    title: 'View Profiles',
-    description: 'Check credentials, view photos, and read feedback from other pet owners'
+    icon: Camera,
+    title: 'Receive Daily Updates',
+    description: 'Get comprehensive reports with photos every single day'
   },
   {
     step: 3,
     icon: Heart,
-    title: 'Connect & Book',
-    description: 'Connect with sitters and book securely through our platform'
+    title: 'Peace of Mind',
+    description: 'Never wonder how your pet is doing - transparency guaranteed'
   },
   {
     step: 4,
-    icon: CreditCard,
-    title: 'Book & Pay',
-    description: 'Book your preferred sitter and pay securely through our platform'
+    icon: Shield,
+    title: 'Payment Protection',
+    description: 'Sitters only get full pay if they send all required updates'
   }
 ];
 
@@ -38,25 +38,25 @@ const forSitters = [
     step: 1,
     icon: UserCheck,
     title: 'Create Profile',
-    description: 'Sign up, complete verification, and showcase your pet care experience'
+    description: 'Sign up and commit to sending daily photo updates'
   },
   {
     step: 2,
-    icon: Heart,
-    title: 'Set Services',
-    description: 'Choose what services to offer and set your own competitive rates'
+    icon: Camera,
+    title: 'Submit Daily Reports',
+    description: 'Send detailed daily reports with photos by 9 PM each day'
   },
   {
     step: 3,
     icon: Heart,
-    title: 'Get Bookings',
-    description: 'Receive and accept booking requests from pet owners in your area'
+    title: 'Build Trust',
+    description: 'Pet owners love the transparency - get more bookings'
   },
   {
     step: 4,
     icon: CreditCard,
-    title: 'Earn Money',
-    description: 'Provide amazing care and get paid directly through the platform'
+    title: 'Earn Full Payment',
+    description: '100% pay for complete daily reporting, 50% for incomplete'
   }
 ];
 
@@ -97,9 +97,9 @@ export default function HowItWorks() {
         ></div>
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">How ZiggySitters Works</h1>
+            <h1 className="text-5xl font-bold mb-6">Transparent Pet Care with Daily Updates</h1>
             <p className="text-xl mb-8 opacity-90">
-              Connecting pet owners with trusted, verified pet sitters in your local community
+              The first platform where pet sitters MUST send daily photo updates or get reduced payment
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
@@ -118,9 +118,9 @@ export default function HowItWorks() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <Badge variant="secondary" className="mb-4">For Pet Owners</Badge>
-            <h2 className="text-3xl font-bold mb-4">Find the Perfect Sitter</h2>
+            <h2 className="text-3xl font-bold mb-4">Never Wonder Again</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Our platform makes it easy to find, book, and manage pet care services with trusted local sitters
+              Get daily photo updates and detailed reports. If sitters don't send them, they get 50% payment.
             </p>
           </div>
           
@@ -162,9 +162,9 @@ export default function HowItWorks() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4">For Pet Sitters</Badge>
-            <h2 className="text-3xl font-bold mb-4">Start Earning with Pets</h2>
+            <h2 className="text-3xl font-bold mb-4">Earn More with Transparency</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Turn your love for animals into a flexible income stream with our trusted platform
+              Send daily updates, build trust with pet owners, and earn 100% payment for complete reporting
             </p>
           </div>
           

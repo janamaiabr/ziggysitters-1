@@ -19,16 +19,22 @@ export default function TermsOfService() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Description of Service</h2>
           <p className="mb-4">
-            ZiggySitters is a platform that connects pet owners with verified pet sitters. 
-            We provide a marketplace for pet care services including:
+            ZiggySitters is a platform that connects pet owners with verified pet sitters who 
+            provide mandatory daily updates. We provide a marketplace for transparent pet care 
+            services including:
           </p>
           <ul className="list-disc list-inside mb-4 space-y-2">
-            <li>Pet sitting and boarding</li>
-            <li>Dog walking services</li>
-            <li>Drop-in visits</li>
-            <li>Overnight care</li>
-            <li>Pet grooming and training</li>
+            <li>Pet sitting and boarding with daily photo updates</li>
+            <li>Dog walking services with activity reports</li>
+            <li>Drop-in visits with detailed visit summaries</li>
+            <li>Overnight care with comprehensive daily reports</li>
+            <li>Pet grooming and training with progress updates</li>
           </ul>
+          <p className="mb-4">
+            <strong>Key Feature:</strong> All pet sitters are required to submit detailed daily 
+            reports with photos and comprehensive updates about your pet's well-being, activities, 
+            and care throughout the service period.
+          </p>
         </section>
 
         <section className="mb-8">
@@ -58,7 +64,33 @@ export default function TermsOfService() {
             <li>Provide accurate information about experience and availability</li>
             <li>Follow all local laws and regulations</li>
             <li>Provide safe and appropriate care for pets</li>
+            <li><strong>Submit daily reports with photos and comprehensive updates</strong></li>
+            <li>Complete daily report forms covering exercise, food, sleep, medication, and general well-being</li>
+            <li>Upload at least one photo per day showing the pet in their care</li>
+            <li>Provide detailed notes about the pet's mood, behavior, and activities</li>
           </ul>
+          
+          <h3 className="text-xl font-medium mb-3 text-red-600">Critical Requirement: Daily Reports</h3>
+          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+            <p className="mb-2">
+              <strong>Mandatory Daily Reporting:</strong> Pet sitters MUST submit a comprehensive 
+              daily report for each day of service. Failure to submit daily reports will result 
+              in reduced payment and may affect sitter standing on the platform.
+            </p>
+            <p className="mb-2">
+              Daily reports must include:
+            </p>
+            <ul className="list-disc list-inside ml-4 space-y-1">
+              <li>At least one clear photo of the pet</li>
+              <li>Exercise duration and activities</li>
+              <li>Food consumption and eating habits</li>
+              <li>Sleep quality and rest periods</li>
+              <li>Medication administration (if applicable)</li>
+              <li>Time spent alone</li>
+              <li>Pet's mood and behavior observations</li>
+              <li>Detailed general notes about the day</li>
+            </ul>
+          </div>
         </section>
 
         <section className="mb-8">
@@ -75,9 +107,29 @@ export default function TermsOfService() {
           <ul className="list-disc list-inside mb-4 space-y-2">
             <li>Payment is processed securely through our platform</li>
             <li>Service fees and taxes will be clearly displayed</li>
-            <li>Payments are released to sitters after service completion</li>
+            <li>Final payment to sitters depends on daily report compliance</li>
             <li>Refunds are subject to our cancellation policy</li>
           </ul>
+          
+          <h3 className="text-xl font-medium mb-3 text-red-600">Daily Report Payment Policy</h3>
+          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+            <p className="mb-2">
+              <strong>Performance-Based Payment Structure:</strong>
+            </p>
+            <ul className="list-disc list-inside space-y-2">
+              <li><strong>100% Payment:</strong> Sitters who submit daily reports for ALL required days 
+                receive full payment as agreed</li>
+              <li><strong>50% Payment:</strong> Sitters who fail to submit daily reports for any required 
+                day(s) will receive only 50% of the agreed payment</li>
+              <li>Daily reports must be submitted by 9 PM on the day of service</li>
+              <li>Late submissions (after 9 PM) are considered missed reports</li>
+              <li>No exceptions will be made except for verified emergencies with prior notification</li>
+            </ul>
+            <p className="mt-2">
+              <strong>Important:</strong> This policy ensures pet owners receive the transparency and 
+              updates they expect when trusting their pets to our sitters.
+            </p>
+          </div>
         </section>
 
         <section className="mb-8">

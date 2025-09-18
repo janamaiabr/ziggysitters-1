@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Star, Heart, Shield, Clock, Award, Search, DollarSign, CheckCircle } from 'lucide-react';
+import { MapPin, Star, Heart, Shield, Clock, Award, Search, DollarSign, CheckCircle, Camera } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
@@ -23,10 +23,10 @@ const Index = () => {
   const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || '');
 
   const popularServices = [
-    { name: 'Pet Sitting in Sitter\'s Home', icon: '🏠', description: 'Your pet stays at the sitter\'s home with 24/7 care' },
-    { name: 'Pet Sitting in Owner\'s Home', icon: '🏡', description: 'Sitter comes to your home for personalized care' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick check-ins, feeding, and playtime 🐾' },
-    { name: 'Dog Walking', icon: '🚶‍♂️', description: 'Regular walks to keep your dog happy and healthy' },
+    { name: 'Pet Sitting with Daily Reports', icon: '🏠', description: 'Your pet stays at sitter\'s home with guaranteed daily photo updates' },
+    { name: 'In-Home Care with Updates', icon: '🏡', description: 'Sitter comes to your home with mandatory daily reporting' },
+    { name: 'Drop-in Visits with Photos', icon: '⏰', description: 'Every visit documented with photos and detailed notes' },
+    { name: 'Dog Walking with Updates', icon: '🚶‍♂️', description: 'Every walk tracked with photos and activity reports' },
   ];
 
   // Real data from database
@@ -67,19 +67,19 @@ const Index = () => {
 
   const trustFeatures = [
     {
+      icon: Camera,
+      title: 'Daily Photo Updates',
+      description: 'Mandatory daily reports with photos - or sitters get 50% payment'
+    },
+    {
       icon: Shield,
-      title: 'Profile Verified',
-      description: 'All sitters complete identity verification and profile validation'
+      title: 'Guaranteed Updates',
+      description: 'First platform to enforce daily communication from sitters'
     },
     {
-      icon: Star,
-      title: 'Highly Rated',
-      description: 'Only top-rated sitters with excellent feedback'
-    },
-    {
-      icon: Clock,
-      title: '24/7 Support',
-      description: 'Round-the-clock customer support when you need it'
+      icon: CheckCircle,
+      title: 'Transparent Care',
+      description: 'Detailed daily reports on exercise, food, sleep, and mood'
     }
   ];
 
@@ -93,11 +93,11 @@ const Index = () => {
         <div className="relative container mx-auto px-4">
           <div className="max-w-5xl mx-auto text-center text-gray-800">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Find Trusted Pet Sitters in Auckland
+              Pet Sitters Who Send Daily Updates
             </h1>
             <p className="text-lg md:text-xl mb-6 md:mb-8 text-gray-600 max-w-3xl mx-auto px-4">
-              Connect with verified, loving pet sitters who will care for your furry friends like their own. 
-              Book with confidence knowing your pets are in safe hands.
+              The only platform where pet sitters MUST send daily photo updates and detailed reports. 
+              No updates = reduced payment. Your peace of mind is guaranteed.
             </p>
             
       {/* Enhanced Search Bar */}
@@ -189,9 +189,9 @@ const Index = () => {
       <section className="py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Popular Pet Services</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Guaranteed Daily Updates</h2>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              From dog walking to overnight care, find the perfect service for your pet's needs
+              Every service includes mandatory daily photo reports - the transparency you've been waiting for
             </p>
           </div>
           
@@ -291,9 +291,9 @@ const Index = () => {
       <section className="py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">How ZiggySitters Works</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">How Daily Updates Work</h2>
             <p className="text-base md:text-lg text-muted-foreground">
-              Getting started is simple and secure
+              The first pet sitting platform with mandatory transparency
             </p>
           </div>
           
@@ -334,9 +334,9 @@ const Index = () => {
       <section className="py-12 md:py-20 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6">Ready to Find Your Perfect Pet Sitter?</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6">Ready for Guaranteed Peace of Mind?</h2>
             <p className="text-lg md:text-xl mb-6 md:mb-8 opacity-90">
-              Join thousands of happy pet owners who trust ZiggySitters with their furry family members
+              Join thousands of pet owners who never worry again - because they get daily photo updates
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>

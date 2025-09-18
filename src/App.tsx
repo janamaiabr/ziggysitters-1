@@ -21,6 +21,7 @@ import Bookings from "./pages/Bookings";
 import AdminDashboard from "./pages/AdminDashboard";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import DailyReports from "./pages/DailyReports";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Security from "./pages/Security";
@@ -125,7 +126,15 @@ function AppContent() {
                 <Bookings />
               </ProtectedRoute>
             } 
-          />
+           />
+           <Route 
+             path="/daily-reports" 
+             element={
+               <ProtectedRoute>
+                 <DailyReports />
+               </ProtectedRoute>
+             } 
+           />
           <Route 
             path="/admin" 
             element={
