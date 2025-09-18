@@ -32,7 +32,7 @@ export default function Auth() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/welcome');
     }
   }, [user, navigate]);
 
@@ -54,7 +54,7 @@ export default function Auth() {
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        navigate('/');
+        navigate('/welcome');
       }
     } catch (error) {
       toast({
@@ -92,7 +92,7 @@ export default function Auth() {
           title: "Account Created!",
           description: "Welcome to ZiggySitters! You can complete your profile later if needed.",
         });
-        navigate('/');
+        navigate('/welcome');
       }
     } catch (error) {
       toast({

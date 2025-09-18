@@ -11,6 +11,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Welcome from "./pages/Welcome";
 import NotFound from "./pages/NotFound";
 import FindSitters from "./pages/FindSitters";
 import BecomeSitter from "./pages/BecomeSitter";
@@ -66,7 +67,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
   
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/welcome" replace />;
   }
   
   return <>{children}</>;
@@ -80,6 +81,7 @@ function AppContent() {
         <main className="flex-1">
           <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/find-sitters" element={<FindSitters />} />
           <Route path="/sitter/:id" element={<SitterProfile />} />
           <Route path="/become-sitter" element={<BecomeSitter />} />
