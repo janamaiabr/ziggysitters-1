@@ -18,6 +18,8 @@ export type Database = {
         Row: {
           booking_reference: string | null
           created_at: string
+          daily_reports_completed: number | null
+          daily_reports_required: number | null
           end_date: string
           end_time: string | null
           id: string
@@ -41,6 +43,8 @@ export type Database = {
         Insert: {
           booking_reference?: string | null
           created_at?: string
+          daily_reports_completed?: number | null
+          daily_reports_required?: number | null
           end_date: string
           end_time?: string | null
           id?: string
@@ -64,6 +68,8 @@ export type Database = {
         Update: {
           booking_reference?: string | null
           created_at?: string
+          daily_reports_completed?: number | null
+          daily_reports_required?: number | null
           end_date?: string
           end_time?: string | null
           id?: string
@@ -114,6 +120,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      daily_reports: {
+        Row: {
+          booking_id: string
+          created_at: string
+          exercise_duration: number | null
+          exercise_notes: string | null
+          food_consumption: string | null
+          food_notes: string | null
+          general_notes: string
+          id: string
+          medication_given: boolean | null
+          medication_notes: string | null
+          mood: string | null
+          photo_urls: string[]
+          report_date: string
+          sitter_id: string
+          sleep_notes: string | null
+          sleep_quality: string | null
+          submitted_at: string
+          time_alone_hours: number | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          exercise_duration?: number | null
+          exercise_notes?: string | null
+          food_consumption?: string | null
+          food_notes?: string | null
+          general_notes: string
+          id?: string
+          medication_given?: boolean | null
+          medication_notes?: string | null
+          mood?: string | null
+          photo_urls?: string[]
+          report_date: string
+          sitter_id: string
+          sleep_notes?: string | null
+          sleep_quality?: string | null
+          submitted_at?: string
+          time_alone_hours?: number | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          exercise_duration?: number | null
+          exercise_notes?: string | null
+          food_consumption?: string | null
+          food_notes?: string | null
+          general_notes?: string
+          id?: string
+          medication_given?: boolean | null
+          medication_notes?: string | null
+          mood?: string | null
+          photo_urls?: string[]
+          report_date?: string
+          sitter_id?: string
+          sleep_notes?: string | null
+          sleep_quality?: string | null
+          submitted_at?: string
+          time_alone_hours?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       favorites: {
         Row: {
