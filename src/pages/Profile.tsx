@@ -388,7 +388,7 @@ export default function Profile() {
     avatar: profile.avatar_url,
     verified: profile.is_verified,
     rating: profile.rating || 0,
-    reviews: profile.total_reviews || 0,
+    bookings_completed: profile.total_reviews || 0,
     
     memberSince: format(new Date(profile.created_at), 'MMM yyyy'),
     completedBookings: recentBookings.length,
@@ -448,7 +448,7 @@ export default function Profile() {
                   <div className="flex items-center">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
                     <span className="font-medium">{userProfile.rating}</span>
-                    <span className="text-muted-foreground ml-1">({userProfile.reviews} reviews)</span>
+                    <span className="text-muted-foreground ml-1">({userProfile.bookings_completed} completed)</span>
                   </div>
                   <div className="text-muted-foreground">
                     {userProfile.completedBookings} bookings completed
@@ -520,15 +520,8 @@ export default function Profile() {
                         rows={4}
                       />
                     ) : (
-                      <p className="text-muted-foreground mb-4">{userProfile.bio}</p>
+                      <p className="text-muted-foreground">{userProfile.bio}</p>
                     )}
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {userProfile.services.map((service) => (
-                        <Badge key={service} variant="secondary">
-                          {service}
-                        </Badge>
-                      ))}
-                    </div>
                   </CardContent>
                 </Card>
 
@@ -537,78 +530,76 @@ export default function Profile() {
                   <CardHeader>
                     <CardTitle>Contact Information</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     {isEditing ? (
                       <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="first_name">First Name</Label>
+                            <Label>First Name</Label>
                             <Input
-                              id="first_name"
                               value={editData.first_name}
                               onChange={(e) => setEditData({...editData, first_name: e.target.value})}
                             />
                           </div>
                           <div>
-                            <Label htmlFor="last_name">Last Name</Label>
+                            <Label>Last Name</Label>
                             <Input
-                              id="last_name"
                               value={editData.last_name}
                               onChange={(e) => setEditData({...editData, last_name: e.target.value})}
                             />
                           </div>
                         </div>
                         <div>
-                          <Label htmlFor="email">Email</Label>
+                          <Label>Email</Label>
                           <Input
-                            id="email"
                             value={editData.email}
                             onChange={(e) => setEditData({...editData, email: e.target.value})}
-                            placeholder="Your email address"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="phone">Phone Number</Label>
+                          <Label>Phone</Label>
                           <Input
-                            id="phone"
                             value={editData.phone}
                             onChange={(e) => setEditData({...editData, phone: e.target.value})}
-                            placeholder="Your phone number"
+                            placeholder="Enter your phone number"
                           />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="suburb">Suburb</Label>
+                            <Label>Suburb</Label>
                             <Input
-                              id="suburb"
                               value={editData.suburb}
                               onChange={(e) => setEditData({...editData, suburb: e.target.value})}
-                              placeholder="Your suburb"
                             />
                           </div>
                           <div>
-                            <Label htmlFor="city">City</Label>
+                            <Label>City</Label>
                             <Input
-                              id="city"
                               value={editData.city}
                               onChange={(e) => setEditData({...editData, city: e.target.value})}
-                              placeholder="Your city"
                             />
                           </div>
+                        </div>
+                        <div>
+                          <Label>Address</Label>
+                          <Input
+                            value={editData.address}
+                            onChange={(e) => setEditData({...editData, address: e.target.value})}
+                          />
                         </div>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         <div className="flex items-center">
-                          <Mail className="w-4 h-4 mr-3 text-muted-foreground" />
+                          <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
                           <span>{userProfile.email}</span>
                         </div>
                         <div className="flex items-center">
-                          <Phone className="w-4 h-4 mr-3 text-muted-foreground" />
+                          <Phone className="w-4 h-4 mr-2 text-muted-foreground" />
                           <span>{userProfile.phone}</span>
                         </div>
                         <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-3 text-muted-foreground" />
+                          <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
                           <span>{userProfile.location}</span>
                         </div>
                       </div>
@@ -616,75 +607,56 @@ export default function Profile() {
                   </CardContent>
                 </Card>
 
-                {/* Portfolio Photos - Only for sitters */}
-                {(profile.role === 'pet_sitter' || profile.role === 'both') && (
-                  <Card>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Portfolio Photos</CardTitle>
-                        <div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                            id="portfolio-upload"
-                          />
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => document.getElementById('portfolio-upload')?.click()}
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Photo
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {portfolioPhotos.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                          {portfolioPhotos.map((photo, index) => (
-                            <div key={index} className="aspect-square rounded-lg overflow-hidden">
-                              <img
-                                src={photo}
-                                alt={`Portfolio ${index + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-8 text-muted-foreground">
-                          <CameraIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                          <p>No portfolio photos yet</p>
-                          <p className="text-sm">Add photos to showcase your services</p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* Right Column - Stats */}
-              <div className="space-y-6">
-                {/* Quick Stats */}
+                {/* Recent Activity */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Quick Stats</CardTitle>
+                    <CardTitle>Recent Bookings</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {recentBookings.length > 0 ? (
+                      <div className="space-y-3">
+                        {recentBookings.map((booking: any) => (
+                          <div key={booking.id} className="flex justify-between items-center p-3 border rounded-lg">
+                            <div>
+                              <p className="font-medium">{booking.service_type.replace(/_/g, ' ')}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <Badge variant={
+                                booking.status === 'completed' ? 'default' :
+                                booking.status === 'confirmed' ? 'secondary' :
+                                'outline'
+                              }>
+                                {booking.status}
+                              </Badge>
+                              <p className="text-sm text-muted-foreground mt-1">${booking.total_amount}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground">No recent bookings</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Column - Statistics */}
+              <div className="space-y-6">
+                {/* Stats Card */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Star className="mr-2 h-5 w-5" />
+                      Statistics
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Response Rate</span>
-                      
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Total Bookings</span>
-                      <span className="font-medium">{recentBookings.length}</span>
-                    </div>
-                    {userProfile.reviews > 0 && (
+                    {userProfile.bookings_completed > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Average Rating</span>
+                        <span className="text-muted-foreground">Rating:</span>
                         <span className="font-medium">{userProfile.rating}/5 ⭐</span>
                       </div>
                     )}
@@ -697,212 +669,183 @@ export default function Profile() {
           {/* My Pets Tab - Only for pet owners */}
           {(profile.role === 'pet_owner' || profile.role === 'both') && (
             <TabsContent value="pets" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {userPets.length > 0 ? (
-                  userPets.map((pet) => (
-                    <Card key={pet.id}>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="flex items-center gap-2">
-                            {pet.name}
-                            <Badge variant="outline">
-                              {pet.species}
-                            </Badge>
-                          </CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          {pet.photo_urls && pet.photo_urls.length > 0 && (
-                            <div className="grid grid-cols-2 gap-2 mb-4">
-                              {pet.photo_urls.slice(0, 4).map((photo, index) => (
-                                <div key={index} className="aspect-square rounded-lg overflow-hidden">
-                                  <img
-                                    src={photo}
-                                    alt={`${pet.name} ${index + 1}`}
-                                    className="w-full h-full object-cover"
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <span className="text-muted-foreground">Breed:</span>
-                              <p className="font-medium">{pet.breed || 'Mixed'}</p>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Age:</span>
-                              <p className="font-medium">{pet.age || 'Unknown'} years</p>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Gender:</span>
-                              <p className="font-medium capitalize">{pet.gender || 'Unknown'}</p>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Size:</span>
-                              <p className="font-medium capitalize">{pet.size?.replace('_', ' ') || 'Unknown'}</p>
-                            </div>
-                          </div>
-                          
-                          {pet.personality_traits && pet.personality_traits.length > 0 && (
-                            <div>
-                              <span className="text-muted-foreground text-sm">Personality:</span>
-                              <div className="flex flex-wrap gap-1 mt-1">
-                                {pet.personality_traits.slice(0, 6).map((trait) => (
-                                  <Badge key={trait} variant="secondary" className="text-xs">
-                                    {trait}
-                                  </Badge>
-                                ))}
+              <Card>
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle>My Pets</CardTitle>
+                    <PetsManagement 
+                      profileId={profile.id}
+                      userId={profile.user_id}
+                      onPetAdded={fetchUserPets}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {userPets.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground mb-4">No pets added yet.</p>
+                      <p className="text-sm text-muted-foreground">
+                        Add your pets to make booking easier for sitters.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {userPets.map((pet: any) => (
+                        <Card key={pet.id} className="overflow-hidden">
+                          <CardContent className="p-4">
+                            <div className="flex items-start space-x-4">
+                              {pet.photo_urls && pet.photo_urls[0] && (
+                                <img
+                                  src={pet.photo_urls[0]}
+                                  alt={pet.name}
+                                  className="w-16 h-16 rounded-lg object-cover"
+                                />
+                              )}
+                              <div className="flex-1">
+                                <h3 className="font-semibold">{pet.name}</h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {pet.species} • {pet.breed || 'Mixed'} • {pet.age} years
+                                </p>
+                                {pet.personality_traits && pet.personality_traits.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-2">
+                                    {pet.personality_traits.slice(0, 3).map((trait: string) => (
+                                      <Badge key={trait} variant="outline" className="text-xs">
+                                        {trait}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          )}
-                          
-                          {pet.special_care_notes && (
-                            <div>
-                              <span className="text-muted-foreground text-sm">Special Care:</span>
-                              <p className="text-sm mt-1">{pet.special_care_notes}</p>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <div className="lg:col-span-2">
-                    <Card>
-                      <CardContent className="text-center py-12">
-                        <div className="text-6xl mb-4">🐾</div>
-                        <h3 className="text-xl font-semibold mb-2">No pets registered yet</h3>
-                        <p className="text-muted-foreground mb-4">
-                          Add your pets to help sitters understand their needs better.
-                        </p>
-                        <PetsManagement 
-                          profileId={profile.id} 
-                          userId={profile.user_id}
-                          onPetAdded={fetchUserPets}
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           )}
 
           {/* Services & Pricing Tab - Only for sitters */}
           {(profile.role === 'pet_sitter' || profile.role === 'both') && (
             <TabsContent value="services" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {sitterServices.map((service) => (
-                <Card key={service.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>
-                        {service.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                      </CardTitle>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={service.is_offered ? 'default' : 'secondary'}>
-                          {service.is_offered ? 'Active' : 'Inactive'}
-                        </Badge>
+              <div className="grid grid-cols-1 gap-6">
+                {sitterServices.length > 0 ? (
+                  sitterServices.map((service: any) => (
+                    <Card key={service.id}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>
+                            {service.service_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                          </CardTitle>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={service.is_offered ? 'default' : 'secondary'}>
+                              {service.is_offered ? 'Active' : 'Inactive'}
+                            </Badge>
+                            {editingService === service.id ? (
+                              <div className="flex gap-1">
+                                <Button size="sm" onClick={handleSaveService}>
+                                  <Save className="w-3 h-3" />
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={() => setEditingService(null)}>
+                                  <X className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button size="sm" variant="outline" onClick={() => handleEditService(service)}>
+                                <Edit3 className="w-3 h-3" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
                         {editingService === service.id ? (
-                          <div className="flex gap-1">
-                            <Button size="sm" onClick={handleSaveService}>
-                              <Save className="w-3 h-3" />
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => setEditingService(null)}>
-                              <X className="w-3 h-3" />
-                            </Button>
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label>Daily Rate ($)</Label>
+                                <Input
+                                  type="number"
+                                  value={serviceEditData.daily_rate || ''}
+                                  onChange={(e) => setServiceEditData((prev: any) => ({
+                                    ...prev,
+                                    daily_rate: parseFloat(e.target.value) || null
+                                  }))}
+                                  placeholder="0.00"
+                                />
+                              </div>
+                              <div>
+                                <Label>Overnight Rate ($)</Label>
+                                <Input
+                                  type="number"
+                                  value={serviceEditData.overnight_rate || ''}
+                                  onChange={(e) => setServiceEditData((prev: any) => ({
+                                    ...prev,
+                                    overnight_rate: parseFloat(e.target.value) || null
+                                  }))}
+                                  placeholder="0.00"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <Label>Description</Label>
+                              <Textarea
+                                value={serviceEditData.description || ''}
+                                onChange={(e) => setServiceEditData((prev: any) => ({
+                                  ...prev,
+                                  description: e.target.value
+                                }))}
+                                placeholder="Describe your service..."
+                              />
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`offered-${service.id}`}
+                                checked={serviceEditData.is_offered}
+                                onCheckedChange={(checked) => setServiceEditData((prev: any) => ({
+                                  ...prev,
+                                  is_offered: checked
+                                }))}
+                              />
+                              <Label htmlFor={`offered-${service.id}`}>Service offered</Label>
+                            </div>
                           </div>
                         ) : (
-                          <Button size="sm" variant="outline" onClick={() => handleEditService(service)}>
-                            <Edit3 className="w-3 h-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {editingService === service.id ? (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label>Daily Rate ($)</Label>
-                            <Input
-                              type="number"
-                              value={serviceEditData.daily_rate || ''}
-                              onChange={(e) => setServiceEditData(prev => ({
-                                ...prev,
-                                daily_rate: parseFloat(e.target.value) || null
-                              }))}
-                              placeholder="0.00"
-                            />
+                          <div className="space-y-3">
+                            <div className="text-2xl font-bold text-primary">
+                              {getRateDisplay(service)}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {getRateLabel(service.service_type)}
+                            </p>
+                            {service.description && (
+                              <p className="text-sm">{service.description}</p>
+                            )}
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <span>🐾 Max pets: {service.max_pets || 1}</span>
+                              <span>📅 {service.experience_years || 0} years experience</span>
+                            </div>
                           </div>
-                          <div>
-                            <Label>Overnight Rate ($)</Label>
-                            <Input
-                              type="number"
-                              value={serviceEditData.overnight_rate || ''}
-                              onChange={(e) => setServiceEditData(prev => ({
-                                ...prev,
-                                overnight_rate: parseFloat(e.target.value) || null
-                              }))}
-                              placeholder="0.00"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <Label>Description</Label>
-                          <Textarea
-                            value={serviceEditData.description || ''}
-                            onChange={(e) => setServiceEditData(prev => ({
-                              ...prev,
-                              description: e.target.value
-                            }))}
-                            placeholder="Describe your service..."
-                          />
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`offered-${service.id}`}
-                            checked={serviceEditData.is_offered}
-                            onCheckedChange={(checked) => setServiceEditData(prev => ({
-                              ...prev,
-                              is_offered: checked
-                            }))}
-                          />
-                          <Label htmlFor={`offered-${service.id}`}>Service offered</Label>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="text-2xl font-bold text-primary">
-                          {getRateDisplay(service)}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {getRateLabel(service.service_type)}
-                        </p>
-                        {service.description && (
-                          <p className="text-sm">{service.description}</p>
                         )}
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          <span>🐾 Max pets: {service.max_pets || 1}</span>
-                          <span>📅 {service.experience_years || 0} years experience</span>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Card>
+                    <CardContent className="text-center py-8">
+                      <p className="text-muted-foreground">No services configured yet.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </TabsContent>
           )}
 
           {/* Calendar Tab - Only for sitters */}
           {(profile.role === 'pet_sitter' || profile.role === 'both') && (
             <TabsContent value="calendar" className="space-y-6">
-            {profile.role === 'pet_sitter' || profile.role === 'both' ? (
               <Card>
                 <CardHeader>
                   <CardTitle>My Availability</CardTitle>
@@ -911,62 +854,44 @@ export default function Profile() {
                   <AvailabilityCalendar sitterId={profile.id} />
                 </CardContent>
               </Card>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <h3 className="text-xl font-semibold mb-2">Calendar Access</h3>
-                  <p className="text-muted-foreground">
-                    Calendar features are available for pet sitters only.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
             </TabsContent>
           )}
 
           {/* Bookings Tab */}
           <TabsContent value="bookings" className="space-y-6">
-            {recentBookings.length > 0 ? (
-              <div className="space-y-4">
-                {recentBookings.map((booking) => (
-                  <Card key={booking.id}>
-                    <CardContent className="p-6">
-                      <div className="flex justify-between items-start">
+            <Card>
+              <CardHeader>
+                <CardTitle>All Bookings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {recentBookings.length > 0 ? (
+                  <div className="space-y-3">
+                    {recentBookings.map((booking: any) => (
+                      <div key={booking.id} className="flex justify-between items-center p-4 border rounded-lg">
                         <div>
-                          <h3 className="font-semibold text-lg mb-2">
-                            {booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                          </h3>
-                          <div className="space-y-1 text-sm text-muted-foreground">
-                            <p>From: {format(new Date(booking.start_date), 'MMM dd, yyyy')}</p>
-                            <p>To: {format(new Date(booking.end_date), 'MMM dd, yyyy')}</p>
-                            <p>Amount: ${booking.total_amount}</p>
-                          </div>
+                          <p className="font-medium">{booking.service_type.replace(/_/g, ' ')}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
+                          </p>
                         </div>
-                        <div className="flex flex-col gap-2">
-                          <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
+                        <div className="text-right">
+                          <Badge variant={
+                            booking.status === 'completed' ? 'default' :
+                            booking.status === 'confirmed' ? 'secondary' :
+                            'outline'
+                          }>
                             {booking.status}
                           </Badge>
-                          <Button variant="outline" size="sm">
-                            Message Client
-                          </Button>
+                          <p className="text-sm text-muted-foreground mt-1">${booking.total_amount}</p>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <h3 className="text-xl font-semibold mb-2">No bookings yet</h3>
-                  <p className="text-muted-foreground">
-                    Your booking history will appear here once you start getting bookings.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">No bookings yet</p>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Verification Tab - Only for sitters */}
@@ -974,29 +899,24 @@ export default function Profile() {
             <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Sitter Verification</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Upload your ID and Blue Card for verification to increase trust with pet owners.
-                </p>
+                <CardTitle>Identity Verification</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* ID Document Upload */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium">ID Document</h4>
-                      <p className="text-sm text-muted-foreground">Valid government-issued photo ID</p>
-                    </div>
-                    {profile.id_document_url ? (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    ) : (
-                      <AlertCircle className="w-5 h-5 text-yellow-500" />
-                    )}
-                  </div>
+                <div>
+                  <h3 className="font-medium mb-2">Government Issued Photo ID</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Upload a clear photo of your driver's license, passport, or government ID card.
+                  </p>
                   {profile.id_document_url ? (
-                    <div className="flex items-center gap-2 text-sm text-green-600">
-                      <CheckCircle className="w-4 h-4" />
-                      ID document uploaded - pending review
+                    <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <div>
+                        <p className="font-medium text-green-700">ID Document Uploaded</p>
+                        <p className="text-sm text-green-600">
+                          ID document uploaded - pending assessment
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <div>
@@ -1015,29 +935,27 @@ export default function Profile() {
                         onClick={() => document.getElementById('id-upload')?.click()}
                       >
                         <Upload className="w-4 h-4 mr-2" />
-                        Upload ID Document
+                        Upload Photo ID
                       </Button>
                     </div>
                   )}
                 </div>
 
                 {/* Blue Card Upload */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium">Blue Card</h4>
-                      <p className="text-sm text-muted-foreground">Working with Children Check (Blue Card)</p>
-                    </div>
-                    {profile.blue_card_document_url ? (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    ) : (
-                      <AlertCircle className="w-5 h-5 text-yellow-500" />
-                    )}
-                  </div>
+                <div>
+                  <h3 className="font-medium mb-2">Working with Children Check (Blue Card)</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Upload your Queensland Blue Card or equivalent working with children check.
+                  </p>
                   {profile.blue_card_document_url ? (
-                    <div className="flex items-center gap-2 text-sm text-green-600">
-                      <CheckCircle className="w-4 h-4" />
-                      Blue Card uploaded - pending review
+                    <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <div>
+                        <p className="font-medium text-green-700">Blue Card Uploaded</p>
+                        <p className="text-sm text-green-600">
+                          Blue Card uploaded - pending assessment
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <div>
@@ -1080,7 +998,7 @@ export default function Profile() {
                           <h4 className="font-medium text-yellow-700">Verification Pending</h4>
                           <p className="text-sm text-muted-foreground">
                             {profile.verification_documents_uploaded_at 
-                              ? 'Your documents are under review'
+                              ? 'Your documents are under assessment'
                               : 'Upload your documents to start the verification process'
                             }
                           </p>

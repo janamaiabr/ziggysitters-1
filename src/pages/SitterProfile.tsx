@@ -25,7 +25,7 @@ interface SitterData {
   display_name: string;
   location: string;
   rating: number;
-  reviews: number;
+  feedback_count: number;
   baseRate: number;
   hourlyRate: number;
   services: string[];
@@ -125,24 +125,31 @@ export default function SitterProfile() {
             display_name: data.display_name,
             location: `${data.suburb}, ${data.city}`,
             rating: data.rating || 4.8,
-            reviews: data.total_reviews || 0,
+            feedback_count: data.total_reviews || 0,
             baseRate: baseRate,
             hourlyRate: baseRate,
             services: serviceNames,
-            petTypes: ['Dogs', 'Cats'], // This could be expanded to use real accepted_pet_species
-            avatar: data.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+            petTypes: servicesData?.length > 0 ? 
+              [...new Set(servicesData.flatMap(s => s.accepted_pet_species || []))].map(species => 
+                species.charAt(0).toUpperCase() + species.slice(1)
+              ) : ['Dogs', 'Cats'],
+            avatar: data.avatar_url,
             verified: data.is_verified,
             
             bio: data.bio || 'Experienced pet care provider',
-            experience: '3+ years', // This could come from services data
-            availability: ['Weekdays', 'Weekends'], // This could be expanded to use real availability data
-            specialties: ['General pet care', 'Friendly pets'], // This could be expanded
-            gallery: portfolioUrls.length > 0 ? portfolioUrls : [
-              // Fallback images if no portfolio uploaded
-              'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=200&fit=crop',
-              'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=200&fit=crop',
-              'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&h=200&fit=crop'
-            ]
+            experience: servicesData?.length > 0 ? 
+              `${Math.max(...servicesData.map(s => s.experience_years || 0))} years experience` : 
+              'Experienced pet care provider',
+            availability: ['Available for bookings'], // This could be expanded to use real availability data
+            specialties: servicesData?.length > 0 ? 
+              servicesData.flatMap(s => {
+                const specs = [];
+                if (s.has_fenced_yard) specs.push('Fenced yard');
+                if (s.allows_puppies) specs.push('Puppy care');
+                if (s.allows_senior_pets) specs.push('Senior pet care');
+                return specs;
+              }).slice(0, 3) : ['Pet care specialist'],
+            gallery: portfolioUrls.length > 0 ? portfolioUrls : []
           });
         }
       } catch (error) {
@@ -225,9 +232,9 @@ export default function SitterProfile() {
                 <div className="flex items-center">
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
                   <span className="font-medium">{sitterData.rating}</span>
-                  <span className="text-sm text-muted-foreground ml-1">
-                    ({sitterData.reviews} reviews)
-                  </span>
+                   <span className="text-sm text-muted-foreground ml-1">
+                     ({sitterData.feedback_count} bookings)
+                   </span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
@@ -382,23 +389,25 @@ export default function SitterProfile() {
             </Card>
 
             {/* Photo Gallery */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Photos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {sitterData.gallery.map((photo, index) => (
-                    <img
-                      key={index}
-                      src={photo}
-                      alt={`Gallery photo ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {sitterData.gallery.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Photos</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {sitterData.gallery.map((photo, index) => (
+                      <img
+                        key={index}
+                        src={photo}
+                        alt={`Portfolio photo ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}

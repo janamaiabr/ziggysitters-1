@@ -51,7 +51,7 @@ const Index = () => {
           id: sitter.id,
           name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
           rating: sitter.rating || 4.8,
-          reviews: sitter.total_reviews || 0,
+          feedback_count: sitter.total_reviews || 0,
           location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
           services: ['Pet Sitting', 'Drop-in Visits'],
           verified: sitter.is_verified,
@@ -74,7 +74,7 @@ const Index = () => {
     {
       icon: Star,
       title: 'Highly Rated',
-      description: 'Only top-rated sitters with excellent reviews'
+      description: 'Only top-rated sitters with excellent feedback'
     },
     {
       icon: Clock,

@@ -262,7 +262,7 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
           {profile.total_reviews !== null && profile.total_reviews > 0 && (
             <div className="flex items-center text-sm">
               <CheckCircle className="w-4 h-4 mr-2 text-gray-500" />
-              <span className="text-gray-600">{profile.total_reviews} reviews</span>
+              <span className="text-gray-600">{profile.total_reviews} completed</span>
             </div>
           )}
           

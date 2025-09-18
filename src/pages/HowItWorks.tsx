@@ -16,8 +16,8 @@ const forOwners = [
   {
     step: 2,
     icon: UserCheck,
-    title: 'Review Profiles',
-    description: 'Read reviews, check credentials, and view photos of potential sitters'
+    title: 'View Profiles',
+    description: 'Check credentials, view photos, and read feedback from other pet owners'
   },
   {
     step: 3,
@@ -73,8 +73,8 @@ const safetyFeatures = [
   },
   {
     icon: Star,
-    title: 'Reviews & Ratings',
-    description: 'Transparent review system from real pet owners'
+    title: 'Feedback & Ratings',
+    description: 'Transparent feedback system from real pet owners'
   },
   {
     icon: CreditCard,

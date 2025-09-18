@@ -225,7 +225,7 @@ export default function Security() {
                     <ul className="space-y-2 text-gray-600">
                       <li>• Role-based access control (RBAC)</li>
                       <li>• Multi-factor authentication for admin accounts</li>
-                      <li>• Regular access reviews and privilege management</li>
+                      <li>• Regular access assessments and privilege management</li>
                       <li>• Audit logging of all system access</li>
                     </ul>
                   </div>

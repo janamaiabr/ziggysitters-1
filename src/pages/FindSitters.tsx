@@ -88,7 +88,7 @@ export default function FindSitters() {
             name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
             location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
             rating: 4.8, // Fixed rating since we're removing rating filters
-            reviews: Math.floor(Math.random() * 50) + 10, // Generate some reviews for display
+            feedback_count: Math.floor(Math.random() * 50) + 10, // Generate some completed bookings for display
             baseRate: minRate,
             hourlyRate: minRate * 1.1, // Add 10% platform fee
             services: serviceNames.length > 0 ? serviceNames : ['Pet Sitting'],
@@ -410,7 +410,7 @@ export default function FindSitters() {
                        <div className="flex items-center space-x-1">
                          <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
                          <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
-                         <span className="text-xs md:text-sm text-muted-foreground">({sitter.reviews} reviews)</span>
+                         <span className="text-xs md:text-sm text-muted-foreground">({sitter.feedback_count} completed)</span>
                        </div>
                        {sitter.verified && (
                          <Badge variant="secondary" className="text-xs">✅ Verified</Badge>

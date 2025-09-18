@@ -238,7 +238,7 @@ export default function Contact() {
               <div>
                 <h3 className="font-semibold mb-2">How do I book a pet sitter?</h3>
                 <p className="text-sm text-gray-600">
-                  Browse verified sitters in your area, view their profiles and reviews, 
+                  Browse verified sitters in your area, view their profiles and feedback, 
                   then send a booking request with your pet's details and dates.
                 </p>
               </div>
