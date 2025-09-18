@@ -35,7 +35,7 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch profiles directly from profiles table instead of view
+        // Fetch profiles directly from profiles table instead of view - show ALL sitters
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('*')

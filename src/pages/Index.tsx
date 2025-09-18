@@ -34,22 +34,26 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      const { data } = await supabase
-        .from('public_sitter_profiles')
+      // Fetch directly from profiles table instead of view
+      const { data, error } = await supabase
+        .from('profiles')
         .select('*')
-        .neq('role', 'admin')  // Extra filter to ensure no admin users
+        .in('role', ['pet_sitter', 'both'])
         .eq('is_verified', true) // Only show verified sitters
         .order('rating', { ascending: false })
         .limit(4);
       
-      if (data) {
+      console.log('Featured sitters data:', data);
+      console.log('Featured sitters error:', error);
+      
+      if (data && data.length > 0) {
         setFeaturedSitters(data.map(sitter => ({
           id: sitter.id,
-          name: sitter.display_name, // Now using privacy-safe display name
+          name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
           rating: sitter.rating || 4.8,
           reviews: sitter.total_reviews || 0,
-          location: `${sitter.suburb}, ${sitter.city}`,
-          services: ['Pet Sitting', 'Drop-in Visits'], // Would come from sitter_services table
+          location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
+          services: ['Pet Sitting', 'Drop-in Visits'],
           verified: sitter.is_verified,
           
           avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
