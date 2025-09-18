@@ -20,18 +20,15 @@ interface FilterPanelProps {
 export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFilters }: FilterPanelProps) {
   const isMobile = useIsMobile();
   const [priceRange, setPriceRange] = useState(currentFilters?.priceRange || [10, 100]);
-  const [rating, setRating] = useState(currentFilters?.rating || 4);
   const [verifiedOnly, setVerifiedOnly] = useState(currentFilters?.verifiedOnly || false);
   const [selectedServices, setSelectedServices] = useState<string[]>(currentFilters?.selectedServices || []);
   const [selectedPetTypes, setSelectedPetTypes] = useState<string[]>(currentFilters?.selectedPetTypes || []);
 
   const services = [
     'Dog Walking',
-    'Pet Sitting', 
-    'Overnight Care',
-    'Drop-in Visits',
-    'Pet Boarding',
-    'Grooming'
+    'Pet Sitting (Your Home)',
+    'Pet Sitting (Sitter\'s Home)',
+    'Drop-in Visits'
   ];
 
   const petTypes = [
@@ -61,7 +58,6 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
   const handleApplyFilters = () => {
     const filters = {
       priceRange,
-      rating,
       verifiedOnly,
       selectedServices,
       selectedPetTypes
@@ -72,7 +68,6 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
 
   const clearFilters = () => {
     setPriceRange([10, 100]);
-    setRating(4);
     setVerifiedOnly(false);
     setSelectedServices([]);
     setSelectedPetTypes([]);
@@ -94,26 +89,6 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>${priceRange[0]}</span>
           <span>${priceRange[1]}</span>
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* Rating */}
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">Minimum Rating</Label>
-        <Slider
-          value={[rating]}
-          onValueChange={(value) => setRating(value[0])}
-          max={5}
-          min={1}
-          step={0.5}
-          className="w-full"
-        />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>1 star</span>
-          <span>{rating} stars</span>
-          <span>5 stars</span>
         </div>
       </div>
 
