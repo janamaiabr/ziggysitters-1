@@ -41,13 +41,13 @@ export default function About() {
   const team = [
     {
       name: 'Jana Maia',
-      role: 'Co-Founder & CEO',
+      role: 'Co-Founder',
       bio: "Pet parent to a high-needs rescue dog requiring daily medication and specialized care. Understands the challenges of finding reliable pet sitters for special-needs animals.",
       image: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face'
     },
     {
       name: 'Rachel Nottingham',
-      role: 'Co-Founder & COO',
+      role: 'Co-Founder',
       bio: 'Experienced with anxious and reactive pets. Rachel\'s background in animal behavior helps ensure our platform serves pets with unique emotional and physical needs.',
       image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
     }
