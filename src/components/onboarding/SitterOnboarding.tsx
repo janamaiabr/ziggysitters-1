@@ -18,6 +18,7 @@ interface Service {
 }
 
 interface SitterOnboardingProps {
+  profileId: string;
   userId: string;
   onComplete: (sitterId: string) => void;
 }
@@ -33,7 +34,7 @@ const serviceTypes = [
   { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (My Home)', rate_type: 'daily' }
 ];
 
-export default function SitterOnboarding({ userId, onComplete }: SitterOnboardingProps) {
+export default function SitterOnboarding({ profileId, userId, onComplete }: SitterOnboardingProps) {
   const { toast } = useToast();
   const [experienceYears, setExperienceYears] = useState(0);
   const [hasFencedYard, setHasFencedYard] = useState(false);

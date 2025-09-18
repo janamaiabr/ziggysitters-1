@@ -10,6 +10,7 @@ import { usePetOwnerOnboarding } from '@/hooks/usePetOwnerOnboarding';
 import { PlusCircle, X, Upload } from 'lucide-react';
 
 interface PetOwnerOnboardingProps {
+  profileId: string;
   userId: string;
   onComplete: (ownerId: string) => void;
 }
@@ -24,13 +25,13 @@ const medicalConditions = [
   'Epilepsy', 'Cancer', 'Eye Problems', 'Skin Conditions', 'Dental Issues', 'None'
 ];
 
-export default function PetOwnerOnboarding({ userId, onComplete }: PetOwnerOnboardingProps) {
+export default function PetOwnerOnboarding({ profileId, userId, onComplete }: PetOwnerOnboardingProps) {
   const { pets, addPet, removePet, updatePet, uploadPetPhoto, savePets } = usePetOwnerOnboarding();
 
   const handleSave = async () => {
-    const result = await savePets(userId);
+    const result = await savePets(profileId);
     if (result.success) {
-      onComplete(userId);
+      onComplete(profileId);
     }
   };
 

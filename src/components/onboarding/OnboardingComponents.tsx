@@ -10,6 +10,10 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from '@/hooks/use-mobile';
+import PetOwnerOnboarding from './PetOwnerOnboarding';
+import SitterOnboarding from './SitterOnboarding';
+import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 
 interface OnboardingStepProps {
   title: string;
@@ -269,4 +273,42 @@ export function BadgeSelector({ label, options, value, onChange, maxSelections }
       )}
     </div>
   );
+}
+
+interface RoleBasedOnboardingProps {
+  onComplete: (profileId: string) => void;
+}
+
+export function RoleBasedOnboarding({ onComplete }: RoleBasedOnboardingProps) {
+  const { user } = useAuth();
+  const { profile } = useProfile();
+
+  const handleComplete = (profileId: string) => {
+    onComplete(profileId);
+  };
+
+  if (!profile || !user) {
+    return <div>Loading...</div>;
+  }
+
+  switch (profile.role) {
+    case 'pet_owner':
+      return (
+        <PetOwnerOnboarding
+          profileId={profile.id}
+          userId={user.id}
+          onComplete={handleComplete}
+        />
+      );
+    case 'pet_sitter':
+      return (
+        <SitterOnboarding
+          profileId={profile.id}
+          userId={user.id}
+          onComplete={handleComplete}
+        />
+      );
+    default:
+      return <div>Invalid role</div>;
+  }
 }

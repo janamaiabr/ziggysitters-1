@@ -13,6 +13,7 @@ import PetOwnerOnboarding from '@/components/onboarding/PetOwnerOnboarding';
 import SitterOnboarding from '@/components/onboarding/SitterOnboarding';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
+import { useProfile } from '@/hooks/useProfile';
 
 type UserRole = 'pet_owner' | 'pet_sitter' | 'both';
 
@@ -31,6 +32,7 @@ interface OnboardingData {
 
 export default function Onboarding() {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -418,19 +420,19 @@ export default function Onboarding() {
     if (!data.role) return null;
 
     if (data.role === 'pet_owner') {
-      return <PetOwnerOnboarding userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+      return <PetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
     }
     
     if (data.role === 'pet_sitter') {
-      return <SitterOnboarding userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+      return <SitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
     }
     
     if (data.role === 'both') {
       // Show both flows in sequence
       if (step === 3) {
-        return <PetOwnerOnboarding userId={user?.id || ''} onComplete={() => setStep(4)} />;
+        return <PetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={() => setStep(4)} />;
       } else if (step === 4) {
-        return <SitterOnboarding userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+        return <SitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
       }
     }
     
