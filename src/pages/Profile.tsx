@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Calendar, Star, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
+import PetsManagement from '@/components/PetsManagement';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -777,9 +778,11 @@ export default function Profile() {
                         <p className="text-muted-foreground mb-4">
                           Add your pets to help sitters understand their needs better.
                         </p>
-                        <Button onClick={() => window.location.href = '/onboarding'}>
-                          Add Your Pets
-                        </Button>
+                        <PetsManagement 
+                          profileId={profile.id} 
+                          userId={profile.user_id}
+                          onPetAdded={fetchUserPets}
+                        />
                       </CardContent>
                     </Card>
                   </div>
