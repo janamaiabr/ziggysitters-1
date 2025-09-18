@@ -69,7 +69,7 @@ const safetyFeatures = [
   {
     icon: UserCheck,
     title: 'Identity Verification',
-    description: 'Government ID verification for all platform members'
+    description: 'ID verification (i.e. passport or drivers licence) for all platform members'
   },
   {
     icon: Star,

@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface Service {
-  service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
+  service_type: 'dog_walking' | 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
   rate: number;
   description: string;
   what_included: string;
@@ -28,10 +28,9 @@ const petSizes = ['small', 'medium', 'large', 'extra_large'];
 
 const serviceTypes = [
   { key: 'dog_walking', label: 'Dog Walking', rate_type: 'hourly' },
-  { key: 'daycare', label: 'Daycare', rate_type: 'daily' },
-  { key: 'overnight_boarding', label: 'Overnight Boarding', rate_type: 'overnight' },
-  { key: 'pet_sitting_owners_home', label: 'Pet Sitting (Owner\'s Home)', rate_type: 'daily' },
-  { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (My Home)', rate_type: 'daily' }
+  { key: 'pet_sitting_owners_home', label: 'Pet Sitting (Your Home)', rate_type: 'daily' },
+  { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (Sitter\'s Home)', rate_type: 'daily' },
+  { key: 'drop_in_visits', label: 'Drop-in Visits', rate_type: 'hourly' }
 ];
 
 export default function SitterOnboarding({ profileId, userId, onComplete }: SitterOnboardingProps) {

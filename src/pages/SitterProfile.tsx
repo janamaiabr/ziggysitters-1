@@ -356,7 +356,7 @@ export default function SitterProfile() {
                 <Separator />
                 
                 <div>
-                  <h4 className="font-medium mb-2">Specialties</h4>
+                  <h4 className="font-medium mb-2">Specialities</h4>
                   <div className="flex flex-wrap gap-2">
                     {sitterData.specialties.map((specialty) => (
                       <Badge key={specialty} variant="outline">

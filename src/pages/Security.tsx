@@ -7,7 +7,7 @@ export default function Security() {
     {
       icon: UserCheck,
       title: 'Identity Verification',
-      description: 'All sitters complete thorough identity verification including government ID checks and address confirmation.',
+      description: 'All sitters complete thorough identity verification including ID checks (i.e. passport or drivers licence) and address confirmation.',
       status: 'Active'
     },
     {

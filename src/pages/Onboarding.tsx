@@ -364,25 +364,25 @@ export default function Onboarding() {
 
         <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number *</Label>
+            <Label htmlFor="phone">Mobile Number *</Label>
             <Input
               id="phone"
               type="tel"
-              placeholder="Your phone number"
+              placeholder="Your mobile number"
               value={data.phone || ''}
               onChange={(e) => handleInputChange('phone', e.target.value)}
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="postal_code">Postal Code</Label>
-            <Input
-              id="postal_code"
-              placeholder="1010"
-              value={data.postal_code || ''}
-              onChange={(e) => handleInputChange('postal_code', e.target.value)}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="postal_code">Postcode</Label>
+          <Input
+            id="postal_code"
+            placeholder="1010"
+            value={data.postal_code || ''}
+            onChange={(e) => handleInputChange('postal_code', e.target.value)}
+          />
+        </div>
         </div>
 
         <div className="space-y-2">
