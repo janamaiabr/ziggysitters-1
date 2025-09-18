@@ -59,14 +59,26 @@ export function useProfile() {
       } else {
         console.log('useProfile: Profile found:', data);
         setProfile(data);
-        // Check if profile needs completion (basic onboarding check)
-        const isIncomplete = !data.phone || !data.address || !data.suburb;
-        console.log('useProfile: Profile incomplete?', isIncomplete, {
+        // Check if profile needs completion - more comprehensive check
+        const isIncomplete = !data.phone || !data.address || !data.suburb || 
+                             !data.first_name || !data.last_name;
+        
+        // Additional check for role-specific completion
+        let roleSpecificIncomplete = false;
+        if (data.role === 'pet_owner' || data.role === 'both') {
+          // Check if user has pets registered (simplified check)
+          roleSpecificIncomplete = false; // We'll check this in the onboarding flow
+        }
+        
+        console.log('useProfile: Profile incomplete?', isIncomplete || roleSpecificIncomplete, {
           hasPhone: !!data.phone,
           hasAddress: !!data.address,
-          hasSuburb: !!data.suburb
+          hasSuburb: !!data.suburb,
+          hasFirstName: !!data.first_name,
+          hasLastName: !!data.last_name,
+          role: data.role
         });
-        setNeedsOnboarding(isIncomplete);
+        setNeedsOnboarding(isIncomplete || roleSpecificIncomplete);
       }
     } catch (error) {
       console.error('Error in fetchProfile:', error);

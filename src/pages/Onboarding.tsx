@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { PawPrint, User, UserCheck, Heart } from 'lucide-react';
+import PetOwnerOnboarding from '@/components/onboarding/PetOwnerOnboarding';
+import SitterOnboarding from '@/components/onboarding/SitterOnboarding';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Textarea } from '@/components/ui/textarea';
 
 type UserRole = 'pet_owner' | 'pet_sitter' | 'both';
 
@@ -25,36 +27,20 @@ interface OnboardingData {
   postal_code?: string;
   bio?: string;
   avatar_url?: string;
-  experience_years?: number;
-  has_fenced_yard?: boolean;
-  accepted_pet_species?: string[];
-  accepted_pet_sizes?: string[];
-  comfortable_with_medication?: boolean;
-  pet_sleeping_location?: string;
-  has_other_pets?: boolean;
-  other_pets_description?: string;
-  services?: Array<{
-    service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
-    rate: number;
-    description?: string;
-    what_included?: string;
-  }>;
-  portfolio_photos?: string[];
 }
 
 export default function Onboarding() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [profileId, setProfileId] = useState<string>('');
   const [data, setData] = useState<OnboardingData>({
     role: null,
-    city: 'Auckland',
-    accepted_pet_species: [],
-    accepted_pet_sizes: [],
-    services: []
+    city: 'Auckland'
   });
 
   useEffect(() => {
@@ -130,44 +116,6 @@ export default function Onboarding() {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleServiceChange = (serviceType: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home', field: string, value: any) => {
-    setData(prev => {
-      const services = prev.services || [];
-      const existingServiceIndex = services.findIndex(s => s.service_type === serviceType);
-      
-      if (existingServiceIndex >= 0) {
-        const updatedServices = [...services];
-        updatedServices[existingServiceIndex] = {
-          ...updatedServices[existingServiceIndex],
-          [field]: value
-        };
-        return { ...prev, services: updatedServices };
-      } else {
-        const newService = {
-          service_type: serviceType,
-          rate: field === 'rate' ? value : 0,
-          description: field === 'description' ? value : undefined,
-          what_included: field === 'what_included' ? value : undefined,
-          [field]: value
-        };
-        return {
-          ...prev,
-          services: [...services, newService]
-        };
-      }
-    });
-  };
-
-  const handleArrayToggle = (field: 'accepted_pet_species' | 'accepted_pet_sizes', value: string) => {
-    setData(prev => {
-      const currentArray = prev[field] || [];
-      const newArray = currentArray.includes(value)
-        ? currentArray.filter(item => item !== value)
-        : [...currentArray, value];
-      return { ...prev, [field]: newArray };
-    });
-  };
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -201,53 +149,11 @@ export default function Onboarding() {
     }
   };
 
-  const handlePortfolioUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    try {
-      const uploadPromises = Array.from(files).map(async (file, index) => {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${user?.id}-portfolio-${Date.now()}-${index}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('profile-photos')
-          .upload(fileName, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('profile-photos')
-          .getPublicUrl(fileName);
-
-        return publicUrl;
-      });
-
-      const uploadedUrls = await Promise.all(uploadPromises);
-      
-      setData(prev => ({ 
-        ...prev, 
-        portfolio_photos: [...(prev.portfolio_photos || []), ...uploadedUrls]
-      }));
-      
-      toast({
-        title: "Portfolio photos uploaded!",
-        description: `${uploadedUrls.length} photos added to your portfolio.`,
-      });
-    } catch (error: any) {
-      toast({
-        title: "Upload failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const saveProfile = async () => {
+  const saveBasicProfile = async () => {
     setIsLoading(true);
     try {
-      // Update profile
-      const { error: profileError } = await supabase
+      // Update profile with basic info
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .update({
           role: data.role === 'both' ? 'pet_sitter' : data.role,
@@ -258,68 +164,33 @@ export default function Onboarding() {
           suburb: data.suburb,
           city: data.city,
           postal_code: data.postal_code,
-          bio: data.bio,
           avatar_url: data.avatar_url,
         })
-        .eq('user_id', user?.id);
+        .eq('user_id', user?.id)
+        .select('id')
+        .single();
 
       if (profileError) throw profileError;
 
-      // If user is a sitter, save service information
-      if (data.role === 'pet_sitter' || data.role === 'both') {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('user_id', user?.id)
-          .single();
-
-        if (profileData && data.services) {
-          for (const service of data.services) {
-            const rateField = service.service_type === 'dog_walking' ? 'hourly_rate' : 
-                             service.service_type === 'daycare' ? 'daily_rate' : 'overnight_rate';
-
-            const serviceData: any = {
-              sitter_id: profileData.id,
-              service_type: service.service_type,
-              description: service.description,
-              experience_years: data.experience_years || 0,
-              has_fenced_yard: data.has_fenced_yard || false,
-              accepted_pet_species: data.accepted_pet_species,
-              accepted_pet_sizes: data.accepted_pet_sizes,
-              allows_senior_pets: true,
-              allows_puppies: true,
-              max_pets: 3,
-            };
-
-            // Set the appropriate rate field
-            serviceData[rateField] = service.rate;
-
-            const { error: serviceError } = await supabase
-              .from('sitter_services')
-              .upsert(serviceData, {
-                onConflict: 'sitter_id,service_type'
-              });
-
-            if (serviceError) throw serviceError;
-          }
-        }
-      }
-
-      toast({
-        title: "Profile completed!",
-        description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
-      });
-
-      navigate('/');
+      setProfileId(profileData.id);
+      setStep(step + 1);
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Error saving profile",
         description: error.message,
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleOnboardingComplete = () => {
+    toast({
+      title: "Profile completed!",
+      description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
+    });
+    navigate('/');
   };
 
   const nextStep = () => {
@@ -329,6 +200,10 @@ export default function Onboarding() {
         description: "Choose whether you want to be a pet owner, sitter, or both.",
         variant: "destructive",
       });
+      return;
+    }
+    if (step === 2) {
+      saveBasicProfile();
       return;
     }
     setStep(step + 1);
@@ -416,37 +291,31 @@ export default function Onboarding() {
   const renderBasicInfo = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Basic Information</h2>
+        <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold mb-2`}>Basic Information</h2>
         <p className="text-muted-foreground">Tell us a bit about yourself and your location</p>
       </div>
 
       <div className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
           <div className="space-y-2">
-            <Label htmlFor="first_name">First Name</Label>
+            <Label htmlFor="first_name">First Name *</Label>
             <Input
               id="first_name"
               placeholder="Your first name"
               value={data.first_name || ''}
               onChange={(e) => handleInputChange('first_name', e.target.value)}
-              disabled={!!(data.first_name)} // Disable if already filled from signup
+              required
             />
-            {data.first_name && (
-              <p className="text-xs text-muted-foreground">From your signup information</p>
-            )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="last_name">Last Name</Label>
+            <Label htmlFor="last_name">Last Name *</Label>
             <Input
               id="last_name"
               placeholder="Your last name"
               value={data.last_name || ''}
               onChange={(e) => handleInputChange('last_name', e.target.value)}
-              disabled={!!(data.last_name)} // Disable if already filled from signup
+              required
             />
-            {data.last_name && (
-              <p className="text-xs text-muted-foreground">From your signup information</p>
-            )}
           </div>
         </div>
 
@@ -466,15 +335,16 @@ export default function Onboarding() {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Phone Number *</Label>
             <Input
               id="phone"
               type="tel"
               placeholder="Your phone number"
               value={data.phone || ''}
               onChange={(e) => handleInputChange('phone', e.target.value)}
+              required
             />
           </div>
           <div className="space-y-2">
@@ -489,12 +359,24 @@ export default function Onboarding() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address">Address</Label>
+          <Label htmlFor="address">Address *</Label>
           <Input
             id="address"
             placeholder="Your street address"
             value={data.address || ''}
             onChange={(e) => handleInputChange('address', e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="suburb">Suburb *</Label>
+          <Input
+            id="suburb"
+            placeholder="Your suburb"
+            value={data.suburb || ''}
+            onChange={(e) => handleInputChange('suburb', e.target.value)}
+            required
           />
         </div>
 
@@ -532,356 +414,114 @@ export default function Onboarding() {
     </div>
   );
 
-  const renderSitterInfo = () => (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Sitter Services</h2>
-        <p className="text-muted-foreground">Set up your services and rates</p>
-      </div>
+  const renderRoleSpecificOnboarding = () => {
+    if (!data.role) return null;
 
-      <div className="grid gap-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="experience_years">Years of Experience</Label>
-            <Input
-              id="experience_years"
-              type="number"
-              min="0"
-              max="50"
-              placeholder="0"
-              value={data.experience_years || ''}
-              onChange={(e) => handleInputChange('experience_years', parseInt(e.target.value) || 0)}
-              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-          </div>
-          <div className="flex items-center space-x-2 pt-6">
-            <Checkbox
-              id="has_fenced_yard"
-              checked={data.has_fenced_yard || false}
-              onCheckedChange={(checked) => handleInputChange('has_fenced_yard', checked)}
-            />
-            <Label htmlFor="has_fenced_yard">I have a fenced yard</Label>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="font-semibold">Pet Types & Sizes</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Pet Species I can care for:</Label>
-              <div className="space-y-2">
-                {['dog', 'cat', 'bird', 'rabbit', 'fish'].map((species) => (
-                  <div key={species} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`species-${species}`}
-                      checked={data.accepted_pet_species?.includes(species) || false}
-                      onCheckedChange={() => handleArrayToggle('accepted_pet_species', species)}
-                    />
-                    <Label htmlFor={`species-${species}`} className="capitalize">{species}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Pet Sizes I can care for:</Label>
-              <div className="space-y-2">
-                {['small', 'medium', 'large', 'extra_large'].map((size) => (
-                  <div key={size} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`size-${size}`}
-                      checked={data.accepted_pet_sizes?.includes(size) || false}
-                      onCheckedChange={() => handleArrayToggle('accepted_pet_sizes', size)}
-                    />
-                    <Label htmlFor={`size-${size}`} className="capitalize">{size.replace('_', ' ')}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="font-semibold">Care Details</h3>
-          <div className="grid gap-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="comfortable_with_medication"
-                checked={data.comfortable_with_medication || false}
-                onCheckedChange={(checked) => handleInputChange('comfortable_with_medication', checked)}
-              />
-              <Label htmlFor="comfortable_with_medication">I'm comfortable administering pet medication</Label>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="pet_sleeping_location">Where will pets sleep during overnight stays?</Label>
-              <Textarea
-                id="pet_sleeping_location"
-                placeholder="e.g., On their own bed in the living room, in my bedroom, wherever they're comfortable..."
-                value={data.pet_sleeping_location || ''}
-                onChange={(e) => handleInputChange('pet_sleeping_location', e.target.value)}
-                rows={2}
-              />
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="has_other_pets"
-                checked={data.has_other_pets || false}
-                onCheckedChange={(checked) => handleInputChange('has_other_pets', checked)}
-              />
-              <Label htmlFor="has_other_pets">I have other pets at home</Label>
-            </div>
-
-            {data.has_other_pets && (
-              <div className="space-y-2">
-                <Label htmlFor="other_pets_description">Tell us about your other pets:</Label>
-                <Textarea
-                  id="other_pets_description"
-                  placeholder="e.g., 2 friendly golden retrievers, 1 cat who loves attention..."
-                  value={data.other_pets_description || ''}
-                  onChange={(e) => handleInputChange('other_pets_description', e.target.value)}
-                  rows={2}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="font-semibold">Service Rates & Details</h3>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Dog Walking</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Rate per walk (NZ$)</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="25"
-                  onChange={(e) => handleServiceChange('dog_walking', 'rate', parseFloat(e.target.value) || 0)}
-                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>What's included in your dog walking service?</Label>
-                <Textarea
-                  placeholder="e.g., 30-45 minute walks, fresh water refill, basic exercise, updates with photos..."
-                  onChange={(e) => handleServiceChange('dog_walking', 'what_included', e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Additional notes for dog walking:</Label>
-                <Textarea
-                  placeholder="e.g., Happy to follow specific routes, can handle reactive dogs with proper notice..."
-                  onChange={(e) => handleServiceChange('dog_walking', 'description', e.target.value)}
-                  rows={2}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Daycare</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Rate per day (NZ$)</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="60"
-                  onChange={(e) => handleServiceChange('daycare', 'rate', parseFloat(e.target.value) || 0)}
-                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>What's included in your daycare service?</Label>
-                <Textarea
-                  placeholder="e.g., 8-10 hours of care, feeding, playtime, walks, regular updates..."
-                  onChange={(e) => handleServiceChange('daycare', 'what_included', e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Additional notes for daycare:</Label>
-                <Textarea
-                  placeholder="e.g., Pets will be supervised at all times, lots of garden space for play..."
-                  onChange={(e) => handleServiceChange('daycare', 'description', e.target.value)}
-                  rows={2}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Overnight Boarding</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Rate per night (NZ$)</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="80"
-                  onChange={(e) => handleServiceChange('overnight_boarding', 'rate', parseFloat(e.target.value) || 0)}
-                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>What's included in your overnight boarding?</Label>
-                <Textarea
-                  placeholder="e.g., 24-hour care, feeding, walks, playtime, sleeping arrangements, regular updates..."
-                  onChange={(e) => handleServiceChange('overnight_boarding', 'what_included', e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Additional notes for overnight boarding:</Label>
-                <Textarea
-                  placeholder="e.g., Pets will have full access to the house, treated like family members..."
-                  onChange={(e) => handleServiceChange('overnight_boarding', 'description', e.target.value)}
-                  rows={2}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Pet Sitting (Owner's Home)</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Rate per visit/day (NZ$)</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="50"
-                  onChange={(e) => handleServiceChange('pet_sitting_owners_home', 'rate', parseFloat(e.target.value) || 0)}
-                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>What's included in your pet sitting service?</Label>
-                <Textarea
-                  placeholder="e.g., feeding, walks, playtime, house security, plant watering, mail collection..."
-                  onChange={(e) => handleServiceChange('pet_sitting_owners_home', 'what_included', e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Additional notes for pet sitting:</Label>
-                <Textarea
-                  placeholder="e.g., Happy to stay overnight, can handle multiple pets, experienced with senior pets..."
-                  onChange={(e) => handleServiceChange('pet_sitting_owners_home', 'description', e.target.value)}
-                  rows={2}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Portfolio Photos</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="portfolio">Upload photos of you with pets (optional)</Label>
-                <Input
-                  id="portfolio"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handlePortfolioUpload}
-                  className="cursor-pointer"
-                />
-                <p className="text-sm text-muted-foreground">Add up to 5 photos showing your experience with pets</p>
-              </div>
-              {data.portfolio_photos && data.portfolio_photos.length > 0 && (
-                <div className="grid grid-cols-3 gap-2">
-                  {data.portfolio_photos.map((url, index) => (
-                    <img key={index} src={url} alt={`Portfolio ${index + 1}`} className="w-full h-20 object-cover rounded" />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
-  );
+    if (data.role === 'pet_owner') {
+      return <PetOwnerOnboarding userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+    }
+    
+    if (data.role === 'pet_sitter') {
+      return <SitterOnboarding userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+    }
+    
+    if (data.role === 'both') {
+      // Show both flows in sequence
+      if (step === 3) {
+        return <PetOwnerOnboarding userId={user?.id || ''} onComplete={() => setStep(4)} />;
+      } else if (step === 4) {
+        return <SitterOnboarding userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+      }
+    }
+    
+    return null;
+  };
 
   const getTotalSteps = () => {
-    if (data.role === 'pet_owner') return 2;
-    if (data.role === 'pet_sitter' || data.role === 'both') return 3;
+    if (data.role === 'both') return 4;
+    if (data.role === 'pet_owner' || data.role === 'pet_sitter') return 3;
     return 2;
   };
 
-  const shouldShowSitterStep = () => {
-    return step === 3 && (data.role === 'pet_sitter' || data.role === 'both');
+  const getStepTitle = () => {
+    if (step === 1) return 'Choose Your Role';
+    if (step === 2) return 'Basic Information';
+    if (data.role === 'both') {
+      if (step === 3) return 'Your Pets';
+      if (step === 4) return 'Sitter Services';
+    } else if (data.role === 'pet_owner') {
+      if (step === 3) return 'Your Pets';
+    } else if (data.role === 'pet_sitter') {
+      if (step === 3) return 'Sitter Services';
+    }
+    return '';
   };
 
+  const totalSteps = getTotalSteps();
+
   return (
-    <div className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 min-h-[calc(100vh-8rem)] flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4">
-            <PawPrint className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-bold">Welcome to ZiggySitters!</h1>
-          <p className="text-muted-foreground">Let's set up your profile</p>
-          
-          <div className="flex justify-center mt-4">
-            <div className="flex space-x-2">
-              {Array.from({ length: getTotalSteps() }, (_, i) => (
-                <div
-                  key={i}
-                  className={`w-3 h-3 rounded-full ${
-                    i + 1 <= step ? 'bg-primary' : 'bg-muted'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <Card className="shadow-xl">
-          <CardContent className="p-8">
-            {step === 1 && renderRoleSelection()}
-            {step === 2 && renderBasicInfo()}
-            {shouldShowSitterStep() && renderSitterInfo()}
-
-            <div className="flex justify-between mt-8">
-              {step > 1 && (
-                <Button variant="outline" onClick={prevStep}>
+    <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
+      <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
+        <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
+          <Card>
+            <CardHeader className="text-center">
+              <div className="flex items-center justify-center mb-4">
+                <PawPrint className="w-8 h-8 text-primary mr-2" />
+                <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>Welcome to ZiggySitters</h1>
+              </div>
+              
+              {/* Progress indicator */}
+              <div className="flex justify-center mb-6">
+                <div className="flex space-x-2">
+                  {Array.from({ length: totalSteps }, (_, i) => (
+                    <div
+                      key={i}
+                      className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'} rounded-full ${
+                        i + 1 <= step ? 'bg-primary' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              
+              <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
+                Step {step} of {totalSteps}: {getStepTitle()}
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent className={isMobile ? 'p-4' : 'p-6'}>
+              {step === 1 && renderRoleSelection()}
+              {step === 2 && renderBasicInfo()}
+              {step >= 3 && renderRoleSpecificOnboarding()}
+            </CardContent>
+            
+            {/* Navigation buttons */}
+            {(step <= 2 || (data.role === 'both' && step === 3)) && (
+              <div className={`flex justify-between ${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
+                <Button
+                  variant="outline"
+                  onClick={prevStep}
+                  disabled={step === 1}
+                  className={isMobile ? 'px-4' : 'px-6'}
+                >
                   Previous
                 </Button>
-              )}
-              
-              <div className="ml-auto">
-                {step < getTotalSteps() ? (
-                  <Button onClick={nextStep}>
-                    Next
-                  </Button>
-                ) : (
-                  <Button onClick={saveProfile} disabled={isLoading}>
-                    {isLoading ? "Setting up..." : "Complete Setup"}
-                  </Button>
-                )}
+                
+                <Button
+                  onClick={nextStep}
+                  disabled={
+                    isLoading ||
+                    (step === 1 && !data.role) ||
+                    (step === 2 && (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb))
+                  }
+                  className={isMobile ? 'px-4' : 'px-6'}
+                >
+                  {step === 2 ? 'Save & Continue' : 'Next'}
+                </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            )}
+          </Card>
+        </div>
       </div>
     </div>
   );

@@ -191,10 +191,11 @@ export default function FindSitters() {
               Discover verified, loving pet sitters in your area
             </p>
             
-            {/* Enhanced Search Form */}
+            {/* Enhanced Search Form - Mobile Optimized */}
             <div className="bg-white rounded-2xl p-4 md:p-6 space-y-4 border border-gray-200 shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-4">
-                <div className="space-y-2">
+              {/* Mobile: Stack all fields vertically, Desktop: Grid layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
+                <div className="space-y-2 md:col-span-1 lg:col-span-1">
                   <label className="text-sm font-medium text-gray-700">Location</label>
                   <SuburbAutocomplete
                     value={location}
@@ -203,7 +204,41 @@ export default function FindSitters() {
                   />
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-1 lg:col-span-1">
+                  <label className="text-sm font-medium text-gray-700">Service Type</label>
+                  <Select value={serviceType} onValueChange={setServiceType}>
+                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
+                      <SelectValue placeholder="Select service" />
+                    </SelectTrigger>
+                     <SelectContent>
+                       <SelectItem value="dog-walking">🚶‍♂️ Dog Walking</SelectItem>
+                       <SelectItem value="pet-sitting">🏠 Pet Sitting</SelectItem>
+                       <SelectItem value="overnight-care">🌙 Overnight Care</SelectItem>
+                       <SelectItem value="drop-in-visits">🏃‍♀️ Drop-in Visits</SelectItem>
+                       <SelectItem value="pet-boarding">🏨 Pet Boarding</SelectItem>
+                       <SelectItem value="grooming">✂️ Grooming</SelectItem>
+                     </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2 md:col-span-1 lg:col-span-1">
+                  <label className="text-sm font-medium text-gray-700">Pet Type</label>
+                  <Select value={petType} onValueChange={setPetType}>
+                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
+                      <SelectValue placeholder="Select pet" />
+                    </SelectTrigger>
+                     <SelectContent>
+                       <SelectItem value="dogs">🐕 Dogs</SelectItem>
+                       <SelectItem value="cats">🐱 Cats</SelectItem>
+                       <SelectItem value="birds">🦜 Birds</SelectItem>
+                       <SelectItem value="small-pets">🐹 Small Pets</SelectItem>
+                       <SelectItem value="reptiles">🦎 Reptiles</SelectItem>
+                     </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Date fields - hidden on mobile, shown on desktop */}
+                <div className="hidden lg:block space-y-2">
                   <label className="text-sm font-medium text-gray-700">Check-in Date</label>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -230,6 +265,44 @@ export default function FindSitters() {
                   </Popover>
                 </div>
                 
+                <div className="hidden lg:block space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Check-out Date</label>
+                  <Input 
+                    type="date"
+                    className="h-10 border-gray-300 text-gray-800 focus:border-primary"
+                  />
+                </div>
+              </div>
+              
+              {/* Mobile-specific date section */}
+              <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Check-in Date</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
+                          !selectedDate && "text-gray-500"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Select date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        initialFocus
+                        className="p-3 pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Check-out Date</label>
                   <Input 
@@ -237,56 +310,23 @@ export default function FindSitters() {
                     className="h-10 border-gray-300 text-gray-800 focus:border-primary"
                   />
                 </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Service Type</label>
-                  <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
-                      <SelectValue placeholder="Select service" />
-                    </SelectTrigger>
-                     <SelectContent>
-                       <SelectItem value="dog-walking">🚶‍♂️ Dog Walking</SelectItem>
-                       <SelectItem value="pet-sitting">🏠 Pet Sitting</SelectItem>
-                       <SelectItem value="overnight-care">🌙 Overnight Care</SelectItem>
-                       <SelectItem value="drop-in-visits">🏃‍♀️ Drop-in Visits</SelectItem>
-                       <SelectItem value="pet-boarding">🏨 Pet Boarding</SelectItem>
-                       <SelectItem value="grooming">✂️ Grooming</SelectItem>
-                     </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Pet Type</label>
-                  <Select value={petType} onValueChange={setPetType}>
-                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
-                      <SelectValue placeholder="Select pet" />
-                    </SelectTrigger>
-                     <SelectContent>
-                       <SelectItem value="dogs">🐕 Dogs</SelectItem>
-                       <SelectItem value="cats">🐱 Cats</SelectItem>
-                       <SelectItem value="birds">🦜 Birds</SelectItem>
-                       <SelectItem value="small-pets">🐹 Small Pets</SelectItem>
-                       <SelectItem value="reptiles">🦎 Reptiles</SelectItem>
-                     </SelectContent>
-                  </Select>
-                </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
                 <Button 
                   size="lg" 
                   onClick={handleSearch}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 md:px-8 font-semibold w-full sm:w-auto"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 md:px-8 font-semibold w-full sm:w-auto order-1"
                 >
                   Search Sitters
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full sm:w-auto"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full sm:w-auto order-2"
                 >
                   <Filter className="mr-2 h-4 w-4" />
-                  More Filters
+                  Filters
                 </Button>
               </div>
             </div>
