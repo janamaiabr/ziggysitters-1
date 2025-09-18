@@ -24,6 +24,7 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [recentBookings, setRecentBookings] = useState([]);
   const [sitterServices, setSitterServices] = useState([]);
+  const [userPets, setUserPets] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<any>({});
   const [portfolioPhotos, setPortfolioPhotos] = useState([]);
@@ -33,8 +34,13 @@ export default function Profile() {
   useEffect(() => {
     if (profile) {
       fetchBookings();
-      fetchSitterServices();
-      fetchPortfolioPhotos();
+      if (profile.role === 'pet_sitter' || profile.role === 'both') {
+        fetchSitterServices();
+        fetchPortfolioPhotos();
+      }
+      if (profile.role === 'pet_owner' || profile.role === 'both') {
+        fetchUserPets();
+      }
       setEditData({
         first_name: profile.first_name,
         last_name: profile.last_name,
@@ -84,6 +90,24 @@ export default function Profile() {
       }
     } catch (error) {
       console.error('Error fetching sitter services:', error);
+    }
+  };
+
+  const fetchUserPets = async () => {
+    if (!profile) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('pets')
+        .select('*')
+        .eq('owner_id', profile.id)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setUserPets(data);
+      }
+    } catch (error) {
+      console.error('Error fetching pets:', error);
     }
   };
 
@@ -459,12 +483,21 @@ export default function Profile() {
 
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-3' : profile.role === 'pet_sitter' ? 'grid-cols-4' : 'grid-cols-5'}`}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="services">Services & Pricing</TabsTrigger>
-            <TabsTrigger value="calendar">My Calendar</TabsTrigger>
+            {(profile.role === 'pet_owner' || profile.role === 'both') && (
+              <TabsTrigger value="pets">My Pets</TabsTrigger>
+            )}
+            {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+              <TabsTrigger value="services">Services & Pricing</TabsTrigger>
+            )}
+            {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+              <TabsTrigger value="calendar">My Calendar</TabsTrigger>
+            )}
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="verification">Verification</TabsTrigger>
+            {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+              <TabsTrigger value="verification">Verification</TabsTrigger>
+            )}
           </TabsList>
 
           {/* Overview Tab */}
@@ -582,52 +615,54 @@ export default function Profile() {
                   </CardContent>
                 </Card>
 
-                {/* Portfolio Photos */}
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>Portfolio Photos</CardTitle>
-                      <div>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                          id="portfolio-upload"
-                        />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => document.getElementById('portfolio-upload')?.click()}
-                        >
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Photo
-                        </Button>
+                {/* Portfolio Photos - Only for sitters */}
+                {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Portfolio Photos</CardTitle>
+                        <div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                            id="portfolio-upload"
+                          />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => document.getElementById('portfolio-upload')?.click()}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Photo
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {portfolioPhotos.length > 0 ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {portfolioPhotos.map((photo, index) => (
-                          <div key={index} className="aspect-square rounded-lg overflow-hidden">
-                            <img
-                              src={photo}
-                              alt={`Portfolio ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <CameraIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p>No portfolio photos yet</p>
-                        <p className="text-sm">Add photos to showcase your services</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                    </CardHeader>
+                    <CardContent>
+                      {portfolioPhotos.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {portfolioPhotos.map((photo, index) => (
+                            <div key={index} className="aspect-square rounded-lg overflow-hidden">
+                              <img
+                                src={photo}
+                                alt={`Portfolio ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <CameraIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                          <p>No portfolio photos yet</p>
+                          <p className="text-sm">Add photos to showcase your services</p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </div>
 
               {/* Right Column - Stats */}
@@ -658,8 +693,104 @@ export default function Profile() {
             </div>
           </TabsContent>
 
-          {/* Services & Pricing Tab */}
-          <TabsContent value="services" className="space-y-6">
+          {/* My Pets Tab - Only for pet owners */}
+          {(profile.role === 'pet_owner' || profile.role === 'both') && (
+            <TabsContent value="pets" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {userPets.length > 0 ? (
+                  userPets.map((pet) => (
+                    <Card key={pet.id}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="flex items-center gap-2">
+                            {pet.name}
+                            <Badge variant="outline">
+                              {pet.species}
+                            </Badge>
+                          </CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          {pet.photo_urls && pet.photo_urls.length > 0 && (
+                            <div className="grid grid-cols-2 gap-2 mb-4">
+                              {pet.photo_urls.slice(0, 4).map((photo, index) => (
+                                <div key={index} className="aspect-square rounded-lg overflow-hidden">
+                                  <img
+                                    src={photo}
+                                    alt={`${pet.name} ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-muted-foreground">Breed:</span>
+                              <p className="font-medium">{pet.breed || 'Mixed'}</p>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Age:</span>
+                              <p className="font-medium">{pet.age || 'Unknown'} years</p>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Gender:</span>
+                              <p className="font-medium capitalize">{pet.gender || 'Unknown'}</p>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Size:</span>
+                              <p className="font-medium capitalize">{pet.size?.replace('_', ' ') || 'Unknown'}</p>
+                            </div>
+                          </div>
+                          
+                          {pet.personality_traits && pet.personality_traits.length > 0 && (
+                            <div>
+                              <span className="text-muted-foreground text-sm">Personality:</span>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {pet.personality_traits.slice(0, 6).map((trait) => (
+                                  <Badge key={trait} variant="secondary" className="text-xs">
+                                    {trait}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {pet.special_care_notes && (
+                            <div>
+                              <span className="text-muted-foreground text-sm">Special Care:</span>
+                              <p className="text-sm mt-1">{pet.special_care_notes}</p>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="lg:col-span-2">
+                    <Card>
+                      <CardContent className="text-center py-12">
+                        <div className="text-6xl mb-4">🐾</div>
+                        <h3 className="text-xl font-semibold mb-2">No pets registered yet</h3>
+                        <p className="text-muted-foreground mb-4">
+                          Add your pets to help sitters understand their needs better.
+                        </p>
+                        <Button onClick={() => window.location.href = '/onboarding'}>
+                          Add Your Pets
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          )}
+
+          {/* Services & Pricing Tab - Only for sitters */}
+          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+            <TabsContent value="services" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {sitterServices.map((service) => (
                 <Card key={service.id}>
@@ -762,10 +893,12 @@ export default function Profile() {
                 </Card>
               ))}
             </div>
-          </TabsContent>
+            </TabsContent>
+          )}
 
-          {/* Calendar Tab */}
-          <TabsContent value="calendar" className="space-y-6">
+          {/* Calendar Tab - Only for sitters */}
+          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+            <TabsContent value="calendar" className="space-y-6">
             {profile.role === 'pet_sitter' || profile.role === 'both' ? (
               <Card>
                 <CardHeader>
@@ -786,7 +919,8 @@ export default function Profile() {
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
+            </TabsContent>
+          )}
 
           {/* Bookings Tab */}
           <TabsContent value="bookings" className="space-y-6">
@@ -832,8 +966,9 @@ export default function Profile() {
             )}
           </TabsContent>
 
-          {/* Verification Tab */}
-          <TabsContent value="verification" className="space-y-6">
+          {/* Verification Tab - Only for sitters */}
+          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+            <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Sitter Verification</CardTitle>
@@ -953,7 +1088,8 @@ export default function Profile() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
