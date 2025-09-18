@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
+import { OnboardingCompletionTracker } from './OnboardingCompletionTracker';
 
 export function OnboardingCheck({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -31,5 +32,10 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <OnboardingCompletionTracker />
+      {children}
+    </>
+  );
 }

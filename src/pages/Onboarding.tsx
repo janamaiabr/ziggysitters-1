@@ -187,12 +187,37 @@ export default function Onboarding() {
     }
   };
 
-  const handleOnboardingComplete = () => {
-    toast({
-      title: "Profile completed!",
-      description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
-    });
-    navigate('/onboarding-complete');
+  const handleOnboardingComplete = async () => {
+    try {
+      // Mark onboarding as completed in the database
+      const { error } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('user_id', user?.id);
+
+      if (error) {
+        console.error('Error marking onboarding complete:', error);
+        toast({
+          title: "Error completing onboarding",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Profile completed!",
+        description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
+      });
+      navigate('/onboarding-complete');
+    } catch (error: any) {
+      console.error('Error in handleOnboardingComplete:', error);
+      toast({
+        title: "Error completing onboarding",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const nextStep = () => {

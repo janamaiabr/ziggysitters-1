@@ -341,6 +341,7 @@ export type Database = {
           last_name: string
           latitude: number | null
           longitude: number | null
+          onboarding_completed: boolean | null
           phone: string | null
           postal_code: string | null
           rating: number | null
@@ -371,6 +372,7 @@ export type Database = {
           last_name: string
           latitude?: number | null
           longitude?: number | null
+          onboarding_completed?: boolean | null
           phone?: string | null
           postal_code?: string | null
           rating?: number | null
@@ -401,6 +403,7 @@ export type Database = {
           last_name?: string
           latitude?: number | null
           longitude?: number | null
+          onboarding_completed?: boolean | null
           phone?: string | null
           postal_code?: string | null
           rating?: number | null

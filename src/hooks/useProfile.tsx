@@ -19,6 +19,7 @@ export interface Profile {
   is_verified?: boolean;
   rating?: number;
   total_reviews?: number;
+  onboarding_completed?: boolean;
   
   id_document_url?: string;
   blue_card_document_url?: string;
@@ -59,18 +60,18 @@ export function useProfile() {
       } else {
         console.log('useProfile: Profile found:', data);
         setProfile(data);
-        // Check if profile needs completion - more comprehensive check
-        const isIncomplete = !data.phone || !data.address || !data.suburb || 
-                             !data.first_name || !data.last_name;
         
-        // Additional check for role-specific completion
-        let roleSpecificIncomplete = false;
-        if (data.role === 'pet_owner' || data.role === 'both') {
-          // Check if user has pets registered (simplified check)
-          roleSpecificIncomplete = false; // We'll check this in the onboarding flow
-        }
+        // Use the onboarding_completed flag as the primary check
+        // Fallback to legacy check for profiles without the flag
+        const hasCompletionFlag = data.onboarding_completed !== undefined;
+        const isCompleted = hasCompletionFlag 
+          ? data.onboarding_completed 
+          : !!(data.phone && data.address && data.suburb && data.first_name && data.last_name);
         
-        console.log('useProfile: Profile incomplete?', isIncomplete || roleSpecificIncomplete, {
+        console.log('useProfile: Onboarding completion check:', {
+          hasCompletionFlag,
+          onboardingCompleted: data.onboarding_completed,
+          isCompleted,
           hasPhone: !!data.phone,
           hasAddress: !!data.address,
           hasSuburb: !!data.suburb,
@@ -78,7 +79,8 @@ export function useProfile() {
           hasLastName: !!data.last_name,
           role: data.role
         });
-        setNeedsOnboarding(isIncomplete || roleSpecificIncomplete);
+        
+        setNeedsOnboarding(!isCompleted);
       }
     } catch (error) {
       console.error('Error in fetchProfile:', error);
