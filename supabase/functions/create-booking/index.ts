@@ -93,23 +93,8 @@ serve(async (req) => {
       throw new Error(`Invalid service type: ${bookingData.serviceType} -> ${dbServiceType}`);
     }
 
-    // Service type to price mapping using NZD Stripe prices
-    const servicePrices = {
-      'dog_walking': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Dog Walking - NZ$27.50
-      'pet_sitting_owners_home': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Pet Sitting - NZ$33.00
-      'pet_sitting_sitters_home': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Overnight Care - NZ$66.00
-      'drop_in_visits': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Drop-in Visits - NZ$27.50
-      'overnight_boarding': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Pet Boarding - NZ$66.00
-      'grooming': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Grooming - NZ$27.50
-      'daycare': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Daycare - NZ$33.00
-      'pet_care': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Pet Care - NZ$27.50
-    };
-
-    const priceId = servicePrices[dbServiceType as keyof typeof servicePrices];
-    if (!priceId) {
-      throw new Error(`No price mapping found for service type: ${bookingData.serviceType} -> ${dbServiceType}`);
-    }
-    logStep("Price ID determined", { frontendServiceType: bookingData.serviceType, dbServiceType, priceId });
+    // Use dynamic pricing instead of fixed price IDs to match the actual booking amount
+    logStep("Using dynamic pricing for booking", { totalAmount: bookingData.totalAmount, currency: "nzd" });
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -160,32 +145,21 @@ serve(async (req) => {
     }
     logStep("Booking created", { bookingId: booking.id, reference: booking.booking_reference });
 
-    // Calculate quantity for line item based on service rates
-    const getServiceRate = (serviceType: string) => {
-      switch (serviceType) {
-        case 'pet_sitting_sitters_home': return 75;
-        case 'overnight_boarding': return 75;
-        case 'pet_sitting_owners_home': return 55;
-        case 'daycare': return 55;
-        case 'drop_in_visits': return 27.5;
-        case 'dog_walking': return 27.5;
-        case 'grooming': return 27.5;
-        case 'pet_care': return 27.5;
-        default: return 27.5;
-      }
-    };
-    
-    const rate = getServiceRate(dbServiceType);
-    const quantity = Math.max(1, Math.ceil(bookingData.totalAmount / rate));
-
-    // Create a one-time payment session
+    // Create a one-time payment session using dynamic pricing
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: priceId,
-          quantity: quantity,
+          price_data: {
+            currency: 'nzd',
+            product_data: {
+              name: `${dbServiceType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`,
+              description: `Pet care service from ${bookingData.startDate} to ${bookingData.endDate}`,
+            },
+            unit_amount: Math.round(bookingData.totalAmount * 100), // Convert to cents
+          },
+          quantity: 1,
         },
       ],
       mode: "payment",
