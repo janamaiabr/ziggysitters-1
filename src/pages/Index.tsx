@@ -287,6 +287,140 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Daily Reports Section */}
+      <section className="py-12 md:py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+              {/* Left Content */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <Camera className="w-4 h-4 mr-2" />
+                  Industry First Feature
+                </div>
+                
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                  Daily Reports That Actually Matter
+                </h2>
+                
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Unlike other platforms where communication is optional, ZiggySitters requires daily photo updates 
+                  and detailed reports. No updates means reduced payment for sitters - ensuring you're always 
+                  connected to your pet's care.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Multiple Daily Photos</h4>
+                      <p className="text-sm text-gray-600">See your pet's activities throughout the day</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Detailed Care Notes</h4>
+                      <p className="text-sm text-gray-600">Feeding, exercise, mood, and health updates</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <DollarSign className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Payment Guarantee</h4>
+                      <p className="text-sm text-gray-600">Sitters' pay depends on report quality</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Shield className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Peace of Mind</h4>
+                      <p className="text-sm text-gray-600">Never wonder how your pet is doing</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pt-4">
+                  <Button 
+                    size="lg" 
+                    onClick={() => navigate('/daily-reports-info')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                  >
+                    <Camera className="mr-2 h-5 w-5" />
+                    Learn More About Daily Reports
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Right Content - Visual/Stats */}
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                  <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Sample Daily Report</h3>
+                    <p className="text-sm text-gray-600">What you'll receive every day</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                      <span className="text-sm font-medium text-green-800">Morning Walk</span>
+                      <span className="text-xs text-green-600">✓ 45 minutes</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                      <span className="text-sm font-medium text-blue-800">Feeding Time</span>
+                      <span className="text-xs text-blue-600">✓ Ate well</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                      <span className="text-sm font-medium text-purple-800">Playtime</span>
+                      <span className="text-xs text-purple-600">✓ Very active</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-2 mt-4">
+                      <div className="bg-gray-100 rounded-lg h-16 flex items-center justify-center">
+                        <Camera className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <div className="bg-gray-100 rounded-lg h-16 flex items-center justify-center">
+                        <Camera className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <div className="bg-gray-100 rounded-lg h-16 flex items-center justify-center">
+                        <Camera className="w-6 h-6 text-gray-400" />
+                      </div>
+                    </div>
+                    
+                    <p className="text-xs text-gray-500 text-center italic">
+                      "Max had a wonderful day! Very playful and ate all his food. Looking forward to tomorrow's adventure!"
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white rounded-xl p-4 text-center border border-gray-200">
+                    <div className="text-2xl font-bold text-blue-600">100%</div>
+                    <div className="text-sm text-gray-600">Report Compliance</div>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 text-center border border-gray-200">
+                    <div className="text-2xl font-bold text-green-600">5+</div>
+                    <div className="text-sm text-gray-600">Photos Per Day</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
