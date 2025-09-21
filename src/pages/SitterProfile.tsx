@@ -280,6 +280,7 @@ export default function SitterProfile() {
                   services: sitterData.services,
                   avatar: sitterData.avatar
                 }}
+                servicesData={servicesData}
                 isOpen={true}
                 onBookingComplete={() => navigate('/bookings')}
               />

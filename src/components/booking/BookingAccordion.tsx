@@ -25,6 +25,7 @@ interface BookingAccordionProps {
     services: string[];
     avatar: string;
   };
+  servicesData?: any[]; // Add real services data
   isOpen?: boolean;
   onBookingComplete?: () => void;
 }
@@ -56,7 +57,7 @@ const serviceUnits = {
   'grooming': 'service',
 };
 
-export default function BookingAccordion({ sitter, isOpen = false, onBookingComplete }: BookingAccordionProps) {
+export default function BookingAccordion({ sitter, servicesData = [], isOpen = false, onBookingComplete }: BookingAccordionProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [startTime, setStartTime] = useState('09:00');
@@ -81,18 +82,30 @@ export default function BookingAccordion({ sitter, isOpen = false, onBookingComp
   const calculateTotal = () => {
     if (!startDate || !endDate || !serviceType) return 0;
     
+    // Try to find the service in real data first
+    const realService = servicesData.find(s => s.service_type === serviceType);
+    if (realService) {
+      if (serviceType === 'dog_walking' || serviceType === 'pet_care') {
+        return realService.hourly_rate || realService.daily_rate || 0;
+      } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home' || serviceType === 'daycare') {
+        const days = Math.max(1, differenceInDays(endDate, startDate) + 1);
+        return days * (realService.daily_rate || realService.hourly_rate || 0);
+      } else if (serviceType === 'overnight_boarding') {
+        const nights = Math.max(1, differenceInDays(endDate, startDate));
+        return nights * (realService.overnight_rate || realService.daily_rate || 0);
+      }
+    }
+    
+    // Fallback to hardcoded rates
     const rate = serviceRates[serviceType as keyof typeof serviceRates];
     if (!rate) return 0;
 
     if (serviceType === 'dog-walking' || serviceType === 'drop-in-visits' || serviceType === 'grooming') {
-      // Per service - user selects number of services
-      return 1 * rate; // For now, assume 1 service. Could add quantity selector later
+      return 1 * rate;
     } else if (serviceType === 'pet-sitting') {
-      // Pet sitting is per day
-      const days = Math.max(1, differenceInDays(endDate, startDate) + 1); // +1 to include both start and end day
+      const days = Math.max(1, differenceInDays(endDate, startDate) + 1);
       return days * rate;
     } else if (serviceType === 'overnight-care' || serviceType === 'pet-boarding') {
-      // Overnight care/boarding is per night
       const nights = Math.max(1, differenceInDays(endDate, startDate));
       return nights * rate;
     }
@@ -218,21 +231,56 @@ export default function BookingAccordion({ sitter, isOpen = false, onBookingComp
                     <SelectValue placeholder="Select a service" />
                   </SelectTrigger>
                   <SelectContent>
-                    {sitter.services.map((service) => {
-                      const serviceKey = service.toLowerCase().replace(' ', '-');
-                      const rate = serviceRates[serviceKey as keyof typeof serviceRates];
-                      const unit = serviceUnits[serviceKey as keyof typeof serviceUnits];
-                      return (
-                        <SelectItem key={serviceKey} value={serviceKey}>
-                          <div className="flex justify-between w-full">
-                            <span>{service}</span>
-                            <span className="text-muted-foreground ml-4">
-                              ${rate}/{unit}
-                            </span>
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+                    {servicesData.length > 0 ? (
+                      servicesData.map((service) => {
+                        const getServiceDisplayName = (type: string) => {
+                          switch (type) {
+                            case 'dog_walking': return 'Dog Walking';
+                            case 'daycare': return 'Pet Sitting';
+                            case 'overnight_boarding': return 'Overnight Care';
+                            case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
+                            case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
+                            case 'pet_care': return 'Pet Care';
+                            default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                          }
+                        };
+
+                        const getRate = () => {
+                          if (service.hourly_rate) return `$${service.hourly_rate.toFixed(2)}/hour`;
+                          if (service.daily_rate) return `$${service.daily_rate.toFixed(2)}/day`;
+                          if (service.overnight_rate) return `$${service.overnight_rate.toFixed(2)}/night`;
+                          return 'Contact for pricing';
+                        };
+
+                        return (
+                          <SelectItem key={service.id} value={service.service_type}>
+                            <div className="flex justify-between w-full">
+                              <span>{getServiceDisplayName(service.service_type)}</span>
+                              <span className="text-muted-foreground ml-4">
+                                {getRate()}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        );
+                      })
+                    ) : (
+                      // Fallback to hardcoded services if no real data
+                      sitter.services.map((service) => {
+                        const serviceKey = service.toLowerCase().replace(' ', '-');
+                        const rate = serviceRates[serviceKey as keyof typeof serviceRates];
+                        const unit = serviceUnits[serviceKey as keyof typeof serviceUnits];
+                        return (
+                          <SelectItem key={serviceKey} value={serviceKey}>
+                            <div className="flex justify-between w-full">
+                              <span>{service}</span>
+                              <span className="text-muted-foreground ml-4">
+                                ${rate}/{unit}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        );
+                      })
+                    )}
                   </SelectContent>
                 </Select>
               </div>
