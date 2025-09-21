@@ -130,20 +130,30 @@ export default function Bookings() {
 
   const handleCompletePayment = async (booking) => {
     try {
+      console.log('Creating payment session for booking:', booking.id);
+      
       const { data, error } = await supabase.functions.invoke('complete-booking-payment', {
         body: { booking_id: booking.id }
       });
 
-      if (error) throw error;
+      console.log('Payment session response:', { data, error });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
 
       if (data?.url) {
+        console.log('Redirecting to Stripe checkout:', data.url);
         window.open(data.url, '_blank');
+      } else {
+        throw new Error('No checkout URL received from payment service');
       }
     } catch (error) {
       console.error('Error creating payment session:', error);
       toast({
         title: "Payment Error", 
-        description: "Failed to create payment session. Please try again.",
+        description: `Failed to create payment session: ${error.message || 'Please try again.'}`,
         variant: "destructive"
       });
     }
