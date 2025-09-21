@@ -9,11 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
+import { useSearchParams } from 'react-router-dom';
 
 export default function Bookings() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('upcoming');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,8 +25,56 @@ export default function Bookings() {
   useEffect(() => {
     if (profile) {
       fetchBookings();
+      
+      // Check for payment success in URL params
+      const paymentStatus = searchParams.get('payment');
+      const sessionId = searchParams.get('session_id');
+      const bookingId = searchParams.get('booking_id');
+      
+      if (paymentStatus === 'success' && sessionId && bookingId) {
+        verifyPaymentAndUpdateBooking(sessionId, bookingId);
+        // Clean up URL params
+        setSearchParams({});
+      }
     }
-  }, [profile]);
+  }, [profile, searchParams]);
+
+  const verifyPaymentAndUpdateBooking = async (sessionId: string, bookingId: string) => {
+    try {
+      console.log('Verifying payment for session:', sessionId, 'booking:', bookingId);
+      
+      const { data, error } = await supabase.functions.invoke('verify-payment', {
+        body: {
+          session_id: sessionId,
+          booking_id: bookingId
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: "Payment Successful!",
+          description: "Your booking has been confirmed.",
+        });
+        // Refresh bookings to show updated status
+        fetchBookings();
+      } else {
+        toast({
+          title: "Payment Verification Failed",
+          description: data?.error || "Unable to verify payment status.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      toast({
+        title: "Verification Error",
+        description: "Failed to verify payment. Please contact support.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const fetchBookings = async () => {
     if (!profile) return;
@@ -272,16 +322,51 @@ export default function Bookings() {
                          <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
                            View Details
                          </Button>
-                         {booking.status === 'pending' && booking.owner_id === profile.id && (
-                           <Button 
-                             size="sm" 
-                             onClick={() => handleCompletePayment(booking)}
-                             className="bg-green-600 hover:bg-green-700"
-                           >
-                             <CreditCard className="w-4 h-4 mr-2" />
-                             Complete Payment
-                           </Button>
-                         )}
+                          {booking.status === 'pending' && booking.owner_id === profile.id && (
+                            <>
+                              <Button 
+                                size="sm" 
+                                onClick={() => handleCompletePayment(booking)}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                <CreditCard className="w-4 h-4 mr-2" />
+                                Complete Payment
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={async () => {
+                                  try {
+                                    // For testing: mark this specific booking as paid
+                                    const { error } = await supabase
+                                      .from('bookings')
+                                      .update({ 
+                                        status: 'confirmed',
+                                        payment_status: 'paid'
+                                      })
+                                      .eq('id', booking.id);
+                                    
+                                    if (error) throw error;
+                                    
+                                    toast({
+                                      title: "Status Updated!",
+                                      description: "Booking has been confirmed"
+                                    });
+                                    fetchBookings();
+                                  } catch (error) {
+                                    console.error('Error updating booking:', error);
+                                    toast({
+                                      title: "Error",
+                                      description: "Failed to update booking status",
+                                      variant: "destructive"
+                                    });
+                                  }
+                                }}
+                              >
+                                Mark as Paid
+                              </Button>
+                            </>
+                          )}
                          {booking.status === 'pending' && (
                            <Button 
                              variant="destructive" 

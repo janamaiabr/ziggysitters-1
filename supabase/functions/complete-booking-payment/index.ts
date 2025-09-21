@@ -100,8 +100,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${booking_id}`,
-      cancel_url: `${req.headers.get("origin")}/bookings`,
+      success_url: `${req.headers.get("origin")}/bookings?payment=success&session_id={CHECKOUT_SESSION_ID}&booking_id=${booking_id}`,
+      cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
       metadata: {
         booking_id: booking_id,
         service_type: booking.service_type,
