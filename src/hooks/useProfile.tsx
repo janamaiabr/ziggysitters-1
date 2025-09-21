@@ -80,7 +80,9 @@ export function useProfile() {
           role: data.role
         });
         
-        setNeedsOnboarding(!isCompleted);
+        const needsOnboardingValue = !isCompleted;
+        console.log('useProfile: Setting needsOnboarding to:', needsOnboardingValue);
+        setNeedsOnboarding(needsOnboardingValue);
       }
     } catch (error) {
       console.error('Error in fetchProfile:', error);
