@@ -67,18 +67,30 @@ serve(async (req) => {
 
     // Service type mapping from frontend to database enum
     const serviceTypeMapping = {
+      // Legacy frontend mappings (for backward compatibility)
       'dog-walking': 'dog_walking',
-      'pet-sitting': 'pet_sitting_owners_home', // Default to owners home
+      'pet-sitting': 'pet_sitting_owners_home',
       'overnight-care': 'pet_sitting_sitters_home',
       'drop-in-visits': 'drop_in_visits',
       'pet-boarding': 'overnight_boarding',
-      'grooming': 'grooming'
+      'grooming': 'grooming',
+      
+      // Direct database service type mappings (for real service data)
+      'dog_walking': 'dog_walking',
+      'pet_sitting_owners_home': 'pet_sitting_owners_home',
+      'pet_sitting_sitters_home': 'pet_sitting_sitters_home',
+      'daycare': 'daycare',
+      'overnight_boarding': 'overnight_boarding',
+      'pet_care': 'pet_care'
     };
 
     // Map frontend service type to database enum
-    const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping];
-    if (!dbServiceType) {
-      throw new Error(`Invalid service type: ${bookingData.serviceType}`);
+    const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping] || bookingData.serviceType;
+    
+    // Validate that the service type exists in our price mapping
+    const validServiceTypes = ['dog_walking', 'pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits', 'overnight_boarding', 'grooming', 'daycare', 'pet_care'];
+    if (!validServiceTypes.includes(dbServiceType)) {
+      throw new Error(`Invalid service type: ${bookingData.serviceType} -> ${dbServiceType}`);
     }
 
     // Service type to price mapping using NZD Stripe prices
@@ -89,11 +101,13 @@ serve(async (req) => {
       'drop_in_visits': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Drop-in Visits - NZ$27.50
       'overnight_boarding': 'price_1S7mNHGNy6CMpdXTG5bDwAzp', // Pet Boarding - NZ$66.00
       'grooming': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Grooming - NZ$27.50
+      'daycare': 'price_1S7mN0GNy6CMpdXTbWNUlUa2', // Daycare - NZ$33.00
+      'pet_care': 'price_1S7mMpGNy6CMpdXTxdDGnUD7', // Pet Care - NZ$27.50
     };
 
     const priceId = servicePrices[dbServiceType as keyof typeof servicePrices];
     if (!priceId) {
-      throw new Error(`Invalid service type: ${bookingData.serviceType} -> ${dbServiceType}`);
+      throw new Error(`No price mapping found for service type: ${bookingData.serviceType} -> ${dbServiceType}`);
     }
     logStep("Price ID determined", { frontendServiceType: bookingData.serviceType, dbServiceType, priceId });
 
@@ -152,9 +166,11 @@ serve(async (req) => {
         case 'pet_sitting_sitters_home': return 75;
         case 'overnight_boarding': return 75;
         case 'pet_sitting_owners_home': return 55;
+        case 'daycare': return 55;
         case 'drop_in_visits': return 27.5;
         case 'dog_walking': return 27.5;
         case 'grooming': return 27.5;
+        case 'pet_care': return 27.5;
         default: return 27.5;
       }
     };
