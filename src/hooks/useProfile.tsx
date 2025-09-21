@@ -62,14 +62,10 @@ export function useProfile() {
         setProfile(data);
         
         // Use the onboarding_completed flag as the primary check
-        // Fallback to legacy check for profiles without the flag
-        const hasCompletionFlag = data.onboarding_completed !== undefined;
-        const isCompleted = hasCompletionFlag 
-          ? data.onboarding_completed 
-          : !!(data.phone && data.address && data.suburb && data.first_name && data.last_name);
+        // If onboarding_completed is explicitly true, consider it completed
+        const isCompleted = data.onboarding_completed === true;
         
         console.log('useProfile: Onboarding completion check:', {
-          hasCompletionFlag,
           onboardingCompleted: data.onboarding_completed,
           isCompleted,
           hasPhone: !!data.phone,
