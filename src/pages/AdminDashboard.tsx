@@ -95,6 +95,8 @@ export default function AdminDashboard() {
       const profileToUpdate = profiles.find(p => p.id === profileId);
       if (!profileToUpdate) throw new Error('Profile not found');
 
+      console.log('Updating verification status:', { profileId, isVerified, verificationStatus });
+
       // Use the new admin RPC function to update verification status
       const { error } = await supabase.rpc('update_verification_status', {
         profile_id: profileId,
@@ -102,9 +104,10 @@ export default function AdminDashboard() {
         verification_status: verificationStatus
       });
 
-      if (error) throw error;
-
-      if (error) throw error;
+      if (error) {
+        console.error('RPC Error:', error);
+        throw error;
+      }
 
       // Send verification update email
       try {
@@ -198,7 +201,7 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'approved')}
+                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
                 onReject={() => profile.id && updateVerificationStatus(profile.id, false, 'rejected')}
                 showActions={true}
               />
@@ -230,7 +233,7 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'approved')}
+                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
                 showActions={true}
                 isRejected={true}
               />
