@@ -779,6 +779,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      update_verification_status: {
+        Args: {
+          is_verified: boolean
+          profile_id: string
+          verification_status: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       booking_status:

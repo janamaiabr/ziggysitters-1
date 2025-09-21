@@ -95,25 +95,14 @@ export default function AdminDashboard() {
       const profileToUpdate = profiles.find(p => p.id === profileId);
       if (!profileToUpdate) throw new Error('Profile not found');
 
-      // Use RPC call to update verification status with admin privileges
+      // Use the new admin RPC function to update verification status
       const { error } = await supabase.rpc('update_verification_status', {
         profile_id: profileId,
         is_verified: isVerified,
         verification_status: verificationStatus
       });
 
-      if (!error) {
-        // If RPC doesn't exist, fallback to direct update
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ 
-            is_verified: isVerified, 
-            verification_status: verificationStatus as 'pending' | 'verified' | 'rejected' 
-          })
-          .eq('id', profileId);
-        
-        if (updateError) throw updateError;
-      }
+      if (error) throw error;
 
       if (error) throw error;
 
