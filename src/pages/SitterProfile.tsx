@@ -458,9 +458,9 @@ export default function SitterProfile() {
             {/* Verification */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Shield className="mr-2 h-5 w-5" />
-                  Verification
+                <CardTitle className="flex items-center text-sm md:text-base">
+                  <Shield className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                  <span className="truncate">Verification</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">

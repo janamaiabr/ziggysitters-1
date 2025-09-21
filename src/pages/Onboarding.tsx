@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { PawPrint, User, UserCheck, Heart } from 'lucide-react';
 import PetOwnerOnboarding from '@/components/onboarding/PetOwnerOnboarding';
 import SitterOnboarding from '@/components/onboarding/SitterOnboarding';
+import EnhancedSitterOnboarding from '@/components/onboarding/EnhancedSitterOnboarding';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/hooks/useProfile';
@@ -218,6 +219,36 @@ export default function Onboarding() {
       }
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
+      toast({
+        title: "Error completing onboarding",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSitterOnboardingComplete = async () => {
+    try {
+      // Mark onboarding as completed in the database
+      const { error } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('user_id', user?.id);
+
+      if (error) {
+        console.error('Error marking onboarding complete:', error);
+        toast({
+          title: "Error completing onboarding",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // For sitters, show pending approval page
+      navigate('/onboarding-pending-approval');
+    } catch (error: any) {
+      console.error('Error in handleSitterOnboardingComplete:', error);
       toast({
         title: "Error completing onboarding",
         description: "Please try again.",
@@ -455,7 +486,7 @@ export default function Onboarding() {
     }
     
     if (data.role === 'pet_sitter') {
-      return <SitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+      return <EnhancedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
     }
     
     if (data.role === 'both') {
@@ -463,7 +494,7 @@ export default function Onboarding() {
       if (step === 3) {
         return <PetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={() => setStep(4)} />;
       } else if (step === 4) {
-        return <SitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+        return <EnhancedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
       }
     }
     

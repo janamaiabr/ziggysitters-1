@@ -32,6 +32,7 @@ import SitterProfile from "./pages/SitterProfile";
 import BookingSuccess from "./pages/BookingSuccess";
 import Onboarding from "./pages/Onboarding";
 import OnboardingComplete from "./pages/OnboardingComplete";
+import OnboardingPendingApproval from "./components/OnboardingPendingApproval";
 
 const queryClient = new QueryClient();
 
@@ -111,7 +112,8 @@ function AppContent() {
             } 
           />
           
-          <Route path="/onboarding-complete" element={<OnboardingComplete />} />
+              <Route path="/onboarding-complete" element={<OnboardingComplete />} />
+              <Route path="/onboarding-pending-approval" element={<OnboardingPendingApproval />} />
           
           {/* Protected Routes */}
           <Route 
