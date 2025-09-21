@@ -124,6 +124,18 @@ export default function SitterOnboarding({ profileId, userId, onComplete }: Sitt
 
   const handleSave = async () => {
     try {
+      // Validate that all services have valid rates
+      for (const service of services) {
+        if (!service.rate || service.rate <= 0) {
+          toast({
+            title: "Invalid rate",
+            description: `Please enter a valid rate for ${serviceTypes.find(st => st.key === service.service_type)?.label}`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
       // Get profile ID
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -346,8 +358,12 @@ export default function SitterOnboarding({ profileId, userId, onComplete }: Sitt
                       min="10"
                       max="200"
                       value={service.rate}
-                      onChange={(e) => updateService(service.service_type, 'rate', parseInt(e.target.value) || 25)}
+                      onChange={(e) => updateService(service.service_type, 'rate', parseFloat(e.target.value) || 0)}
+                      required
                     />
+                    {service.rate <= 0 && (
+                      <p className="text-sm text-destructive">Rate must be greater than $0</p>
+                    )}
                   </div>
                   
                   <div className="space-y-2">

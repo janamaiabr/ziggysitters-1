@@ -245,6 +245,17 @@ export default function Profile() {
   const handleSaveService = async () => {
     if (!editingService || !profile) return;
 
+    // Validate that at least one rate is provided and greater than 0
+    const { daily_rate, overnight_rate } = serviceEditData;
+    if ((!daily_rate || daily_rate <= 0) && (!overnight_rate || overnight_rate <= 0)) {
+      toast({
+        title: "Invalid rate",
+        description: "Please enter a valid rate (greater than $0) for at least one pricing option.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('sitter_services')
@@ -783,6 +794,8 @@ export default function Profile() {
                                 <Label>Daily Rate ($)</Label>
                                 <Input
                                   type="number"
+                                  min="0.01"
+                                  step="0.01"
                                   value={serviceEditData.daily_rate || ''}
                                   onChange={(e) => setServiceEditData((prev: any) => ({
                                     ...prev,
@@ -795,6 +808,8 @@ export default function Profile() {
                                 <Label>Overnight Rate ($)</Label>
                                 <Input
                                   type="number"
+                                  min="0.01"
+                                  step="0.01"
                                   value={serviceEditData.overnight_rate || ''}
                                   onChange={(e) => setServiceEditData((prev: any) => ({
                                     ...prev,

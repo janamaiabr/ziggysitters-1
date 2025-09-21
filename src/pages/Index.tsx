@@ -421,6 +421,56 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Charity Section */}
+      <section className="py-12 md:py-20 bg-primary/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <span className="text-2xl">🐾</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Making a Difference Together
+              </h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                Every time you book with ZiggySitters, you're not just caring for your pet—you're helping pets in need around the world.
+              </p>
+            </div>
+            
+            <div className="bg-card border rounded-xl p-8 shadow-sm">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <span className="text-4xl font-bold text-primary">2%</span>
+                <div className="text-left">
+                  <p className="font-semibold">of our profits</p>
+                  <p className="text-sm text-muted-foreground">goes directly to</p>
+                </div>
+              </div>
+              
+              <h3 className="text-xl font-semibold mb-3">Animal Shelters & Charities Worldwide</h3>
+              <p className="text-muted-foreground mb-6">
+                Your bookings help us support animal rescue organizations, provide medical care for abandoned pets, 
+                and fund spay/neuter programs in communities that need it most.
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span>Emergency medical care</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Shelter support programs</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span>Spay & neuter initiatives</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
