@@ -9,12 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 export default function Bookings() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('upcoming');
   const [bookings, setBookings] = useState([]);
@@ -318,10 +319,19 @@ export default function Bookings() {
                     </div>
                     
                      <div className="flex flex-col space-y-2 lg:items-end">
-                       <div className="flex space-x-2">
-                         <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
-                           View Details
-                         </Button>
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
+                            View Details
+                          </Button>
+                          {booking.status === 'confirmed' && booking.owner_id === profile.id && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => navigate('/daily-reports')}
+                            >
+                              View Reports
+                            </Button>
+                          )}
                           {booking.status === 'pending' && booking.owner_id === profile.id && (
                             <>
                               <Button 

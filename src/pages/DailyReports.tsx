@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Camera, Calendar, Heart, AlertTriangle, CheckCircle, TrendingUp } from 'lucide-react';
 import ReportsCalendar from '@/components/daily-reports/ReportsCalendar';
+import ClientDailyReports from '@/components/ClientDailyReports';
 import { supabase } from '@/integrations/supabase/client';
 
 export default function DailyReports() {
@@ -72,6 +73,12 @@ export default function DailyReports() {
     }
   };
 
+  // Show client view for pet owners
+  if (profile?.role === 'pet_owner') {
+    return <ClientDailyReports />;
+  }
+
+  // Show sitter access message for non-sitters
   if (!profile || !['pet_sitter', 'both'].includes(profile.role)) {
     return (
       <div className="container mx-auto px-4 py-12">
