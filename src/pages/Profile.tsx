@@ -13,10 +13,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Star, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 import PetsManagement from '@/components/PetsManagement';
+import SitterDailyReports from '@/components/SitterDailyReports';
+import ClientDailyReports from '@/components/ClientDailyReports';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -471,11 +473,6 @@ export default function Profile() {
                 </div>
                 
                 <div className="flex flex-wrap gap-4 text-sm">
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span className="font-medium">{userProfile.rating}</span>
-                    <span className="text-muted-foreground ml-1">({userProfile.bookings_completed} completed)</span>
-                  </div>
                   <div className="text-muted-foreground">
                     {userProfile.completedBookings} bookings completed
                   </div>
@@ -510,16 +507,20 @@ export default function Profile() {
 
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-3' : profile.role === 'pet_sitter' ? 'grid-cols-4' : 'grid-cols-5'}`}>
+          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-4' : profile.role === 'pet_sitter' ? 'grid-cols-6' : 'grid-cols-7'}`}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             {(profile.role === 'pet_owner' || profile.role === 'both') && (
-              <TabsTrigger value="pets">My Pets</TabsTrigger>
+              <>
+                <TabsTrigger value="pets">My Pets</TabsTrigger>
+                <TabsTrigger value="client-reports">Daily Reports</TabsTrigger>
+              </>
             )}
             {(profile.role === 'pet_sitter' || profile.role === 'both') && (
-              <TabsTrigger value="services">Services & Pricing</TabsTrigger>
-            )}
-            {(profile.role === 'pet_sitter' || profile.role === 'both') && (
-              <TabsTrigger value="calendar">My Calendar</TabsTrigger>
+              <>
+                <TabsTrigger value="services">Services & Pricing</TabsTrigger>
+                <TabsTrigger value="calendar">My Calendar</TabsTrigger>
+                <TabsTrigger value="sitter-reports">Daily Reports</TabsTrigger>
+              </>
             )}
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             {(profile.role === 'pet_sitter' || profile.role === 'both') && (
@@ -675,7 +676,7 @@ export default function Profile() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
-                      <Star className="mr-2 h-5 w-5" />
+                      <Users className="mr-2 h-5 w-5" />
                       Statistics
                     </CardTitle>
                   </CardHeader>
@@ -1039,6 +1040,20 @@ export default function Profile() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+          )}
+
+          {/* Client Daily Reports Tab */}
+          {(profile.role === 'pet_owner' || profile.role === 'both') && (
+            <TabsContent value="client-reports">
+              <ClientDailyReports />
+            </TabsContent>
+          )}
+
+          {/* Sitter Daily Reports Tab */}
+          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+            <TabsContent value="sitter-reports">
+              <SitterDailyReports />
             </TabsContent>
           )}
         </Tabs>
