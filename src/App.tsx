@@ -33,6 +33,7 @@ import BookingSuccess from "./pages/BookingSuccess";
 import Onboarding from "./pages/Onboarding";
 import OnboardingComplete from "./pages/OnboardingComplete";
 import OnboardingPendingApproval from "./components/OnboardingPendingApproval";
+import CreateAdmin from "./pages/CreateAdmin";
 
 const queryClient = new QueryClient();
 
@@ -114,6 +115,7 @@ function AppContent() {
           
               <Route path="/onboarding-complete" element={<OnboardingComplete />} />
               <Route path="/onboarding-pending-approval" element={<OnboardingPendingApproval />} />
+              <Route path="/create-admin" element={<CreateAdmin />} />
           
           {/* Protected Routes */}
           <Route 

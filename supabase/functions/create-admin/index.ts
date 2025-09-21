@@ -12,8 +12,20 @@ serve(async (req) => {
   }
 
   try {
-    // This function creates the admin user directly
-    // Using Supabase Admin API to bypass email confirmation
+    // Parse request body for custom credentials
+    let requestData;
+    try {
+      requestData = await req.json();
+    } catch {
+      // Default fallback if no body provided
+      requestData = {
+        email: 'admin@ziggysitters.com',
+        password: '1234'
+      };
+    }
+
+    const adminEmail = requestData.email || 'admin@ziggysitters.com';
+    const adminPassword = requestData.password || '1234';
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -27,8 +39,8 @@ serve(async (req) => {
         'apikey': supabaseServiceKey,
       },
       body: JSON.stringify({
-        email: 'admin@ziggysitters.com',
-        password: '1234',
+        email: adminEmail,
+        password: adminPassword,
         email_confirm: true, // Skip email confirmation
         user_metadata: {
           first_name: 'Admin',
@@ -61,7 +73,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         message: 'Admin user created successfully',
-        email: 'admin@ziggysitters.com',
+        email: adminEmail,
         canSignIn: true
       }),
       { 
