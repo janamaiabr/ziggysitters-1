@@ -16,7 +16,7 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     // Retrieve authenticated user
@@ -29,7 +29,9 @@ serve(async (req) => {
     const { booking_id } = await req.json();
     if (!booking_id) throw new Error("Booking ID is required");
 
-    // Get booking details
+    console.log('Looking for booking:', booking_id, 'for user:', user.email);
+
+    // Get booking details using service role for admin access
     const { data: booking, error: bookingError } = await supabaseClient
       .from('bookings')
       .select(`
@@ -44,9 +46,19 @@ serve(async (req) => {
         owner:profiles!owner_id(user_id, email, first_name, last_name)
       `)
       .eq('id', booking_id)
-      .single();
+      .maybeSingle();
 
-    if (bookingError || !booking) throw new Error("Booking not found");
+    console.log('Booking query result:', { booking, bookingError });
+
+    if (bookingError) {
+      console.error('Database error:', bookingError);
+      throw new Error(`Database error: ${bookingError.message}`);
+    }
+    
+    if (!booking) {
+      console.error('Booking not found for ID:', booking_id);
+      throw new Error("Booking not found");
+    }
 
     // Verify user owns this booking
     if (booking.owner.user_id !== user.id) {
