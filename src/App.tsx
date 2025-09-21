@@ -25,6 +25,9 @@ import DailyReports from "./pages/DailyReports";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Security from "./pages/Security";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import DailyReportsInfo from "./pages/DailyReportsInfo";
 import SitterProfile from "./pages/SitterProfile";
 import BookingSuccess from "./pages/BookingSuccess";
 import Onboarding from "./pages/Onboarding";
@@ -153,6 +156,9 @@ function AppContent() {
           <Route path="/help" element={<Contact />} />
           <Route path="/cookies" element={<PrivacyPolicy />} />
           <Route path="/booking-success" element={<BookingSuccess />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/daily-reports-info" element={<DailyReportsInfo />} />
           <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

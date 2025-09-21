@@ -170,6 +170,21 @@ export default function Profile() {
 
       if (updateError) throw updateError;
 
+      // Send verification request email when documents are uploaded
+      try {
+        await supabase.functions.invoke('send-verification-request-email', {
+          body: {
+            user_name: `${profile.first_name} ${profile.last_name}`,
+            user_email: profile.email,
+            user_id: profile.id,
+            documents_uploaded: true
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending verification email:', emailError);
+        // Don't fail the whole operation if email fails
+      }
+
       toast({
         title: "Document uploaded successfully",
         description: `${type === 'id' ? 'ID' : 'Blue card'} document uploaded for verification.`,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -200,6 +200,15 @@ export default function Auth() {
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Signing In..." : "Sign In"}
                   </Button>
+                  
+                  <div className="text-center">
+                    <Link 
+                      to="/forgot-password" 
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
                 </form>
               </TabsContent>
               

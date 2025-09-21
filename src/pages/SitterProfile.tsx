@@ -115,9 +115,9 @@ export default function SitterProfile() {
 
           // Get the lowest rate from actual services
           const rates = servicesData?.map(service => 
-            service.hourly_rate || service.daily_rate || service.overnight_rate || 25
-          ).filter(Boolean) || [25];
-          const baseRate = Math.min(...rates);
+            service.hourly_rate || service.daily_rate || service.overnight_rate
+          ).filter(Boolean) || [];
+          const baseRate = rates.length > 0 ? Math.min(...rates) : null;
 
           // Transform the data to match our interface using real data
           setSitterData({
@@ -215,7 +215,7 @@ export default function SitterProfile() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <h1 className="text-3xl font-bold">{sitterData.display_name}</h1>
-                {sitterData.verified && (
+                {sitterData.verified === true && (
                   <Badge variant="secondary" className="text-xs">
                     <Shield className="mr-1 h-3 w-3" />
                     Verified
@@ -422,7 +422,9 @@ export default function SitterProfile() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">From NZ${sitterData.baseRate}</div>
+                  <div className="text-2xl font-bold">
+                    {sitterData.baseRate && sitterData.baseRate !== Infinity ? `From NZ$${sitterData.baseRate}` : 'Contact for pricing'}
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     Per service (varies by type)
                   </div>
