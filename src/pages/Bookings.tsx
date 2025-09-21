@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function Bookings() {
+  const { toast } = useToast();
   const { user } = useAuth();
   const { profile } = useProfile();
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -126,6 +128,27 @@ export default function Bookings() {
     }
   };
 
+  const handleCompletePayment = async (booking) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('complete-booking-payment', {
+        body: { booking_id: booking.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error creating payment session:', error);
+      toast({
+        title: "Payment Error", 
+        description: "Failed to create payment session. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleViewDetails = (booking) => {
     setSelectedBooking(booking);
     setShowDetailsDialog(true);
@@ -234,21 +257,31 @@ export default function Bookings() {
                       </div>
                     </div>
                     
-                    <div className="flex flex-col space-y-2 lg:items-end">
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
-                          View Details
-                        </Button>
-                        {booking.status === 'pending' && (
-                          <Button 
-                            variant="destructive" 
-                            size="sm" 
-                            onClick={() => handleCancelBooking(booking)}
-                          >
-                            Cancel
-                          </Button>
-                        )}
-                      </div>
+                     <div className="flex flex-col space-y-2 lg:items-end">
+                       <div className="flex space-x-2">
+                         <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
+                           View Details
+                         </Button>
+                         {booking.status === 'pending' && booking.owner_id === profile.id && (
+                           <Button 
+                             size="sm" 
+                             onClick={() => handleCompletePayment(booking)}
+                             className="bg-green-600 hover:bg-green-700"
+                           >
+                             <CreditCard className="w-4 h-4 mr-2" />
+                             Complete Payment
+                           </Button>
+                         )}
+                         {booking.status === 'pending' && (
+                           <Button 
+                             variant="destructive" 
+                             size="sm" 
+                             onClick={() => handleCancelBooking(booking)}
+                           >
+                             Cancel
+                           </Button>
+                         )}
+                       </div>
                       
                       {/* Show sitter address if booking is confirmed and user is owner */}
                       {booking.status === 'confirmed' && booking.owner_id === profile.id && booking.sitter?.address && (
