@@ -11,9 +11,11 @@ import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail } from 'lucide
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
-  id: string | null;
-  display_name: string | null;
-  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin' | null;
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin';
   suburb: string | null;
   city: string | null;
   bio: string | null;
@@ -21,10 +23,9 @@ type PublicSitterProfile = {
   is_verified: boolean | null;
   rating: number | null;
   total_reviews: number | null;
-  
   background_check_verified: boolean | null;
   verification_status: 'pending' | 'verified' | 'rejected' | null;
-  created_at: string | null;
+  created_at: string;
 }
 
 export default function AdminDashboard() {
@@ -59,11 +60,11 @@ export default function AdminDashboard() {
     if (!user) return;
     
     try {
-      // Use the safe public view that doesn't expose sensitive data
+      // Fetch from profiles table with admin privileges
       const { data, error } = await supabase
-        .from('public_sitter_profiles')
-        .select('*')
-        .neq('role', 'admin')
+        .from('profiles')
+        .select('id, first_name, last_name, email, role, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at')
+        .in('role', ['pet_sitter', 'both'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -82,6 +83,9 @@ export default function AdminDashboard() {
 
   const updateVerificationStatus = async (profileId: string, isVerified: boolean, verificationStatus: string) => {
     try {
+      const profileToUpdate = profiles.find(p => p.id === profileId);
+      if (!profileToUpdate) throw new Error('Profile not found');
+
       // Admin function - this requires special admin privileges to update the profiles table
       const { error } = await supabase
         .from('profiles')
@@ -92,6 +96,21 @@ export default function AdminDashboard() {
         .eq('id', profileId);
 
       if (error) throw error;
+
+      // Send verification update email
+      try {
+        await supabase.functions.invoke('send-verification-update', {
+          body: {
+            user_email: profileToUpdate.email,
+            user_name: `${profileToUpdate.first_name} ${profileToUpdate.last_name}`,
+            verification_status: verificationStatus,
+            rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending verification email:', emailError);
+        // Don't fail the whole operation if email fails
+      }
 
       toast({
         title: "Success",
@@ -229,11 +248,11 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={profile.avatar_url || ''} alt={profile.display_name || 'User'} />
-              <AvatarFallback>{profile.display_name?.[0] || 'U'}</AvatarFallback>
+              <AvatarImage src={profile.avatar_url || ''} alt={`${profile.first_name} ${profile.last_name}`} />
+              <AvatarFallback>{profile.first_name?.[0] || 'U'}{profile.last_name?.[0] || ''}</AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-lg">{profile.display_name || 'Unknown User'}</CardTitle>
+              <CardTitle className="text-lg">{`${profile.first_name} ${profile.last_name}`}</CardTitle>
               <div className="flex items-center text-sm text-muted-foreground">
                 <MapPin className="w-3 h-3 mr-1" />
                 {profile.suburb && profile.city ? `${profile.suburb}, ${profile.city}` : profile.city || 'Location not provided'}

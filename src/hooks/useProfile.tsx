@@ -17,6 +17,7 @@ export interface Profile {
   bio?: string;
   avatar_url?: string;
   is_verified?: boolean;
+  verification_status?: 'pending' | 'verified' | 'rejected';
   rating?: number;
   total_reviews?: number;
   onboarding_completed?: boolean;

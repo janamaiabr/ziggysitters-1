@@ -185,6 +185,35 @@ serve(async (req) => {
       logStep("Failed to update booking with session ID", { error: updateError.message });
     }
 
+    // Send booking notification email to sitter
+    try {
+      const { data: sitterData, error: sitterError } = await supabaseClient
+        .from('profiles')
+        .select('first_name, last_name, email')
+        .eq('id', bookingData.sitterId)
+        .single();
+
+      if (!sitterError && sitterData) {
+        await supabaseClient.functions.invoke('send-booking-notification', {
+          body: {
+            booking_id: booking.id,
+            sitter_email: sitterData.email,
+            sitter_name: `${sitterData.first_name} ${sitterData.last_name}`,
+            owner_name: `${profile.first_name} ${profile.last_name}`,
+            service_type: dbServiceType,
+            start_date: bookingData.startDate,
+            end_date: bookingData.endDate,
+            booking_reference: booking.booking_reference,
+            total_amount: bookingData.totalAmount
+          }
+        });
+        logStep("Booking notification email sent to sitter");
+      }
+    } catch (emailError) {
+      logStep("Failed to send booking notification email", { error: emailError.message });
+      // Don't fail the booking if email fails
+    }
+
     return new Response(JSON.stringify({ 
       url: session.url,
       booking_reference: booking.booking_reference 

@@ -465,7 +465,39 @@ export default function Profile() {
                   {userProfile.verified && (
                     <Shield className="w-6 h-6 text-green-500" />
                   )}
+                  {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+                    <Badge 
+                      variant={
+                        profile.verification_status === 'verified' ? 'default' : 
+                        profile.verification_status === 'rejected' ? 'destructive' : 
+                        'secondary'
+                      }
+                      className="ml-2"
+                    >
+                      {profile.verification_status === 'verified' ? 'Verified Sitter' : 
+                       profile.verification_status === 'rejected' ? 'Verification Rejected' : 
+                       'Under Review'}
+                    </Badge>
+                  )}
                 </div>
+                
+                {/* Verification Status Message for Sitters */}
+                {(profile.role === 'pet_sitter' || profile.role === 'both') && profile.verification_status !== 'verified' && (
+                  <div className={`p-3 rounded-lg mb-3 ${
+                    profile.verification_status === 'rejected' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
+                  }`}>
+                    <p className={`text-sm ${
+                      profile.verification_status === 'rejected' ? 'text-red-700' : 'text-blue-700'
+                    }`}>
+                      {profile.verification_status === 'rejected' 
+                        ? '⚠️ Your profile verification was not approved. Please update your profile and resubmit for review.'
+                        : profile.verification_documents_uploaded_at
+                        ? '⏳ Your profile is under review. You will receive an email notification once the review is complete.'
+                        : '📋 Complete your profile verification by uploading required documents below.'
+                      }
+                    </p>
+                  </div>
+                )}
                 
                 <div className="flex items-center text-muted-foreground mb-3">
                   <MapPin className="w-4 h-4 mr-1" />

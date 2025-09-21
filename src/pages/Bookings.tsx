@@ -91,6 +91,41 @@ export default function Bookings() {
     }
   };
 
+  const handleCancelBooking = async (booking) => {
+    if (!profile) return;
+    
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', booking.id);
+
+      if (error) throw error;
+
+      // Send cancellation email
+      const isOwner = booking.owner_id === profile.id;
+      const recipient = isOwner ? booking.sitter : booking.owner;
+      
+      await supabase.functions.invoke('send-booking-cancellation', {
+        body: {
+          recipient_email: recipient.email,
+          recipient_name: `${recipient.first_name} ${recipient.last_name}`,
+          cancelled_by_name: `${profile.first_name} ${profile.last_name}`,
+          cancelled_by_type: isOwner ? 'owner' : 'sitter',
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date,
+          booking_reference: booking.booking_reference,
+          total_amount: booking.total_amount
+        }
+      });
+
+      fetchBookings();
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+    }
+  };
+
   const handleViewDetails = (booking) => {
     setSelectedBooking(booking);
     setShowDetailsDialog(true);
@@ -204,6 +239,15 @@ export default function Bookings() {
                         <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
                           View Details
                         </Button>
+                        {booking.status === 'pending' && (
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            onClick={() => handleCancelBooking(booking)}
+                          >
+                            Cancel
+                          </Button>
+                        )}
                       </div>
                       
                       {/* Show sitter address if booking is confirmed and user is owner */}
