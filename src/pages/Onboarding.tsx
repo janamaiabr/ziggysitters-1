@@ -209,7 +209,13 @@ export default function Onboarding() {
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
-      navigate('/onboarding-complete');
+
+      // Redirect based on role - sitters go to browse pet owners, others to onboarding complete
+      if (data.role === 'pet_sitter') {
+        navigate('/find-sitters'); // This will show pet owners looking for sitters
+      } else {
+        navigate('/onboarding-complete');
+      }
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
