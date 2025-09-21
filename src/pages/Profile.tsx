@@ -435,7 +435,11 @@ export default function Profile() {
             <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8">
               <div className="relative">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
+                  <AvatarImage 
+                    src={userProfile.avatar} 
+                    alt={userProfile.name} 
+                    className="object-cover"
+                  />
                   <AvatarFallback className="text-2xl">
                     {userProfile.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>

@@ -163,7 +163,11 @@ export default function About() {
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                 <CardContent className="p-8">
                   <Avatar className="h-24 w-24 mx-auto mb-4">
-                    <AvatarImage src={member.image} alt={member.name} />
+                    <AvatarImage 
+                      src={member.image} 
+                      alt={member.name} 
+                      className="object-cover"
+                    />
                     <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                   </Avatar>
                   <h3 className="text-xl font-semibold mb-2">{member.name}</h3>

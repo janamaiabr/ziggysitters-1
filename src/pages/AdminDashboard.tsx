@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail, FileText } from 'lucide-react';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
@@ -15,9 +16,12 @@ type PublicSitterProfile = {
   first_name: string;
   last_name: string;
   email: string;
-  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin';
+  phone?: string;
+  address?: string;
   suburb: string | null;
   city: string | null;
+  postal_code?: string;
+  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin';
   bio: string | null;
   avatar_url: string | null;
   is_verified: boolean | null;
@@ -25,6 +29,9 @@ type PublicSitterProfile = {
   total_reviews: number | null;
   background_check_verified: boolean | null;
   verification_status: 'pending' | 'verified' | 'rejected' | null;
+  id_document_url?: string | null;
+  blue_card_document_url?: string | null;
+  verification_documents_uploaded_at?: string | null;
   created_at: string;
 }
 
@@ -34,6 +41,8 @@ export default function AdminDashboard() {
   const [profiles, setProfiles] = useState<PublicSitterProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<PublicSitterProfile | null>(null);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
@@ -60,10 +69,10 @@ export default function AdminDashboard() {
     if (!user) return;
     
     try {
-      // Fetch from profiles table with admin privileges
+      // Fetch from profiles table with admin privileges - include documents
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email, role, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at')
         .in('role', ['pet_sitter', 'both'])
         .order('created_at', { ascending: false });
 
@@ -229,6 +238,13 @@ export default function AdminDashboard() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Profile Details Dialog */}
+      <ProfileDetailsDialog 
+        profile={selectedProfile} 
+        open={showDetailsDialog} 
+        onOpenChange={setShowDetailsDialog} 
+      />
     </div>
   );
 }
@@ -247,8 +263,12 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={profile.avatar_url || ''} alt={`${profile.first_name} ${profile.last_name}`} />
+            <Avatar className="h-12 w-12 flex-shrink-0">
+              <AvatarImage 
+                src={profile.avatar_url || ''} 
+                alt={`${profile.first_name} ${profile.last_name}`}
+                className="object-cover"
+              />
               <AvatarFallback>{profile.first_name?.[0] || 'U'}{profile.last_name?.[0] || ''}</AvatarFallback>
             </Avatar>
             <div>
@@ -324,5 +344,163 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
         )}
       </CardContent>
     </Card>
+  );
+}
+
+// Add the detailed profile dialog component
+function ProfileDetailsDialog({ profile, open, onOpenChange }: { 
+  profile: PublicSitterProfile | null; 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+}) {
+  if (!profile) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Sitter Application Details - {profile.first_name} {profile.last_name}</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-6">
+          {/* Profile Overview */}
+          <div className="flex items-start space-x-4">
+            <Avatar className="h-16 w-16 flex-shrink-0">
+              <AvatarImage 
+                src={profile.avatar_url || ''} 
+                alt={`${profile.first_name} ${profile.last_name}`}
+                className="object-cover"
+              />
+              <AvatarFallback>{profile.first_name?.[0] || 'U'}{profile.last_name?.[0] || ''}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <h3 className="text-xl font-semibold">{profile.first_name} {profile.last_name}</h3>
+              <Badge 
+                variant={profile.is_verified ? "default" : profile.verification_status === 'rejected' ? "destructive" : "secondary"}
+                className="mt-1"
+              >
+                {profile.is_verified ? 'Verified' : profile.verification_status || 'Pending'}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Contact Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Email</label>
+                  <p className="text-sm">{profile.email}</p>
+                </div>
+                {profile.phone && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Phone</label>
+                    <p className="text-sm">{profile.phone}</p>
+                  </div>
+                )}
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Address</label>
+                  <p className="text-sm">
+                    {profile.address ? `${profile.address}, ` : ''}
+                    {profile.suburb ? `${profile.suburb}, ` : ''}
+                    {profile.city || 'Not provided'}
+                    {profile.postal_code ? ` ${profile.postal_code}` : ''}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Profile Stats</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Rating</label>
+                  <p className="text-sm">{profile.rating ? `${profile.rating}/5 stars` : 'No ratings yet'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Total Reviews</label>
+                  <p className="text-sm">{profile.total_reviews || 0}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Member Since</label>
+                  <p className="text-sm">{new Date(profile.created_at).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Background Check</label>
+                  <p className="text-sm">{profile.background_check_verified ? 'Completed' : 'Not completed'}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Bio */}
+          {profile.bio && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">About</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm leading-relaxed">{profile.bio}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Verification Documents */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Verification Documents</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">ID Document</label>
+                  {profile.id_document_url ? (
+                    <a 
+                      href={profile.id_document_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      View ID Document
+                    </a>
+                  ) : (
+                    <p className="text-sm text-gray-500">Not uploaded</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Blue Card / Working with Children Check</label>
+                  {profile.blue_card_document_url ? (
+                    <a 
+                      href={profile.blue_card_document_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      View Blue Card
+                    </a>
+                  ) : (
+                    <p className="text-sm text-gray-500">Not uploaded</p>
+                  )}
+                </div>
+              </div>
+              
+              {profile.verification_documents_uploaded_at && (
+                <p className="text-xs text-gray-500 mt-3">
+                  Documents uploaded on: {new Date(profile.verification_documents_uploaded_at).toLocaleString()}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

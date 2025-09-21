@@ -82,7 +82,10 @@ export default function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
+                      <AvatarImage 
+                        src={profile?.avatar_url || user.user_metadata?.avatar_url} 
+                        className="object-cover"
+                      />
                       <AvatarFallback>
                         {profile?.first_name?.[0] || user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
                       </AvatarFallback>
@@ -138,7 +141,10 @@ export default function Header() {
                   <>
                     <div className="flex items-center space-x-3 p-3 bg-accent/50 rounded-lg">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
+                        <AvatarImage 
+                          src={profile?.avatar_url || user.user_metadata?.avatar_url} 
+                          className="object-cover"
+                        />
                         <AvatarFallback>
                           {profile?.first_name?.[0] || user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
                         </AvatarFallback>

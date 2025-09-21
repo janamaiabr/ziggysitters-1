@@ -206,7 +206,10 @@ export default function SitterProfile() {
           
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={sitterData.avatar} />
+              <AvatarImage 
+                src={sitterData.avatar} 
+                className="object-cover"
+              />
               <AvatarFallback>
                 {sitterData.display_name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>

@@ -155,7 +155,10 @@ export default function MessageDialog({
         <DialogHeader className="p-4 border-b">
           <DialogTitle className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={recipientAvatar} />
+              <AvatarImage 
+                src={recipientAvatar} 
+                className="object-cover"
+              />
               <AvatarFallback>
                 {recipientName.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
