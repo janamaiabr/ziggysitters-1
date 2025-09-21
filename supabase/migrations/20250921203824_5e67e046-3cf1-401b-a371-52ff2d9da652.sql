@@ -1,0 +1,2 @@
+-- Update the send-verification-request-email edge function to use profile data
+-- This will be handled in a separate edge function update

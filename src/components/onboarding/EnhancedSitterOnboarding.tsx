@@ -294,33 +294,33 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-2 sm:px-0">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Complete Your Sitter Profile</h2>
-        <p className="text-muted-foreground">Provide all the information pet owners need to choose you</p>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">Complete Your Sitter Profile</h2>
+        <p className="text-muted-foreground text-sm sm:text-base">Provide all the information pet owners need to choose you</p>
       </div>
 
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1">
-          <TabsTrigger value="overview" className="flex items-center gap-1 text-xs md:text-sm">
-            <FileText className="w-3 h-3" />
-            <span className="hidden sm:inline">Overview</span>
-            {isTabComplete('overview') && <span className="text-green-500">✓</span>}
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1 h-auto p-1">
+          <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
+            <FileText className="w-3 h-3 flex-shrink-0" />
+            <span className="text-center sm:text-left truncate">Overview</span>
+            {isTabComplete('overview') && <span className="text-green-500 text-xs">✓</span>}
           </TabsTrigger>
-          <TabsTrigger value="services" className="flex items-center gap-1 text-xs md:text-sm">
-            <PlusCircle className="w-3 h-3" />
-            <span className="hidden sm:inline">Services</span>
-            {isTabComplete('services') && <span className="text-green-500">✓</span>}
+          <TabsTrigger value="services" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
+            <PlusCircle className="w-3 h-3 flex-shrink-0" />
+            <span className="text-center sm:text-left truncate">Services</span>
+            {isTabComplete('services') && <span className="text-green-500 text-xs">✓</span>}
           </TabsTrigger>
-          <TabsTrigger value="calendar" className="flex items-center gap-1 text-xs md:text-sm">
-            <Calendar className="w-3 h-3" />
-            <span className="hidden sm:inline">Calendar</span>
-            {isTabComplete('calendar') && <span className="text-green-500">✓</span>}
+          <TabsTrigger value="calendar" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
+            <Calendar className="w-3 h-3 flex-shrink-0" />
+            <span className="text-center sm:text-left truncate">Calendar</span>
+            {isTabComplete('calendar') && <span className="text-green-500 text-xs">✓</span>}
           </TabsTrigger>
-          <TabsTrigger value="verification" className="flex items-center gap-1 text-xs md:text-sm">
-            <Shield className="w-3 h-3" />
-            <span className="hidden sm:inline">Verification</span>
-            {isTabComplete('verification') && <span className="text-green-500">✓</span>}
+          <TabsTrigger value="verification" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
+            <Shield className="w-3 h-3 flex-shrink-0" />
+            <span className="text-center sm:text-left truncate">Verify</span>
+            {isTabComplete('verification') && <span className="text-green-500 text-xs">✓</span>}
           </TabsTrigger>
         </TabsList>
 
@@ -505,43 +505,43 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
                         </Button>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        {serviceType?.rate_types.includes('hourly_rate') && (
-                          <div className="space-y-1">
-                            <Label className="text-xs">Hourly Rate (NZ$)</Label>
-                            <Input
-                              type="number"
-                              min="10"
-                              max="200"
-                              value={service.hourly_rate || ''}
-                              onChange={(e) => updateService(service.service_type, 'hourly_rate', parseFloat(e.target.value) || undefined)}
-                            />
-                          </div>
-                        )}
-                        {serviceType?.rate_types.includes('daily_rate') && (
-                          <div className="space-y-1">
-                            <Label className="text-xs">Daily Rate (NZ$)</Label>
-                            <Input
-                              type="number"
-                              min="30"
-                              max="500"
-                              value={service.daily_rate || ''}
-                              onChange={(e) => updateService(service.service_type, 'daily_rate', parseFloat(e.target.value) || undefined)}
-                            />
-                          </div>
-                        )}
-                        {serviceType?.rate_types.includes('overnight_rate') && (
-                          <div className="space-y-1">
-                            <Label className="text-xs">Overnight Rate (NZ$)</Label>
-                            <Input
-                              type="number"
-                              min="40"
-                              max="300"
-                              value={service.overnight_rate || ''}
-                              onChange={(e) => updateService(service.service_type, 'overnight_rate', parseFloat(e.target.value) || undefined)}
-                            />
-                          </div>
-                        )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {serviceType?.rate_types.includes('hourly_rate') && (
+                  <div className="space-y-1">
+                    <Label className="text-xs">Hourly Rate (NZ$)</Label>
+                    <Input
+                      type="number"
+                      min="10"
+                      max="200"
+                      value={service.hourly_rate || ''}
+                      onChange={(e) => updateService(service.service_type, 'hourly_rate', parseFloat(e.target.value) || undefined)}
+                    />
+                  </div>
+                )}
+                {serviceType?.rate_types.includes('daily_rate') && (
+                  <div className="space-y-1">
+                    <Label className="text-xs">Daily Rate (NZ$)</Label>
+                    <Input
+                      type="number"
+                      min="30"
+                      max="500"
+                      value={service.daily_rate || ''}
+                      onChange={(e) => updateService(service.service_type, 'daily_rate', parseFloat(e.target.value) || undefined)}
+                    />
+                  </div>
+                )}
+                {serviceType?.rate_types.includes('overnight_rate') && (
+                  <div className="space-y-1">
+                    <Label className="text-xs">Overnight Rate (NZ$)</Label>
+                    <Input
+                      type="number"
+                      min="40"
+                      max="300"
+                      value={service.overnight_rate || ''}
+                      onChange={(e) => updateService(service.service_type, 'overnight_rate', parseFloat(e.target.value) || undefined)}
+                    />
+                  </div>
+                )}
                       </div>
                       
                       <div className="space-y-2">
