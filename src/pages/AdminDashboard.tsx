@@ -95,14 +95,25 @@ export default function AdminDashboard() {
       const profileToUpdate = profiles.find(p => p.id === profileId);
       if (!profileToUpdate) throw new Error('Profile not found');
 
-      // Admin function - this requires special admin privileges to update the profiles table
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          is_verified: isVerified, 
-          verification_status: verificationStatus as 'pending' | 'verified' | 'rejected' 
-        })
-        .eq('id', profileId);
+      // Use RPC call to update verification status with admin privileges
+      const { error } = await supabase.rpc('update_verification_status', {
+        profile_id: profileId,
+        is_verified: isVerified,
+        verification_status: verificationStatus
+      });
+
+      if (!error) {
+        // If RPC doesn't exist, fallback to direct update
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ 
+            is_verified: isVerified, 
+            verification_status: verificationStatus as 'pending' | 'verified' | 'rejected' 
+          })
+          .eq('id', profileId);
+        
+        if (updateError) throw updateError;
+      }
 
       if (error) throw error;
 
@@ -317,7 +328,7 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
           Applied: {new Date(profile.created_at).toLocaleDateString()}
         </div>
         
-        {showActions && (
+        {showActions && !profile.is_verified && (
           <div className="flex gap-2 pt-2">
             {onApprove && (
               <Button 
