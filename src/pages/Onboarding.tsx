@@ -15,6 +15,7 @@ import EnhancedSitterOnboarding from '@/components/onboarding/EnhancedSitterOnbo
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/hooks/useProfile';
+import OnboardingLayout from '@/components/layout/OnboardingLayout';
 
 type UserRole = 'pet_owner' | 'pet_sitter' | 'both';
 
@@ -524,69 +525,71 @@ export default function Onboarding() {
   const totalSteps = getTotalSteps();
 
   return (
-    <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
-      <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
-        <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
-          <Card>
-            <CardHeader className="text-center">
-              <div className="flex items-center justify-center mb-4">
-                <PawPrint className="w-8 h-8 text-primary mr-2" />
-                <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>Welcome to ZiggySitters</h1>
-              </div>
-              
-              {/* Progress indicator */}
-              <div className="flex justify-center mb-6">
-                <div className="flex space-x-2">
-                  {Array.from({ length: totalSteps }, (_, i) => (
-                    <div
-                      key={i}
-                      className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'} rounded-full ${
-                        i + 1 <= step ? 'bg-primary' : 'bg-gray-300'
-                      }`}
-                    />
-                  ))}
+    <OnboardingLayout>
+      <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
+        <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
+          <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <PawPrint className="w-8 h-8 text-primary mr-2" />
+                  <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>Welcome to ZiggySitters</h1>
                 </div>
-              </div>
-              
-              <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
-                Step {step} of {totalSteps}: {getStepTitle()}
-              </CardTitle>
-            </CardHeader>
-            
-            <CardContent className={isMobile ? 'p-4' : 'p-6'}>
-              {step === 1 && renderRoleSelection()}
-              {step === 2 && renderBasicInfo()}
-              {step >= 3 && renderRoleSpecificOnboarding()}
-            </CardContent>
-            
-            {/* Navigation buttons */}
-            {(step <= 2 || (data.role === 'both' && step === 3)) && (
-              <div className={`flex justify-between ${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
-                <Button
-                  variant="outline"
-                  onClick={prevStep}
-                  disabled={step === 1}
-                  className={isMobile ? 'px-4' : 'px-6'}
-                >
-                  Previous
-                </Button>
                 
-                <Button
-                  onClick={nextStep}
-                  disabled={
-                    isLoading ||
-                    (step === 1 && !data.role) ||
-                    (step === 2 && (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb))
-                  }
-                  className={isMobile ? 'px-4' : 'px-6'}
-                >
-                  {step === 2 ? 'Save & Continue' : 'Next'}
-                </Button>
-              </div>
-            )}
-          </Card>
+                {/* Progress indicator */}
+                <div className="flex justify-center mb-6">
+                  <div className="flex space-x-2">
+                    {Array.from({ length: totalSteps }, (_, i) => (
+                      <div
+                        key={i}
+                        className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'} rounded-full ${
+                          i + 1 <= step ? 'bg-primary' : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
+                  Step {step} of {totalSteps}: {getStepTitle()}
+                </CardTitle>
+              </CardHeader>
+              
+              <CardContent className={isMobile ? 'p-4' : 'p-6'}>
+                {step === 1 && renderRoleSelection()}
+                {step === 2 && renderBasicInfo()}
+                {step >= 3 && renderRoleSpecificOnboarding()}
+              </CardContent>
+              
+              {/* Navigation buttons */}
+              {(step <= 2 || (data.role === 'both' && step === 3)) && (
+                <div className={`flex justify-between ${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
+                  <Button
+                    variant="outline"
+                    onClick={prevStep}
+                    disabled={step === 1}
+                    className={isMobile ? 'px-4' : 'px-6'}
+                  >
+                    Previous
+                  </Button>
+                  
+                  <Button
+                    onClick={nextStep}
+                    disabled={
+                      isLoading ||
+                      (step === 1 && !data.role) ||
+                      (step === 2 && (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb))
+                    }
+                    className={isMobile ? 'px-4' : 'px-6'}
+                  >
+                    {step === 2 ? 'Save & Continue' : 'Next'}
+                  </Button>
+                </div>
+              )}
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 }

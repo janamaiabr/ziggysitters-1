@@ -111,9 +111,9 @@ serve(async (req) => {
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-          <a href="https://ziggysitters.com/profile" 
+          <a href="https://ziggysitters.com/onboarding" 
              style="background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; display: inline-block;">
-            Update Your Profile
+            Update Your Application
           </a>
         </div>
 

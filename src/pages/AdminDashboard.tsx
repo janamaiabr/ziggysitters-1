@@ -168,8 +168,8 @@ export default function AdminDashboard() {
     );
   }
 
-  const pendingSitters = profiles.filter(p => p.verification_status === 'pending');
-  const approvedSitters = profiles.filter(p => p.is_verified);
+  const pendingSitters = profiles.filter(p => p.verification_status === 'pending' || (!p.verification_status && !p.is_verified));
+  const approvedSitters = profiles.filter(p => p.is_verified && p.verification_status === 'verified');
   const rejectedSitters = profiles.filter(p => p.verification_status === 'rejected');
 
   return (
