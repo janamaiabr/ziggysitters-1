@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { ResponsiveCheck } from "@/components/layout/ResponsiveCheck";
 // import { AdminCreator } from "@/components/AdminCreator"; // Temporarily disabled
 import { OnboardingCheck } from "@/components/OnboardingCheck";
 import Header from "@/components/layout/Header";
@@ -181,6 +183,8 @@ function App() {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
+            <ResponsiveCheck />
             <AppContent />
           </BrowserRouter>
         </TooltipProvider>

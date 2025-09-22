@@ -445,24 +445,13 @@ export default function Onboarding() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="suburb">Suburb</Label>
-            <Input
-              id="suburb"
-              placeholder="Your suburb"
-              value={data.suburb || ''}
-              onChange={(e) => handleInputChange('suburb', e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
-            <Input
-              id="city"
-              value={data.city || 'Auckland'}
-              onChange={(e) => handleInputChange('city', e.target.value)}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="city">City</Label>
+          <Input
+            id="city"
+            value={data.city || 'Auckland'}
+            onChange={(e) => handleInputChange('city', e.target.value)}
+          />
         </div>
 
         <div className="space-y-2">

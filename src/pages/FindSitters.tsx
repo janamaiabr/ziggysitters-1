@@ -20,7 +20,12 @@ export default function FindSitters() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [location, setLocation] = useState(searchParams.get('location') || '');
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined
+  );
+  const [checkOutDate, setCheckOutDate] = useState<Date>(
+    searchParams.get('checkOut') ? new Date(searchParams.get('checkOut')!) : undefined
+  );
   const [serviceType, setServiceType] = useState(searchParams.get('serviceType') || '');
   const [petType, setPetType] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -120,10 +125,11 @@ export default function FindSitters() {
   const handleSearch = () => {
     let filtered = [...allSitters]; // Use real data instead of mockSitters
     
-    // Filter by location
+    // Filter by location - fix NewMarket search issue
     if (location) {
       filtered = filtered.filter(sitter => 
-        sitter.location.toLowerCase().includes(location.toLowerCase())
+        sitter.location.toLowerCase().includes(location.toLowerCase()) ||
+        sitter.location.toLowerCase().replace(/\s+/g, '').includes(location.toLowerCase().replace(/\s+/g, ''))
       );
     }
     
@@ -164,6 +170,17 @@ export default function FindSitters() {
     
     setFilteredSitters(filtered);
     setSearchPerformed(true);
+    
+    // Update URL params
+    const params = new URLSearchParams();
+    if (location) params.set('location', location);
+    if (serviceType) params.set('serviceType', serviceType);
+    if (petType) params.set('petType', petType);
+    if (selectedDate) params.set('checkIn', format(selectedDate, 'yyyy-MM-dd'));
+    if (checkOutDate) params.set('checkOut', format(checkOutDate, 'yyyy-MM-dd'));
+    
+    // Update URL without navigation
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
     
     // Scroll to results section after search
     setTimeout(() => {
@@ -304,6 +321,8 @@ export default function FindSitters() {
                   <label className="text-sm font-medium text-gray-700">Check-out Date</label>
                   <Input 
                     type="date"
+                    value={checkOutDate ? format(checkOutDate, 'yyyy-MM-dd') : ''}
+                    onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
                     className="h-10 border-gray-300 text-gray-800 focus:border-primary"
                   />
                 </div>
@@ -338,13 +357,15 @@ export default function FindSitters() {
                   </Popover>
                 </div>
                 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Check-out Date</label>
-                  <Input 
-                    type="date"
-                    className="h-10 border-gray-300 text-gray-800 focus:border-primary"
-                  />
-                </div>
+                 <div className="space-y-2">
+                   <label className="text-sm font-medium text-gray-700">Check-out Date</label>
+                   <Input 
+                     type="date"
+                     value={checkOutDate ? format(checkOutDate, 'yyyy-MM-dd') : ''}
+                     onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
+                     className="h-10 border-gray-300 text-gray-800 focus:border-primary"
+                   />
+                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
@@ -353,7 +374,7 @@ export default function FindSitters() {
                   onClick={handleSearch}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 md:px-8 font-semibold w-full sm:w-auto order-1"
                 >
-                  Search Sitters
+                  🐾 Find Perfect Sitters
                 </Button>
                 <Button 
                   variant="outline" 
@@ -362,6 +383,23 @@ export default function FindSitters() {
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
+                </Button>
+                {/* Clear Filters Button */}
+                <Button 
+                  variant="ghost" 
+                  onClick={() => {
+                    setLocation('');
+                    setServiceType('');
+                    setPetType('');
+                    setSelectedDate(undefined);
+                    setCheckOutDate(undefined);
+                    setFilteredSitters(allSitters);
+                    setSearchPerformed(false);
+                    window.history.replaceState({}, '', window.location.pathname);
+                  }}
+                  className="text-gray-600 hover:bg-gray-50 w-full sm:w-auto order-3"
+                >
+                  Clear All
                 </Button>
               </div>
             </div>
@@ -388,11 +426,14 @@ export default function FindSitters() {
                 <CardHeader className="pb-3 md:pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-2 md:space-x-3">
-                      <img 
-                        src={sitter.avatar} 
-                        alt={sitter.name}
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
-                      />
+                       <img 
+                         src={sitter.avatar} 
+                         alt={sitter.name}
+                         className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
+                         onError={(e) => {
+                           e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
+                         }}
+                       />
                       <div>
                         <CardTitle className="text-base md:text-lg">{sitter.name}</CardTitle>
                         <div className="flex items-center text-xs md:text-sm text-muted-foreground">

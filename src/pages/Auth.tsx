@@ -134,7 +134,7 @@ export default function Auth() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value.trim() // Trim whitespace to prevent spaces-only validation bypass
     }));
   };
 
@@ -225,6 +225,8 @@ export default function Auth() {
                         value={formData.firstName}
                         onChange={handleInputChange}
                         required
+                        pattern=".*\S+.*"
+                        title="First name cannot be empty or contain only spaces"
                       />
                     </div>
                     <div className="space-y-2">
@@ -237,6 +239,8 @@ export default function Auth() {
                         value={formData.lastName}
                         onChange={handleInputChange}
                         required
+                        pattern=".*\S+.*"
+                        title="Last name cannot be empty or contain only spaces"
                       />
                     </div>
                   </div>

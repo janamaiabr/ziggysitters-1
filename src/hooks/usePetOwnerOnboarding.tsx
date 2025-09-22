@@ -112,8 +112,13 @@ export function usePetOwnerOnboarding() {
 
   const savePets = async (ownerId: string) => {
     try {
-      for (const pet of pets) {
-        if (!pet.name.trim()) continue;
+      // Validate that at least one pet has a name
+      const validPets = pets.filter(pet => pet.name.trim());
+      if (validPets.length === 0) {
+        throw new Error('At least one pet must have a name');
+      }
+
+      for (const pet of validPets) {
 
         const petData = {
           owner_id: ownerId,

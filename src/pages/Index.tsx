@@ -159,11 +159,13 @@ const Index = () => {
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 w-full md:w-auto font-semibold text-base"
                   onClick={() => {
                     const params = new URLSearchParams();
-                    if (location) params.set('location', location);
-                    if (serviceType) params.set('serviceType', serviceType);
-                    if (checkIn) params.set('checkIn', checkIn);
-                    if (checkOut) params.set('checkOut', checkOut);
-                    navigate(`/find-sitters?${params.toString()}`);
+                     if (location) params.set('location', location);
+                     if (serviceType) params.set('serviceType', serviceType);
+                     if (checkIn) params.set('checkIn', checkIn);
+                     if (checkOut) params.set('checkOut', checkOut);
+                     navigate(`/find-sitters?${params.toString()}`);
+                     // Scroll to top after navigation
+                     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
                   }}
                 >
                    <Search className="mr-2 h-5 w-5" />
@@ -228,11 +230,14 @@ const Index = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3 md:space-x-4">
                       <Avatar className="h-12 w-12 md:h-16 md:w-16">
-                        <AvatarImage 
-                          src={sitter.avatar} 
-                          alt={sitter.name} 
-                          className="object-cover"
-                        />
+                         <AvatarImage 
+                           src={sitter.avatar} 
+                           alt={sitter.name} 
+                           className="object-cover"
+                           onError={(e) => {
+                             e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
+                           }}
+                         />
                         <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                       </Avatar>
                       <div>

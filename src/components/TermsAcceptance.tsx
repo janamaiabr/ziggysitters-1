@@ -81,14 +81,15 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
         </ScrollArea>
 
         <div className="space-y-4">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-start space-x-2">
             <Checkbox 
               id="accept-terms"
               checked={accepted}
               onCheckedChange={(checked) => setAccepted(checked === true)}
+              className="mt-1"
             />
-            <label htmlFor="accept-terms" className="text-sm">
-              I have read and agree to the Terms of Service
+            <label htmlFor="accept-terms" className="text-sm leading-5 font-medium">
+              I have read the Terms of Service and agree to them
             </label>
           </div>
 
