@@ -62,6 +62,24 @@ export function useProfile() {
         console.log('useProfile: Profile found:', data);
         setProfile(data);
         
+        // Admin users should never need onboarding
+        if (data.role === 'admin') {
+          // Ensure admin users have onboarding_completed set to true
+          if (!data.onboarding_completed) {
+            await supabase
+              .from('profiles')
+              .update({ onboarding_completed: true })
+              .eq('user_id', user?.id);
+            data.onboarding_completed = true;
+          }
+          
+          console.log('useProfile: Admin user detected, skipping onboarding');
+          setNeedsOnboarding(false);
+          setProfile(data);
+          setLoading(false);
+          return;
+        }
+        
         // Use the onboarding_completed flag as the primary check
         // If onboarding_completed is explicitly true, consider it completed
         const isCompleted = data.onboarding_completed === true;
