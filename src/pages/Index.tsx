@@ -480,18 +480,9 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">How Daily Updates Work</h2>
-            <p className="text-base md:text-lg text-muted-foreground mb-6">
+            <p className="text-base md:text-lg text-muted-foreground">
               The first pet sitting platform with mandatory transparency
             </p>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              onClick={() => navigate('/daily-reports-info')}
-              className="mb-8"
-            >
-              <Camera className="mr-2 h-5 w-5" />
-              Learn About Daily Reports
-            </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto px-4">
