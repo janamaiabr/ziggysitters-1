@@ -24,6 +24,28 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
   const [selectedServices, setSelectedServices] = useState<string[]>(currentFilters?.selectedServices || []);
   const [selectedPetTypes, setSelectedPetTypes] = useState<string[]>(currentFilters?.selectedPetTypes || []);
 
+  // Dynamic price range based on selected services
+  const getServicePriceRanges = () => {
+    const serviceRanges: { [key: string]: [number, number] } = {
+      'Dog Walking': [15, 35],
+      'Pet Sitting (Your Home)': [25, 60], 
+      'Pet Sitting (Sitter\'s Home)': [20, 50],
+      'Drop-in Visits': [12, 30]
+    };
+    
+    if (selectedServices.length === 0) {
+      return [10, 100]; // Default range when no services selected
+    }
+    
+    const ranges = selectedServices.map(service => serviceRanges[service] || [10, 100]);
+    const minPrice = Math.min(...ranges.map(r => r[0]));
+    const maxPrice = Math.max(...ranges.map(r => r[1]));
+    
+    return [minPrice, maxPrice];
+  };
+
+  const [minServicePrice, maxServicePrice] = getServicePriceRanges();
+
   const services = [
     'Dog Walking',
     'Pet Sitting (Your Home)',
@@ -77,12 +99,19 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
     <div className="space-y-6">
       {/* Price Range */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Price Range (per hour)</Label>
+        <Label className="text-sm font-medium">
+          Price Range (per hour)
+          {selectedServices.length > 0 && (
+            <span className="text-xs text-muted-foreground ml-1">
+              for {selectedServices.join(', ')}
+            </span>
+          )}
+        </Label>
         <Slider
           value={priceRange}
           onValueChange={setPriceRange}
-          max={150}
-          min={10}
+          max={maxServicePrice}
+          min={minServicePrice}
           step={5}
           className="w-full"
         />
@@ -90,6 +119,11 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
           <span>${priceRange[0]}</span>
           <span>${priceRange[1]}</span>
         </div>
+        {selectedServices.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Typical range for selected services: ${minServicePrice} - ${maxServicePrice}
+          </p>
+        )}
       </div>
 
       <Separator />

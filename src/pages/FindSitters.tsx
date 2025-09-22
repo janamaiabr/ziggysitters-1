@@ -301,8 +301,8 @@ export default function FindSitters() {
                           !selectedDate && "text-gray-500"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {selectedDate ? format(selectedDate, "PPP") : "Select date"}
+                        <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                        {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Select date"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -319,12 +319,29 @@ export default function FindSitters() {
                 
                 <div className="hidden lg:block space-y-2">
                   <label className="text-sm font-medium text-gray-700">Check-out Date</label>
-                  <Input 
-                    type="date"
-                    value={checkOutDate ? format(checkOutDate, 'yyyy-MM-dd') : ''}
-                    onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
-                    className="h-10 border-gray-300 text-gray-800 focus:border-primary"
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
+                          !checkOutDate && "text-gray-500"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                        {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : "Select date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={checkOutDate}
+                        onSelect={setCheckOutDate}
+                        initialFocus
+                        className="p-3 pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
               
@@ -359,12 +376,29 @@ export default function FindSitters() {
                 
                  <div className="space-y-2">
                    <label className="text-sm font-medium text-gray-700">Check-out Date</label>
-                   <Input 
-                     type="date"
-                     value={checkOutDate ? format(checkOutDate, 'yyyy-MM-dd') : ''}
-                     onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
-                     className="h-10 border-gray-300 text-gray-800 focus:border-primary"
-                   />
+                   <Popover>
+                     <PopoverTrigger asChild>
+                       <Button
+                         variant="outline"
+                         className={cn(
+                           "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
+                           !checkOutDate && "text-gray-500"
+                         )}
+                       >
+                         <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                         {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : "Select date"}
+                       </Button>
+                     </PopoverTrigger>
+                     <PopoverContent className="w-auto p-0" align="start">
+                       <Calendar
+                         mode="single"
+                         selected={checkOutDate}
+                         onSelect={setCheckOutDate}
+                         initialFocus
+                         className="p-3 pointer-events-auto"
+                       />
+                     </PopoverContent>
+                   </Popover>
                  </div>
               </div>
               
