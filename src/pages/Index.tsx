@@ -313,7 +313,7 @@ const Index = () => {
                     className="w-full"
                     onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
                    >
-                     🐾 View Profile & Book
+                     View Profile & Book
                   </Button>
                 </CardContent>
               </Card>
@@ -322,7 +322,7 @@ const Index = () => {
           
           <div className="text-center mt-8 md:mt-12 px-4">
            <Button variant="outline" size="lg" onClick={() => navigate('/find-sitters')}>
-             🔍 View All Sitters
+             View All Sitters
            </Button>
           </div>
         </div>

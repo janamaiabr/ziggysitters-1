@@ -90,8 +90,8 @@ export default function FindSitters() {
             id: sitter.id,
             name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
             location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
-            rating: 4.8, // Fixed rating since we're removing rating filters
-            feedback_count: Math.floor(Math.random() * 50) + 10, // Generate some completed bookings for display
+            rating: null, // No rating system
+            feedback_count: null, // No reviews system
             baseRate: minRate,
             hourlyRate: minRate * 1.1, // Add 10% platform fee
             bio: sitter.bio || 'Experienced pet sitter who loves caring for animals.',
@@ -178,6 +178,14 @@ export default function FindSitters() {
     
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.replaceState({}, '', newUrl);
+
+    // Auto-scroll to results after search
+    setTimeout(() => {
+      const resultsSection = document.querySelector('.results-section');
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const handleApplyFilters = (filters: any) => {
@@ -294,12 +302,12 @@ export default function FindSitters() {
                       <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white">
                         <SelectValue placeholder="What do you need?" />
                       </SelectTrigger>
-                       <SelectContent className="z-50 bg-white border shadow-lg">
-                         <SelectItem value="pet_sitting_sitters_home">🏠 Pet Sitting (Sitter's Home)</SelectItem>
-                         <SelectItem value="pet_sitting_owners_home">🏡 Pet Sitting (Your Home)</SelectItem>
-                         <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
-                         <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
-                       </SelectContent>
+                        <SelectContent className="z-50 bg-white border shadow-lg">
+                          <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
+                          <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
+                          <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
+                          <SelectItem value="dog_walking">Dog Walking</SelectItem>
+                        </SelectContent>
                     </Select>
                   </div>
                 </div>
@@ -336,7 +344,7 @@ export default function FindSitters() {
                   onClick={handleSearch}
                 >
                    <Search className="mr-2 h-5 w-5" />
-                   🔍 Search Sitters
+                   Search Sitters
                 </Button>
                 <Button 
                   variant="outline" 
@@ -376,18 +384,26 @@ export default function FindSitters() {
               {filteredSitters.map((sitter) => (
                 <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="relative">
-                    {sitter.image && (
-                      <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                    <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                      {sitter.image ? (
                         <img 
                           src={sitter.image} 
                           alt={`${sitter.name}'s profile`}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
                         />
-                      </div>
-                    )}
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                          <div className="text-center">
+                            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
+                              <span className="text-2xl font-bold text-primary">
+                                {sitter.name.split(' ').map(n => n[0]).join('')}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-600">Pet Sitter</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                     {sitter.verified && (
                       <Badge className="absolute top-2 right-2 bg-green-500 text-white">
                         Verified
@@ -404,24 +420,18 @@ export default function FindSitters() {
                             alt={sitter.name}
                             className="object-cover"
                           />
-                          <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          <AvatarFallback className="bg-primary/20 text-primary font-semibold">
+                            {sitter.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
                         </Avatar>
-                        <div>
+                        <div className="flex-1">
                           <CardTitle className="text-lg">{sitter.name}</CardTitle>
                           <div className="flex items-center text-sm text-muted-foreground">
                             <MapPin className="w-3 h-3 mr-1" />
                             {sitter.location}
                           </div>
-                          <div className="flex items-center mt-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                            <span className="font-medium">{sitter.rating}</span>
-                            <span className="text-sm text-muted-foreground ml-1">
-                              ({sitter.feedback_count} bookings)
-                            </span>
-                          </div>
                         </div>
                       </div>
-                      <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer" />
                     </div>
                   </CardHeader>
                   
