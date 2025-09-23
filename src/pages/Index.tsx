@@ -163,21 +163,23 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 block">Check-in</label>
-                    <Input 
+                     <Input 
                       type="date"
                       value={checkIn}
                       onChange={(e) => setCheckIn(e.target.value)}
                       className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 block">Check-out</label>
-                    <Input 
+                     <Input 
                       type="date"
                       value={checkOut}
                       onChange={(e) => setCheckOut(e.target.value)}
                       className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      min={checkIn || new Date().toISOString().split('T')[0]}
                     />
                   </div>
                 </div>

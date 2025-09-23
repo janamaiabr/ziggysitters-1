@@ -6,12 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter, Search } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { MapPin, Star, Heart, Filter, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
@@ -311,56 +307,24 @@ export default function FindSitters() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 block">Check-in</label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "h-12 w-full justify-start text-left font-normal border-gray-300 text-gray-800 focus:border-primary bg-white",
-                            !selectedDate && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-5 w-5" />
-                          {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={selectedDate}
-                          onSelect={setSelectedDate}
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
+                     <Input 
+                      type="date"
+                      value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+                      onChange={(e) => setSelectedDate(e.target.value ? new Date(e.target.value) : undefined)}
+                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      min={new Date().toISOString().split('T')[0]}
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 block">Check-out</label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "h-12 w-full justify-start text-left font-normal border-gray-300 text-gray-800 focus:border-primary bg-white",
-                            !checkOutDate && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-5 w-5" />
-                          {checkOutDate ? format(checkOutDate, "PPP") : "Pick a date"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={checkOutDate}
-                          onSelect={setCheckOutDate}
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
+                     <Input 
+                      type="date"
+                      value={checkOutDate ? checkOutDate.toISOString().split('T')[0] : ''}
+                      onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
+                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      min={selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+                    />
                   </div>
                 </div>
               </div>
