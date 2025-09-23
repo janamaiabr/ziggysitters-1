@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Star, Heart, Filter, Search } from 'lucide-react';
+import { MapPin, Filter, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
@@ -181,11 +181,11 @@ export default function FindSitters() {
 
     // Auto-scroll to results after search
     setTimeout(() => {
-      const resultsSection = document.querySelector('.results-section');
+      const resultsSection = document.getElementById('search-results');
       if (resultsSection) {
         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 100);
+    }, 200);
   };
 
   const handleApplyFilters = (filters: any) => {
@@ -362,7 +362,7 @@ export default function FindSitters() {
       </section>
 
       {/* Results */}
-      <div className="container mx-auto px-4 py-8 md:py-12 results-section">
+      <div id="search-results" className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
           {/* Search Results Header */}
           {searchPerformed && (
@@ -515,18 +515,26 @@ export default function FindSitters() {
                 {allSitters.slice(0, 6).map((sitter) => (
                   <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
                     <div className="relative">
-                      {sitter.image && (
-                        <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                      <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                        {sitter.image ? (
                           <img 
                             src={sitter.image} 
                             alt={`${sitter.name}'s profile`}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
                           />
-                        </div>
-                      )}
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                            <div className="text-center">
+                              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
+                                <span className="text-2xl font-bold text-primary">
+                                  {sitter.name.split(' ').map(n => n[0]).join('')}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600">Pet Sitter</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                       {sitter.verified && (
                         <Badge className="absolute top-2 right-2 bg-green-500 text-white">
                           Verified
@@ -551,16 +559,8 @@ export default function FindSitters() {
                               <MapPin className="w-3 h-3 mr-1" />
                               {sitter.location}
                             </div>
-                            <div className="flex items-center mt-1">
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                              <span className="font-medium">{sitter.rating}</span>
-                              <span className="text-sm text-muted-foreground ml-1">
-                                ({sitter.feedback_count} bookings)
-                              </span>
-                            </div>
                           </div>
                         </div>
-                        <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer" />
                       </div>
                     </CardHeader>
                     
