@@ -113,7 +113,7 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
               setIsOpen(true);
             }
           }}
-          className="border-gray-300 text-gray-400 placeholder:text-gray-400 focus:border-primary h-10"
+          className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
           autoComplete="off"
         />
       </div>

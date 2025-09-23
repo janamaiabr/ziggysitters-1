@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter } from 'lucide-react';
+import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -265,149 +265,63 @@ export default function FindSitters() {
       />
       
       {/* Hero Section with Search */}
-      <div className="min-h-[50vh] bg-gradient-to-br from-orange-50 to-pink-50 flex items-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center px-4">
-            <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-gray-800">Find Trusted Pet Sitters</h1>
-            <p className="text-lg md:text-xl mb-6 md:mb-8 text-gray-600">
-              Discover verified, loving pet sitters in your area
+      <section className="relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIj4KICAgICAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg==')] opacity-30"></div>
+        </div>
+        <div className="relative container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center text-gray-800">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Find Trusted Pet Sitters
+            </h1>
+            <p className="text-lg md:text-xl mb-6 md:mb-8 text-gray-600 max-w-3xl mx-auto px-4">
+              Discover verified, loving pet sitters in your area with guaranteed daily photo updates
             </p>
             
-            {/* Enhanced Search Form - Mobile Optimized */}
-            <div className="bg-white rounded-2xl p-3 md:p-6 space-y-3 md:space-y-4 border border-gray-200 shadow-xl">
-              {/* Mobile Layout */}
-              <div className="lg:hidden space-y-3">
-                <SuburbAutocomplete
-                  value={location}
-                  onChange={setLocation}
-                  placeholder="Location"
-                />
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="border-gray-300 text-gray-400 text-sm h-10">
-                      <SelectValue placeholder="Service" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dog_walking">Dog Walking</SelectItem>
-                      <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
-                      <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
-                      <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
-                    </SelectContent>
-                  </Select>
+            {/* Enhanced Search Bar - Same as Home Page */}
+            <div className="bg-white rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
+              {/* Mobile Optimized: Stack fields properly */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Where?</label>
+                    <SuburbAutocomplete
+                      value={location}
+                      onChange={setLocation}
+                      placeholder="Enter suburb or city"
+                    />
+                  </div>
                   
-                  <Select value={petType} onValueChange={setPetType}>
-                    <SelectTrigger className="border-gray-300 text-gray-400 text-sm h-10">
-                      <SelectValue placeholder="Pet Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dogs">Dogs</SelectItem>
-                      <SelectItem value="cats">Cats</SelectItem>
-                      <SelectItem value="birds">Birds</SelectItem>
-                      <SelectItem value="small_pets">Small Pets</SelectItem>
-                      <SelectItem value="reptiles">Reptiles</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Service</label>
+                    <Select value={serviceType} onValueChange={setServiceType}>
+                      <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white">
+                        <SelectValue placeholder="What do you need?" />
+                      </SelectTrigger>
+                       <SelectContent className="z-50 bg-white border shadow-lg">
+                         <SelectItem value="pet_sitting_sitters_home">🏠 Pet Sitting (Sitter's Home)</SelectItem>
+                         <SelectItem value="pet_sitting_owners_home">🏡 Pet Sitting (Your Home)</SelectItem>
+                         <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
+                         <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
+                       </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-3">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start text-left font-normal border-gray-300 text-gray-400 hover:bg-gray-50 text-sm h-10"
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4 text-gray-400" />
-                        {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Check-in"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        initialFocus
-                        className="p-3 pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start text-left font-normal border-gray-300 text-gray-400 hover:bg-gray-50 text-sm h-10"
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4 text-gray-400" />
-                        {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : "Check-out"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={checkOutDate}
-                        onSelect={setCheckOutDate}
-                        initialFocus
-                        className="p-3 pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-
-              {/* Desktop Layout */}
-              <div className="hidden lg:grid lg:grid-cols-4 gap-6">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Location</label>
-                  <SuburbAutocomplete
-                    value={location}
-                    onChange={setLocation}
-                    placeholder="Enter suburb or city"
-                  />
-                </div>
-                
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Service Type</label>
-                  <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="border-gray-300 text-gray-400">
-                      <SelectValue placeholder="Select service" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dog_walking">Dog Walking</SelectItem>
-                      <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
-                      <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
-                      <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pet Type</label>
-                  <Select value={petType} onValueChange={setPetType}>
-                    <SelectTrigger className="border-gray-300 text-gray-400">
-                      <SelectValue placeholder="Select pet" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dogs">Dogs</SelectItem>
-                      <SelectItem value="cats">Cats</SelectItem>
-                      <SelectItem value="birds">Birds</SelectItem>
-                      <SelectItem value="small_pets">Small Pets</SelectItem>
-                      <SelectItem value="reptiles">Reptiles</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Dates</label>
-                  <div className="flex gap-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Check-in</label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="flex-1 justify-start text-left font-normal border-gray-300 text-gray-400 hover:bg-gray-50 text-sm"
+                          className={cn(
+                            "h-12 w-full justify-start text-left font-normal border-gray-300 text-gray-800 focus:border-primary bg-white",
+                            !selectedDate && "text-muted-foreground"
+                          )}
                         >
-                          <CalendarIcon className="mr-1 h-3 w-3 text-gray-400" />
-                          {selectedDate ? format(selectedDate, "dd/MM") : "In"}
+                          <CalendarIcon className="mr-2 h-5 w-5" />
+                          {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -420,15 +334,21 @@ export default function FindSitters() {
                         />
                       </PopoverContent>
                     </Popover>
-                    
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 block">Check-out</label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="flex-1 justify-start text-left font-normal border-gray-300 text-gray-400 hover:bg-gray-50 text-sm"
+                          className={cn(
+                            "h-12 w-full justify-start text-left font-normal border-gray-300 text-gray-800 focus:border-primary bg-white",
+                            !checkOutDate && "text-muted-foreground"
+                          )}
                         >
-                          <CalendarIcon className="mr-1 h-3 w-3 text-gray-400" />
-                          {checkOutDate ? format(checkOutDate, "dd/MM") : "Out"}
+                          <CalendarIcon className="mr-2 h-5 w-5" />
+                          {checkOutDate ? format(checkOutDate, "PPP") : "Pick a date"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -445,43 +365,29 @@ export default function FindSitters() {
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
+              <div className="mt-6 flex flex-col md:flex-row gap-3">
                 <Button 
                   size="lg" 
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 flex-1 font-semibold text-base"
                   onClick={handleSearch}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 md:px-8 font-semibold w-full sm:w-auto order-1"
                 >
-                  🐾 Find Perfect Sitters
+                   <Search className="mr-2 h-5 w-5" />
+                   🔍 Search Sitters
                 </Button>
                 <Button 
                   variant="outline" 
+                  size="lg"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full sm:w-auto order-2"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 h-12"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => {
-                    setLocation('');
-                    setServiceType('');
-                    setPetType('');
-                    setSelectedDate(undefined);
-                    setCheckOutDate(undefined);
-                    setFilteredSitters(allSitters);
-                    setSearchPerformed(false);
-                    window.history.replaceState({}, '', window.location.pathname);
-                  }}
-                  className="text-gray-600 hover:bg-gray-50 w-full sm:w-auto order-3"
-                >
-                  Clear All
                 </Button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Results */}
       <div className="container mx-auto px-4 py-8 md:py-12 results-section">
@@ -504,57 +410,192 @@ export default function FindSitters() {
           {searchPerformed && filteredSitters.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredSitters.map((sitter) => (
-                <Card key={sitter.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-200">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-12 w-12 border-2 border-orange-200">
-                        <AvatarImage 
+                <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+                  <div className="relative">
+                    {sitter.image && (
+                      <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                        <img 
                           src={sitter.image} 
-                          alt={sitter.name}
-                          className="object-cover"
+                          alt={`${sitter.name}'s profile`}
+                          className="w-full h-full object-cover"
                           onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
+                            e.currentTarget.style.display = 'none';
                           }}
                         />
-                        <AvatarFallback className="bg-orange-100 text-orange-600 font-semibold">
-                          {sitter.name.split(' ').map((n: string) => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-lg font-semibold text-gray-800 truncate">
-                            {sitter.name}
-                          </CardTitle>
-                          {sitter.instant_booking && (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
-                              Instant
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600 mt-1">
-                          <MapPin className="h-3 w-3 mr-1" />
-                          <span className="truncate">{sitter.location}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600 mt-1">
-                          <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
-                          <span>{sitter.rating}</span>
-                          <span className="mx-1">•</span>
-                          <span>{sitter.feedback_count} bookings</span>
+                      </div>
+                    )}
+                    {sitter.verified && (
+                      <Badge className="absolute top-2 right-2 bg-green-500 text-white">
+                        Verified
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <CardHeader className="pb-2">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage 
+                            src={sitter.image} 
+                            alt={sitter.name}
+                            className="object-cover"
+                          />
+                          <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <CardTitle className="text-lg">{sitter.name}</CardTitle>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {sitter.location}
+                          </div>
+                          <div className="flex items-center mt-1">
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                            <span className="font-medium">{sitter.rating}</span>
+                            <span className="text-sm text-muted-foreground ml-1">
+                              ({sitter.feedback_count} bookings)
+                            </span>
+                          </div>
                         </div>
                       </div>
+                      <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer" />
                     </div>
                   </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {sitter.bio}
-                    </p>
+                  
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
                     
-                    {/* Services */}
-                    <div className="mb-3">
+                    <div className="flex flex-wrap gap-1">
+                      {sitter.services.slice(0, 2).map((service) => (
+                        <Badge key={service} variant="outline" className="text-xs">
+                          {service}
+                        </Badge>
+                      ))}
+                      {sitter.services.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{sitter.services.length - 2} more
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-muted-foreground">
+                        From <span className="font-semibold text-gray-900">${sitter.baseRate}/hr</span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className="w-full"
+                      onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                    >
+                      View Profile & Book
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* No Results Found */}
+          {searchPerformed && filteredSitters.length === 0 && (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="text-6xl mb-4">🐾</div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">No sitters found</h3>
+                <p className="text-gray-600 mb-6">
+                  We couldn't find any sitters matching your criteria. Try adjusting your search filters or expanding your search area.
+                </p>
+                <div className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setLocation('');
+                      setServiceType('');
+                      setPetType('');
+                      setSelectedDate(undefined);
+                      setCheckOutDate(undefined);
+                      setCurrentFilters(null);
+                      setFilteredSitters(allSitters);
+                      setSearchPerformed(false);
+                    }}
+                  >
+                    Clear All Filters
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Default State - Show All Sitters */}
+          {!searchPerformed && allSitters.length > 0 && (
+            <div>
+              <div className="mb-6 md:mb-8">
+                <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
+                  All Available Pet Sitters
+                </h2>
+                <p className="text-gray-600">
+                  Browse our verified pet sitters or use the search above to find specific services
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {allSitters.slice(0, 6).map((sitter) => (
+                  <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+                    <div className="relative">
+                      {sitter.image && (
+                        <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                          <img 
+                            src={sitter.image} 
+                            alt={`${sitter.name}'s profile`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                      {sitter.verified && (
+                        <Badge className="absolute top-2 right-2 bg-green-500 text-white">
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage 
+                              src={sitter.image} 
+                              alt={sitter.name}
+                              className="object-cover"
+                            />
+                            <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <CardTitle className="text-lg">{sitter.name}</CardTitle>
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <MapPin className="w-3 h-3 mr-1" />
+                              {sitter.location}
+                            </div>
+                            <div className="flex items-center mt-1">
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                              <span className="font-medium">{sitter.rating}</span>
+                              <span className="text-sm text-muted-foreground ml-1">
+                                ({sitter.feedback_count} bookings)
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer" />
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
+                      
                       <div className="flex flex-wrap gap-1">
-                        {sitter.services.slice(0, 2).map((service: string, index: number) => (
-                          <Badge key={index} variant="outline" className="text-xs">
+                        {sitter.services.slice(0, 2).map((service) => (
+                          <Badge key={service} variant="outline" className="text-xs">
                             {service}
                           </Badge>
                         ))}
@@ -564,45 +605,37 @@ export default function FindSitters() {
                           </Badge>
                         )}
                       </div>
-                    </div>
-
-                    {/* Price and Book Button */}
-                    <div className="flex items-center justify-between">
-                      <div className="text-lg font-semibold text-gray-800">
-                        ${sitter.baseRate}<span className="text-sm font-normal text-gray-600">/hour</span>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm text-muted-foreground">
+                          From <span className="font-semibold text-gray-900">${sitter.baseRate}/hr</span>
+                        </div>
                       </div>
+                      
                       <Button 
-                        size="sm"
-                        onClick={() => navigate(`/sitter/${sitter.id}`)}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        className="w-full"
+                        onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
                       >
-                        View Profile
+                        View Profile & Book
                       </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {/* Empty State - Show when no search performed */}
-          {!searchPerformed && (
-            <div className="text-center py-12 md:py-16">
-              <div className="max-w-md mx-auto">
-                <div className="text-6xl mb-4">🐾</div>
-                <h3 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">
-                  Find Your Perfect Pet Sitter
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Use the search form above to discover trusted pet sitters in your area.
-                </p>
-                <Button 
-                  onClick={() => document.querySelector('.results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  variant="outline"
-                >
-                  Start Your Search
-                </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
+              
+              {allSitters.length > 6 && (
+                <div className="text-center mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setFilteredSitters(allSitters);
+                      setSearchPerformed(true);
+                    }}
+                  >
+                    View All {allSitters.length} Sitters
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>
