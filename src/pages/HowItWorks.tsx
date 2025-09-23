@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import SEOHead from '@/components/seo/SEOHead';
 import { Badge } from '@/components/ui/badge';
 import { Search, UserCheck, CreditCard, Shield, Heart, Star, Clock, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -87,7 +88,14 @@ export default function HowItWorks() {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead 
+        title="How It Works - Daily Pet Updates System | ZiggySitters"
+        description="Learn how ZiggySitters works: book verified pet sitters who must send daily photo updates. Unique payment system ensures accountability and transparency."
+        keywords="how pet sitting works, daily pet updates, pet sitter accountability, booking process, verified pet care"
+        canonical="/how-it-works"
+      />
+      <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-primary to-secondary text-primary-foreground py-20">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -331,6 +339,7 @@ export default function HowItWorks() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

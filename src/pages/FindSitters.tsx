@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Star, Heart, Calendar as CalendarIcon, Filter } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -235,7 +237,14 @@ export default function FindSitters() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead 
+        title="Find Verified Pet Sitters with Daily Updates - Auckland Pet Care"
+        description="Search verified pet sitters in Auckland who provide guaranteed daily photo updates. Browse profiles, read reviews, and book trusted pet care for dogs, cats, and more."
+        keywords="find pet sitters Auckland, verified pet care, pet sitters with daily reports, Auckland dog walking, cat sitting services"
+        canonical="/find-sitters"
+      />
+      <div className="min-h-screen bg-background">
       {/* Search Header */}
       <div className="bg-gradient-to-br from-slate-50 to-gray-100 py-8 md:py-16">
         <div className="container mx-auto px-4">
@@ -261,7 +270,7 @@ export default function FindSitters() {
                 <div className="space-y-2 md:col-span-1 lg:col-span-1">
                   <label className="text-sm font-medium text-gray-700">Service Type</label>
                   <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
+                    <SelectTrigger className="border-gray-300 text-gray-500 focus:border-primary">
                       <SelectValue placeholder="Select service" />
                     </SelectTrigger>
                      <SelectContent>
@@ -276,7 +285,7 @@ export default function FindSitters() {
                 <div className="space-y-2 md:col-span-1 lg:col-span-1">
                   <label className="text-sm font-medium text-gray-700">Pet Type</label>
                   <Select value={petType} onValueChange={setPetType}>
-                    <SelectTrigger className="border-gray-300 text-gray-800 focus:border-primary">
+                    <SelectTrigger className="border-gray-300 text-gray-500 focus:border-primary">
                       <SelectValue placeholder="Select pet" />
                     </SelectTrigger>
                      <SelectContent>
@@ -297,8 +306,7 @@ export default function FindSitters() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
-                          !selectedDate && "text-gray-500"
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-500 hover:bg-gray-50"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
@@ -324,8 +332,7 @@ export default function FindSitters() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
-                          !checkOutDate && "text-gray-500"
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-500 hover:bg-gray-50"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
@@ -354,8 +361,7 @@ export default function FindSitters() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
-                          !selectedDate && "text-gray-500"
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-500 hover:bg-gray-50"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -380,10 +386,9 @@ export default function FindSitters() {
                      <PopoverTrigger asChild>
                        <Button
                          variant="outline"
-                         className={cn(
-                           "w-full justify-start text-left font-normal border-gray-300 text-gray-800 hover:bg-gray-50",
-                           !checkOutDate && "text-gray-500"
-                         )}
+                        className={cn(
+                          "w-full justify-start text-left font-normal border-gray-300 text-gray-500 hover:bg-gray-50"
+                        )}
                        >
                          <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
                          {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : "Select date"}
@@ -460,14 +465,16 @@ export default function FindSitters() {
                 <CardHeader className="pb-3 md:pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-2 md:space-x-3">
-                       <img 
-                         src={sitter.avatar} 
-                         alt={sitter.name}
-                         className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
-                         onError={(e) => {
-                           e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
-                         }}
-                       />
+                       <Avatar className="h-10 w-10 md:h-12 md:w-12">
+                         <AvatarImage 
+                           src={sitter.avatar} 
+                           alt={sitter.name}
+                           className="object-cover"
+                         />
+                         <AvatarFallback className="text-xs md:text-sm">
+                           {sitter.name.split(' ').map(n => n[0]).join('')}
+                         </AvatarFallback>
+                       </Avatar>
                       <div>
                         <CardTitle className="text-base md:text-lg">{sitter.name}</CardTitle>
                         <div className="flex items-center text-xs md:text-sm text-muted-foreground">
@@ -480,18 +487,11 @@ export default function FindSitters() {
                 </CardHeader>
                 
                  <CardContent className="space-y-3 md:space-y-4">
-                   {sitter.rating > 0 && (
-                     <div className="flex items-center justify-between">
-                       <div className="flex items-center space-x-1">
-                         <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
-                         <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
-                         <span className="text-xs md:text-sm text-muted-foreground">({sitter.feedback_count} completed)</span>
-                       </div>
-                       {sitter.verified && (
-                         <Badge variant="secondary" className="text-xs">✅ Verified</Badge>
-                       )}
-                     </div>
-                   )}
+                   <div className="flex items-center justify-between">
+                     {sitter.verified && (
+                       <Badge variant="secondary" className="text-xs">✅ Verified</Badge>
+                     )}
+                   </div>
                   
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-1">
@@ -575,6 +575,7 @@ export default function FindSitters() {
         currentFilters={currentFilters}
       />
 
-    </div>
+      </div>
+    </>
   );
 }

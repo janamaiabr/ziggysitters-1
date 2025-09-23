@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ResponsiveCheck } from "@/components/layout/ResponsiveCheck";
@@ -182,11 +182,9 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <ScrollToTop />
-            <ResponsiveCheck />
-            <AppContent />
-          </BrowserRouter>
+          <ScrollToTop />
+          <ResponsiveCheck />
+          <AppContent />
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>

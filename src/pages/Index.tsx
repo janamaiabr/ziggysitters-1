@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -83,8 +84,37 @@ const Index = () => {
     }
   ];
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "ZiggySitters",
+    "description": "Professional pet sitting services in Auckland with mandatory daily photo updates and detailed reports.",
+    "url": "https://ziggysitters.com",
+    "telephone": "+64-9-XXX-XXXX",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Auckland",
+      "addressCountry": "New Zealand"
+    },
+    "areaServed": "Auckland, New Zealand",
+    "serviceType": ["Pet Sitting", "Dog Walking", "Pet Care", "Daily Reports"],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "500"
+    }
+  };
+
   return (
-    <div className="bg-gradient-to-b from-background to-accent/20">
+    <>
+      <SEOHead 
+        title="ZiggySitters - Pet Sitters with Guaranteed Daily Photo Updates | Auckland"
+        description="Find trusted pet sitters in Auckland who send daily photo updates. The only platform where sitters MUST report daily or get reduced payment. Book verified pet care today."
+        keywords="pet sitters Auckland, daily pet reports, pet sitting with photos, verified pet care, dog walking Auckland, cat sitting, pet care updates"
+        canonical="/"
+        structuredData={structuredData}
+      />
+      <div className="bg-gradient-to-b from-background to-accent/20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden">
         <div className="absolute inset-0">
@@ -547,7 +577,8 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 

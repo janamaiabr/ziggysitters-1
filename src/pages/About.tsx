@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import SEOHead from '@/components/seo/SEOHead';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, Shield, Star, Users, CheckCircle, Award } from 'lucide-react';
@@ -54,7 +55,14 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEOHead 
+        title="About ZiggySitters - Founded by Pet Parents for Special Needs Animals"
+        description="Learn about ZiggySitters' founders Jana Maia and Rachel Nottingham, who created the platform for high-needs pets requiring specialized care and daily updates."
+        keywords="about ZiggySitters, pet care founders, special needs pets, Auckland pet care story, Jana Maia, Rachel Nottingham"
+        canonical="/about"
+      />
+      <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/10 to-secondary/10 py-20">
         <div className="container mx-auto px-4 text-center">
@@ -234,6 +242,7 @@ export default function About() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -144,7 +145,14 @@ export default function BecomeSitter() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead 
+        title="Become a Pet Sitter - Earn Money Caring for Pets | ZiggySitters"
+        description="Join ZiggySitters as a verified pet sitter. Earn money providing pet care with daily reporting requirements. Apply now to start your pet sitting career in Auckland."
+        keywords="become pet sitter, pet sitting jobs Auckland, earn money pet care, verified pet sitter application"
+        canonical="/become-sitter"
+      />
+      <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-primary to-secondary text-primary-foreground py-20">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -297,6 +305,7 @@ export default function BecomeSitter() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

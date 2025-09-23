@@ -102,7 +102,6 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
   return (
     <div className="relative" ref={dropdownRef}>
       <div className="relative">
-        <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
         <Input
           ref={inputRef}
           placeholder={placeholder}
@@ -114,7 +113,7 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
               setIsOpen(true);
             }
           }}
-          className="pl-9 border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-primary"
+          className="border-gray-300 text-gray-500 placeholder:text-gray-500 focus:border-primary"
           autoComplete="off"
         />
       </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import SEOHead from '@/components/seo/SEOHead';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -69,7 +70,14 @@ export default function Contact() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <>
+      <SEOHead 
+        title="Contact ZiggySitters - Pet Care Support & Questions"
+        description="Contact ZiggySitters for pet care questions, technical support, or partnership inquiries. Get help with bookings, daily reports, and pet sitting services."
+        keywords="contact pet sitters, customer support, pet care questions, ZiggySitters help"
+        canonical="/contact"
+      />
+      <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
@@ -269,6 +277,7 @@ export default function Contact() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
