@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -67,6 +68,7 @@ export default function BookingAccordion({ sitter, servicesData = [], isOpen = f
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
     if (type === 'start') {
@@ -115,11 +117,7 @@ export default function BookingAccordion({ sitter, servicesData = [], isOpen = f
 
   const handleBooking = async () => {
     if (!user) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please log in to book a sitter.',
-        variant: 'destructive'
-      });
+      navigate('/auth');
       return;
     }
 

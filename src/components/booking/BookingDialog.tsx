@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +54,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
     console.log(`=== handleDateSelect called ===`);
@@ -112,8 +114,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
 
   const handleBooking = async () => {
     if (!user) {
-      // Redirect to login instead of showing message
-      window.location.href = '/auth';
+      navigate('/auth');
       return;
     }
 
