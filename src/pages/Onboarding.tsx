@@ -219,7 +219,12 @@ export default function Onboarding() {
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      console.log('Profile refreshed, redirecting...');
+      console.log('Profile refreshed, waiting for state propagation...');
+      
+      // Wait a moment for all profile instances to sync before navigating
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Redirecting to find-sitters...');
       
       // Redirect based on role - both pet owners and sitters go to find-sitters
       if (data.role === 'pet_sitter' || data.role === 'pet_owner') {
@@ -262,7 +267,12 @@ export default function Onboarding() {
       // Refresh profile state to get updated data
       await refetch();
 
-      console.log('Profile refreshed, redirecting...');
+      console.log('Profile refreshed, waiting for state propagation...');
+      
+      // Wait a moment for all profile instances to sync before navigating
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Redirecting to pending approval...');
       
       // For sitters, show pending approval page
       navigate('/onboarding-pending-approval', { replace: true });
