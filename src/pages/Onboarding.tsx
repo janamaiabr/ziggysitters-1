@@ -191,6 +191,8 @@ export default function Onboarding() {
 
   const handleOnboardingComplete = async () => {
     try {
+      console.log('Completing onboarding for pet owner role');
+      
       // Mark onboarding as completed in the database
       const { error } = await supabase
         .from('profiles')
@@ -207,17 +209,22 @@ export default function Onboarding() {
         return;
       }
 
+      console.log('Onboarding marked as complete, redirecting...');
+
       toast({
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      // Redirect based on role - both pet owners and sitters go to find-sitters
-      if (data.role === 'pet_sitter' || data.role === 'pet_owner') {
-        navigate('/find-sitters'); // Pet owners can browse sitters, sitters can see potential clients
-      } else {
-        navigate('/onboarding-complete'); // Only 'both' role goes to onboarding complete
-      }
+      // Add a small delay to ensure database update is processed
+      setTimeout(() => {
+        // Redirect based on role - both pet owners and sitters go to find-sitters
+        if (data.role === 'pet_sitter' || data.role === 'pet_owner') {
+          navigate('/find-sitters', { replace: true }); // Pet owners can browse sitters, sitters can see potential clients
+        } else {
+          navigate('/onboarding-complete', { replace: true }); // Only 'both' role goes to onboarding complete
+        }
+      }, 100);
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
@@ -230,6 +237,8 @@ export default function Onboarding() {
 
   const handleSitterOnboardingComplete = async () => {
     try {
+      console.log('Completing onboarding for sitter role');
+      
       // Mark onboarding as completed in the database
       const { error } = await supabase
         .from('profiles')
@@ -246,8 +255,13 @@ export default function Onboarding() {
         return;
       }
 
-      // For sitters, show pending approval page
-      navigate('/onboarding-pending-approval');
+      console.log('Sitter onboarding marked as complete, redirecting...');
+
+      // Add a small delay to ensure database update is processed
+      setTimeout(() => {
+        // For sitters, show pending approval page
+        navigate('/onboarding-pending-approval', { replace: true });
+      }, 100);
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({

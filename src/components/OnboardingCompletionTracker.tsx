@@ -1,13 +1,21 @@
 import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
 export function OnboardingCompletionTracker() {
   const { user } = useAuth();
-  const { profile, needsOnboarding } = useProfile();
+  const { profile, needsOnboarding, refetch } = useProfile();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    // Only run auto-completion logic when NOT on onboarding pages
+    if (location.pathname.includes('/onboarding')) {
+      return;
+    }
+
     // Auto-complete onboarding for users who have basic info but missing completion flag
     const autoCompleteIfReady = async () => {
       if (!user || !profile || !needsOnboarding) return;
@@ -26,7 +34,8 @@ export function OnboardingCompletionTracker() {
             
           if (!error) {
             console.log('Successfully auto-completed onboarding');
-            window.location.reload(); // Refresh to update profile state
+            // Refetch profile instead of reloading the page
+            await refetch();
           }
         } catch (error) {
           console.error('Failed to auto-complete onboarding:', error);
@@ -35,7 +44,7 @@ export function OnboardingCompletionTracker() {
     };
 
     autoCompleteIfReady();
-  }, [user, profile, needsOnboarding]);
+  }, [user, profile, needsOnboarding, location.pathname, refetch]);
 
   return null; // This is a utility component with no UI
 }
