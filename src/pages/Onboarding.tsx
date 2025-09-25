@@ -34,7 +34,7 @@ interface OnboardingData {
 
 export default function Onboarding() {
   const { user } = useAuth();
-  const { profile } = useProfile();
+  const { profile, refetch } = useProfile();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -209,22 +209,24 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Onboarding marked as complete, redirecting...');
+      console.log('Onboarding marked as complete, refreshing profile...');
+      
+      // Refresh profile state to get updated data
+      await refetch();
 
       toast({
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      // Add a small delay to ensure database update is processed
-      setTimeout(() => {
-        // Redirect based on role - both pet owners and sitters go to find-sitters
-        if (data.role === 'pet_sitter' || data.role === 'pet_owner') {
-          navigate('/find-sitters', { replace: true }); // Pet owners can browse sitters, sitters can see potential clients
-        } else {
-          navigate('/onboarding-complete', { replace: true }); // Only 'both' role goes to onboarding complete
-        }
-      }, 100);
+      console.log('Profile refreshed, redirecting...');
+      
+      // Redirect based on role - both pet owners and sitters go to find-sitters
+      if (data.role === 'pet_sitter' || data.role === 'pet_owner') {
+        navigate('/find-sitters', { replace: true }); // Pet owners can browse sitters, sitters can see potential clients
+      } else {
+        navigate('/onboarding-complete', { replace: true }); // Only 'both' role goes to onboarding complete
+      }
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
@@ -255,13 +257,15 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Sitter onboarding marked as complete, redirecting...');
+      console.log('Sitter onboarding marked as complete, refreshing profile...');
+      
+      // Refresh profile state to get updated data
+      await refetch();
 
-      // Add a small delay to ensure database update is processed
-      setTimeout(() => {
-        // For sitters, show pending approval page
-        navigate('/onboarding-pending-approval', { replace: true });
-      }, 100);
+      console.log('Profile refreshed, redirecting...');
+      
+      // For sitters, show pending approval page
+      navigate('/onboarding-pending-approval', { replace: true });
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({
