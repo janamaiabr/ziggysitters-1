@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { ProfileProvider } from "@/contexts/ProfileContext";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ResponsiveCheck } from "@/components/layout/ResponsiveCheck";
 // import { AdminCreator } from "@/components/AdminCreator"; // Temporarily disabled
@@ -83,94 +84,96 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function AppContent() {
   return (
-    <OnboardingCheck>
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path="/find-sitters" element={<FindSitters />} />
-          <Route path="/sitter/:id" element={<SitterProfile />} />
-          <Route path="/become-sitter" element={<BecomeSitter />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          
-          {/* Auth Route - Public only */}
-          <Route 
-            path="/auth" 
-            element={
-              <PublicRoute>
-                <Auth />
-              </PublicRoute>
-            } 
-          />
-          
-          {/* Onboarding Route */}
-          <Route 
-            path="/onboarding" 
-            element={
-              <OnboardingRoute>
-                <Onboarding />
-              </OnboardingRoute>
-            } 
-          />
-          
-              <Route path="/onboarding-complete" element={<OnboardingComplete />} />
-              <Route path="/onboarding-pending-approval" element={<OnboardingPendingApproval />} />
-              <Route path="/create-admin" element={<CreateAdmin />} />
-          
-          {/* Protected Routes */}
-          <Route 
-            path="/profile" 
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/bookings" 
-            element={
-              <ProtectedRoute>
-                <Bookings />
-              </ProtectedRoute>
-            } 
-           />
-           <Route 
-             path="/daily-reports" 
-             element={
-               <ProtectedRoute>
-                 <DailyReports />
-               </ProtectedRoute>
-             } 
-           />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/security" element={<Security />} />
-          <Route path="/safety" element={<Security />} />
-          <Route path="/help" element={<Contact />} />
-          <Route path="/cookies" element={<PrivacyPolicy />} />
-          <Route path="/booking-success" element={<BookingSuccess />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/daily-reports-info" element={<DailyReportsInfo />} />
-          <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </OnboardingCheck>
+    <ProfileProvider>
+      <OnboardingCheck>
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-1">
+            <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/welcome" element={<Welcome />} />
+            <Route path="/find-sitters" element={<FindSitters />} />
+            <Route path="/sitter/:id" element={<SitterProfile />} />
+            <Route path="/become-sitter" element={<BecomeSitter />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            
+            {/* Auth Route - Public only */}
+            <Route 
+              path="/auth" 
+              element={
+                <PublicRoute>
+                  <Auth />
+                </PublicRoute>
+              } 
+            />
+            
+            {/* Onboarding Route */}
+            <Route 
+              path="/onboarding" 
+              element={
+                <OnboardingRoute>
+                  <Onboarding />
+                </OnboardingRoute>
+              } 
+            />
+            
+                <Route path="/onboarding-complete" element={<OnboardingComplete />} />
+                <Route path="/onboarding-pending-approval" element={<OnboardingPendingApproval />} />
+                <Route path="/create-admin" element={<CreateAdmin />} />
+            
+            {/* Protected Routes */}
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/bookings" 
+              element={
+                <ProtectedRoute>
+                  <Bookings />
+                </ProtectedRoute>
+              } 
+             />
+             <Route 
+               path="/daily-reports" 
+               element={
+                 <ProtectedRoute>
+                   <DailyReports />
+                 </ProtectedRoute>
+               } 
+             />
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/safety" element={<Security />} />
+            <Route path="/help" element={<Contact />} />
+            <Route path="/cookies" element={<PrivacyPolicy />} />
+            <Route path="/booking-success" element={<BookingSuccess />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/daily-reports-info" element={<DailyReportsInfo />} />
+            <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </OnboardingCheck>
+    </ProfileProvider>
   );
 }
 

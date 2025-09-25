@@ -13,7 +13,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import PetOwnerOnboarding from './PetOwnerOnboarding';
 import SitterOnboarding from './SitterOnboarding';
 import { useAuth } from '@/hooks/useAuth';
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile } from '@/contexts/ProfileContext';
 
 interface OnboardingStepProps {
   title: string;

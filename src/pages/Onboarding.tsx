@@ -14,7 +14,7 @@ import SitterOnboarding from '@/components/onboarding/SitterOnboarding';
 import EnhancedSitterOnboarding from '@/components/onboarding/EnhancedSitterOnboarding';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile } from '@/contexts/ProfileContext';
 import OnboardingLayout from '@/components/layout/OnboardingLayout';
 
 type UserRole = 'pet_owner' | 'pet_sitter' | 'both';
@@ -34,7 +34,7 @@ interface OnboardingData {
 
 export default function Onboarding() {
   const { user } = useAuth();
-  const { profile, refetch } = useProfile();
+  const { profile, refetch, updateProfile } = useProfile();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -193,37 +193,26 @@ export default function Onboarding() {
     try {
       console.log('Completing onboarding for pet owner role');
       
-      // Mark onboarding as completed in the database
-      const { error } = await supabase
-        .from('profiles')
-        .update({ onboarding_completed: true })
-        .eq('user_id', user?.id);
+      // Use updateProfile to update the onboarding status - this ensures all instances get updated
+      const { error } = await updateProfile({ onboarding_completed: true });
 
       if (error) {
         console.error('Error marking onboarding complete:', error);
         toast({
           title: "Error completing onboarding",
-          description: error.message,
+          description: error.message || "Please try again.",
           variant: "destructive",
         });
         return;
       }
 
-      console.log('Onboarding marked as complete, refreshing profile...');
-      
-      // Refresh profile state to get updated data
-      await refetch();
+      console.log('Onboarding marked as complete via updateProfile');
 
       toast({
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      console.log('Profile refreshed, waiting for state propagation...');
-      
-      // Wait a moment for all profile instances to sync before navigating
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       console.log('Redirecting to find-sitters...');
       
       // Redirect based on role - both pet owners and sitters go to find-sitters
@@ -246,31 +235,20 @@ export default function Onboarding() {
     try {
       console.log('Completing onboarding for sitter role');
       
-      // Mark onboarding as completed in the database
-      const { error } = await supabase
-        .from('profiles')
-        .update({ onboarding_completed: true })
-        .eq('user_id', user?.id);
+      // Use updateProfile to update the onboarding status - this ensures all instances get updated
+      const { error } = await updateProfile({ onboarding_completed: true });
 
       if (error) {
         console.error('Error marking onboarding complete:', error);
         toast({
           title: "Error completing onboarding",
-          description: error.message,
+          description: error.message || "Please try again.",
           variant: "destructive",
         });
         return;
       }
 
-      console.log('Sitter onboarding marked as complete, refreshing profile...');
-      
-      // Refresh profile state to get updated data
-      await refetch();
-
-      console.log('Profile refreshed, waiting for state propagation...');
-      
-      // Wait a moment for all profile instances to sync before navigating
-      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('Sitter onboarding marked as complete via updateProfile');
       
       console.log('Redirecting to pending approval...');
       
