@@ -17,7 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/contexts/ProfileContext';
 import OnboardingLayout from '@/components/layout/OnboardingLayout';
 
-type UserRole = 'pet_owner' | 'pet_sitter' | 'both';
+type UserRole = 'pet_owner' | 'pet_sitter';
 
 interface OnboardingData {
   role: UserRole | null;
@@ -160,7 +160,7 @@ export default function Onboarding() {
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .update({
-          role: data.role === 'both' ? 'pet_sitter' : data.role,
+          role: data.role,
           first_name: data.first_name,
           last_name: data.last_name,
           phone: data.phone,
@@ -215,12 +215,8 @@ export default function Onboarding() {
 
       console.log('Redirecting to find-sitters...');
       
-      // Redirect based on role - both pet owners and sitters go to find-sitters
-      if (data.role === 'pet_sitter' || data.role === 'pet_owner') {
-        navigate('/find-sitters', { replace: true }); // Pet owners can browse sitters, sitters can see potential clients
-      } else {
-        navigate('/onboarding-complete', { replace: true }); // Only 'both' role goes to onboarding complete
-      }
+      // Redirect based on role
+      navigate('/find-sitters', { replace: true });
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
@@ -334,27 +330,6 @@ export default function Onboarding() {
           </CardContent>
         </Card>
 
-        <Card 
-          className={`cursor-pointer transition-all hover:shadow-md ${data.role === 'both' ? 'ring-2 ring-primary' : ''}`}
-          onClick={() => handleRoleSelection('both')}
-        >
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <User className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold">Both</h3>
-                <p className="text-sm text-muted-foreground">Find sitters for your pets and offer sitting services</p>
-              </div>
-              <RadioGroup value={data.role || ''}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="both" id="both" />
-                </div>
-              </RadioGroup>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
@@ -485,20 +460,10 @@ export default function Onboarding() {
       return <EnhancedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
     }
     
-    if (data.role === 'both') {
-      // Show both flows in sequence
-      if (step === 3) {
-        return <PetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={() => setStep(4)} />;
-      } else if (step === 4) {
-        return <EnhancedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
-      }
-    }
-    
     return null;
   };
 
   const getTotalSteps = () => {
-    if (data.role === 'both') return 4;
     if (data.role === 'pet_owner' || data.role === 'pet_sitter') return 3;
     return 2;
   };
@@ -506,10 +471,7 @@ export default function Onboarding() {
   const getStepTitle = () => {
     if (step === 1) return 'Choose Your Role';
     if (step === 2) return 'Basic Information';
-    if (data.role === 'both') {
-      if (step === 3) return 'Your Pets';
-      if (step === 4) return 'Sitter Services';
-    } else if (data.role === 'pet_owner') {
+    if (data.role === 'pet_owner') {
       if (step === 3) return 'Your Pets';
     } else if (data.role === 'pet_sitter') {
       if (step === 3) return 'Sitter Services';
@@ -557,7 +519,7 @@ export default function Onboarding() {
               </CardContent>
               
               {/* Navigation buttons */}
-              {(step <= 2 || (data.role === 'both' && step === 3)) && (
+              {step <= 2 && (
                 <div className={`flex justify-between ${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
                   <Button
                     variant="outline"

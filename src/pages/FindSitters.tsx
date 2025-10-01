@@ -42,7 +42,7 @@ export default function FindSitters() {
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('*')
-          .in('role', ['pet_sitter', 'both'])
+          .eq('role', 'pet_sitter')
           .order('rating', { ascending: false });
         
         console.log('Profiles data:', profilesData);

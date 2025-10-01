@@ -37,11 +37,11 @@ export default function Profile() {
   useEffect(() => {
     if (profile) {
       fetchBookings();
-      if (profile.role === 'pet_sitter' || profile.role === 'both') {
+      if (profile.role === 'pet_sitter') {
         fetchSitterServices();
         fetchPortfolioPhotos();
       }
-      if (profile.role === 'pet_owner' || profile.role === 'both') {
+      if (profile.role === 'pet_owner') {
         fetchUserPets();
       }
       setEditData({
@@ -469,7 +469,7 @@ export default function Profile() {
                   {userProfile.verified && (
                     <Shield className="w-6 h-6 text-green-500" />
                   )}
-                  {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+                  {profile.role === 'pet_sitter' && (
                     <Badge 
                       variant={
                         profile.verification_status === 'verified' ? 'default' : 
@@ -486,7 +486,7 @@ export default function Profile() {
                 </div>
                 
                 {/* Verification Status Message for Sitters */}
-                {(profile.role === 'pet_sitter' || profile.role === 'both') && profile.verification_status !== 'verified' && (
+                {profile.role === 'pet_sitter' && profile.verification_status !== 'verified' && (
                   <div className={`p-3 rounded-lg mb-3 ${
                     profile.verification_status === 'rejected' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
                   }`}>
@@ -543,15 +543,15 @@ export default function Profile() {
 
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-4' : profile.role === 'pet_sitter' ? 'grid-cols-6' : 'grid-cols-7'}`}>
+          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-4' : 'grid-cols-6'}`}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            {(profile.role === 'pet_owner' || profile.role === 'both') && (
+            {profile.role === 'pet_owner' && (
               <>
                 <TabsTrigger value="pets">My Pets</TabsTrigger>
                 <TabsTrigger value="client-reports">Daily Reports</TabsTrigger>
               </>
             )}
-            {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+            {profile.role === 'pet_sitter' && (
               <>
                 <TabsTrigger value="services">Services & Pricing</TabsTrigger>
                 <TabsTrigger value="calendar">My Calendar</TabsTrigger>
@@ -559,7 +559,7 @@ export default function Profile() {
               </>
             )}
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+            {profile.role === 'pet_sitter' && (
               <TabsTrigger value="verification">Verification</TabsTrigger>
             )}
           </TabsList>
@@ -730,7 +730,7 @@ export default function Profile() {
           </TabsContent>
 
           {/* My Pets Tab - Only for pet owners */}
-          {(profile.role === 'pet_owner' || profile.role === 'both') && (
+          {profile.role === 'pet_owner' && (
             <TabsContent value="pets" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -791,7 +791,7 @@ export default function Profile() {
           )}
 
           {/* Services & Pricing Tab - Only for sitters */}
-          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+          {profile.role === 'pet_sitter' && (
             <TabsContent value="services" className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
                 {sitterServices.length > 0 ? (
@@ -911,7 +911,7 @@ export default function Profile() {
           )}
 
           {/* Calendar Tab - Only for sitters */}
-          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+          {profile.role === 'pet_sitter' && (
             <TabsContent value="calendar" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -962,7 +962,7 @@ export default function Profile() {
           </TabsContent>
 
           {/* Verification Tab - Only for sitters */}
-          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+          {profile.role === 'pet_sitter' && (
             <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>
@@ -1080,14 +1080,14 @@ export default function Profile() {
           )}
 
           {/* Client Daily Reports Tab */}
-          {(profile.role === 'pet_owner' || profile.role === 'both') && (
+          {profile.role === 'pet_owner' && (
             <TabsContent value="client-reports">
               <ClientDailyReports />
             </TabsContent>
           )}
 
           {/* Sitter Daily Reports Tab */}
-          {(profile.role === 'pet_sitter' || profile.role === 'both') && (
+          {profile.role === 'pet_sitter' && (
             <TabsContent value="sitter-reports">
               <SitterDailyReports />
             </TabsContent>

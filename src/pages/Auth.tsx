@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, PawPrint } from 'lucide-react';
 import TermsAcceptance from '@/components/TermsAcceptance';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -88,9 +89,23 @@ export default function Auth() {
           });
         }
       } else {
+        // Send welcome email
+        try {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email: formData.email,
+              firstName: formData.firstName,
+              role: 'pet_owner' // Default role, will be updated during onboarding
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          // Don't block signup if email fails
+        }
+        
         toast({
           title: "Account Created!",
-          description: "Welcome to ZiggySitters! You can complete your profile later if needed.",
+          description: "Welcome to ZiggySitters! Check your email for next steps.",
         });
         navigate('/welcome');
       }

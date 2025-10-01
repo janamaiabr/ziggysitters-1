@@ -79,7 +79,7 @@ export default function DailyReports() {
   }
 
   // Show sitter access message for non-sitters
-  if (!profile || !['pet_sitter', 'both'].includes(profile.role)) {
+  if (!profile || profile.role !== 'pet_sitter') {
     return (
       <div className="container mx-auto px-4 py-12">
         <Card className="max-w-md mx-auto text-center">

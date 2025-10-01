@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.check-refund-status]
 verify_jwt = false
+
+[functions.send-welcome-email]
+verify_jwt = false
+
+[functions.send-booking-acceptance-email]
+verify_jwt = false
+
+[functions.send-daily-report-reminder]
+verify_jwt = false

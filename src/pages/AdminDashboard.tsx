@@ -21,7 +21,7 @@ type PublicSitterProfile = {
   suburb: string | null;
   city: string | null;
   postal_code?: string;
-  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin';
+  role: 'pet_owner' | 'pet_sitter' | 'admin';
   bio: string | null;
   avatar_url: string | null;
   is_verified: boolean | null;
@@ -73,7 +73,7 @@ export default function AdminDashboard() {
       const { data, error } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at')
-        .in('role', ['pet_sitter', 'both'])
+        .eq('role', 'pet_sitter')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

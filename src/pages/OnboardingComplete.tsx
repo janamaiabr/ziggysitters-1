@@ -63,31 +63,8 @@ export default function OnboardingComplete() {
           path: '/profile?tab=services'
         }
       ];
-    } else { // 'both'
-      return [
-        {
-          icon: Search,
-          title: 'Find Pet Sitters',
-          description: 'Browse trusted pet sitters when you need care',
-          action: 'Find Sitters',
-          path: '/find-sitters'
-        },
-        {
-          icon: Shield,
-          title: 'Get Verified',
-          description: 'Upload verification documents to offer services',
-          action: 'Upload Documents',
-          path: '/profile?tab=verification'
-        },
-        {
-          icon: Star,
-          title: 'Complete Your Profile',
-          description: 'Set up both pet owner and sitter profiles',
-          action: 'Go to Profile',
-          path: '/profile'
-        }
-      ];
     }
+    return [];
   };
 
   const nextSteps = getNextSteps();
@@ -129,7 +106,7 @@ export default function OnboardingComplete() {
                   <Shield className="w-4 h-4" />
                   Community Member
                 </Badge>
-                {(profile?.role === 'pet_sitter' || profile?.role === 'both') && (
+                {profile?.role === 'pet_sitter' && (
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Star className="w-4 h-4" />
                     {profile?.is_verified ? 'Verified Sitter' : 'Pending Verification'}

@@ -813,7 +813,7 @@ export type Database = {
         | "medication_admin"
         | "pet_sitting_owners_home"
         | "pet_sitting_sitters_home"
-      user_role: "pet_owner" | "pet_sitter" | "both" | "admin"
+      user_role: "pet_owner" | "pet_sitter" | "admin"
       verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -961,7 +961,7 @@ export const Constants = {
         "pet_sitting_owners_home",
         "pet_sitting_sitters_home",
       ],
-      user_role: ["pet_owner", "pet_sitter", "both", "admin"],
+      user_role: ["pet_owner", "pet_sitter", "admin"],
       verification_status: ["pending", "verified", "rejected"],
     },
   },

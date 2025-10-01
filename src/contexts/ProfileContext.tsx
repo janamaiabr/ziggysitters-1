@@ -8,7 +8,7 @@ export interface Profile {
   first_name: string;
   last_name: string;
   email: string;
-  role: 'pet_owner' | 'pet_sitter' | 'both' | 'admin';
+  role: 'pet_owner' | 'pet_sitter' | 'admin';
   phone?: string;
   address?: string;
   suburb?: string;

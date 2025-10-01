@@ -51,7 +51,7 @@ export default function Welcome() {
 
     const steps = [];
 
-    if (profile.role === 'pet_owner' || profile.role === 'both') {
+    if (profile.role === 'pet_owner') {
       steps.push({
         icon: Search,
         title: "Find Pet Sitters",
@@ -61,7 +61,7 @@ export default function Welcome() {
       });
     }
 
-    if (profile.role === 'pet_sitter' || profile.role === 'both') {
+    if (profile.role === 'pet_sitter') {
       steps.push({
         icon: Calendar,
         title: "Complete Sitter Profile",
@@ -208,7 +208,7 @@ export default function Welcome() {
             Explore Homepage
           </Button>
           {profile?.role ? (
-            profile.role === 'pet_owner' || profile.role === 'both' ? (
+            profile.role === 'pet_owner' ? (
               <Button 
                 onClick={() => navigate('/find-sitters')}
                 className="flex-1"

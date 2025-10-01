@@ -39,7 +39,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .in('role', ['pet_sitter', 'both'])
+        .eq('role', 'pet_sitter')
         .eq('is_verified', true) // Only show verified sitters
         .order('rating', { ascending: false })
         .limit(4);
