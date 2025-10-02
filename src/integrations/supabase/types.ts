@@ -99,24 +99,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "bookings_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "bookings_sitter_id_fkey"
             columns: ["sitter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bookings_sitter_id_fkey"
-            columns: ["sitter_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -215,24 +201,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "favorites_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "favorites_sitter_id_fkey"
             columns: ["sitter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "favorites_sitter_id_fkey"
-            columns: ["sitter_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -284,24 +256,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "messages_recipient_id_fkey"
-            columns: ["recipient_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -385,13 +343,6 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pets_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -539,24 +490,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reviews_reviewee_id_fkey"
-            columns: ["reviewee_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reviews_reviewer_id_fkey"
             columns: ["reviewer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_reviewer_id_fkey"
-            columns: ["reviewer_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -592,13 +529,6 @@ export type Database = {
             columns: ["sitter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sitter_availability_sitter_id_fkey"
-            columns: ["sitter_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -675,74 +605,11 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "sitter_services_sitter_id_fkey"
-            columns: ["sitter_id"]
-            isOneToOne: false
-            referencedRelation: "public_sitter_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      public_sitter_profiles: {
-        Row: {
-          avatar_url: string | null
-          background_check_verified: boolean | null
-          bio: string | null
-          city: string | null
-          created_at: string | null
-          display_name: string | null
-          id: string | null
-          is_verified: boolean | null
-          rating: number | null
-          response_rate: number | null
-          role: Database["public"]["Enums"]["user_role"] | null
-          suburb: string | null
-          total_reviews: number | null
-          verification_status:
-            | Database["public"]["Enums"]["verification_status"]
-            | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          background_check_verified?: boolean | null
-          bio?: string | null
-          city?: string | null
-          created_at?: string | null
-          display_name?: never
-          id?: string | null
-          is_verified?: boolean | null
-          rating?: number | null
-          response_rate?: number | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          suburb?: string | null
-          total_reviews?: number | null
-          verification_status?:
-            | Database["public"]["Enums"]["verification_status"]
-            | null
-        }
-        Update: {
-          avatar_url?: string | null
-          background_check_verified?: boolean | null
-          bio?: string | null
-          city?: string | null
-          created_at?: string | null
-          display_name?: never
-          id?: string | null
-          is_verified?: boolean | null
-          rating?: number | null
-          response_rate?: number | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          suburb?: string | null
-          total_reviews?: number | null
-          verification_status?:
-            | Database["public"]["Enums"]["verification_status"]
-            | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       can_access_pet_basic_info: {
