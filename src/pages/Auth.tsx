@@ -29,13 +29,14 @@ export default function Auth() {
   });
 
   const defaultTab = searchParams.get('tab') || 'signin';
+  const redirectUrl = searchParams.get('redirect') || '/welcome';
 
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      navigate('/welcome');
+      navigate(redirectUrl);
     }
-  }, [user, navigate]);
+  }, [user, navigate, redirectUrl]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +56,7 @@ export default function Auth() {
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        navigate('/welcome');
+        navigate(redirectUrl);
       }
     } catch (error) {
       toast({
@@ -107,7 +108,7 @@ export default function Auth() {
           title: "Account Created!",
           description: "Welcome to ZiggySitters! Check your email for next steps.",
         });
-        navigate('/welcome');
+        navigate(redirectUrl);
       }
     } catch (error) {
       toast({

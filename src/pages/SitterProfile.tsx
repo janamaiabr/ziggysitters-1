@@ -17,7 +17,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import BookingAccordion from '@/components/booking/BookingAccordion';
-
+import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
 interface SitterData {
@@ -44,6 +44,7 @@ export default function SitterProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
@@ -52,10 +53,13 @@ export default function SitterProfile() {
   // Check if booking should be automatically opened
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
-    if (shouldOpenBooking) {
+    if (shouldOpenBooking && user) {
       setIsBookingOpen(true);
+    } else if (shouldOpenBooking && !user) {
+      // Redirect to login if not logged in
+      navigate(`/auth?redirect=/sitter/${id}?booking=true`);
     }
-  }, [searchParams]);
+  }, [searchParams, user, id, navigate]);
 
   // Load sitter data from the secure database view
   useEffect(() => {
@@ -288,7 +292,13 @@ export default function SitterProfile() {
                 <p className="text-muted-foreground mb-4">Secure, reliable pet care from a verified sitter</p>
                 <Button 
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
-                  onClick={() => setIsBookingOpen(true)}
+                  onClick={() => {
+                    if (!user) {
+                      navigate(`/auth?redirect=/sitter/${id}?booking=true`);
+                    } else {
+                      setIsBookingOpen(true);
+                    }
+                  }}
                 >
                   Book Your Service
                 </Button>
@@ -392,8 +402,8 @@ export default function SitterProfile() {
                 <div>
                   <h4 className="font-medium mb-2">Specialities</h4>
                   <div className="flex flex-wrap gap-2">
-                    {sitterData.specialties.map((specialty) => (
-                      <Badge key={specialty} variant="outline">
+                    {[...new Set(sitterData.specialties)].map((specialty, index) => (
+                      <Badge key={`${specialty}-${index}`} variant="outline">
                         {specialty}
                       </Badge>
                     ))}
