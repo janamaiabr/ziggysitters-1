@@ -60,9 +60,14 @@ export default function SitterProfile() {
   // Load sitter data from the secure database view
   useEffect(() => {
     const fetchSitterData = async () => {
-      if (!id) return;
+      if (!id) {
+        console.log('No sitter ID provided');
+        return;
+      }
       
       try {
+        console.log('Fetching sitter with ID:', id);
+        
         // Fetch from profiles table directly
         const { data, error } = await supabase
           .from('profiles')
@@ -71,92 +76,105 @@ export default function SitterProfile() {
           .eq('role', 'pet_sitter')
           .maybeSingle();
 
+        console.log('Profile fetch result:', { data, error });
+
         if (error) {
           console.error('Error fetching sitter:', error);
           setSitterData(null);
           setLoading(false);
-        } else if (!data) {
-          console.error('Sitter not found');
+          return;
+        }
+        
+        if (!data) {
+          console.error('Sitter not found - no data returned');
           setSitterData(null);
           setLoading(false);
-        } else if (data) {
-          // Fetch actual services for this sitter
-          const { data: servicesData } = await supabase
-            .from('sitter_services')
-            .select('*')
-            .eq('sitter_id', id)
-            .eq('is_offered', true);
-
-          // Store services data for displaying rates
-          setServicesData(servicesData || []);
-
-          // Fetch portfolio photos from storage
-          const { data: portfolioFiles } = await supabase.storage
-            .from('profile-photos')
-            .list(`${id}/portfolio`, {
-              limit: 10,
-              sortBy: { column: 'created_at', order: 'desc' }
-            });
-
-          // Generate portfolio URLs
-          const portfolioUrls = portfolioFiles?.map(file => {
-            const { data: { publicUrl } } = supabase.storage
-              .from('profile-photos')
-              .getPublicUrl(`${id}/portfolio/${file.name}`);
-            return publicUrl;
-          }) || [];
-
-          // Transform services data
-          const serviceNames = servicesData?.map(service => {
-            switch (service.service_type) {
-              case 'dog_walking': return 'Dog Walking';
-              case 'daycare': return 'Pet Sitting';
-              case 'overnight_boarding': return 'Overnight Care';
-              case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
-              case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
-              default: return 'Pet Care';
-            }
-          }) || ['Pet Sitting', 'Drop-in Visits'];
-
-          // Get the lowest rate from actual services
-          const rates = servicesData?.map(service => 
-            service.hourly_rate || service.daily_rate || service.overnight_rate
-          ).filter(Boolean) || [];
-          const baseRate = rates.length > 0 ? Math.min(...rates) : null;
-
-          // Transform the data to match our interface using real data
-          setSitterData({
-            id: data.id,
-            display_name: `${data.first_name} ${data.last_name.charAt(0)}.`,
-            location: `${data.suburb || 'Auckland'}, ${data.city || 'New Zealand'}`,
-            rating: data.rating || 4.8,
-            feedback_count: data.total_reviews || 0,
-            baseRate: baseRate,
-            hourlyRate: baseRate,
-            services: serviceNames,
-            petTypes: servicesData?.length > 0 ? 
-              [...new Set(servicesData.flatMap(s => s.accepted_pet_species || []))].map(species => 
-                species.charAt(0).toUpperCase() + species.slice(1)
-              ) : ['Dogs', 'Cats'],
-            avatar: data.avatar_url,
-            verified: data.is_verified,
-            
-            bio: data.bio || 'Experienced pet care provider',
-            experience: servicesData?.length > 0 ? 
-              `${Math.max(...servicesData.map(s => s.experience_years || 0))} years experience` : 
-              'Experienced pet care provider',
-            availability: ['Available for bookings'], // This could be expanded to use real availability data
-            specialties: servicesData?.length > 0 ? 
-              servicesData.flatMap(s => {
-                const specs = [];
-                if (s.has_fenced_yard) specs.push('Fenced yard');
-                if (s.allows_puppies) specs.push('Puppy care');
-                if (s.allows_senior_pets) specs.push('Senior pet care');
-                return specs;
-              }).slice(0, 3) : ['Pet care specialist'],
-            gallery: portfolioUrls.length > 0 ? portfolioUrls : []
-          });
+          return;
         }
+
+        console.log('Sitter data found:', data);
+
+        // Fetch actual services for this sitter
+        const { data: servicesData } = await supabase
+          .from('sitter_services')
+          .select('*')
+          .eq('sitter_id', id)
+          .eq('is_offered', true);
+
+        console.log('Services data:', servicesData);
+
+        // Store services data for displaying rates
+        setServicesData(servicesData || []);
+
+        // Fetch portfolio photos from storage
+        const { data: portfolioFiles } = await supabase.storage
+          .from('profile-photos')
+          .list(`${id}/portfolio`, {
+            limit: 10,
+            sortBy: { column: 'created_at', order: 'desc' }
+          });
+
+        // Generate portfolio URLs
+        const portfolioUrls = portfolioFiles?.map(file => {
+          const { data: { publicUrl } } = supabase.storage
+            .from('profile-photos')
+            .getPublicUrl(`${id}/portfolio/${file.name}`);
+          return publicUrl;
+        }) || [];
+
+        // Transform services data
+        const serviceNames = servicesData?.map(service => {
+          switch (service.service_type) {
+            case 'dog_walking': return 'Dog Walking';
+            case 'daycare': return 'Pet Sitting';
+            case 'overnight_boarding': return 'Overnight Care';
+            case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
+            case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
+            default: return 'Pet Care';
+          }
+        }) || ['Pet Sitting', 'Drop-in Visits'];
+
+        // Get the lowest rate from actual services
+        const rates = servicesData?.map(service => 
+          service.hourly_rate || service.daily_rate || service.overnight_rate
+        ).filter(Boolean) || [];
+        const baseRate = rates.length > 0 ? Math.min(...rates) : null;
+
+        // Transform the data to match our interface using real data
+        const transformedData = {
+          id: data.id,
+          display_name: `${data.first_name} ${data.last_name.charAt(0)}.`,
+          location: `${data.suburb || 'Auckland'}, ${data.city || 'New Zealand'}`,
+          rating: data.rating || 4.8,
+          feedback_count: data.total_reviews || 0,
+          baseRate: baseRate,
+          hourlyRate: baseRate,
+          services: serviceNames,
+          petTypes: servicesData?.length > 0 ? 
+            [...new Set(servicesData.flatMap(s => s.accepted_pet_species || []))].map(species => 
+              species.charAt(0).toUpperCase() + species.slice(1)
+            ) : ['Dogs', 'Cats'],
+          avatar: data.avatar_url,
+          verified: data.is_verified,
+          
+          bio: data.bio || 'Experienced pet care provider',
+          experience: servicesData?.length > 0 ? 
+            `${Math.max(...servicesData.map(s => s.experience_years || 0))} years experience` : 
+            'Experienced pet care provider',
+          availability: ['Available for bookings'],
+          specialties: servicesData?.length > 0 ? 
+            servicesData.flatMap(s => {
+              const specs = [];
+              if (s.has_fenced_yard) specs.push('Fenced yard');
+              if (s.allows_puppies) specs.push('Puppy care');
+              if (s.allows_senior_pets) specs.push('Senior pet care');
+              return specs;
+            }).slice(0, 3) : ['Pet care specialist'],
+          gallery: portfolioUrls.length > 0 ? portfolioUrls : []
+        };
+
+        console.log('Setting sitter data:', transformedData);
+        setSitterData(transformedData);
       } catch (error) {
         console.error('Error in fetchSitterData:', error);
         setSitterData(null);
