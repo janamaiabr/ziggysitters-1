@@ -23,7 +23,7 @@ interface SitterOnboardingProps {
   onComplete: (sitterId: string) => void;
 }
 
-const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit'];
+const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit', 'horse'];
 const petSizes = ['small', 'medium', 'large', 'extra_large'];
 
 const serviceTypes = [

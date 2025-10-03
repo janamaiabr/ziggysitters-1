@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface PetData {
   id?: string;
   name: string;
-  species: 'dog' | 'cat' | 'bird' | 'reptile' | 'rabbit';
+  species: 'dog' | 'cat' | 'bird' | 'reptile' | 'rabbit' | 'horse' | 'other';
   breed: string;
   age: number;
   gender: 'male' | 'female';

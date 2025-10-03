@@ -69,11 +69,16 @@ export default function SitterProfile() {
           .select('*')
           .eq('id', id)
           .eq('role', 'pet_sitter')
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('Error fetching sitter:', error);
           setSitterData(null);
+          setLoading(false);
+        } else if (!data) {
+          console.error('Sitter not found');
+          setSitterData(null);
+          setLoading(false);
         } else if (data) {
           // Fetch actual services for this sitter
           const { data: servicesData } = await supabase
