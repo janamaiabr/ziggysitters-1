@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,18 +16,22 @@ interface PetOwnerOnboardingProps {
   onComplete: (ownerId: string) => void;
 }
 
-const personalityTraits = [
+const defaultPersonalityTraits = [
   'Friendly', 'Energetic', 'Calm', 'Playful', 'Shy', 'Aggressive', 'Social', 'Independent',
   'Loyal', 'Protective', 'Gentle', 'Anxious', 'Curious', 'Lazy', 'Smart', 'Stubborn'
 ];
 
-const medicalConditions = [
+const defaultMedicalConditions = [
   'Allergies', 'Arthritis', 'Diabetes', 'Heart Disease', 'Kidney Disease', 'Hip Dysplasia',
   'Epilepsy', 'Cancer', 'Eye Problems', 'Skin Conditions', 'Dental Issues', 'None'
 ];
 
 export default function PetOwnerOnboarding({ profileId, userId, onComplete }: PetOwnerOnboardingProps) {
   const { pets, addPet, removePet, updatePet, uploadPetPhoto, savePets } = usePetOwnerOnboarding();
+  const [customTraits, setCustomTraits] = useState<string[]>([]);
+  const [customConditions, setCustomConditions] = useState<string[]>([]);
+  const [newTrait, setNewTrait] = useState('');
+  const [newCondition, setNewCondition] = useState('');
 
   const handleSave = async () => {
     const result = await savePets(profileId);
@@ -56,6 +61,23 @@ export default function PetOwnerOnboarding({ profileId, userId, onComplete }: Pe
       : [...currentConditions, condition];
     updatePet(petIndex, 'medical_conditions', newConditions);
   };
+
+  const addCustomTrait = () => {
+    if (newTrait.trim() && !customTraits.includes(newTrait.trim())) {
+      setCustomTraits([...customTraits, newTrait.trim()]);
+      setNewTrait('');
+    }
+  };
+
+  const addCustomCondition = () => {
+    if (newCondition.trim() && !customConditions.includes(newCondition.trim())) {
+      setCustomConditions([...customConditions, newCondition.trim()]);
+      setNewCondition('');
+    }
+  };
+
+  const allTraits = [...defaultPersonalityTraits, ...customTraits];
+  const allConditions = [...defaultMedicalConditions, ...customConditions];
 
   return (
     <div className="space-y-6">
@@ -103,8 +125,10 @@ export default function PetOwnerOnboarding({ profileId, userId, onComplete }: Pe
                     <SelectItem value="dog">🐕 Dog</SelectItem>
                     <SelectItem value="cat">🐱 Cat</SelectItem>
                     <SelectItem value="bird">🦜 Bird</SelectItem>
-                    <SelectItem value="small_pet">🐹 Small Pet</SelectItem>
+                    <SelectItem value="rabbit">🐰 Rabbit</SelectItem>
                     <SelectItem value="reptile">🦎 Reptile</SelectItem>
+                    <SelectItem value="horse">🐴 Horse</SelectItem>
+                    <SelectItem value="other">🐾 Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -210,7 +234,7 @@ export default function PetOwnerOnboarding({ profileId, userId, onComplete }: Pe
             <div className="space-y-2">
               <Label>Personality Traits</Label>
               <div className="flex flex-wrap gap-2">
-                {personalityTraits.map((trait) => (
+                {allTraits.map((trait) => (
                   <Badge
                     key={trait}
                     variant={pet.personality_traits.includes(trait) ? "default" : "outline"}
@@ -221,13 +245,24 @@ export default function PetOwnerOnboarding({ profileId, userId, onComplete }: Pe
                   </Badge>
                 ))}
               </div>
+              <div className="flex gap-2 mt-2">
+                <Input
+                  placeholder="Add custom trait..."
+                  value={newTrait}
+                  onChange={(e) => setNewTrait(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomTrait())}
+                />
+                <Button type="button" onClick={addCustomTrait} variant="outline" size="sm">
+                  <PlusCircle className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Medical Conditions */}
             <div className="space-y-2">
               <Label>Medical Conditions</Label>
               <div className="flex flex-wrap gap-2">
-                {medicalConditions.map((condition) => (
+                {allConditions.map((condition) => (
                   <Badge
                     key={condition}
                     variant={pet.medical_conditions.includes(condition) ? "default" : "outline"}
@@ -237,6 +272,17 @@ export default function PetOwnerOnboarding({ profileId, userId, onComplete }: Pe
                     {condition}
                   </Badge>
                 ))}
+              </div>
+              <div className="flex gap-2 mt-2">
+                <Input
+                  placeholder="Add custom condition..."
+                  value={newCondition}
+                  onChange={(e) => setNewCondition(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomCondition())}
+                />
+                <Button type="button" onClick={addCustomCondition} variant="outline" size="sm">
+                  <PlusCircle className="w-4 h-4" />
+                </Button>
               </div>
             </div>
 

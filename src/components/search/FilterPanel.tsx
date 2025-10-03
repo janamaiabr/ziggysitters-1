@@ -19,7 +19,7 @@ interface FilterPanelProps {
 
 export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFilters }: FilterPanelProps) {
   const isMobile = useIsMobile();
-  const [priceRange, setPriceRange] = useState(currentFilters?.priceRange || [10, 100]);
+  const [priceRange, setPriceRange] = useState<[number, number]>(currentFilters?.priceRange || [10, 100]);
   const [verifiedOnly, setVerifiedOnly] = useState(currentFilters?.verifiedOnly || false);
   const [selectedServices, setSelectedServices] = useState<string[]>(currentFilters?.selectedServices || []);
   const [selectedPetTypes, setSelectedPetTypes] = useState<string[]>(currentFilters?.selectedPetTypes || []);
@@ -58,7 +58,8 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
     'Cats', 
     'Birds',
     'Small Pets',
-    'Reptiles'
+    'Reptiles',
+    'Horses'
   ];
 
   const handleServiceToggle = (service: string) => {
@@ -109,7 +110,7 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
         </Label>
         <Slider
           value={priceRange}
-          onValueChange={setPriceRange}
+          onValueChange={(value) => setPriceRange(value as [number, number])}
           max={maxServicePrice}
           min={minServicePrice}
           step={5}

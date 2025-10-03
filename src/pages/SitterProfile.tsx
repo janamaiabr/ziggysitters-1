@@ -63,12 +63,12 @@ export default function SitterProfile() {
       if (!id) return;
       
       try {
-        // Fetch from the secure public view
+        // Fetch from profiles table directly
         const { data, error } = await supabase
-          .from('public_sitter_profiles')
+          .from('profiles')
           .select('*')
           .eq('id', id)
-          .neq('role', 'admin')  // Extra filter to ensure no admin users
+          .eq('role', 'pet_sitter')
           .single();
 
         if (error) {
@@ -122,8 +122,8 @@ export default function SitterProfile() {
           // Transform the data to match our interface using real data
           setSitterData({
             id: data.id,
-            display_name: data.display_name,
-            location: `${data.suburb}, ${data.city}`,
+            display_name: `${data.first_name} ${data.last_name.charAt(0)}.`,
+            location: `${data.suburb || 'Auckland'}, ${data.city || 'New Zealand'}`,
             rating: data.rating || 4.8,
             feedback_count: data.total_reviews || 0,
             baseRate: baseRate,

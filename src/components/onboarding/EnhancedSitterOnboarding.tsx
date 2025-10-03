@@ -26,7 +26,7 @@ interface EnhancedSitterOnboardingProps {
   onComplete: (sitterId: string) => void;
 }
 
-const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit'];
+const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit', 'horse'];
 const petSizes = ['small', 'medium', 'large', 'extra_large'];
 
 const serviceTypes = [
@@ -171,11 +171,11 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
 
   const handleSaveAndComplete = async () => {
     try {
-      // Validate required fields
-      if (!bio.trim()) {
+      // Validate required fields - bio is now optional, no minimum requirement
+      if (bio.trim().length > 5000) {
         toast({
-          title: "Bio required",
-          description: "Please tell us about yourself in the overview section.",
+          title: "Bio too long",
+          description: "Please keep your bio under 5000 characters.",
           variant: "destructive",
         });
         setCurrentTab('overview');
@@ -281,7 +281,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
   const isTabComplete = (tab: string) => {
     switch (tab) {
       case 'overview':
-        return bio.trim().length > 0;
+        return true; // Bio is now optional
       case 'services':
         return services.length > 0 && services.every(s => s.hourly_rate || s.daily_rate || s.overnight_rate);
       case 'calendar':
@@ -331,7 +331,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Bio *</Label>
+                <Label>Bio</Label>
                 <Textarea
                   placeholder="Tell pet owners about yourself, your experience with pets, and why you love caring for animals..."
                   value={bio}
@@ -339,6 +339,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
                   rows={4}
                   className="min-h-[100px]"
                 />
+                <p className="text-xs text-muted-foreground">Optional - share your experience and passion for pet care</p>
               </div>
               
               <div className="space-y-2">

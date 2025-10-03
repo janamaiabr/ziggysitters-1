@@ -671,6 +671,7 @@ export type Database = {
         | "reptile"
         | "fish"
         | "other"
+        | "horse"
       service_type:
         | "overnight_boarding"
         | "daycare"
@@ -817,7 +818,16 @@ export const Constants = {
         "cancelled",
       ],
       pet_size: ["small", "medium", "large", "extra_large"],
-      pet_species: ["dog", "cat", "bird", "rabbit", "reptile", "fish", "other"],
+      pet_species: [
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "reptile",
+        "fish",
+        "other",
+        "horse",
+      ],
       service_type: [
         "overnight_boarding",
         "daycare",
