@@ -7,7 +7,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ProfileProvider } from "@/contexts/ProfileContext";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
-import { ResponsiveCheck } from "@/components/layout/ResponsiveCheck";
 // import { AdminCreator } from "@/components/AdminCreator"; // Temporarily disabled
 import { OnboardingCheck } from "@/components/OnboardingCheck";
 import Header from "@/components/layout/Header";
@@ -186,7 +185,6 @@ function App() {
           <Toaster />
           <Sonner />
           <ScrollToTop />
-          <ResponsiveCheck />
           <AppContent />
         </TooltipProvider>
       </AuthProvider>

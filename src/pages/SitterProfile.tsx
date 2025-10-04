@@ -55,6 +55,13 @@ export default function SitterProfile() {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
     if (shouldOpenBooking && user) {
       setIsBookingOpen(true);
+      // Scroll to booking section after a brief delay
+      setTimeout(() => {
+        const bookingSection = document.getElementById('booking-section');
+        if (bookingSection) {
+          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     } else if (shouldOpenBooking && !user) {
       // Redirect to login if not logged in
       navigate(`/auth?redirect=/sitter/${id}?booking=true`);
@@ -297,6 +304,13 @@ export default function SitterProfile() {
                       navigate(`/auth?redirect=/sitter/${id}?booking=true`);
                     } else {
                       setIsBookingOpen(true);
+                      // Scroll to booking section
+                      setTimeout(() => {
+                        const bookingSection = document.getElementById('booking-section');
+                        if (bookingSection) {
+                          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                      }, 100);
                     }
                   }}
                 >
@@ -306,7 +320,7 @@ export default function SitterProfile() {
             </Card>
 
             {/* Booking Form - Hidden Accordion */}
-            <div className={isBookingOpen ? 'block' : 'hidden'}>
+            <div id="booking-section" className={isBookingOpen ? 'block' : 'hidden'}>
               <BookingAccordion
                 sitter={{
                   id: sitterData.id,
