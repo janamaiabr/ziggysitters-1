@@ -242,18 +242,16 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
         isOpen && (
           <div className="fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-            <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl">
-              <Card className="h-full border-0 rounded-none">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Filter Sitters</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={onClose}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="overflow-y-auto flex-1 pb-24">
-                  <FilterContent />
-                </CardContent>
-              </Card>
+            <div className="absolute right-0 top-0 h-full w-80 bg-background dark:bg-card shadow-xl flex flex-col">
+              <div className="flex items-center justify-between p-6 border-b">
+                <h2 className="text-lg font-semibold">Filter Sitters</h2>
+                <Button variant="ghost" size="sm" onClick={onClose}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-6">
+                <FilterContent />
+              </div>
             </div>
           </div>
         )
