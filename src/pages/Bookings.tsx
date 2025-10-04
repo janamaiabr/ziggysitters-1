@@ -323,59 +323,30 @@ export default function Bookings() {
                           <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
                             View Details
                           </Button>
-                          {booking.status === 'confirmed' && booking.owner_id === profile.id && (
+                          {(booking.status === 'confirmed' || booking.status === 'in_progress') && (
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              onClick={() => navigate('/daily-reports')}
+                              onClick={() => {
+                                if (booking.owner_id === profile.id) {
+                                  navigate('/daily-reports');
+                                } else if (booking.sitter_id === profile.id) {
+                                  navigate('/daily-reports');
+                                }
+                              }}
                             >
-                              View Reports
+                              {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
                             </Button>
                           )}
                           {booking.status === 'pending' && booking.owner_id === profile.id && (
-                            <>
-                              <Button 
-                                size="sm" 
-                                onClick={() => handleCompletePayment(booking)}
-                                className="bg-green-600 hover:bg-green-700"
-                              >
-                                <CreditCard className="w-4 h-4 mr-2" />
-                                Complete Payment
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={async () => {
-                                  try {
-                                    // For testing: mark this specific booking as paid
-                                    const { error } = await supabase
-                                      .from('bookings')
-                                      .update({ 
-                                        status: 'confirmed',
-                                        payment_status: 'paid'
-                                      })
-                                      .eq('id', booking.id);
-                                    
-                                    if (error) throw error;
-                                    
-                                    toast({
-                                      title: "Status Updated!",
-                                      description: "Booking has been confirmed"
-                                    });
-                                    fetchBookings();
-                                  } catch (error) {
-                                    console.error('Error updating booking:', error);
-                                    toast({
-                                      title: "Error",
-                                      description: "Failed to update booking status",
-                                      variant: "destructive"
-                                    });
-                                  }
-                                }}
-                              >
-                                Mark as Paid
-                              </Button>
-                            </>
+                            <Button 
+                              size="sm" 
+                              onClick={() => handleCompletePayment(booking)}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              <CreditCard className="w-4 h-4 mr-2" />
+                              Complete Payment
+                            </Button>
                           )}
                          {booking.status === 'pending' && (
                            <Button 

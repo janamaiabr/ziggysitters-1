@@ -242,21 +242,6 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           });
       }
 
-      // Save unavailable dates
-      if (unavailableDates.length > 0) {
-        const availabilityData = unavailableDates.map(date => ({
-          sitter_id: profileId,
-          date,
-          is_available: false,
-          notes: 'Unavailable'
-        }));
-
-        await supabase
-          .from('sitter_availability')
-          .upsert(availabilityData, {
-            onConflict: 'sitter_id,date'
-          });
-      }
 
       // Send notification to admin about new sitter for approval
       await supabase.functions.invoke('send-verification-request-email', {
@@ -284,8 +269,6 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
         return true; // Bio is now optional
       case 'services':
         return services.length > 0 && services.every(s => s.hourly_rate || s.daily_rate || s.overnight_rate);
-      case 'calendar':
-        return true; // Optional
       case 'verification':
         return idDocumentUrl || blueCardUrl; // At least one document
       default:
@@ -301,7 +284,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
       </div>
 
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1 h-auto p-1">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 gap-1 h-auto p-1">
           <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
             <FileText className="w-3 h-3 flex-shrink-0" />
             <span className="text-center sm:text-left truncate">Overview</span>
@@ -311,11 +294,6 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
             <PlusCircle className="w-3 h-3 flex-shrink-0" />
             <span className="text-center sm:text-left truncate">Services</span>
             {isTabComplete('services') && <span className="text-green-500 text-xs">✓</span>}
-          </TabsTrigger>
-          <TabsTrigger value="calendar" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
-            <Calendar className="w-3 h-3 flex-shrink-0" />
-            <span className="text-center sm:text-left truncate">Calendar</span>
-            {isTabComplete('calendar') && <span className="text-green-500 text-xs">✓</span>}
           </TabsTrigger>
           <TabsTrigger value="verification" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
             <Shield className="w-3 h-3 flex-shrink-0" />
@@ -562,44 +540,6 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           </Card>
         </TabsContent>
 
-        <TabsContent value="calendar" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Availability Calendar</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert>
-                <Calendar className="h-4 w-4" />
-                <AlertDescription>
-                  Set dates when you're not available. You can always update this later in your profile.
-                </AlertDescription>
-              </Alert>
-              
-              <div className="space-y-2">
-                <Label>Unavailable Dates (Optional)</Label>
-                <Input
-                  type="date"
-                  onChange={(e) => {
-                    if (e.target.value && !unavailableDates.includes(e.target.value)) {
-                      setUnavailableDates(prev => [...prev, e.target.value]);
-                    }
-                  }}
-                />
-                {unavailableDates.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {unavailableDates.map(date => (
-                      <Badge key={date} variant="outline" className="cursor-pointer" onClick={() => 
-                        setUnavailableDates(prev => prev.filter(d => d !== date))
-                      }>
-                        {date} <X className="w-3 h-3 ml-1" />
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="verification" className="space-y-4">
           <Card>

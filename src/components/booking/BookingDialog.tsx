@@ -100,7 +100,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
       const days = differenceInDays(endDate, startDate) || 1;
       return Math.max(1, days) * rate;
-    } else {
+    } else if (serviceType === 'drop_in_visits') {
+      // For drop-in visits, calculate based on time on the same or different days
       const startDateTime = new Date(startDate);
       startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
       
@@ -110,6 +111,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
       const hours = differenceInHours(endDateTime, startDateTime);
       return Math.max(1, hours) * rate;
     }
+    return 0;
   };
 
   const handleBooking = async () => {
