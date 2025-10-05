@@ -48,8 +48,8 @@ const HeroSectionPlayful = ({
       </div>
 
       <div className="container mx-auto px-4 py-8 md:py-16 relative z-10">
-        <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-2 md:mb-3">
             {/* Left side - Content */}
             <div className="space-y-4 md:space-y-6 animate-fade-in">
               {/* Trust Badge */}
