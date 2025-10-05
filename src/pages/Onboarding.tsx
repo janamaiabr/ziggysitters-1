@@ -213,10 +213,10 @@ export default function Onboarding() {
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      console.log('Redirecting to find-sitters...');
+      console.log('Redirecting to home page...');
       
-      // Redirect based on role
-      navigate('/find-sitters', { replace: true });
+      // Redirect to home page after successful onboarding
+      navigate('/', { replace: true });
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({

@@ -112,17 +112,21 @@ export function usePetOwnerOnboarding() {
 
   const savePets = async (ownerId: string) => {
     try {
-      // Validate that at least one pet has a name
-      const validPets = pets.filter(pet => pet.name.trim());
-      if (validPets.length === 0) {
-        throw new Error('At least one pet must have a name');
+      // Validate that ALL pets have names (no empty names allowed)
+      const petsWithoutNames = pets.filter(pet => !pet.name.trim());
+      if (petsWithoutNames.length > 0) {
+        toast({
+          title: "Pet name required",
+          description: "Please provide a name for all pets before continuing.",
+          variant: "destructive",
+        });
+        return { success: false, error: 'All pets must have a name' };
       }
 
-      for (const pet of validPets) {
-
+      for (const pet of pets) {
         const petData = {
           owner_id: ownerId,
-          name: pet.name,
+          name: pet.name.trim(),
           species: pet.species,
           breed: pet.breed,
           age: pet.age,
