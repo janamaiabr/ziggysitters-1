@@ -86,7 +86,7 @@ export default function ClientDailyReports() {
             .from('profiles')
             .select('id, first_name, last_name, avatar_url')
             .eq('id', booking.sitter_id)
-            .single();
+            .maybeSingle();
 
           // Fetch daily reports
           const { data: reportsData, error: reportsError } = await supabase

@@ -282,9 +282,9 @@ export default function Profile() {
         .update(editData)
         .eq('user_id', user?.id)
         .select()
-        .single();
+        .maybeSingle();
 
-      if (!error) {
+      if (!error && data) {
         setIsEditing(false);
         toast({
           title: "Profile updated",

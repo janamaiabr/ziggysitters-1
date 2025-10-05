@@ -60,7 +60,7 @@ export default function Onboarding() {
           .from('profiles')
           .select('role')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (!error && profile?.role === 'admin') {
           // Admin users skip onboarding and go directly to admin dashboard
@@ -81,7 +81,7 @@ export default function Onboarding() {
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (!error && profile) {
           setData(prev => ({
@@ -172,9 +172,9 @@ export default function Onboarding() {
         })
         .eq('user_id', user?.id)
         .select('id')
-        .single();
+        .maybeSingle();
 
-      if (profileError) throw profileError;
+      if (profileError || !profileData) throw new Error('Failed to update profile');
 
       setProfileId(profileData.id);
       setStep(step + 1);

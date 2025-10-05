@@ -141,9 +141,9 @@ export default function SitterOnboarding({ profileId, userId, onComplete }: Sitt
         .from('profiles')
         .select('id')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      if (profileError) throw profileError;
+      if (profileError || !profileData) throw new Error('Profile not found');
 
       // Update profile with bio
       await supabase

@@ -58,7 +58,7 @@ export default function MessageDialog({
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
     
     if (data) {
       setUserProfile(data);

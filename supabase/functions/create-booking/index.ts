@@ -150,7 +150,7 @@ serve(async (req) => {
       .from('profiles')
       .select('stripe_account_id, stripe_account_enabled, first_name, last_name')
       .eq('id', bookingData.sitterId)
-      .single();
+      .maybeSingle();
 
     if (sitterError || !sitterProfile) {
       throw new Error('Sitter profile not found');
