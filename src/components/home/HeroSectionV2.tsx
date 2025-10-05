@@ -52,7 +52,7 @@ const HeroSectionV2 = ({
           <div className="flex justify-center mb-6 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 shadow-lg">
               <Zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">New Zealand's Pet Sitting Accountability Platform</span>
+              <span className="text-sm font-semibold text-primary">New Zealand's Pet Sitting Platform</span>
             </div>
           </div>
 
@@ -174,21 +174,6 @@ const HeroSectionV2 = ({
                   <span>98% Report Rate</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* The Difference Callout */}
-          <div className="max-w-3xl mx-auto text-center animate-fade-in">
-            <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-2xl p-6 md:p-8 border-2 border-primary/20">
-              <p className="text-lg md:text-xl font-semibold mb-3">
-                Why are we different?
-              </p>
-              <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                Other platforms <span className="line-through opacity-60">suggest</span> daily updates. 
-                We <span className="text-primary font-bold">enforce</span> them. 
-                Miss a report? <span className="text-destructive font-bold">Lose 15% payment</span>. 
-                Your anxiety ends here.
-              </p>
             </div>
           </div>
         </div>
