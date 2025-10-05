@@ -50,9 +50,9 @@ const HeroSectionV2 = ({
         <div className="max-w-6xl mx-auto">
           {/* Trust Badge */}
           <div className="flex justify-center mb-6 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 shadow-lg">
-              <Zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">New Zealand's Pet Sitting Platform</span>
+            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 shadow-lg">
+              <Zap className="w-5 h-5 text-primary" />
+              <span className="text-lg md:text-xl font-bold text-primary">New Zealand's Pet Sitting Platform</span>
             </div>
           </div>
 
