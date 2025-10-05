@@ -52,7 +52,7 @@ const HeroSectionV2 = ({
           <div className="flex justify-center mb-6 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 shadow-lg">
               <Zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">Trusted Nationwide</span>
+              <span className="text-sm font-semibold text-primary">Premium</span>
             </div>
           </div>
 
