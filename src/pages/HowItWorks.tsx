@@ -87,14 +87,103 @@ const safetyFeatures = [
 export default function HowItWorks() {
   const navigate = useNavigate();
   
+  // Enhanced structured data for SEO and AI discoverability
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Book a Pet Sitter with Daily Photo Updates",
+    "description": "Step-by-step guide on how to find and book verified pet sitters who provide mandatory daily photo updates and detailed care reports in New Zealand.",
+    "totalTime": "PT10M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Search for Pet Sitters",
+        "text": "Browse verified pet sitters in your area who are required to send daily photo updates or face payment deduction",
+        "url": "https://ziggysitters.co.nz/find-sitters",
+        "image": "https://ziggysitters.co.nz/images/search-sitters.jpg"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "View Sitter Profiles",
+        "text": "Review sitter profiles, ratings, and feedback from other pet owners to find the perfect match",
+        "url": "https://ziggysitters.co.nz/find-sitters"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Book Your Sitter",
+        "text": "Select dates, service type, and complete secure payment through our platform",
+        "url": "https://ziggysitters.co.nz/bookings"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Receive Daily Updates",
+        "text": "Get comprehensive daily reports with photos every day while your pet is being cared for",
+        "url": "https://ziggysitters.co.nz/daily-reports"
+      }
+    ]
+  };
+
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How are pet sitters verified on ZiggySitters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "All pet sitters on ZiggySitters complete comprehensive identity verification including passport or driver's license validation, and profile validation before joining our platform. We verify their information and ensure they meet our safety and reliability standards."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens if a pet sitter doesn't send daily updates?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If a pet sitter fails to send the required daily photo updates and care reports, they face a 15% payment deduction. This accountability system ensures pet owners always receive transparency about their pet's care."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do payments work for pet sitting services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Payments are processed securely through our platform using Stripe. You pay when you book your pet sitter, and the payment is held securely. Sitters receive payment after successful service completion, with full payment for complete daily reporting."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I meet the pet sitter before booking?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely! We strongly encourage meet and greet sessions so you and your pet can get comfortable with your chosen sitter before the booking starts. This helps ensure a good match and peace of mind."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What pet care services does ZiggySitters offer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ZiggySitters offers comprehensive pet care services including dog walking, pet sitting (in-home and at sitter's home), overnight care, drop-in visits, pet boarding, and grooming services. All services include mandatory daily photo updates and detailed care reports."
+        }
+      }
+    ]
+  };
+  
   return (
     <>
       <SEOHead 
-        title="How It Works - Daily Pet Updates System | ZiggySitters"
-        description="Learn how ZiggySitters works: book verified pet sitters who must send daily photo updates. Unique payment system ensures accountability and transparency."
-        keywords="how pet sitting works, daily pet updates, pet sitter accountability, booking process, verified pet care"
+        title="How It Works: Book Pet Sitters with Daily Photo Updates | ZiggySitters NZ"
+        description="Learn how to book verified pet sitters in New Zealand who provide mandatory daily photo updates. Step-by-step guide to transparent, accountable pet care with our unique payment protection system."
+        keywords="how pet sitting works, book pet sitter online, daily pet photo updates, verified pet care NZ, pet sitter accountability, dog walking Auckland, pet boarding New Zealand, overnight pet care, pet care with updates"
         canonical="/how-it-works"
       />
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(faqStructuredData)}
+      </script>
       <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-primary to-secondary text-primary-foreground py-20">
@@ -105,9 +194,9 @@ export default function HowItWorks() {
         ></div>
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">Transparent Pet Care with Daily Updates</h1>
+            <h1 className="text-5xl font-bold mb-6">How Pet Sitting Works with Daily Photo Updates</h1>
             <p className="text-xl mb-8 opacity-90">
-              The first platform where pet sitters MUST send daily photo updates or get reduced payment
+              New Zealand's first pet sitting platform with mandatory daily photo updates and accountability system
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
@@ -126,9 +215,9 @@ export default function HowItWorks() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <Badge variant="secondary" className="mb-4">For Pet Owners</Badge>
-            <h2 className="text-3xl font-bold mb-4">Never Wonder Again</h2>
+            <h2 className="text-3xl font-bold mb-4">How to Book a Pet Sitter in 4 Easy Steps</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Get daily photo updates and detailed reports. If sitters don't send them, they face a 15% deduction.
+              Find verified pet sitters in Auckland and across New Zealand. Get guaranteed daily photo updates and detailed care reports, or sitters face a 15% payment deduction for accountability.
             </p>
           </div>
           
@@ -152,7 +241,7 @@ export default function HowItWorks() {
           <div className="relative rounded-2xl overflow-hidden">
             <img 
               src={petServices} 
-              alt="Pet care services" 
+              alt="Professional pet sitting services in New Zealand with daily photo updates and care reports" 
               className="w-full h-64 object-cover"
             />
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -170,9 +259,9 @@ export default function HowItWorks() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4">For Pet Sitters</Badge>
-            <h2 className="text-3xl font-bold mb-4">Earn More with Transparency</h2>
+            <h2 className="text-3xl font-bold mb-4">Become a Pet Sitter: Earn Money Caring for Pets</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Send daily updates, build trust with pet owners, and earn 100% payment for complete reporting
+              Join New Zealand's leading pet sitting platform. Send daily photo updates, build trust with pet owners, earn competitive rates, and receive 100% payment for complete daily reporting.
             </p>
           </div>
           
@@ -199,9 +288,9 @@ export default function HowItWorks() {
       <div className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Safety & Trust First</h2>
+            <h2 className="text-3xl font-bold mb-4">Pet Safety & Verified Sitter Trust</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We prioritize the safety and security of both pets and their owners through comprehensive verification
+              We prioritize pet safety and owner peace of mind through comprehensive identity verification, secure payments, and transparent feedback from real pet owners across New Zealand.
             </p>
           </div>
           
@@ -225,9 +314,9 @@ export default function HowItWorks() {
       <div className="py-20 bg-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Our Services</h2>
+            <h2 className="text-3xl font-bold mb-4">Pet Care Services in New Zealand</h2>
             <p className="text-lg text-muted-foreground">
-              Comprehensive pet care services to meet all your needs
+              Comprehensive pet sitting, dog walking, overnight care, and boarding services across Auckland and New Zealand—all with mandatory daily photo updates
             </p>
           </div>
           
@@ -287,26 +376,33 @@ export default function HowItWorks() {
       <div className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold mb-4">Pet Sitting FAQs: Common Questions About Our Service</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Get answers to frequently asked questions about booking pet sitters, verification process, payments, and our daily photo update system
+            </p>
           </div>
           
           <div className="max-w-3xl mx-auto space-y-8">
             {[
               {
-                question: 'How are sitters verified?',
-                answer: 'All sitters complete identity verification and profile validation before joining our platform. We verify their information and ensure they meet our standards.'
+                question: 'How are pet sitters verified on ZiggySitters?',
+                answer: 'All pet sitters on ZiggySitters complete comprehensive identity verification including passport or driver\'s license validation, and profile validation before joining our platform. We verify their information and ensure they meet our safety and reliability standards.'
               },
               {
-                question: 'What if something goes wrong?',
-                answer: 'Contact us immediately through our platform. We take all safety concerns seriously and will help resolve any issues.'
+                question: 'What happens if a pet sitter doesn\'t send daily updates?',
+                answer: 'If a pet sitter fails to send the required daily photo updates and care reports, they face a 15% payment deduction. This accountability system ensures pet owners always receive transparency about their pet\'s care.'
               },
               {
-                question: 'How do payments work?',
-                answer: 'Payments are processed securely through our platform. You pay when you book, and sitters are paid after service completion.'
+                question: 'How do payments work for pet sitting services?',
+                answer: 'Payments are processed securely through our platform using Stripe. You pay when you book your pet sitter, and the payment is held securely. Sitters receive payment after successful service completion, with full payment for complete daily reporting.'
               },
               {
-                question: 'Can I meet the sitter before booking?',
-                answer: 'Absolutely! We encourage meet & greets so you and your pet can get comfortable with your chosen sitter.'
+                question: 'Can I meet the pet sitter before booking?',
+                answer: 'Absolutely! We strongly encourage meet and greet sessions so you and your pet can get comfortable with your chosen sitter before the booking starts. This helps ensure a good match and peace of mind.'
+              },
+              {
+                question: 'What pet care services does ZiggySitters offer?',
+                answer: 'ZiggySitters offers comprehensive pet care services including dog walking, pet sitting (in-home and at sitter\'s home), overnight care, drop-in visits, pet boarding, and grooming services. All services include mandatory daily photo updates and detailed care reports.'
               }
             ].map((faq, index) => (
               <Card key={index}>
