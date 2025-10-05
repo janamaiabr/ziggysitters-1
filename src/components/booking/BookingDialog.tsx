@@ -471,7 +471,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                 </div>
                 
                 <div className="flex justify-between">
-                  <span>Platform Fee (10%)</span>
+                  <span>Listing Fee (10%)</span>
                   <span>${platformFee.toFixed(2)}</span>
                 </div>
                 

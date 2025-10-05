@@ -57,7 +57,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li><strong>48+ hours notice:</strong> Full refund of service cost only</li>
                 <li><strong>Less than 48 hours:</strong> No refund</li>
-                <li><strong>Platform fee (10%):</strong> Non-refundable under all circumstances</li>
+                <li><strong>Listing fee (10%):</strong> Non-refundable under all circumstances</li>
               </ul>
             </section>
 

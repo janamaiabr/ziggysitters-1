@@ -133,7 +133,7 @@ serve(async (req) => {
         pet_ids: bookingData.petIds,
         special_instructions: bookingData.specialInstructions,
         total_amount: bookingData.totalAmount,
-        platform_fee: Math.round(bookingData.totalAmount * 0.1 * 100) / 100, // 10% platform fee
+        platform_fee: Math.round(bookingData.totalAmount * 0.1 * 100) / 100, // 10% listing fee
         status: 'pending',
         payment_status: 'pending'
       }])

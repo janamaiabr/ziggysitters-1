@@ -51,6 +51,11 @@ export default function SitterProfile() {
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
+  // Get dates from URL params
+  const checkInDate = searchParams.get('checkIn');
+  const checkOutDate = searchParams.get('checkOut');
+  const serviceTypeParam = searchParams.get('serviceType');
+  
   // Check if booking should be automatically opened
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
@@ -311,6 +316,9 @@ export default function SitterProfile() {
                 servicesData={servicesData}
                 isOpen={isBookingOpen}
                 onBookingComplete={() => navigate('/bookings')}
+                initialCheckIn={checkInDate || undefined}
+                initialCheckOut={checkOutDate || undefined}
+                initialServiceType={serviceTypeParam || undefined}
               />
             </div>
             {/* About */}

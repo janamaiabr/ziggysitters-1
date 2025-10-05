@@ -29,6 +29,9 @@ interface BookingAccordionProps {
   servicesData?: any[]; // Add real services data
   isOpen?: boolean;
   onBookingComplete?: () => void;
+  initialCheckIn?: string;
+  initialCheckOut?: string;
+  initialServiceType?: string;
 }
 
 const serviceRates = {
@@ -58,12 +61,24 @@ const serviceUnits = {
   'grooming': 'service',
 };
 
-export default function BookingAccordion({ sitter, servicesData = [], isOpen = false, onBookingComplete }: BookingAccordionProps) {
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+export default function BookingAccordion({ 
+  sitter, 
+  servicesData = [], 
+  isOpen = false, 
+  onBookingComplete,
+  initialCheckIn,
+  initialCheckOut,
+  initialServiceType
+}: BookingAccordionProps) {
+  const [startDate, setStartDate] = useState<Date>(
+    initialCheckIn ? new Date(initialCheckIn) : undefined
+  );
+  const [endDate, setEndDate] = useState<Date>(
+    initialCheckOut ? new Date(initialCheckOut) : undefined
+  );
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
-  const [serviceType, setServiceType] = useState('');
+  const [serviceType, setServiceType] = useState(initialServiceType || '');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
@@ -424,10 +439,10 @@ export default function BookingAccordion({ sitter, servicesData = [], isOpen = f
                        <span>${sitterAmount.toFixed(2)}</span>
                      </div>
                      
-                     <div className="flex justify-between text-sm text-gray-500">
-                       <span>Platform fee (10%)</span>
-                       <span>${platformFee.toFixed(2)}</span>
-                     </div>
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>Listing Fee (10%)</span>
+                        <span>${platformFee.toFixed(2)}</span>
+                      </div>
                     
                     <Separator />
                     

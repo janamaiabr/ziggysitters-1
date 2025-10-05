@@ -92,73 +92,64 @@ const HeroSectionPlayful = ({
                 ))}
               </div>
 
-              {/* Search Card */}
-              <div className="bg-card rounded-3xl p-6 shadow-[var(--shadow-soft)] border border-border/50 hover:shadow-[var(--shadow-hover)] transition-shadow">
-                <div className="space-y-4">
-                  <h3 className="text-xl font-bold">Find Your Peace of Mind</h3>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold flex items-center gap-2">
-                        <Search className="w-4 h-4 text-primary" />
-                        Location
-                      </label>
-                      <SuburbAutocomplete
-                        value={location}
-                        onChange={setLocation}
-                        placeholder="Enter suburb or city"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold">Service Type</label>
-                      <Select value={serviceType} onValueChange={setServiceType}>
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="What do you need?" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pet_sitting_sitters_home">🏠 At Sitter's Home</SelectItem>
-                          <SelectItem value="pet_sitting_owners_home">🏡 At Your Home</SelectItem>
-                          <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
-                          <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold">Check-in</label>
-                      <Input 
-                        type="date"
-                        value={checkIn}
-                        onChange={(e) => setCheckIn(e.target.value)}
-                        className="h-11"
-                        min={new Date().toISOString().split('T')[0]}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold">Check-out</label>
-                      <Input 
-                        type="date"
-                        value={checkOut}
-                        onChange={(e) => setCheckOut(e.target.value)}
-                        className="h-11"
-                        min={checkIn || new Date().toISOString().split('T')[0]}
-                      />
-                    </div>
-                  </div>
-                </div>
+              {/* Search Card - One Line Centered */}
+              <div className="bg-card rounded-3xl p-6 shadow-[var(--shadow-soft)] border border-border/50 hover:shadow-[var(--shadow-hover)] transition-shadow max-w-5xl mx-auto">
+                <h3 className="text-xl font-bold mb-4 text-center">Find Your Peace of Mind</h3>
                 
-                <Button 
-                  size="lg" 
-                  className="w-full mt-4 h-12 text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
-                  onClick={handleSearch}
-                >
-                  <Search className="mr-2 h-5 w-5" />
-                  Find Caring Sitters
-                </Button>
+                <div className="flex flex-col lg:flex-row gap-3 items-center">
+                  <div className="w-full lg:w-auto lg:flex-1">
+                    <SuburbAutocomplete
+                      value={location}
+                      onChange={setLocation}
+                      placeholder="Enter suburb or city"
+                    />
+                  </div>
+                  
+                  <div className="w-full lg:w-auto lg:flex-1">
+                    <Select value={serviceType} onValueChange={setServiceType}>
+                      <SelectTrigger className="h-11">
+                        <SelectValue placeholder="Service type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pet_sitting_sitters_home">🏠 At Sitter's Home</SelectItem>
+                        <SelectItem value="pet_sitting_owners_home">🏡 At Your Home</SelectItem>
+                        <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
+                        <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="w-full lg:w-auto lg:flex-1">
+                    <Input 
+                      type="date"
+                      value={checkIn}
+                      onChange={(e) => setCheckIn(e.target.value)}
+                      className="h-11"
+                      min={new Date().toISOString().split('T')[0]}
+                      placeholder="Check-in"
+                    />
+                  </div>
+                  
+                  <div className="w-full lg:w-auto lg:flex-1">
+                    <Input 
+                      type="date"
+                      value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      className="h-11"
+                      min={checkIn || new Date().toISOString().split('T')[0]}
+                      placeholder="Check-out"
+                    />
+                  </div>
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-8"
+                    onClick={handleSearch}
+                  >
+                    <Search className="mr-2 h-5 w-5" />
+                    Search
+                  </Button>
+                </div>
               </div>
             </div>
 
