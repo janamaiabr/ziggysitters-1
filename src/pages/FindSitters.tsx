@@ -181,27 +181,23 @@ export default function FindSitters() {
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.replaceState({}, '', newUrl);
 
-    // Auto-scroll to results after search
+    // Auto-scroll to results after search - more aggressive on mobile
     setTimeout(() => {
       const resultsSection = document.getElementById('search-results');
       if (resultsSection) {
-        // On mobile, scroll to results immediately and more aggressively
-        // On desktop, just smooth scroll to top of results
-        const scrollBehavior = isMobile ? 'auto' : 'smooth';
-        const offsetTop = isMobile ? -20 : 0; // Scroll a bit above results on mobile
-        
-        resultsSection.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
-        
-        // Additional mobile scroll adjustment to ensure search form is hidden
         if (isMobile) {
-          setTimeout(() => {
-            const yOffset = offsetTop;
-            const y = resultsSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-          }, 100);
+          // On mobile, scroll past the search form entirely to show results
+          const resultsTop = resultsSection.offsetTop;
+          window.scrollTo({ 
+            top: resultsTop - 20, // Small offset from top
+            behavior: 'smooth' 
+          });
+        } else {
+          // On desktop, standard smooth scroll
+          resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
-    }, 200);
+    }, 300);
   };
 
   const handleApplyFilters = (filters: any) => {

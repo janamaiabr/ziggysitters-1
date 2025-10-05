@@ -155,7 +155,7 @@ const HeroSectionV2 = ({
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
                 <Button 
                   size="lg" 
-                  className="flex-1 h-14 text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 bg-primary"
+                  className="flex-1 h-12 sm:h-14 text-base sm:text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 bg-primary"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-5 w-5" />
