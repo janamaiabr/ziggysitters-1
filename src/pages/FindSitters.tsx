@@ -11,12 +11,14 @@ import { MapPin, Filter, Search, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // No more mock data - using real database profiles
 
 export default function FindSitters() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const isMobile = useIsMobile();
   const [location, setLocation] = useState(searchParams.get('location') || '');
   const [selectedDate, setSelectedDate] = useState<Date>(
     searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined
@@ -183,7 +185,21 @@ export default function FindSitters() {
     setTimeout(() => {
       const resultsSection = document.getElementById('search-results');
       if (resultsSection) {
-        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // On mobile, scroll to results immediately and more aggressively
+        // On desktop, just smooth scroll to top of results
+        const scrollBehavior = isMobile ? 'auto' : 'smooth';
+        const offsetTop = isMobile ? -20 : 0; // Scroll a bit above results on mobile
+        
+        resultsSection.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
+        
+        // Additional mobile scroll adjustment to ensure search form is hidden
+        if (isMobile) {
+          setTimeout(() => {
+            const yOffset = offsetTop;
+            const y = resultsSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }, 100);
+        }
       }
     }, 200);
   };
