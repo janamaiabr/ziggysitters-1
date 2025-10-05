@@ -48,7 +48,7 @@ const HeroSectionPlayful = ({
       </div>
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto space-y-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content */}
             <div className="space-y-6 animate-fade-in">
@@ -90,60 +90,6 @@ const HeroSectionPlayful = ({
                   </div>
                 ))}
               </div>
-
-              {/* Search Card - One Line Centered */}
-              <div className="w-full flex justify-center items-center px-4">
-                <div className="bg-card rounded-3xl p-6 shadow-[var(--shadow-soft)] border border-border/50 hover:shadow-[var(--shadow-hover)] transition-shadow">
-                  <h3 className="text-xl font-bold mb-4 text-center">Find Your Peace of Mind</h3>
-                  
-                  <div className="flex flex-col lg:flex-row gap-3 items-stretch">
-                    <SuburbAutocomplete
-                      value={location}
-                      onChange={setLocation}
-                      placeholder="Enter suburb or city"
-                    />
-                    
-                    <Select value={serviceType} onValueChange={setServiceType}>
-                      <SelectTrigger className="h-11 w-full lg:w-[180px]">
-                        <SelectValue placeholder="Service type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pet_sitting_sitters_home">🏠 At Sitter's Home</SelectItem>
-                        <SelectItem value="pet_sitting_owners_home">🏡 At Your Home</SelectItem>
-                        <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
-                        <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    <Input 
-                      type="date"
-                      value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
-                      className="h-11 w-full lg:w-[180px]"
-                      min={new Date().toISOString().split('T')[0]}
-                      placeholder="Check-in"
-                    />
-                    
-                    <Input 
-                      type="date"
-                      value={checkOut}
-                      onChange={(e) => setCheckOut(e.target.value)}
-                      className="h-11 w-full lg:w-[180px]"
-                      min={checkIn || new Date().toISOString().split('T')[0]}
-                      placeholder="Check-out"
-                    />
-                    
-                    <Button 
-                      size="lg" 
-                      className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-8 whitespace-nowrap"
-                      onClick={handleSearch}
-                    >
-                      <Search className="mr-2 h-5 w-5" />
-                      Search
-                    </Button>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Right side - Tilted Photos Collage */}
@@ -178,6 +124,60 @@ const HeroSectionPlayful = ({
 
                 {/* Decorative paw prints */}
                 <div className="absolute bottom-4 right-4 text-primary/10 text-8xl">🐾</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Search Card - Centered Below Content */}
+          <div className="w-full flex justify-center items-center">
+            <div className="bg-card rounded-3xl p-6 shadow-[var(--shadow-soft)] border border-border/50 hover:shadow-[var(--shadow-hover)] transition-shadow">
+              <h3 className="text-xl font-bold mb-4 text-center">Find Your Peace of Mind</h3>
+              
+              <div className="flex flex-col lg:flex-row gap-3 items-stretch">
+                <SuburbAutocomplete
+                  value={location}
+                  onChange={setLocation}
+                  placeholder="Enter suburb or city"
+                />
+                
+                <Select value={serviceType} onValueChange={setServiceType}>
+                  <SelectTrigger className="h-11 w-full lg:w-[180px]">
+                    <SelectValue placeholder="Service type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pet_sitting_sitters_home">🏠 At Sitter's Home</SelectItem>
+                    <SelectItem value="pet_sitting_owners_home">🏡 At Your Home</SelectItem>
+                    <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
+                    <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Input 
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  className="h-11 w-full lg:w-[180px]"
+                  min={new Date().toISOString().split('T')[0]}
+                  placeholder="Check-in"
+                />
+                
+                <Input 
+                  type="date"
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                  className="h-11 w-full lg:w-[180px]"
+                  min={checkIn || new Date().toISOString().split('T')[0]}
+                  placeholder="Check-out"
+                />
+                
+                <Button 
+                  size="lg" 
+                  className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-8 whitespace-nowrap"
+                  onClick={handleSearch}
+                >
+                  <Search className="mr-2 h-5 w-5" />
+                  Search
+                </Button>
               </div>
             </div>
           </div>
