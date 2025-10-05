@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Filter, Search, X } from 'lucide-react';
+import { MapPin, Filter, Search, X, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
@@ -181,23 +181,19 @@ export default function FindSitters() {
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.replaceState({}, '', newUrl);
 
-    // Auto-scroll to results after search - more aggressive on mobile
-    setTimeout(() => {
-      const resultsSection = document.getElementById('search-results');
-      if (resultsSection) {
-        if (isMobile) {
-          // On mobile, scroll past the search form entirely to show results
-          const resultsTop = resultsSection.offsetTop;
-          window.scrollTo({ 
-            top: resultsTop - 20, // Small offset from top
-            behavior: 'smooth' 
-          });
-        } else {
-          // On desktop, standard smooth scroll
+    // Auto-scroll to results after search - on mobile scroll to top of page to show results immediately
+    if (isMobile) {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    } else {
+      setTimeout(() => {
+        const resultsSection = document.getElementById('search-results');
+        if (resultsSection) {
           resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }
-    }, 300);
+      }, 200);
+    }
   };
 
   const handleApplyFilters = (filters: any) => {
@@ -280,8 +276,8 @@ export default function FindSitters() {
         }}
       />
       
-      {/* Hero Section with Search */}
-      <section className="relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden">
+      {/* Hero Section with Search - Hide on mobile when results shown */}
+      <section className={`relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIj4KICAgICAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg==')] opacity-30"></div>
         </div>
@@ -396,6 +392,18 @@ export default function FindSitters() {
       {/* Results */}
       <div id="search-results" className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
+          {/* Mobile: New Search button when results shown */}
+          {isMobile && searchPerformed && (
+            <div className="mb-6">
+              <Link to="/">
+                <Button variant="outline" className="w-full h-12">
+                  <Home className="mr-2 h-5 w-5" />
+                  New Search
+                </Button>
+              </Link>
+            </div>
+          )}
+          
           {/* Search Results Header */}
           {searchPerformed && (
             <div className="mb-6 md:mb-8">
