@@ -319,8 +319,13 @@ export default function Bookings() {
                     </div>
                     
                      <div className="flex flex-col space-y-2 lg:items-end">
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
+                        <div className="flex flex-wrap gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleViewDetails(booking)}
+                            className="min-w-[100px]"
+                          >
                             View Details
                           </Button>
                           {(booking.status === 'confirmed' || booking.status === 'in_progress') && (
@@ -334,6 +339,7 @@ export default function Bookings() {
                                   navigate('/daily-reports');
                                 }
                               }}
+                              className="min-w-[120px]"
                             >
                               {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
                             </Button>
@@ -342,7 +348,7 @@ export default function Bookings() {
                             <Button 
                               size="sm" 
                               onClick={() => handleCompletePayment(booking)}
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-green-600 hover:bg-green-700 min-w-[150px] whitespace-nowrap"
                             >
                               <CreditCard className="w-4 h-4 mr-2" />
                               Complete Payment
@@ -353,6 +359,7 @@ export default function Bookings() {
                              variant="destructive" 
                              size="sm" 
                              onClick={() => handleCancelBooking(booking)}
+                             className="min-w-[80px]"
                            >
                              Cancel
                            </Button>

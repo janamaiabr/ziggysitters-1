@@ -288,7 +288,7 @@ export default function BookingAccordion({ sitter, servicesData = [], isOpen = f
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Start Date *</label>
                   <div className="relative">
-                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Input
                       type="date"
                       value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
@@ -296,16 +296,22 @@ export default function BookingAccordion({ sitter, servicesData = [], isOpen = f
                         const date = e.target.value ? new Date(e.target.value) : undefined;
                         handleDateSelect(date, 'start');
                       }}
-                      className="pl-10"
+                      className="pl-10 h-12 text-base"
+                      style={{ WebkitAppearance: 'none' }}
                       min={format(new Date(), 'yyyy-MM-dd')}
                     />
                   </div>
+                  {startDate && (
+                    <p className="text-sm text-primary font-medium">
+                      Selected: {format(startDate, 'MMM dd, yyyy')}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-3">
                   <label className="text-sm font-medium">End Date *</label>
                   <div className="relative">
-                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Input
                       type="date"
                       value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
@@ -313,10 +319,16 @@ export default function BookingAccordion({ sitter, servicesData = [], isOpen = f
                         const date = e.target.value ? new Date(e.target.value) : undefined;
                         handleDateSelect(date, 'end');
                       }}
-                      className="pl-10"
+                      className="pl-10 h-12 text-base"
+                      style={{ WebkitAppearance: 'none' }}
                       min={startDate ? format(startDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')}
                     />
                   </div>
+                  {endDate && (
+                    <p className="text-sm text-primary font-medium">
+                      Selected: {format(endDate, 'MMM dd, yyyy')}
+                    </p>
+                  )}
                 </div>
               </div>
 
