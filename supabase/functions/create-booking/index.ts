@@ -133,7 +133,7 @@ serve(async (req) => {
         pet_ids: bookingData.petIds,
         special_instructions: bookingData.specialInstructions,
         total_amount: bookingData.totalAmount,
-        platform_fee: Math.round(bookingData.totalAmount * 0.1 * 100) / 100, // 10% listing fee
+        platform_fee: Math.round(bookingData.totalAmount * 0.20 * 100) / 100, // 20% platform fee
         status: 'pending',
         payment_status: 'pending'
       }])
@@ -145,7 +145,34 @@ serve(async (req) => {
     }
     logStep("Booking created", { bookingId: booking.id, reference: booking.booking_reference });
 
-    // Create a one-time payment session using dynamic pricing
+    // Get sitter's Stripe account
+    const { data: sitterProfile, error: sitterError } = await supabaseClient
+      .from('profiles')
+      .select('stripe_account_id, stripe_account_enabled, first_name, last_name')
+      .eq('id', bookingData.sitterId)
+      .single();
+
+    if (sitterError || !sitterProfile) {
+      throw new Error('Sitter profile not found');
+    }
+
+    if (!sitterProfile.stripe_account_id || !sitterProfile.stripe_account_enabled) {
+      throw new Error(`${sitterProfile.first_name} ${sitterProfile.last_name} has not completed Stripe Connect setup yet. Please choose another sitter or contact this sitter to complete their payment setup.`);
+    }
+
+    logStep('Sitter Stripe account verified', { accountId: sitterProfile.stripe_account_id });
+
+    // Calculate platform fee (20% of total)
+    const totalAmountCents = Math.round(bookingData.totalAmount * 100);
+    const platformFeeAmount = Math.round(totalAmountCents * 0.20);
+
+    logStep('Payment breakdown', { 
+      totalAmount: bookingData.totalAmount,
+      platformFee: platformFeeAmount / 100,
+      sitterReceives: (totalAmountCents - platformFeeAmount) / 100
+    });
+
+    // Create a one-time payment session using Stripe Connect destination charge
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -157,12 +184,18 @@ serve(async (req) => {
               name: `${dbServiceType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`,
               description: `Pet care service from ${bookingData.startDate} to ${bookingData.endDate}`,
             },
-            unit_amount: Math.round(bookingData.totalAmount * 100), // Convert to cents
+            unit_amount: totalAmountCents,
           },
           quantity: 1,
         },
       ],
       mode: "payment",
+      payment_intent_data: {
+        application_fee_amount: platformFeeAmount,
+        transfer_data: {
+          destination: sitterProfile.stripe_account_id,
+        },
+      },
       success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${booking.booking_reference}`,
       cancel_url: `${req.headers.get("origin")}/sitter/${bookingData.sitterId}?booking_cancelled=true`,
       metadata: {

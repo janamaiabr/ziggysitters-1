@@ -370,6 +370,9 @@ export type Database = {
           rating: number | null
           response_rate: number | null
           role: Database["public"]["Enums"]["user_role"]
+          stripe_account_enabled: boolean | null
+          stripe_account_id: string | null
+          stripe_onboarding_completed: boolean | null
           suburb: string | null
           total_reviews: number | null
           updated_at: string
@@ -401,6 +404,9 @@ export type Database = {
           rating?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"]
+          stripe_account_enabled?: boolean | null
+          stripe_account_id?: string | null
+          stripe_onboarding_completed?: boolean | null
           suburb?: string | null
           total_reviews?: number | null
           updated_at?: string
@@ -432,6 +438,9 @@ export type Database = {
           rating?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"]
+          stripe_account_enabled?: boolean | null
+          stripe_account_id?: string | null
+          stripe_onboarding_completed?: boolean | null
           suburb?: string | null
           total_reviews?: number | null
           updated_at?: string

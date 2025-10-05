@@ -14,3 +14,13 @@ verify_jwt = false
 
 [functions.send-daily-report-reminder]
 verify_jwt = false
+
+[functions.stripe-connect-onboarding]
+verify_jwt = true
+
+[functions.stripe-connect-account-status]
+verify_jwt = true
+
+[functions.process-booking-payout]
+verify_jwt = false
+

@@ -33,6 +33,12 @@ export default function Profile() {
   const [portfolioPhotos, setPortfolioPhotos] = useState([]);
   const [editingService, setEditingService] = useState<string | null>(null);
   const [serviceEditData, setServiceEditData] = useState<any>({});
+  const [stripeStatus, setStripeStatus] = useState<{
+    connected: boolean;
+    enabled: boolean;
+    onboarding_completed: boolean;
+  } | null>(null);
+  const [checkingStripe, setCheckingStripe] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -40,6 +46,7 @@ export default function Profile() {
       if (profile.role === 'pet_sitter') {
         fetchSitterServices();
         fetchPortfolioPhotos();
+        checkStripeStatus();
       }
       if (profile.role === 'pet_owner') {
         fetchUserPets();
@@ -369,6 +376,39 @@ export default function Profile() {
       toast({
         title: "Upload failed",
         description: "Failed to upload photo. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const checkStripeStatus = async () => {
+    setCheckingStripe(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-connect-account-status');
+      if (!error && data) {
+        setStripeStatus(data);
+      }
+    } catch (error) {
+      console.error('Error checking Stripe status:', error);
+    } finally {
+      setCheckingStripe(false);
+    }
+  };
+
+  const handleStripeConnect = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error initiating Stripe Connect:', error);
+      toast({
+        title: "Connection failed",
+        description: "Failed to connect to Stripe. Please try again.",
         variant: "destructive",
       });
     }
@@ -1103,6 +1143,95 @@ export default function Profile() {
                         </div>
                       </>
                     )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Stripe Connect Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment Setup</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h3 className="font-medium mb-2">Connect Your Bank Account</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Connect your bank account to receive automatic payments after completing bookings. 
+                    We use Stripe to ensure secure payments. The platform keeps a 20% service fee.
+                  </p>
+                  
+                  {checkingStripe ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                      <span className="text-sm text-muted-foreground">Checking connection status...</span>
+                    </div>
+                  ) : stripeStatus?.enabled ? (
+                    <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <div className="flex-1">
+                        <p className="font-medium text-green-700">Bank Account Connected</p>
+                        <p className="text-sm text-green-600">
+                          You're all set to receive payments
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={checkStripeStatus}
+                      >
+                        Refresh Status
+                      </Button>
+                    </div>
+                  ) : stripeStatus?.connected && !stripeStatus?.enabled ? (
+                    <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                      <div className="flex-1">
+                        <p className="font-medium text-yellow-700">Setup Incomplete</p>
+                        <p className="text-sm text-yellow-600">
+                          Please complete your Stripe account setup to receive payments
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleStripeConnect}
+                      >
+                        Complete Setup
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <Button
+                        onClick={handleStripeConnect}
+                        className="w-full md:w-auto"
+                      >
+                        <DollarSign className="w-4 h-4 mr-2" />
+                        Connect Bank Account
+                      </Button>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        You must connect a bank account before you can accept bookings
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Payment Fee Information */}
+                <div className="border-t pt-4">
+                  <h3 className="font-medium mb-2">Payment Structure</h3>
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span>Your earnings:</span>
+                      <span className="font-medium text-foreground">80% of booking amount</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Platform service fee:</span>
+                      <span className="font-medium text-foreground">20% of booking amount</span>
+                    </div>
+                    <p className="text-xs pt-2 border-t">
+                      Example: For a $100 booking, you receive $80 and the platform keeps $20 for payment processing, 
+                      customer support, and platform maintenance.
+                    </p>
                   </div>
                 </div>
               </CardContent>
