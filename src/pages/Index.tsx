@@ -196,8 +196,6 @@ const Index = () => {
                      if (checkIn) params.set('checkIn', checkIn);
                      if (checkOut) params.set('checkOut', checkOut);
                      navigate(`/find-sitters?${params.toString()}`);
-                     // Scroll to top after navigation
-                     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
                   }}
                 >
                    <Search className="mr-2 h-5 w-5" />
