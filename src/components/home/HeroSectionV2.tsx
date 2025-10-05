@@ -63,7 +63,7 @@ const HeroSectionV2 = ({
               <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-gradient">
                 "How's My Pet?"
               </span>
-              <span className="block text-3xl md:text-5xl lg:text-6xl mt-4">Again.</span>
+              <span className="block text-4xl md:text-6xl lg:text-7xl mt-4">Again.</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-medium leading-relaxed">

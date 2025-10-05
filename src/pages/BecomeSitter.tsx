@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import heroImage from '@/assets/hero-image.jpg';
+import { metaPixel } from '@/lib/metaPixel';
 
 const benefits = [
   {
@@ -108,6 +109,9 @@ export default function BecomeSitter() {
     try {
       // Simulate API call - replace with actual submission logic later
       await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Track lead submission
+      metaPixel.trackLead({ content_category: 'Become Sitter' });
       
       toast({
         title: "Application Submitted!",

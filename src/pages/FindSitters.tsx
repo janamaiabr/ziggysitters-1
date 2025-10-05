@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { metaPixel } from '@/lib/metaPixel';
 
 // No more mock data - using real database profiles
 
@@ -170,6 +171,9 @@ export default function FindSitters() {
     console.log('Filtered results:', filtered);
     setFilteredSitters(filtered);
     setSearchPerformed(true);
+
+    // Track search event
+    metaPixel.trackSearch(location || serviceType || 'pet sitter');
 
     // Update URL with search parameters
     const params = new URLSearchParams();

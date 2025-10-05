@@ -19,6 +19,7 @@ import {
 import BookingAccordion from '@/components/booking/BookingAccordion';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { metaPixel } from '@/lib/metaPixel';
 
 interface SitterData {
   id: string;
@@ -55,6 +56,10 @@ export default function SitterProfile() {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
     if (shouldOpenBooking && user) {
       setIsBookingOpen(true);
+      
+      // Track view content when viewing sitter profile for booking
+      metaPixel.trackViewContent('Sitter Profile', 'Pet Sitter');
+      
       // Scroll to booking section after a brief delay
       setTimeout(() => {
         const bookingSection = document.getElementById('booking-section');

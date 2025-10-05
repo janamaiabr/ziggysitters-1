@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
 import { CalendarIcon, Clock, DollarSign, MapPin, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { metaPixel } from '@/lib/metaPixel';
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -155,6 +156,9 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
       if (error) throw error;
 
       if (data?.url) {
+        // Track initiate checkout
+        metaPixel.trackInitiateCheckout({ value: total, currency: 'NZD' });
+        
         // Redirect to Stripe checkout
         window.open(data.url, '_blank');
         onClose();

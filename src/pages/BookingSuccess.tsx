@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import { metaPixel } from "@/lib/metaPixel";
 
 const BookingSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -35,6 +36,10 @@ const BookingSuccess = () => {
 
         if (data?.success) {
           setPaymentStatus('success');
+          
+          // Track purchase completion
+          metaPixel.trackPurchase(data.amount || 0, 'NZD');
+          
           toast({
             title: "Payment Successful!",
             description: "Your booking has been confirmed.",

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { MapPin, Phone, Mail, Clock, MessageCircle, HelpCircle, Shield } from 'lucide-react';
+import { metaPixel } from '@/lib/metaPixel';
 
 export default function Contact() {
   const { toast } = useToast();
@@ -43,6 +44,9 @@ export default function Contact() {
       });
 
       if (error) throw error;
+
+      // Track contact event
+      metaPixel.trackContact();
 
       toast({
         title: "Message Sent!",

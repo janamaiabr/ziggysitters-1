@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, PawPrint } from 'lucide-react';
 import TermsAcceptance from '@/components/TermsAcceptance';
 import { supabase } from '@/integrations/supabase/client';
+import { metaPixel } from '@/lib/metaPixel';
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -103,6 +104,9 @@ export default function Auth() {
           console.error('Failed to send welcome email:', emailError);
           // Don't block signup if email fails
         }
+        
+        // Track registration completion
+        metaPixel.trackCompleteRegistration();
         
         toast({
           title: "Account Created!",
