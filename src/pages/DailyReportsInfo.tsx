@@ -198,7 +198,7 @@ export default function DailyReportsInfo() {
               Quality Reports = Fair Payment
             </h2>
             <p className="text-xl mb-6 text-blue-100 max-w-3xl mx-auto">
-              Our sitters' payments are directly linked to the quality and completion of daily reports. 
+              Complete daily reports ensure 100% payment. Missing reports result in a 15% deduction. 
               This ensures your pet receives the attention and care they deserve.
             </p>
             

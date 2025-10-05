@@ -179,7 +179,7 @@ export default function DailyReports() {
         <CardContent>
           <div className="space-y-2 text-sm">
             <p><strong>✅ 100% Payment:</strong> Submit daily reports for ALL required days</p>
-            <p><strong>⚠️ 50% Payment:</strong> Miss even one daily report</p>
+            <p><strong>⚠️ 15% Deduction:</strong> Miss even one daily report</p>
             <p><strong>⏰ Deadline:</strong> Reports must be submitted by 9 PM each day</p>
             <p><strong>📸 Requirements:</strong> At least one photo + comprehensive details required</p>
           </div>

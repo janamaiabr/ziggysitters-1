@@ -12,7 +12,7 @@ const forOwners = [
     step: 1,
     icon: Search,
     title: 'Search & Browse',
-    description: 'Find sitters who MUST send daily photo updates or get 50% pay'
+    description: 'Find sitters who MUST send daily photo updates or face 15% deduction'
   },
   {
     step: 2,
@@ -57,7 +57,7 @@ const forSitters = [
     step: 4,
     icon: CreditCard,
     title: 'Earn Full Payment',
-    description: '100% pay for complete daily reporting, 50% for incomplete'
+    description: '100% pay for complete daily reporting, 15% deduction for incomplete'
   }
 ];
 
@@ -128,7 +128,7 @@ export default function HowItWorks() {
             <Badge variant="secondary" className="mb-4">For Pet Owners</Badge>
             <h2 className="text-3xl font-bold mb-4">Never Wonder Again</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Get daily photo updates and detailed reports. If sitters don't send them, they get 50% payment.
+              Get daily photo updates and detailed reports. If sitters don't send them, they face a 15% deduction.
             </p>
           </div>
           

@@ -52,7 +52,7 @@ const HeroSectionV2 = ({
           <div className="flex justify-center mb-6 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 shadow-lg">
               <Zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">New Zealand's #1 Accountability Platform</span>
+              <span className="text-sm font-semibold text-primary">New Zealand's Pet Sitting Accountability Platform</span>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ const HeroSectionV2 = ({
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-10 animate-fade-in">
             {[
               { icon: Camera, text: "Daily Photo Proof", color: "text-blue-600" },
-              { icon: Shield, text: "50% Penalty = Accountability", color: "text-green-600" },
+              { icon: Shield, text: "15% Penalty = Accountability", color: "text-green-600" },
               { icon: Star, text: "4.9★ Verified Sitters", color: "text-yellow-600" }
             ].map((item, idx) => (
               <div 
@@ -186,7 +186,7 @@ const HeroSectionV2 = ({
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                 Other platforms <span className="line-through opacity-60">suggest</span> daily updates. 
                 We <span className="text-primary font-bold">enforce</span> them. 
-                Miss a report? <span className="text-destructive font-bold">Lose 50% payment</span>. 
+                Miss a report? <span className="text-destructive font-bold">Lose 15% payment</span>. 
                 Your anxiety ends here.
               </p>
             </div>

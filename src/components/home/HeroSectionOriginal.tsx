@@ -20,7 +20,7 @@ const trustFeatures = [
   {
     icon: Camera,
     title: 'Daily Photo Updates',
-    description: 'Mandatory daily reports with photos - or sitters get 50% payment'
+    description: 'Mandatory daily reports with photos - or sitters face 15% deduction'
   },
   {
     icon: Shield,

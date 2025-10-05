@@ -208,6 +208,75 @@ export default function BecomeSitter() {
         </div>
       </div>
 
+      {/* Daily Reports Accountability Section */}
+      <div className="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge variant="secondary" className="mb-4">Our Commitment to Quality</Badge>
+              <h2 className="text-3xl font-bold mb-4">Daily Reports: Your Promise of Excellence</h2>
+              <p className="text-lg text-muted-foreground">
+                We ensure pet owners get the peace of mind they deserve—and you get the credit for your great work
+              </p>
+            </div>
+            
+            <Card className="border-2 border-primary/20">
+              <CardContent className="p-8">
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">You're Already Doing Amazing Work</h3>
+                      <p className="text-muted-foreground">
+                        As a caring sitter, you naturally want to keep pet owners updated. Our daily report system simply makes it official—and helps you stand out from the crowd.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Heart className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Why Pet Owners Choose ZiggySitters</h3>
+                      <p className="text-muted-foreground">
+                        Pet owners love our platform because they're <strong>guaranteed</strong> daily photo updates. This means more bookings for you and happier clients who leave 5-star reviews.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Shield className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">The 15% Accountability Standard</h3>
+                      <p className="text-muted-foreground mb-3">
+                        To maintain our platform's promise of daily updates, we have a simple policy: complete all daily reports and earn <strong>100% payment</strong>. Miss a report, and there's a 15% deduction.
+                      </p>
+                      <p className="text-muted-foreground">
+                        This isn't a punishment—it's what sets us apart from other platforms and keeps pet owners coming back. When you consistently send reports, you build trust, get better reviews, and earn more repeat bookings.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-primary/5 rounded-lg p-6 mt-6">
+                    <p className="text-center font-semibold text-lg mb-2">
+                      ✨ The Reality: Most Sitters Send Reports Anyway
+                    </p>
+                    <p className="text-center text-muted-foreground">
+                      98% of our sitters complete their daily reports without issue because they're already caring, communicative professionals. The policy simply ensures pet owners always get the peace of mind they're paying for.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
       {/* How It Works */}
       <div className="py-20">
         <div className="container mx-auto px-4">
