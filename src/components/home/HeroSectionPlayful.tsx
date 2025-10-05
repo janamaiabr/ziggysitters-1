@@ -92,12 +92,12 @@ const HeroSectionPlayful = ({
               </div>
 
               {/* Search Card - One Line Centered */}
-              <div className="w-full max-w-6xl mx-auto">
-                <div className="bg-card rounded-3xl p-6 shadow-[var(--shadow-soft)] border border-border/50 hover:shadow-[var(--shadow-hover)] transition-shadow">
+              <div className="w-full flex justify-center px-4">
+                <div className="bg-card rounded-3xl p-6 shadow-[var(--shadow-soft)] border border-border/50 hover:shadow-[var(--shadow-hover)] transition-shadow w-full max-w-7xl">
                   <h3 className="text-xl font-bold mb-4 text-center">Find Your Peace of Mind</h3>
                   
-                  <div className="flex flex-col lg:flex-row gap-3 items-center justify-center">
-                    <div className="w-full lg:w-auto lg:min-w-[200px]">
+                  <div className="flex flex-col lg:flex-row gap-3 items-stretch justify-center">
+                    <div className="w-full lg:w-auto lg:min-w-[200px] lg:flex-1">
                       <SuburbAutocomplete
                         value={location}
                         onChange={setLocation}
@@ -105,7 +105,7 @@ const HeroSectionPlayful = ({
                       />
                     </div>
                     
-                    <div className="w-full lg:w-auto lg:min-w-[180px]">
+                    <div className="w-full lg:w-auto lg:min-w-[180px] lg:flex-1">
                       <Select value={serviceType} onValueChange={setServiceType}>
                         <SelectTrigger className="h-11">
                           <SelectValue placeholder="Service type" />
@@ -119,7 +119,7 @@ const HeroSectionPlayful = ({
                       </Select>
                     </div>
                     
-                    <div className="w-full lg:w-auto lg:min-w-[160px]">
+                    <div className="w-full lg:w-auto lg:min-w-[160px] lg:flex-1">
                       <Input 
                         type="date"
                         value={checkIn}
@@ -130,7 +130,7 @@ const HeroSectionPlayful = ({
                       />
                     </div>
                     
-                    <div className="w-full lg:w-auto lg:min-w-[160px]">
+                    <div className="w-full lg:w-auto lg:min-w-[160px] lg:flex-1">
                       <Input 
                         type="date"
                         value={checkOut}
@@ -143,7 +143,7 @@ const HeroSectionPlayful = ({
                     
                     <Button 
                       size="lg" 
-                      className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-8 lg:min-w-[120px]"
+                      className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-8 lg:min-w-[140px] whitespace-nowrap"
                       onClick={handleSearch}
                     >
                       <Search className="mr-2 h-5 w-5" />
