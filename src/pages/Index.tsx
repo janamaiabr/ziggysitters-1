@@ -10,8 +10,9 @@ import { MapPin, Star, CheckCircle, Camera, Shield, Clock, DollarSign, Search, H
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
 import { supabase } from '@/integrations/supabase/client';
-// Import both hero versions - swap these to switch between versions
-import HeroSectionV2 from '@/components/home/HeroSectionV2';
+// Import hero versions - swap these to switch between versions
+import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
+// import HeroSectionV2 from '@/components/home/HeroSectionV2';
 // import HeroSectionOriginal from '@/components/home/HeroSectionOriginal';
 
 const Index = () => {
@@ -115,8 +116,8 @@ const Index = () => {
         structuredData={structuredData}
       />
       <div className="bg-gradient-to-b from-background to-accent/20">
-      {/* Hero Section - To rollback, replace HeroSectionV2 with HeroSectionOriginal */}
-      <HeroSectionV2 
+      {/* Hero Section - To rollback, replace HeroSectionPlayful with HeroSectionV2 */}
+      <HeroSectionPlayful
         location={location}
         setLocation={setLocation}
         serviceType={serviceType}
