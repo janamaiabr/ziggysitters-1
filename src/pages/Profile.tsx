@@ -40,6 +40,15 @@ export default function Profile() {
   } | null>(null);
   const [checkingStripe, setCheckingStripe] = useState(false);
 
+  // Handle URL tab parameter on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, []);
+
   useEffect(() => {
     if (profile) {
       fetchBookings();
@@ -51,6 +60,7 @@ export default function Profile() {
         // Handle Stripe Connect return URLs
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('stripe_success') === 'true') {
+          setActiveTab('verification');
           toast({
             title: "Stripe Connected!",
             description: "Your bank account has been successfully connected.",
@@ -60,6 +70,7 @@ export default function Profile() {
           // Clean up URL
           window.history.replaceState({}, '', '/profile?tab=verification');
         } else if (urlParams.get('stripe_refresh') === 'true') {
+          setActiveTab('verification');
           toast({
             title: "Setup Incomplete",
             description: "Please complete your Stripe setup to receive payments.",

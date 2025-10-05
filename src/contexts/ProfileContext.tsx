@@ -62,11 +62,14 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         .from('profiles')
         .select('*')
         .eq('user_id', user?.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
         console.log('ProfileContext: Setting needsOnboarding to true due to error');
+        setNeedsOnboarding(true);
+      } else if (!data) {
+        console.log('ProfileContext: No profile found, setting needsOnboarding to true');
         setNeedsOnboarding(true);
       } else {
         console.log('ProfileContext: Profile found:', data);

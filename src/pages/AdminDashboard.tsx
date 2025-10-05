@@ -57,7 +57,7 @@ export default function AdminDashboard() {
         .from('profiles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
       setIsAdmin(data?.role === 'admin');
     } catch (error) {

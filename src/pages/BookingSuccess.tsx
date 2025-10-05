@@ -14,21 +14,44 @@ const BookingSuccess = () => {
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'failed' | 'pending'>('pending');
   
   const sessionId = searchParams.get('session_id');
-  const bookingId = searchParams.get('booking_id');
+  const bookingRef = searchParams.get('booking_ref');
+  const bookingId = searchParams.get('booking_id'); // Legacy support
 
   useEffect(() => {
     const verifyPayment = async () => {
-      if (!sessionId || !bookingId) {
+      // Need either booking_ref (new) or booking_id (legacy)
+      if (!sessionId || (!bookingRef && !bookingId)) {
+        console.error('Missing session_id or booking reference');
         setPaymentStatus('failed');
         setIsVerifying(false);
         return;
       }
 
       try {
+        // If we have booking_ref, we need to look up the booking_id first
+        let actualBookingId = bookingId;
+        
+        if (!actualBookingId && bookingRef) {
+          const { data: booking, error: lookupError } = await supabase
+            .from('bookings')
+            .select('id')
+            .eq('booking_reference', bookingRef)
+            .maybeSingle();
+          
+          if (lookupError || !booking) {
+            console.error('Could not find booking with reference:', bookingRef);
+            setPaymentStatus('failed');
+            setIsVerifying(false);
+            return;
+          }
+          
+          actualBookingId = booking.id;
+        }
+
         const { data, error } = await supabase.functions.invoke('verify-payment', {
           body: {
             session_id: sessionId,
-            booking_id: bookingId
+            booking_id: actualBookingId
           }
         });
 
@@ -66,7 +89,7 @@ const BookingSuccess = () => {
     };
 
     verifyPayment();
-  }, [sessionId, bookingId]);
+  }, [sessionId, bookingId, bookingRef]);
 
   const handleViewBookings = () => {
     navigate('/bookings');

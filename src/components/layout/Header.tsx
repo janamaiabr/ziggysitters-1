@@ -34,7 +34,7 @@ export default function Header() {
         .from('profiles')
         .select('role, avatar_url, first_name, last_name')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
       setIsAdmin(data?.role === 'admin');
       setProfile(data);
