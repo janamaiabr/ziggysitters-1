@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Filter, Search } from 'lucide-react';
+import { MapPin, Filter, Search, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
@@ -355,6 +355,26 @@ export default function FindSitters() {
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
                 </Button>
+                {(location || serviceType || selectedDate || checkOutDate) && (
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    className="px-8 h-12"
+                    onClick={() => {
+                      setLocation('');
+                      setServiceType('');
+                      setPetType('');
+                      setSelectedDate(undefined);
+                      setCheckOutDate(undefined);
+                      setCurrentFilters(null);
+                      setFilteredSitters(allSitters);
+                      setSearchPerformed(false);
+                    }}
+                  >
+                    <X className="mr-2 h-5 w-5" />
+                    Clear Search
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -451,18 +471,20 @@ export default function FindSitters() {
                       )}
                     </div>
                     
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between min-h-[24px]">
                       <div className="text-sm text-muted-foreground">
                         From <span className="font-semibold text-gray-900">${sitter.baseRate}/hr</span>
                       </div>
                     </div>
                     
-                    <Button 
-                      className="w-full"
-                      onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
-                    >
-                      View Profile & Book
-                    </Button>
+                    <div className="mt-auto pt-2">
+                      <Button 
+                        className="w-full"
+                        onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                      >
+                        View Profile & Book
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -580,18 +602,20 @@ export default function FindSitters() {
                         )}
                       </div>
                       
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between min-h-[24px]">
                         <div className="text-sm text-muted-foreground">
                           From <span className="font-semibold text-gray-900">${sitter.baseRate}/hr</span>
                         </div>
                       </div>
                       
-                      <Button 
-                        className="w-full"
-                        onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
-                      >
-                        View Profile & Book
-                      </Button>
+                      <div className="mt-auto pt-2">
+                        <Button 
+                          className="w-full"
+                          onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                        >
+                          View Profile & Book
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}

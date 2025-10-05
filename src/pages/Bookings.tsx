@@ -397,7 +397,7 @@ export default function Bookings() {
 
       {/* Booking Details Dialog */}
       <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Booking Details</DialogTitle>
           </DialogHeader>
@@ -450,7 +450,9 @@ export default function Bookings() {
               {selectedBooking.special_instructions && (
                 <div>
                   <h4 className="font-medium mb-2">Special Instructions</h4>
-                  <p className="text-muted-foreground bg-muted p-3 rounded">{selectedBooking.special_instructions}</p>
+                  <div className="text-muted-foreground bg-muted p-3 rounded max-h-[200px] overflow-y-auto">
+                    {selectedBooking.special_instructions}
+                  </div>
                 </div>
               )}
               

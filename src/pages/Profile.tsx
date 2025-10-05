@@ -207,6 +207,37 @@ export default function Profile() {
   const handleSaveProfile = async () => {
     if (!profile) return;
 
+    // Validate mandatory fields
+    const requiredFields = {
+      first_name: 'First Name',
+      last_name: 'Last Name',
+      email: 'Email',
+      phone: 'Phone Number',
+      address: 'Address'
+    };
+
+    for (const [field, label] of Object.entries(requiredFields)) {
+      if (!editData[field] || !editData[field].trim()) {
+        toast({
+          title: "Missing required field",
+          description: `${label} is required and cannot be empty.`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(editData.email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('profiles')

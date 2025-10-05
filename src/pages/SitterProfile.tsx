@@ -292,35 +292,8 @@ export default function SitterProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Booking CTA Button */}
-            <Card className="mb-6">
-              <CardContent className="p-6 text-center">
-                <h3 className="text-xl font-semibold mb-3">Ready to book {sitterData.display_name.split(' ')[0]}?</h3>
-                <p className="text-muted-foreground mb-4">Secure, reliable pet care from a verified sitter</p>
-                <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
-                  onClick={() => {
-                    if (!user) {
-                      navigate(`/auth?redirect=/sitter/${id}?booking=true`);
-                    } else {
-                      setIsBookingOpen(true);
-                      // Scroll to booking section
-                      setTimeout(() => {
-                        const bookingSection = document.getElementById('booking-section');
-                        if (bookingSection) {
-                          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                      }, 100);
-                    }
-                  }}
-                >
-                  Book Your Service
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Booking Form - Hidden Accordion */}
-            <div id="booking-section" className={isBookingOpen ? 'block' : 'hidden'}>
+            {/* Booking Form - Always visible, no button needed */}
+            <div id="booking-section">
               <BookingAccordion
                 sitter={{
                   id: sitterData.id,
@@ -331,7 +304,7 @@ export default function SitterProfile() {
                   avatar: sitterData.avatar
                 }}
                 servicesData={servicesData}
-                isOpen={true}
+                isOpen={isBookingOpen}
                 onBookingComplete={() => navigate('/bookings')}
               />
             </div>
