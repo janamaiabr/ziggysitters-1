@@ -47,6 +47,26 @@ export default function Profile() {
         fetchSitterServices();
         fetchPortfolioPhotos();
         checkStripeStatus();
+        
+        // Handle Stripe Connect return URLs
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('stripe_success') === 'true') {
+          toast({
+            title: "Stripe Connected!",
+            description: "Your bank account has been successfully connected.",
+          });
+          // Refresh status after a short delay
+          setTimeout(() => checkStripeStatus(), 2000);
+          // Clean up URL
+          window.history.replaceState({}, '', '/profile?tab=verification');
+        } else if (urlParams.get('stripe_refresh') === 'true') {
+          toast({
+            title: "Setup Incomplete",
+            description: "Please complete your Stripe setup to receive payments.",
+            variant: "destructive",
+          });
+          window.history.replaceState({}, '', '/profile?tab=verification');
+        }
       }
       if (profile.role === 'pet_owner') {
         fetchUserPets();
