@@ -41,11 +41,12 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch profiles directly from profiles table instead of view - show ALL sitters
+        // Fetch only public-safe fields for sitters (no PII like email, phone, address)
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, is_verified, role, created_at, response_rate')
           .eq('role', 'pet_sitter')
+          .eq('is_verified', true)
           .order('rating', { ascending: false });
         
         console.log('Profiles data:', profilesData);
@@ -103,7 +104,7 @@ export default function FindSitters() {
             sitterServices: sitterServices,
             age: 25,
             experience: '2+ years',
-            verified: sitter.background_check_verified || false,
+            verified: sitter.is_verified || false,
             instant_booking: false,
             pet_types: ['dogs']
           };

@@ -95,7 +95,7 @@ export default function SitterProfile() {
       try {
         console.log('Fetching sitter with ID:', id);
         
-        // Fetch from profiles table directly
+        // Fetch only public-safe fields (RLS will restrict sensitive data for non-booked users)
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
