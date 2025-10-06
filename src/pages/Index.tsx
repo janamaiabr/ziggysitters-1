@@ -25,10 +25,10 @@ const Index = () => {
   const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || '');
 
   const popularServices = [
-    { name: 'Pet Sitting with Daily Reports', icon: '🏠', description: 'Your pet stays at sitter\'s home with guaranteed daily photo updates' },
-    { name: 'In-Home Care with Updates', icon: '🏡', description: 'Sitter comes to your home with mandatory daily reporting' },
-    { name: 'Drop-in Visits with Photos', icon: '⏰', description: 'Every visit documented with photos and detailed notes' },
-    { name: 'Dog Walking with Updates', icon: '🚶‍♂️', description: 'Every walk tracked with photos and activity reports' },
+    { name: 'Pet Sitting with Optional Reports', icon: '🏠', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them' },
+    { name: 'In-Home Care', icon: '🏡', description: 'Sitter comes to your home - request daily reports when booking' },
+    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick visits with optional photo documentation' },
+    { name: 'Dog Walking', icon: '🚶‍♂️', description: 'Professional walks - add daily reports for extra peace of mind' },
   ];
 
   // Real data from database
@@ -70,18 +70,18 @@ const Index = () => {
   const trustFeatures = [
     {
       icon: Camera,
-      title: 'Daily Photo Updates',
-      description: 'Mandatory daily reports with photos - or sitters face 15% deduction'
+      title: 'Optional Daily Updates',
+      description: 'Choose daily photo reports when booking - sitters must deliver or face 15% deduction'
     },
     {
       icon: Shield,
-      title: 'Guaranteed Updates',
-      description: 'First platform to enforce daily communication from sitters'
+      title: 'Your Choice, Your Control',
+      description: 'Decide if you want daily updates - accountability guaranteed when you do'
     },
     {
       icon: CheckCircle,
       title: 'Transparent Care',
-      description: 'Detailed daily reports on exercise, food, sleep, and mood'
+      description: 'Request detailed daily reports on exercise, food, sleep, and mood'
     }
   ];
 
@@ -89,7 +89,7 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "ZiggySitters",
-    "description": "Professional pet sitting services in Auckland with mandatory daily photo updates and detailed reports.",
+    "description": "Professional pet sitting services in Auckland with optional daily photo updates and detailed reports - choose your level of communication.",
     "url": "https://ziggysitters.com",
     "telephone": "+64-9-XXX-XXXX",
     "address": {
@@ -109,8 +109,8 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="ZiggySitters - Pet Sitters with Guaranteed Daily Photo Updates | Auckland"
-        description="Find trusted pet sitters in Auckland who send daily photo updates. The only platform where sitters MUST report daily or get reduced payment. Book verified pet care today."
+        title="ZiggySitters - Pet Sitters with Optional Daily Photo Updates | Auckland"
+        description="Find trusted pet sitters in Auckland who can send daily photo updates when you request them. Choose your level of communication - accountability guaranteed when you do. Book verified pet care today."
         keywords="pet sitters Auckland, daily pet reports, pet sitting with photos, verified pet care, dog walking Auckland, cat sitting, pet care updates"
         canonical="/"
         structuredData={structuredData}
@@ -132,9 +132,9 @@ const Index = () => {
       <section className="py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Guaranteed Daily Updates</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Daily Updates - When You Want Them</h2>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Every service includes mandatory daily photo reports - the transparency you've been waiting for
+              Choose to receive daily photo reports when booking - complete transparency is just one click away
             </p>
           </div>
           
@@ -250,13 +250,13 @@ const Index = () => {
                 </div>
                 
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                  Daily Reports That Actually Matter
+                  Daily Reports - Your Choice, Guaranteed Delivery
                 </h2>
                 
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Unlike other platforms where communication is optional, ZiggySitters requires daily photo updates 
-                  and detailed reports. No updates means reduced payment for sitters - ensuring you're always 
-                  connected to your pet's care.
+                  Want daily updates? Just check the box when booking. When you request reports, ZiggySitters holds
+                  sitters accountable - no updates means 15% payment reduction. You get to choose the level of communication,
+                  and we guarantee delivery when you do.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -152,7 +152,7 @@ export default function BecomeSitter() {
     <>
       <SEOHead 
         title="Become a Pet Sitter - Earn Money Caring for Pets | ZiggySitters"
-        description="Join ZiggySitters as a verified pet sitter. Earn money providing pet care with daily reporting requirements. Apply now to start your pet sitting career in Auckland."
+        description="Join ZiggySitters as a verified pet sitter. Earn money providing pet care - send daily reports when owners request them. Apply now to start your pet sitting career in Auckland."
         keywords="become pet sitter, pet sitting jobs Auckland, earn money pet care, verified pet sitter application"
         canonical="/become-sitter"
       />
@@ -218,9 +218,9 @@ export default function BecomeSitter() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <Badge variant="secondary" className="mb-4">Our Commitment to Quality</Badge>
-              <h2 className="text-3xl font-bold mb-4">Daily Reports: Your Promise of Excellence</h2>
+              <h2 className="text-3xl font-bold mb-4">Daily Reports: Optional, But Guaranteed When Requested</h2>
               <p className="text-lg text-muted-foreground">
-                We ensure pet owners get the peace of mind they deserve—and you get the credit for your great work
+                Pet owners choose whether to request daily updates - when they do, you deliver. It's that simple.
               </p>
             </div>
             
@@ -232,9 +232,9 @@ export default function BecomeSitter() {
                       <CheckCircle className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2">You're Already Doing Amazing Work</h3>
+                      <h3 className="text-xl font-semibold mb-2">Pet Owners Choose, You Deliver</h3>
                       <p className="text-muted-foreground">
-                        As a caring sitter, you naturally want to keep pet owners updated. Our daily report system simply makes it official—and helps you stand out from the crowd.
+                        Not every booking requires daily reports - pet owners choose at booking time. When they do request reports, you simply share what you're already doing. It's optional, but accountable.
                       </p>
                     </div>
                   </div>
@@ -246,7 +246,7 @@ export default function BecomeSitter() {
                     <div>
                       <h3 className="text-xl font-semibold mb-2">Why Pet Owners Choose ZiggySitters</h3>
                       <p className="text-muted-foreground">
-                        Pet owners love our platform because they're <strong>guaranteed</strong> daily photo updates. This means more bookings for you and happier clients who leave 5-star reviews.
+                        Pet owners love having the <strong>option</strong> to request daily photo updates - and knowing you'll deliver when they do. This flexibility and accountability means more bookings for you and happier clients who leave 5-star reviews.
                       </p>
                     </div>
                   </div>
@@ -256,22 +256,22 @@ export default function BecomeSitter() {
                       <Shield className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2">The 15% Accountability Standard</h3>
+                      <h3 className="text-xl font-semibold mb-2">The 15% Accountability Standard (When Reports Are Requested)</h3>
                       <p className="text-muted-foreground mb-3">
-                        To maintain our platform's promise of daily updates, we have a simple policy: complete all daily reports and earn <strong>100% payment</strong>. Miss a report, and there's a 15% deduction.
+                        For bookings where owners request daily updates, we have a simple policy: complete all requested daily reports and earn <strong>100% payment</strong>. Miss a requested report, and there's a 15% deduction.
                       </p>
                       <p className="text-muted-foreground">
-                        This isn't a punishment—it's what sets us apart from other platforms and keeps pet owners coming back. When you consistently send reports, you build trust, get better reviews, and earn more repeat bookings.
+                        This only applies when reports are requested—giving pet owners control and you accountability. When you consistently deliver requested reports, you build trust, get better reviews, and earn more repeat bookings.
                       </p>
                     </div>
                   </div>
 
                   <div className="bg-primary/5 rounded-lg p-6 mt-6">
                     <p className="text-center font-semibold text-lg mb-2">
-                      ✨ The Reality: Most Sitters Send Reports Anyway
+                      ✨ The Reality: It's Your Choice Too
                     </p>
                     <p className="text-center text-muted-foreground">
-                      98% of our sitters complete their daily reports without issue because they're already caring, communicative professionals. The policy simply ensures pet owners always get the peace of mind they're paying for.
+                      Many bookings don't require daily reports—perfect for experienced owners or short stays. When reports are requested, 98% of our sitters complete them without issue. You get the flexibility, owners get the choice, everyone wins.
                     </p>
                   </div>
                 </div>

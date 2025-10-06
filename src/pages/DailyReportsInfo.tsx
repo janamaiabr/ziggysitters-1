@@ -21,11 +21,11 @@ export default function DailyReportsInfo() {
       <div className="bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Daily Reports: Peace of Mind for Pet Parents
+            Daily Reports: Your Choice, Our Guarantee
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Every ZiggySitters booking includes comprehensive daily reports with photos, 
-            ensuring you stay connected with your pet while you're away.
+            Want daily updates with photos? Simply check the box when booking. When you request them,
+            ZiggySitters ensures your sitter delivers - or they face a 15% payment reduction.
           </p>
           <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
             <Link to="/find-sitters">
@@ -41,11 +41,11 @@ export default function DailyReportsInfo() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              How Daily Reports Work
+              How Optional Daily Reports Work
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Our comprehensive reporting system keeps you informed about your pet's 
-              well-being throughout their stay.
+              Choose to receive comprehensive reports when booking - when you do, our system
+              ensures sitters deliver quality updates about your pet's well-being.
             </p>
           </div>
 
@@ -53,12 +53,12 @@ export default function DailyReportsInfo() {
             <Card className="text-center">
               <CardHeader>
                 <Calendar className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Daily Check-ins</CardTitle>
+                <CardTitle>Choose Your Updates</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Your sitter provides detailed updates every day of your pet's care, 
-                  including activities, mood, and behavior observations.
+                  Simply check the box when booking if you want daily reports. Not every booking
+                  needs them - you decide what level of communication works best for you.
                 </p>
               </CardContent>
             </Card>
@@ -66,12 +66,12 @@ export default function DailyReportsInfo() {
             <Card className="text-center">
               <CardHeader>
                 <Camera className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Photo Updates</CardTitle>
+                <CardTitle>Guaranteed Delivery</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Multiple photos accompany each report, showing your pet enjoying 
-                  their time and giving you visual proof of their happiness.
+                  When you request reports, sitters must deliver them with photos. Our 15%
+                  payment deduction ensures accountability - reports are guaranteed when requested.
                 </p>
               </CardContent>
             </Card>
@@ -149,8 +149,11 @@ export default function DailyReportsInfo() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Daily Reports Matter
+              Why Choose Daily Reports?
             </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Many pet owners prefer the reassurance of daily updates - here's what makes them valuable
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -195,31 +198,31 @@ export default function DailyReportsInfo() {
           <div className="bg-blue-600 text-white rounded-lg p-8 text-center">
             <DollarSign className="h-16 w-16 mx-auto mb-6 text-blue-200" />
             <h2 className="text-3xl font-bold mb-4">
-              Quality Reports = Fair Payment
+              Optional, But Guaranteed When Requested
             </h2>
             <p className="text-xl mb-6 text-blue-100 max-w-3xl mx-auto">
-              Complete daily reports ensure 100% payment. Missing reports result in a 15% deduction. 
-              This ensures your pet receives the attention and care they deserve.
+              When you request daily reports, sitters must complete them for 100% payment. Missing requested
+              reports results in a 15% deduction - ensuring accountability when you choose transparency.
             </p>
             
             <div className="grid md:grid-cols-2 gap-8 mt-8">
               <div className="bg-blue-700 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-3">For Pet Parents</h3>
                 <ul className="text-left space-y-2 text-blue-100">
-                  <li>• Guaranteed daily updates with photos</li>
-                  <li>• Detailed care documentation</li>
-                  <li>• Direct communication channel</li>
-                  <li>• Quality assurance through payment structure</li>
+                  <li>• Choose if you want daily updates when booking</li>
+                  <li>• Guaranteed delivery when you request them</li>
+                  <li>• Detailed care documentation with photos</li>
+                  <li>• Accountability through payment structure</li>
                 </ul>
               </div>
               
               <div className="bg-blue-700 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-3">For Sitters</h3>
                 <ul className="text-left space-y-2 text-blue-100">
-                  <li>• Payment includes report completion bonus</li>
-                  <li>• Recognition for quality care documentation</li>
-                  <li>• Professional development opportunity</li>
-                  <li>• Building trust with pet parents</li>
+                  <li>• Reports only required when owners request them</li>
+                  <li>• 100% payment for completing requested reports</li>
+                  <li>• Build trust with detailed documentation</li>
+                  <li>• Flexibility for bookings that don't need reports</li>
                 </ul>
               </div>
             </div>
@@ -231,11 +234,11 @@ export default function DailyReportsInfo() {
       <div className="bg-gray-900 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
-            Experience Peace of Mind Pet Care
+            Your Choice, Our Guarantee
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of pet parents who trust ZiggySitters for comprehensive, 
-            documented pet care with daily reports.
+            Join thousands of pet parents who choose ZiggySitters for flexible, accountable
+            pet care - with optional daily reports that are guaranteed when you request them.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">

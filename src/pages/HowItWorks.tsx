@@ -12,25 +12,25 @@ const forOwners = [
     step: 1,
     icon: Search,
     title: 'Search & Browse',
-    description: 'Find sitters who MUST send daily photo updates or face 15% deduction'
+    description: 'Find verified sitters and choose if you want daily reports'
   },
   {
     step: 2,
     icon: Camera,
-    title: 'Receive Daily Updates',
-    description: 'Get comprehensive reports with photos every single day'
+    title: 'Choose Your Updates',
+    description: 'Request daily photo reports when booking - it\'s your choice'
   },
   {
     step: 3,
     icon: Heart,
     title: 'Peace of Mind',
-    description: 'Never wonder how your pet is doing - transparency guaranteed'
+    description: 'Get daily updates if requested - sitters are held accountable'
   },
   {
     step: 4,
     icon: Shield,
     title: 'Payment Protection',
-    description: 'Sitters only get full pay if they send all required updates'
+    description: 'When you request reports, sitters must deliver or face 15% deduction'
   }
 ];
 
@@ -39,25 +39,25 @@ const forSitters = [
     step: 1,
     icon: UserCheck,
     title: 'Create Profile',
-    description: 'Sign up and commit to sending daily photo updates'
+    description: 'Sign up and showcase your pet care experience'
   },
   {
     step: 2,
     icon: Camera,
-    title: 'Submit Daily Reports',
-    description: 'Send detailed daily reports with photos by 9 PM each day'
+    title: 'Submit Reports When Requested',
+    description: 'Send daily reports with photos by 9 PM for bookings that request them'
   },
   {
     step: 3,
     icon: Heart,
     title: 'Build Trust',
-    description: 'Pet owners love the transparency - get more bookings'
+    description: 'Reliable reporting builds your reputation - get more bookings'
   },
   {
     step: 4,
     icon: CreditCard,
     title: 'Earn Full Payment',
-    description: '100% pay for complete daily reporting, 15% deduction for incomplete'
+    description: '100% pay when completing requested reports, 15% deduction if missed'
   }
 ];
 
@@ -98,7 +98,7 @@ export default function HowItWorks() {
       {
         "@type": "HowToStep",
         "name": "Search for Pet Sitters",
-        "text": "Browse verified pet sitters in your area who are required to send daily photo updates or face payment deduction",
+        "text": "Browse verified pet sitters in your area and choose whether you want daily photo updates",
         "url": "https://ziggysitters.co.nz/find-sitters",
         "image": "https://ziggysitters.co.nz/images/search-sitters.jpg"
       },
@@ -111,13 +111,13 @@ export default function HowItWorks() {
       {
         "@type": "HowToStep",
         "name": "Book Your Sitter",
-        "text": "Select dates, service type, and complete secure payment through our platform",
+        "text": "Select dates, service type, and choose if you want daily reports - complete secure payment through our platform",
         "url": "https://ziggysitters.co.nz/bookings"
       },
       {
         "@type": "HowToStep",
-        "name": "Receive Daily Updates",
-        "text": "Get comprehensive daily reports with photos every day while your pet is being cared for",
+        "name": "Receive Daily Updates (Optional)",
+        "text": "Get comprehensive daily reports with photos if you requested them - sitters held accountable",
         "url": "https://ziggysitters.co.nz/daily-reports"
       }
     ]
@@ -137,10 +137,10 @@ export default function HowItWorks() {
       },
       {
         "@type": "Question",
-        "name": "What happens if a pet sitter doesn't send daily updates?",
+        "name": "What happens if a pet sitter doesn't send daily updates when requested?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "If a pet sitter fails to send the required daily photo updates and care reports, they face a 15% payment deduction. This accountability system ensures pet owners always receive transparency about their pet's care."
+          "text": "When pet owners request daily reports, sitters are held accountable. If a sitter fails to send requested daily photo updates and care reports, they face a 15% payment deduction. This accountability system ensures transparency when owners choose to receive updates."
         }
       },
       {
@@ -148,7 +148,7 @@ export default function HowItWorks() {
         "name": "How do payments work for pet sitting services?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Payments are processed securely through our platform using Stripe. You pay when you book your pet sitter, and the payment is held securely. Sitters receive payment after successful service completion, with full payment for complete daily reporting."
+          "text": "Payments are processed securely through our platform using Stripe. You pay when you book your pet sitter, and the payment is held securely. Sitters receive payment after successful service completion, with full payment when they complete any requested daily reports."
         }
       },
       {
@@ -173,8 +173,8 @@ export default function HowItWorks() {
   return (
     <>
       <SEOHead 
-        title="How It Works: Book Pet Sitters with Daily Photo Updates | ZiggySitters NZ"
-        description="Learn how to book verified pet sitters in New Zealand who provide mandatory daily photo updates. Step-by-step guide to transparent, accountable pet care with our unique payment protection system."
+        title="How It Works: Book Pet Sitters with Optional Daily Updates | ZiggySitters NZ"
+        description="Learn how to book verified pet sitters in New Zealand. Choose to receive daily photo updates when booking - when you do, sitters are held accountable with our unique payment protection system."
         keywords="how pet sitting works, book pet sitter online, daily pet photo updates, verified pet care NZ, pet sitter accountability, dog walking Auckland, pet boarding New Zealand, overnight pet care, pet care with updates"
         canonical="/how-it-works"
       />
@@ -194,9 +194,9 @@ export default function HowItWorks() {
         ></div>
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">How Pet Sitting Works with Daily Photo Updates</h1>
+            <h1 className="text-5xl font-bold mb-6">How Pet Sitting Works with Optional Daily Updates</h1>
             <p className="text-xl mb-8 opacity-90">
-              New Zealand's first pet sitting platform with mandatory daily photo updates and accountability system
+              New Zealand's flexible pet sitting platform - choose daily photo updates when you want them, with accountability guaranteed
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
@@ -217,7 +217,7 @@ export default function HowItWorks() {
             <Badge variant="secondary" className="mb-4">For Pet Owners</Badge>
             <h2 className="text-3xl font-bold mb-4">How to Book a Pet Sitter in 4 Easy Steps</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Find verified pet sitters in Auckland and across New Zealand. Get guaranteed daily photo updates and detailed care reports, or sitters face a 15% payment deduction for accountability.
+              Find verified pet sitters in Auckland and across New Zealand. Choose to receive daily photo updates when booking - when you do, sitters are held accountable with a 15% payment deduction for missed reports.
             </p>
           </div>
           
@@ -261,7 +261,7 @@ export default function HowItWorks() {
             <Badge variant="outline" className="mb-4">For Pet Sitters</Badge>
             <h2 className="text-3xl font-bold mb-4">Become a Pet Sitter: Earn Money Caring for Pets</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join New Zealand's leading pet sitting platform. Send daily photo updates, build trust with pet owners, earn competitive rates, and receive 100% payment for complete daily reporting.
+              Join New Zealand's leading pet sitting platform. When owners request daily reports, deliver them on time, build trust, earn competitive rates, and receive 100% payment.
             </p>
           </div>
           
@@ -389,12 +389,12 @@ export default function HowItWorks() {
                 answer: 'All pet sitters on ZiggySitters complete comprehensive identity verification including passport or driver\'s license validation, and profile validation before joining our platform. We verify their information and ensure they meet our safety and reliability standards.'
               },
               {
-                question: 'What happens if a pet sitter doesn\'t send daily updates?',
-                answer: 'If a pet sitter fails to send the required daily photo updates and care reports, they face a 15% payment deduction. This accountability system ensures pet owners always receive transparency about their pet\'s care.'
+                question: 'What happens if a pet sitter doesn\'t send daily updates when requested?',
+                answer: 'When pet owners request daily reports during booking, sitters must deliver them. If a sitter fails to send requested daily photo updates and care reports, they face a 15% payment deduction. This accountability system ensures transparency when owners choose to receive updates.'
               },
               {
                 question: 'How do payments work for pet sitting services?',
-                answer: 'Payments are processed securely through our platform using Stripe. You pay when you book your pet sitter, and the payment is held securely. Sitters receive payment after successful service completion, with full payment for complete daily reporting.'
+                answer: 'Payments are processed securely through our platform using Stripe. You pay when you book your pet sitter, and the payment is held securely. Sitters receive payment after successful service completion, with full payment when they complete any requested daily reports.'
               },
               {
                 question: 'Can I meet the pet sitter before booking?',
