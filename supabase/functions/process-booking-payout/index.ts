@@ -39,6 +39,7 @@ serve(async (req) => {
         total_amount,
         platform_fee,
         sitter_id,
+        requires_daily_reports,
         daily_reports_required,
         daily_reports_completed
       `)
@@ -59,8 +60,9 @@ serve(async (req) => {
       throw new Error("Booking payment not confirmed");
     }
 
-    // Check if all daily reports are submitted
-    if (booking.daily_reports_required > 0 && 
+    // Check if all daily reports are submitted (only if reports were required)
+    if (booking.requires_daily_reports && 
+        booking.daily_reports_required > 0 && 
         booking.daily_reports_completed < booking.daily_reports_required) {
       throw new Error("All daily reports must be submitted before payout");
     }

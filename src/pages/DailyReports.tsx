@@ -27,11 +27,12 @@ export default function DailyReports() {
 
   const fetchReportStats = async () => {
     try {
-      // Get sitter's bookings and reports
+      // Get sitter's bookings that require daily reports
       const { data: bookings } = await supabase
         .from('bookings')
         .select('*')
         .eq('sitter_id', profile?.id)
+        .eq('requires_daily_reports', true)
         .in('status', ['confirmed', 'in_progress', 'completed']);
 
       const { data: reports } = await supabase
@@ -43,7 +44,7 @@ export default function DailyReports() {
       let paymentImpactCount = 0;
       const currentMonth = new Date().getMonth();
 
-      // Calculate required reports and payment impact
+      // Calculate required reports and payment impact (only for bookings requiring reports)
       bookings?.forEach(booking => {
         const startDate = new Date(booking.start_date);
         const endDate = new Date(booking.end_date);
@@ -104,7 +105,7 @@ export default function DailyReports() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Daily Reports Dashboard</h1>
         <p className="text-muted-foreground">
-          Manage your daily pet reports and track your completion rate to ensure full payment.
+          Manage daily pet reports for bookings that request them. Stay on top of your reporting to ensure full payment.
         </p>
       </div>
 
@@ -169,19 +170,21 @@ export default function DailyReports() {
       </div>
 
       {/* Important Notice */}
-      <Card className="mb-8 border-l-4 border-l-red-500 bg-red-50/50">
+      <Card className="mb-8 border-l-4 border-l-amber-500 bg-amber-50/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-700">
+          <CardTitle className="flex items-center gap-2 text-amber-700">
             <AlertTriangle className="h-5 w-5" />
-            Daily Report Payment Policy
+            Daily Report Payment Policy (When Requested)
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm">
+            <p className="font-medium">For bookings that request daily reports:</p>
             <p><strong>✅ 100% Payment:</strong> Submit daily reports for ALL required days</p>
             <p><strong>⚠️ 15% Deduction:</strong> Miss even one daily report</p>
             <p><strong>⏰ Deadline:</strong> Reports must be submitted by 9 PM each day</p>
             <p><strong>📸 Requirements:</strong> At least one photo + comprehensive details required</p>
+            <p className="text-xs text-muted-foreground mt-2">Note: Pet owners can choose whether to request daily reports when booking.</p>
           </div>
         </CardContent>
       </Card>

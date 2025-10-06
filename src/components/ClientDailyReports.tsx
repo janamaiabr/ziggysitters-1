@@ -59,7 +59,7 @@ export default function ClientDailyReports() {
     if (!profile?.id) return;
 
     try {
-      // First fetch bookings
+      // First fetch bookings that require daily reports
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
         .select(`
@@ -70,9 +70,11 @@ export default function ClientDailyReports() {
           booking_reference,
           daily_reports_required,
           daily_reports_completed,
+          requires_daily_reports,
           sitter_id
         `)
         .eq('owner_id', profile.id)
+        .eq('requires_daily_reports', true)
         .in('status', ['confirmed', 'in_progress', 'completed'])
         .order('start_date', { ascending: false });
 

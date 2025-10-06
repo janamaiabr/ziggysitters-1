@@ -52,6 +52,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [requiresDailyReports, setRequiresDailyReports] = useState(true);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -144,7 +145,8 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
         endTime: serviceType === 'drop_in_visits' ? endTime : undefined,
         petIds: [], // This would come from user's pets in a real implementation
         specialInstructions,
-        totalAmount: total
+        totalAmount: total,
+        requiresDailyReports
       };
 
       console.log('Sending booking data:', bookingData);
@@ -188,6 +190,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
     setEndTime('17:00');
     setServiceType('');
     setSpecialInstructions('');
+    setRequiresDailyReports(true);
   };
 
   const handleClose = () => {
@@ -429,6 +432,25 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
               onChange={(e) => setSpecialInstructions(e.target.value)}
               rows={3}
             />
+          </div>
+
+          {/* Daily Reports Option */}
+          <div className="flex items-start space-x-3 p-4 border rounded-lg bg-muted/50">
+            <input
+              type="checkbox"
+              id="daily-reports"
+              checked={requiresDailyReports}
+              onChange={(e) => setRequiresDailyReports(e.target.checked)}
+              className="mt-1"
+            />
+            <div className="flex-1">
+              <label htmlFor="daily-reports" className="text-sm font-medium cursor-pointer">
+                Request daily reports
+              </label>
+              <p className="text-xs text-muted-foreground mt-1">
+                Get daily updates with photos and detailed information about your pet's activities, meals, mood, and wellbeing during their stay.
+              </p>
+            </div>
           </div>
 
           {/* Booking Summary */}

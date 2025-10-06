@@ -66,9 +66,11 @@ export default function SitterDailyReports() {
           owner_id,
           booking_reference,
           daily_reports_required,
-          daily_reports_completed
+          daily_reports_completed,
+          requires_daily_reports
         `)
         .eq('sitter_id', profile.id)
+        .eq('requires_daily_reports', true)
         .in('status', ['confirmed', 'in_progress'])
         .order('start_date', { ascending: true });
 
@@ -164,13 +166,13 @@ export default function SitterDailyReports() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="w-5 h-5" />
-            Active Bookings
+            Active Bookings Requesting Daily Reports
           </CardTitle>
         </CardHeader>
         <CardContent>
           {activeBookings.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">
-              No active bookings requiring daily reports at the moment.
+              No active bookings requesting daily reports at the moment.
             </p>
           ) : (
             <div className="space-y-4">

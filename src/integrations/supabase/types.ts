@@ -28,6 +28,7 @@ export type Database = {
           payment_status: string | null
           pet_ids: string[]
           platform_fee: number
+          requires_daily_reports: boolean
           service_type: Database["public"]["Enums"]["service_type"]
           sitter_id: string
           sitter_notes: string | null
@@ -53,6 +54,7 @@ export type Database = {
           payment_status?: string | null
           pet_ids: string[]
           platform_fee?: number
+          requires_daily_reports?: boolean
           service_type: Database["public"]["Enums"]["service_type"]
           sitter_id: string
           sitter_notes?: string | null
@@ -78,6 +80,7 @@ export type Database = {
           payment_status?: string | null
           pet_ids?: string[]
           platform_fee?: number
+          requires_daily_reports?: boolean
           service_type?: Database["public"]["Enums"]["service_type"]
           sitter_id?: string
           sitter_notes?: string | null

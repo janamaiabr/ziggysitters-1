@@ -41,6 +41,18 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Booking not found");
     }
 
+    // Only send reminder if daily reports are required for this booking
+    if (!booking.requires_daily_reports) {
+      console.log("Daily reports not required for this booking, skipping reminder");
+      return new Response(
+        JSON.stringify({ message: "Daily reports not required for this booking" }), 
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     const sitterEmail = booking.sitter.email;
     const sitterName = `${booking.sitter.first_name}`;
     const ownerName = `${booking.owner.first_name} ${booking.owner.last_name}`;

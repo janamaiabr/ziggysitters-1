@@ -17,6 +17,7 @@ interface BookingRequest {
   petIds: string[];
   specialInstructions?: string;
   totalAmount: number;
+  requiresDailyReports?: boolean;
 }
 
 const logStep = (step: string, details?: any) => {
@@ -120,6 +121,16 @@ serve(async (req) => {
       profile_user_id: profile.user_id 
     });
 
+    // Calculate daily reports required (only if owner requested them)
+    const requiresDailyReports = bookingData.requiresDailyReports !== false; // Default to true
+    let dailyReportsRequired = 0;
+    if (requiresDailyReports) {
+      const startDateTime = new Date(bookingData.startDate);
+      const endDateTime = new Date(bookingData.endDate);
+      const daysDiff = Math.ceil((endDateTime.getTime() - startDateTime.getTime()) / (1000 * 3600 * 24)) + 1;
+      dailyReportsRequired = Math.max(1, daysDiff);
+    }
+
     const { data: booking, error: bookingError } = await supabaseClient
       .from('bookings')
       .insert([{
@@ -135,7 +146,10 @@ serve(async (req) => {
         total_amount: bookingData.totalAmount,
         platform_fee: Math.round(bookingData.totalAmount * 0.20 * 100) / 100, // 20% platform fee
         status: 'pending',
-        payment_status: 'pending'
+        payment_status: 'pending',
+        requires_daily_reports: requiresDailyReports,
+        daily_reports_required: dailyReportsRequired,
+        daily_reports_completed: 0
       }])
       .select()
       .single();
