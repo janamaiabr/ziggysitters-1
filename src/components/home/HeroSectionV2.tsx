@@ -70,16 +70,16 @@ const HeroSectionV2 = ({
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-medium leading-relaxed">
-              Daily photo updates aren't optional—they're <span className="text-primary font-bold">guaranteed</span>. 
-              No updates? Sitters get paid less. It's that simple.
+              Choose to require daily photo updates and they're <span className="text-primary font-bold">enforceable</span>. 
+              When you request them, sitters must deliver or face a 15% payment reduction.
             </p>
           </div>
 
           {/* Value Props - Quick Glance */}
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-10 animate-fade-in">
             {[
-              { icon: Camera, text: "Daily Photo Proof", color: "text-blue-600" },
-              { icon: Shield, text: "15% Penalty = Accountability", color: "text-green-600" },
+              { icon: Camera, text: "Optional Daily Updates", color: "text-blue-600" },
+              { icon: Shield, text: "15% Penalty if Requested", color: "text-green-600" },
               { icon: Star, text: "4.9★ Verified Sitters", color: "text-yellow-600" }
             ].map((item, idx) => (
               <div 
@@ -97,7 +97,7 @@ const HeroSectionV2 = ({
             <div className="bg-card/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-2xl border border-border/50">
               <div className="mb-6">
                 <h3 className="text-xl md:text-2xl font-bold text-center mb-2">Find Your Peace of Mind</h3>
-                <p className="text-center text-muted-foreground text-sm">Book a sitter who's required to keep you updated</p>
+                <p className="text-center text-muted-foreground text-sm">Book a sitter and choose if you want daily updates enforced</p>
               </div>
 
               <div className="space-y-4">

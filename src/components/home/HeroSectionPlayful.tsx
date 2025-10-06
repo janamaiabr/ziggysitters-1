@@ -70,7 +70,7 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed">
-                  Daily photo updates aren't optional—they're <span className="text-primary relative">guaranteed<span className="absolute bottom-0 left-0 w-full h-0.5 md:h-1 bg-primary/30"></span></span>. No updates? Sitters get paid less. It's that simple.
+                  Want daily photo updates? Make them <span className="text-primary relative">enforceable<span className="absolute bottom-0 left-0 w-full h-0.5 md:h-1 bg-primary/30"></span></span>. Choose to require reports, and sitters must deliver or face a 15% payment reduction.
                 </p>
               </div>
 

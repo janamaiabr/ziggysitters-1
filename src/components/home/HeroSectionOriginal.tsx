@@ -20,17 +20,17 @@ const trustFeatures = [
   {
     icon: Camera,
     title: 'Daily Photo Updates',
-    description: 'Mandatory daily reports with photos - or sitters face 15% deduction'
+    description: 'Choose to require daily reports with photos - sitters face 15% deduction for non-compliance'
   },
   {
     icon: Shield,
-    title: 'Guaranteed Updates',
-    description: 'First platform to enforce daily communication from sitters'
+    title: 'Optional Accountability',
+    description: 'Request daily updates and we enforce them with payment guarantees'
   },
   {
     icon: CheckCircle,
     title: 'Transparent Care',
-    description: 'Detailed daily reports on exercise, food, sleep, and mood'
+    description: 'When requested: detailed daily reports on exercise, food, sleep, and mood'
   }
 ];
 
@@ -63,11 +63,10 @@ const HeroSectionOriginal = ({
       <div className="relative container mx-auto px-4">
         <div className="max-w-5xl mx-auto text-center text-gray-800">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Pet Sitters Who Send Daily Updates
+            Pet Sitters with Enforced Daily Updates
           </h1>
           <p className="text-lg md:text-xl mb-6 md:mb-8 text-gray-600 max-w-3xl mx-auto px-4">
-            The only platform where pet sitters MUST send daily photo updates and detailed reports. 
-            No updates = reduced payment. Your peace of mind is guaranteed.
+            Choose to require daily photo updates from your sitter. When you do, they MUST send them or face a 15% payment reduction. Your peace of mind, your choice.
           </p>
           
           {/* Enhanced Search Bar */}
