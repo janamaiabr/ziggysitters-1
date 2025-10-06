@@ -41,12 +41,10 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch only public-safe fields for sitters (no PII like email, phone, address)
+        // Use the secure public_sitter_profiles view that excludes PII
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, is_verified, role, created_at, response_rate')
-          .eq('role', 'pet_sitter')
-          .eq('is_verified', true)
+          .from('public_sitter_profiles')
+          .select('*')
           .order('rating', { ascending: false });
         
         console.log('Profiles data:', profilesData);
