@@ -438,22 +438,30 @@ export default function HowItWorks() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-20 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        {/* Animated background blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-1/2 -right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            Ready to Get Started?
+          </h2>
+          <p className="text-lg md:text-xl mb-8 text-muted-foreground max-w-2xl mx-auto">
             Join thousands of happy pet owners and trusted sitters in our community
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
+            <Button size="lg" className="px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => navigate('/auth')}>
               Find a Sitter
             </Button>
-            <Button variant="outline-white" size="lg" className="px-8" onClick={() => navigate('/auth')}>
+            <Button variant="outline" size="lg" className="px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => navigate('/auth')}>
               Become a Sitter
             </Button>
           </div>
         </div>
-      </div>
+      </section>
       </div>
     </>
   );

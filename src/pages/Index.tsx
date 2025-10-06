@@ -465,21 +465,29 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative py-12 md:py-20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        {/* Animated background blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-1/2 -right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6">Ready for Guaranteed Peace of Mind?</h2>
-            <p className="text-lg md:text-xl mb-6 md:mb-8 opacity-90">
-              Join thousands of pet owners who never worry again - because they get daily photo updates
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+              Ready for Guaranteed Peace of Mind?
+            </h2>
+            <p className="text-lg md:text-xl mb-6 md:mb-8 text-muted-foreground">
+              Join thousands of pet owners who choose the care their pets deserve
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-              <Button size="lg" variant="solid-white" className="px-8" onClick={() => navigate('/auth')}>
+              <Button size="lg" className="px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => navigate('/auth')}>
                 Find a Sitter Now
               </Button>
               <Button 
-                variant="outline-white"
+                variant="outline"
                 size="lg" 
-                className="px-8" 
+                className="px-8 shadow-lg hover:shadow-xl transition-all" 
                 onClick={() => navigate('/auth')}
               >
                 Join as a Sitter
