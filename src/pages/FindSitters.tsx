@@ -504,7 +504,13 @@ export default function FindSitters() {
                     <div className="mt-auto pt-2">
                       <Button 
                         className="w-full"
-                        onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                        onClick={() => {
+                          const params = new URLSearchParams({ booking: 'true' });
+                          if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                          if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                          if (serviceType) params.set('serviceType', serviceType);
+                          navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                        }}
                       >
                         View Profile & Book
                       </Button>
@@ -635,7 +641,13 @@ export default function FindSitters() {
                       <div className="mt-auto pt-2">
                         <Button 
                           className="w-full"
-                          onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                          onClick={() => {
+                            const params = new URLSearchParams({ booking: 'true' });
+                            if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                            if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                            if (serviceType) params.set('serviceType', serviceType);
+                            navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                          }}
                         >
                           View Profile & Book
                         </Button>

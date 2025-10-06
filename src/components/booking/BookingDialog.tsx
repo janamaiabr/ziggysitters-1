@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,11 @@ interface BookingDialogProps {
     services: string[];
     avatar: string;
   };
+  initialDates?: {
+    checkIn?: string;
+    checkOut?: string;
+    serviceType?: string;
+  };
 }
 
 const serviceRates = {
@@ -43,7 +48,7 @@ const serviceLabels = {
   'drop_in_visits': 'Drop-in Visits',
 };
 
-export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialogProps) {
+export default function BookingDialog({ isOpen, onClose, sitter, initialDates }: BookingDialogProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [startDateOpen, setStartDateOpen] = useState(false);
@@ -53,10 +58,26 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
   const [serviceType, setServiceType] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [requiresDailyReports, setRequiresDailyReports] = useState(true);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Pre-populate dates from URL params
+  useEffect(() => {
+    if (initialDates) {
+      if (initialDates.checkIn) {
+        setStartDate(new Date(initialDates.checkIn));
+      }
+      if (initialDates.checkOut) {
+        setEndDate(new Date(initialDates.checkOut));
+      }
+      if (initialDates.serviceType) {
+        setServiceType(initialDates.serviceType);
+      }
+    }
+  }, [initialDates]);
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
     console.log(`=== handleDateSelect called ===`);
@@ -131,6 +152,15 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
       return;
     }
 
+    if (!agreedToTerms) {
+      toast({
+        title: 'Agreement Required',
+        description: 'Please agree to the booking terms and conditions.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -191,6 +221,7 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
     setServiceType('');
     setSpecialInstructions('');
     setRequiresDailyReports(true);
+    setAgreedToTerms(false);
   };
 
   const handleClose = () => {
@@ -266,20 +297,24 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
               <SelectContent>
-                {sitter.services.map((service) => {
-                  const serviceKey = service.toLowerCase().replace(' ', '-');
-                  const rate = serviceRates[serviceKey as keyof typeof serviceRates];
-                  return (
-                    <SelectItem key={serviceKey} value={serviceKey}>
-                      <div className="flex justify-between w-full">
-                        <span>{service}</span>
-                        <span className="text-muted-foreground ml-4">
-                          ${rate}/{serviceKey === 'drop_in_visits' ? 'hour' : 'day'}
-                        </span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
+                <SelectItem value="pet_sitting_sitters_home">
+                  <div className="flex justify-between w-full">
+                    <span>Pet Sitting in Sitter's Home</span>
+                    <span className="text-muted-foreground ml-4">$66.00/day</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="pet_sitting_owners_home">
+                  <div className="flex justify-between w-full">
+                    <span>Pet Sitting in Owner's Home</span>
+                    <span className="text-muted-foreground ml-4">$55.00/day</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="drop_in_visits">
+                  <div className="flex justify-between w-full">
+                    <span>Drop-in Visits</span>
+                    <span className="text-muted-foreground ml-4">$27.50/hour</span>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -449,6 +484,26 @@ export default function BookingDialog({ isOpen, onClose, sitter }: BookingDialog
               </label>
               <p className="text-xs text-muted-foreground mt-1">
                 Get daily updates with photos and detailed information about your pet's activities, meals, mood, and wellbeing during their stay.
+              </p>
+            </div>
+          </div>
+
+          {/* Terms Agreement */}
+          <div className="flex items-start space-x-3 p-4 border rounded-lg bg-primary/5">
+            <input
+              type="checkbox"
+              id="terms-agreement"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              className="mt-1"
+            />
+            <div className="flex-1">
+              <label htmlFor="terms-agreement" className="text-sm font-medium cursor-pointer">
+                I agree to the booking terms *
+              </label>
+              <p className="text-xs text-muted-foreground mt-1">
+                I understand that this booking is subject to ZiggySitters' terms of service and cancellation policy. 
+                The sitter agrees to provide the selected service, and I agree to pay the stated amount.
               </p>
             </div>
           </div>

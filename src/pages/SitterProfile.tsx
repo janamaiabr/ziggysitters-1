@@ -56,6 +56,12 @@ export default function SitterProfile() {
   const checkOutDate = searchParams.get('checkOut');
   const serviceTypeParam = searchParams.get('serviceType');
   
+  const initialDates = {
+    checkIn: checkInDate || undefined,
+    checkOut: checkOutDate || undefined,
+    serviceType: serviceTypeParam || undefined,
+  };
+  
   // Check if booking should be automatically opened
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';

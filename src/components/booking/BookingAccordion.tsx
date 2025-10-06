@@ -80,6 +80,7 @@ export default function BookingAccordion({
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState(initialServiceType || '');
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -145,6 +146,15 @@ export default function BookingAccordion({
       return;
     }
 
+    if (!agreedToTerms) {
+      toast({
+        title: 'Agreement Required',
+        description: 'Please agree to the booking terms and conditions.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -201,6 +211,7 @@ export default function BookingAccordion({
     setEndTime('17:00');
     setServiceType('');
     setSpecialInstructions('');
+    setAgreedToTerms(false);
   };
 
   const total = calculateTotal();
@@ -389,6 +400,26 @@ export default function BookingAccordion({
                 />
               </div>
 
+              {/* Terms Agreement */}
+              <div className="flex items-start space-x-3 p-4 border rounded-lg bg-primary/5">
+                <input
+                  type="checkbox"
+                  id="terms-agreement"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <label htmlFor="terms-agreement" className="text-sm font-medium cursor-pointer">
+                    I agree to the booking terms *
+                  </label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    I understand that this booking is subject to ZiggySitters' terms of service and cancellation policy. 
+                    The sitter agrees to provide the selected service, and I agree to pay the stated amount.
+                  </p>
+                </div>
+              </div>
+
               {/* Booking Summary */}
               {total > 0 && (
                 <Card className="bg-muted/50">
@@ -461,7 +492,7 @@ export default function BookingAccordion({
                 </Button>
                 <Button 
                   onClick={handleBooking} 
-                  disabled={!startDate || !endDate || !serviceType || loading}
+                  disabled={!startDate || !endDate || !serviceType || !agreedToTerms || loading}
                   className="flex-1"
                 >
                   {loading ? 'Creating Booking...' : `Pay with Stripe - $${grandTotal.toFixed(2)}`}
