@@ -64,20 +64,36 @@ export default function About() {
       />
       <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 to-secondary/10 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">About ZiggySitters</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            We're on a mission to create a world where every pet receives the love, care, 
-            and attention they deserve, even when their parents can't be there.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
-                <div className="text-gray-600">{stat.label}</div>
-              </div>
-            ))}
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <Badge variant="secondary" className="mb-6">
+              <Heart className="w-4 h-4 mr-2 inline" />
+              Our Story
+            </Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+              <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+                About ZiggySitters
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              We're on a mission to create a world where every pet receives the love, care, 
+              and attention they deserve, even when their parents can't be there.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+              {stats.map((stat, index) => (
+                <div key={index} className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
+                  <div className="text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -189,27 +205,50 @@ export default function About() {
       </section>
 
       {/* Mission Statement */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 left-10 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
-            <p className="text-xl mb-8 opacity-90">
+            <Badge variant="secondary" className="mb-6">
+              <Shield className="w-4 h-4 mr-2 inline" />
+              Our Mission
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+                Our Mission
+              </span>
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground mb-12 italic">
               "To ensure no pet parent ever has to worry about their furry family member's 
               care and happiness when they can't be there themselves."
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div>
-                <h3 className="text-xl font-semibold mb-3">For Pet Parents</h3>
-                <p className="opacity-90">Peace of mind knowing your pet is in loving, capable hands</p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-3">For Pet Sitters</h3>
-                <p className="opacity-90">Meaningful work caring for animals while earning income</p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-3">For Pets</h3>
-                <p className="opacity-90">Continued love, attention, and care in a safe environment</p>
-              </div>
+              <Card className="border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <Heart className="w-8 h-8 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-3">For Pet Parents</h3>
+                  <p className="text-muted-foreground">Peace of mind knowing your pet is in loving, capable hands</p>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <Users className="w-8 h-8 text-secondary mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-3">For Pet Sitters</h3>
+                  <p className="text-muted-foreground">Meaningful work caring for animals while earning income</p>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <Star className="w-8 h-8 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-3">For Pets</h3>
+                  <p className="text-muted-foreground">Continued love, attention, and care in a safe environment</p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

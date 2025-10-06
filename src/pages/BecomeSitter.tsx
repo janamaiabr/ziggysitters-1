@@ -10,7 +10,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import heroImage from '@/assets/hero-image.jpg';
 import { metaPixel } from '@/lib/metaPixel';
 
 const benefits = [
@@ -158,33 +157,38 @@ export default function BecomeSitter() {
       />
       <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-primary to-secondary text-primary-foreground py-20">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div 
-          className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        ></div>
-        <div className="relative container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">
-              Turn Your Love for Pets Into Income
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <Badge variant="secondary" className="mb-6">
+              <Heart className="w-4 h-4 mr-2 inline" />
+              Join Our Community
+            </Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+              <span className="block">Turn Your Love</span>
+              <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+                for Pets Into Income
+              </span>
             </h1>
-            <p className="text-xl mb-8 opacity-90">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               Join thousands of pet sitters earning money while caring for adorable pets in their community
             </p>
-            <div className="flex justify-center">
-              <Button 
-                size="lg" 
-                variant="solid-white"
-                className="px-12"
-                onClick={() => navigate('/auth')}
-              >
-                Join Now
-              </Button>
-            </div>
+            <Button 
+              size="lg" 
+              className="px-12 shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              onClick={() => navigate('/auth')}
+            >
+              Join Now
+            </Button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Benefits Section */}
       <div className="py-20 bg-accent/10">
