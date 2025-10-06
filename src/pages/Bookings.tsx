@@ -179,6 +179,59 @@ export default function Bookings() {
     }
   };
 
+  const handleStartBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'in_progress' })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Service started",
+        description: "The booking is now in progress.",
+      });
+
+      fetchBookings();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCompleteBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'completed' })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Service completed",
+        description: "The booking has been marked as completed. Payout will be processed.",
+      });
+
+      // Trigger payout
+      await supabase.functions.invoke('process-booking-payout', {
+        body: { booking_id: bookingId }
+      });
+
+      fetchBookings();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleCompletePayment = async (booking) => {
     try {
       console.log('Creating payment session for booking:', booking.id);
@@ -362,6 +415,24 @@ export default function Bookings() {
                              className="min-w-[80px]"
                            >
                              Cancel
+                           </Button>
+                         )}
+                         {booking.status === 'confirmed' && booking.sitter_id === profile?.id && (
+                           <Button
+                             size="sm"
+                             onClick={() => handleStartBooking(booking.id)}
+                             className="min-w-[120px]"
+                           >
+                             Start Service
+                           </Button>
+                         )}
+                         {booking.status === 'in_progress' && booking.sitter_id === profile?.id && (
+                           <Button
+                             size="sm"
+                             onClick={() => handleCompleteBooking(booking.id)}
+                             className="min-w-[140px]"
+                           >
+                             Complete Service
                            </Button>
                          )}
                        </div>

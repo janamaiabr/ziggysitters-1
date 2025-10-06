@@ -231,7 +231,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
 
   const total = calculateTotal();
   const platformFee = Math.round(total * 0.1 * 100) / 100;
-  const grandTotal = total + platformFee;
+  const grandTotal = total;
 
   // Debug render cycles
   console.log(`=== BookingDialog render ===`);

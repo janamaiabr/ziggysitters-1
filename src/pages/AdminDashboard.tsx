@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail, FileText } from 'lucide-react';
+import PayoutsTab from '@/components/admin/PayoutsTab';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
@@ -180,7 +181,7 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="pending" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="pending" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             Pending ({pendingSitters.length})
@@ -192,6 +193,10 @@ export default function AdminDashboard() {
           <TabsTrigger value="rejected" className="flex items-center gap-2">
             <XCircle className="h-4 w-4" />
             Rejected ({rejectedSitters.length})
+          </TabsTrigger>
+          <TabsTrigger value="payouts" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Payouts
           </TabsTrigger>
         </TabsList>
 
@@ -239,6 +244,10 @@ export default function AdminDashboard() {
               />
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="payouts">
+          <PayoutsTab />
         </TabsContent>
       </Tabs>
 

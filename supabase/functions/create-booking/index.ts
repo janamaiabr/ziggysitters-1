@@ -144,7 +144,7 @@ serve(async (req) => {
         pet_ids: bookingData.petIds,
         special_instructions: bookingData.specialInstructions,
         total_amount: bookingData.totalAmount,
-        platform_fee: Math.round(bookingData.totalAmount * 0.20 * 100) / 100, // 20% platform fee
+        platform_fee: Math.round(bookingData.totalAmount * 0.10 * 100) / 100, // 10% platform fee
         status: 'pending',
         payment_status: 'pending',
         requires_daily_reports: requiresDailyReports,
@@ -176,9 +176,9 @@ serve(async (req) => {
 
     logStep('Sitter Stripe account verified', { accountId: sitterProfile.stripe_account_id });
 
-    // Calculate platform fee (20% of total)
+    // Calculate platform fee (10% of total)
     const totalAmountCents = Math.round(bookingData.totalAmount * 100);
-    const platformFeeAmount = Math.round(totalAmountCents * 0.20);
+    const platformFeeAmount = Math.round(totalAmountCents * 0.10);
 
     logStep('Payment breakdown', { 
       totalAmount: bookingData.totalAmount,

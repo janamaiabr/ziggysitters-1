@@ -253,6 +253,40 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
         }
       });
 
+      // Show Stripe Connect onboarding prompt
+      toast({
+        title: "Profile saved!",
+        description: "Now let's set up your payment account so you can get paid.",
+        duration: 5000,
+      });
+
+      // Wait a moment then trigger Stripe Connect
+      setTimeout(async () => {
+        try {
+          const { data: onboardingData, error: onboardingError } = await supabase.functions.invoke(
+            'stripe-connect-onboarding'
+          );
+
+          if (onboardingError) throw onboardingError;
+
+          if (onboardingData?.url) {
+            window.open(onboardingData.url, '_blank');
+            toast({
+              title: "Complete Stripe setup",
+              description: "A new tab has opened. Please complete your payment account setup to receive payouts.",
+              duration: 10000,
+            });
+          }
+        } catch (error: any) {
+          console.error('Stripe Connect error:', error);
+          toast({
+            title: "Payment setup notice",
+            description: "You can set up your payment account later from your profile.",
+            variant: "default",
+          });
+        }
+      }, 1000);
+
       onComplete(profileId);
     } catch (error: any) {
       toast({
