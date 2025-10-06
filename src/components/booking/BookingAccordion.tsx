@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -70,10 +70,10 @@ export default function BookingAccordion({
   initialCheckOut,
   initialServiceType
 }: BookingAccordionProps) {
-  const [startDate, setStartDate] = useState<Date>(
+  const [startDate, setStartDate] = useState<Date | undefined>(
     initialCheckIn ? new Date(initialCheckIn) : undefined
   );
-  const [endDate, setEndDate] = useState<Date>(
+  const [endDate, setEndDate] = useState<Date | undefined>(
     initialCheckOut ? new Date(initialCheckOut) : undefined
   );
   const [startTime, setStartTime] = useState('09:00');
@@ -85,6 +85,18 @@ export default function BookingAccordion({
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Debug logging to verify dates are being received
+  useEffect(() => {
+    console.log('BookingAccordion initialized with:', {
+      initialCheckIn,
+      initialCheckOut,
+      initialServiceType,
+      startDate,
+      endDate,
+      serviceType
+    });
+  }, []);
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
     if (type === 'start') {
