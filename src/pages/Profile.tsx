@@ -1189,7 +1189,7 @@ export default function Profile() {
                   <h3 className="font-medium mb-2">Connect Your Bank Account</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Connect your bank account to receive automatic payments after completing bookings. 
-                    We use Stripe to ensure secure payments. The platform keeps a 20% service fee.
+                    We use Stripe to ensure secure payments. A 10% listing fee is charged to pet owners.
                   </p>
                   
                   {checkingStripe ? (
@@ -1253,15 +1253,14 @@ export default function Profile() {
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex justify-between">
                       <span>Your earnings:</span>
-                      <span className="font-medium text-foreground">80% of booking amount</span>
+                      <span className="font-medium text-foreground">100% of your set rate</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Listing fee (10%):</span>
-                      <span className="font-medium text-foreground">20% of booking amount</span>
+                      <span>Listing fee (charged to pet owner):</span>
+                      <span className="font-medium text-foreground">10% of service cost</span>
                     </div>
                     <p className="text-xs pt-2 border-t">
-                      Example: For a $100 booking, you receive $80 and the platform keeps $20 for payment processing, 
-                      customer support, and platform maintenance.
+                      Example: For a $100 service, you receive $100 and pet owner pays $110 total ($100 service + $10 listing fee).
                     </p>
                   </div>
                 </div>
