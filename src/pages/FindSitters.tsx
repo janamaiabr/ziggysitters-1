@@ -350,18 +350,16 @@ export default function FindSitters() {
               
               <div className="mt-6 flex flex-col md:flex-row gap-3">
                 <Button 
-                  size="lg" 
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-14 md:h-12 flex-1 font-semibold text-base"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 h-14 md:h-12 flex-1 font-semibold text-base rounded-md"
                   onClick={handleSearch}
                 >
                    <Search className="mr-2 h-5 w-5" />
                    Search Sitters
                 </Button>
                 <Button 
-                  variant="outline" 
-                  size="lg"
+                  variant="outline"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 h-12"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 h-14 md:h-12 rounded-md"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
