@@ -6,8 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, PlusCircle, X, Calendar, Shield, FileText } from 'lucide-react';
+import { Upload, PlusCircle, X, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -39,7 +38,8 @@ const serviceTypes = [
 
 export default function EnhancedSitterOnboarding({ profileId, userId, onComplete }: EnhancedSitterOnboardingProps) {
   const { toast } = useToast();
-  const [currentTab, setCurrentTab] = useState('overview');
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 3;
   
   // Overview
   const [bio, setBio] = useState('');
@@ -178,7 +178,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           description: "Please keep your bio under 5000 characters.",
           variant: "destructive",
         });
-        setCurrentTab('overview');
+        setCurrentStep(1);
         return;
       }
 
@@ -188,7 +188,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           description: "Please add at least one service you offer.",
           variant: "destructive",
         });
-        setCurrentTab('services');
+        setCurrentStep(2);
         return;
       }
 
@@ -201,7 +201,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
             description: `Please set a rate for ${serviceTypes.find(st => st.key === service.service_type)?.label}`,
             variant: "destructive",
           });
-          setCurrentTab('services');
+          setCurrentStep(2);
           return;
         }
       }
@@ -297,337 +297,379 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
     }
   };
 
-  const isTabComplete = (tab: string) => {
-    switch (tab) {
-      case 'overview':
-        return true; // Bio is now optional
-      case 'services':
+  const isStepValid = (step: number) => {
+    switch (step) {
+      case 1:
+        return true; // Overview is always valid (bio optional)
+      case 2:
         return services.length > 0 && services.every(s => s.hourly_rate || s.daily_rate || s.overnight_rate);
-      case 'verification':
+      case 3:
         return idDocumentUrl || blueCardUrl; // At least one document
       default:
         return false;
     }
   };
 
+  const handleNextStep = () => {
+    if (!isStepValid(currentStep)) {
+      if (currentStep === 2) {
+        toast({
+          title: "Services required",
+          description: "Please add at least one service with rates before continuing.",
+          variant: "destructive",
+        });
+      } else if (currentStep === 3) {
+        toast({
+          title: "Document required",
+          description: "Please upload at least one verification document.",
+          variant: "destructive",
+        });
+      }
+      return;
+    }
+    setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+  };
+
+  const handlePrevStep = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 1));
+  };
+
   return (
     <div className="space-y-6 px-2 sm:px-0">
-      <div className="text-center">
-        <h2 className="text-xl sm:text-2xl font-bold mb-2">Complete Your Sitter Profile</h2>
-        <p className="text-muted-foreground text-sm sm:text-base">Provide all the information pet owners need to choose you</p>
+      <div className="text-center space-y-2">
+        <h2 className="text-xl sm:text-2xl font-bold">Complete Your Sitter Profile</h2>
+        <p className="text-muted-foreground text-sm sm:text-base">
+          Step {currentStep} of {totalSteps}: {
+            currentStep === 1 ? 'About You' :
+            currentStep === 2 ? 'Services & Pricing' :
+            'Verification'
+          }
+        </p>
+        <div className="flex justify-center gap-2 mt-4">
+          {[1, 2, 3].map(step => (
+            <div
+              key={step}
+              className={`h-2 w-12 rounded-full ${
+                step < currentStep ? 'bg-green-500' :
+                step === currentStep ? 'bg-primary' :
+                'bg-gray-200'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 gap-1 h-auto p-1">
-          <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
-            <FileText className="w-3 h-3 flex-shrink-0" />
-            <span className="text-center sm:text-left truncate">Overview</span>
-            {isTabComplete('overview') && <span className="text-green-500 text-xs">✓</span>}
-          </TabsTrigger>
-          <TabsTrigger value="services" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
-            <PlusCircle className="w-3 h-3 flex-shrink-0" />
-            <span className="text-center sm:text-left truncate">Services</span>
-            {isTabComplete('services') && <span className="text-green-500 text-xs">✓</span>}
-          </TabsTrigger>
-          <TabsTrigger value="verification" className="flex flex-col sm:flex-row items-center gap-1 text-xs md:text-sm p-2 h-auto min-h-[3rem] sm:min-h-0">
-            <Shield className="w-3 h-3 flex-shrink-0" />
-            <span className="text-center sm:text-left truncate">Verify</span>
-            {isTabComplete('verification') && <span className="text-green-500 text-xs">✓</span>}
-          </TabsTrigger>
-        </TabsList>
+      {/* Step 1: Overview */}
+      {currentStep === 1 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>About You</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Bio</Label>
+              <Textarea
+                placeholder="Tell pet owners about yourself, your experience with pets, and why you love caring for animals..."
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={4}
+                className="min-h-[100px]"
+              />
+              <p className="text-xs text-muted-foreground">Optional - share your experience and passion for pet care</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Years of Experience with Pets</Label>
+              <Input
+                type="number"
+                min="0"
+                max="50"
+                value={experienceYears}
+                onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
+              />
+            </div>
 
-        <TabsContent value="overview" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>About You</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Bio</Label>
-                <Textarea
-                  placeholder="Tell pet owners about yourself, your experience with pets, and why you love caring for animals..."
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  rows={4}
-                  className="min-h-[100px]"
+            <div className="space-y-2">
+              <Label>Portfolio Photos (Optional)</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleFileUpload(e.target.files, 'portfolio')}
+                  className="hidden"
+                  id="portfolio-photos"
                 />
-                <p className="text-xs text-muted-foreground">Optional - share your experience and passion for pet care</p>
+                <Label htmlFor="portfolio-photos" className="cursor-pointer">
+                  <div className="flex items-center gap-2 px-4 py-2 border border-dashed border-gray-300 rounded-lg hover:border-gray-400">
+                    <Upload className="w-4 h-4" />
+                    <span>Upload Photos</span>
+                  </div>
+                </Label>
               </div>
-              
+              {portfolioPhotos.length > 0 && (
+                <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                  {portfolioPhotos.map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Portfolio photo ${index + 1}`}
+                      className="w-full h-20 object-cover rounded-lg"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Step 2: Services */}
+      {currentStep === 2 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Services & Pricing</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Years of Experience with Pets</Label>
+                <Label>Maximum Pets at Once</Label>
                 <Input
                   type="number"
-                  min="0"
-                  max="50"
-                  value={experienceYears}
-                  onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
+                  min="1"
+                  max="10"
+                  value={maxPets}
+                  onChange={(e) => setMaxPets(parseInt(e.target.value) || 1)}
                 />
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <Label>Portfolio Photos (Optional)</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => handleFileUpload(e.target.files, 'portfolio')}
-                    className="hidden"
-                    id="portfolio-photos"
-                  />
-                  <Label htmlFor="portfolio-photos" className="cursor-pointer">
-                    <div className="flex items-center gap-2 px-4 py-2 border border-dashed border-gray-300 rounded-lg hover:border-gray-400">
-                      <Upload className="w-4 h-4" />
-                      <span>Upload Photos</span>
-                    </div>
-                  </Label>
-                </div>
-                {portfolioPhotos.length > 0 && (
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                    {portfolioPhotos.map((url, index) => (
-                      <img
-                        key={index}
-                        src={url}
-                        alt={`Portfolio photo ${index + 1}`}
-                        className="w-full h-20 object-cover rounded-lg"
-                      />
-                    ))}
-                  </div>
-                )}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="fenced-yard"
+                  checked={hasFencedYard}
+                  onCheckedChange={(checked) => setHasFencedYard(checked === true)}
+                />
+                <Label htmlFor="fenced-yard">I have a fenced yard</Label>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="allows-puppies"
+                  checked={allowsPuppies}
+                  onCheckedChange={(checked) => setAllowsPuppies(checked === true)}
+                />
+                <Label htmlFor="allows-puppies">I'm comfortable with puppies</Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="allows-seniors"
+                  checked={allowsSeniorPets}
+                  onCheckedChange={(checked) => setAllowsSeniorPets(checked === true)}
+                />
+                <Label htmlFor="allows-seniors">I'm comfortable with senior pets</Label>
+              </div>
+            </div>
 
-        <TabsContent value="services" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Services & Pricing</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Maximum Pets at Once</Label>
+            <div className="space-y-2">
+              <Label>Pet Species I Accept *</Label>
+              <div className="flex flex-wrap gap-2">
+                {petSpecies.map(species => (
+                  <Badge
+                    key={species}
+                    variant={acceptedSpecies.includes(species) ? "default" : "outline"}
+                    className="cursor-pointer capitalize"
+                    onClick={() => toggleSpecies(species)}
+                  >
+                    {species.replace('_', ' ')}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Pet Sizes I Accept *</Label>
+              <div className="flex flex-wrap gap-2">
+                {petSizes.map(size => (
+                  <Badge
+                    key={size}
+                    variant={acceptedSizes.includes(size) ? "default" : "outline"}
+                    className="cursor-pointer capitalize"
+                    onClick={() => toggleSize(size)}
+                  >
+                    {size.replace('_', ' ')}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Services Offered *</Label>
+              <div className="flex flex-wrap gap-2">
+                {serviceTypes.map(serviceType => (
+                  <Badge
+                    key={serviceType.key}
+                    variant={services.find(s => s.service_type === serviceType.key) ? "default" : "outline"}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      if (services.find(s => s.service_type === serviceType.key)) {
+                        removeService(serviceType.key);
+                      } else {
+                        addService(serviceType);
+                      }
+                    }}
+                  >
+                    {serviceType.label}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {services.map(service => {
+              const serviceType = serviceTypes.find(st => st.key === service.service_type);
+              return (
+                <Card key={service.service_type} className="bg-gray-50">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">{serviceType?.label}</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeService(service.service_type)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {serviceType?.rate_types.includes('hourly_rate') && (
+                <div className="space-y-1">
+                  <Label className="text-xs">Hourly Rate (NZ$)</Label>
                   <Input
                     type="number"
-                    min="1"
-                    max="10"
-                    value={maxPets}
-                    onChange={(e) => setMaxPets(parseInt(e.target.value) || 1)}
+                    min="10"
+                    max="200"
+                    value={service.hourly_rate || ''}
+                    onChange={(e) => updateService(service.service_type, 'hourly_rate', parseFloat(e.target.value) || undefined)}
                   />
                 </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="fenced-yard"
-                    checked={hasFencedYard}
-                    onCheckedChange={(checked) => setHasFencedYard(checked === true)}
-                  />
-                  <Label htmlFor="fenced-yard">I have a fenced yard</Label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allows-puppies"
-                    checked={allowsPuppies}
-                    onCheckedChange={(checked) => setAllowsPuppies(checked === true)}
-                  />
-                  <Label htmlFor="allows-puppies">I'm comfortable with puppies</Label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allows-seniors"
-                    checked={allowsSeniorPets}
-                    onCheckedChange={(checked) => setAllowsSeniorPets(checked === true)}
-                  />
-                  <Label htmlFor="allows-seniors">I'm comfortable with senior pets</Label>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Pet Species I Accept *</Label>
-                <div className="flex flex-wrap gap-2">
-                  {petSpecies.map(species => (
-                    <Badge
-                      key={species}
-                      variant={acceptedSpecies.includes(species) ? "default" : "outline"}
-                      className="cursor-pointer capitalize"
-                      onClick={() => toggleSpecies(species)}
-                    >
-                      {species.replace('_', ' ')}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Pet Sizes I Accept *</Label>
-                <div className="flex flex-wrap gap-2">
-                  {petSizes.map(size => (
-                    <Badge
-                      key={size}
-                      variant={acceptedSizes.includes(size) ? "default" : "outline"}
-                      className="cursor-pointer capitalize"
-                      onClick={() => toggleSize(size)}
-                    >
-                      {size.replace('_', ' ')}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Services Offered *</Label>
-                <div className="flex flex-wrap gap-2">
-                  {serviceTypes.map(serviceType => (
-                    <Badge
-                      key={serviceType.key}
-                      variant={services.find(s => s.service_type === serviceType.key) ? "default" : "outline"}
-                      className="cursor-pointer"
-                      onClick={() => {
-                        if (services.find(s => s.service_type === serviceType.key)) {
-                          removeService(serviceType.key);
-                        } else {
-                          addService(serviceType);
-                        }
-                      }}
-                    >
-                      {serviceType.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {services.map(service => {
-                const serviceType = serviceTypes.find(st => st.key === service.service_type);
-                return (
-                  <Card key={service.service_type} className="bg-gray-50">
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium">{serviceType?.label}</h4>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeService(service.service_type)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                {serviceType?.rate_types.includes('hourly_rate') && (
-                  <div className="space-y-1">
-                    <Label className="text-xs">Hourly Rate (NZ$)</Label>
-                    <Input
-                      type="number"
-                      min="10"
-                      max="200"
-                      value={service.hourly_rate || ''}
-                      onChange={(e) => updateService(service.service_type, 'hourly_rate', parseFloat(e.target.value) || undefined)}
-                    />
-                  </div>
-                )}
-                {serviceType?.rate_types.includes('daily_rate') && (
-                  <div className="space-y-1">
-                    <Label className="text-xs">Daily Rate (NZ$)</Label>
-                    <Input
-                      type="number"
-                      min="30"
-                      max="500"
-                      value={service.daily_rate || ''}
-                      onChange={(e) => updateService(service.service_type, 'daily_rate', parseFloat(e.target.value) || undefined)}
-                    />
-                  </div>
-                )}
-                {serviceType?.rate_types.includes('overnight_rate') && (
-                  <div className="space-y-1">
-                    <Label className="text-xs">Overnight Rate (NZ$)</Label>
-                    <Input
-                      type="number"
-                      min="40"
-                      max="300"
-                      value={service.overnight_rate || ''}
-                      onChange={(e) => updateService(service.service_type, 'overnight_rate', parseFloat(e.target.value) || undefined)}
-                    />
-                  </div>
-                )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label className="text-xs">Service Description</Label>
-                        <Textarea
-                          placeholder="Describe what this service includes..."
-                          value={service.description}
-                          onChange={(e) => updateService(service.service_type, 'description', e.target.value)}
-                          rows={2}
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-
-        <TabsContent value="verification" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Verification Documents</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert>
-                <Shield className="h-4 w-4" />
-                <AlertDescription>
-                  Upload verification documents to build trust with pet owners. At least one document is required.
-                </AlertDescription>
-              </Alert>
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Photo ID (Driver's License, Passport, etc.)</Label>
+              )}
+              {serviceType?.rate_types.includes('daily_rate') && (
+                <div className="space-y-1">
+                  <Label className="text-xs">Daily Rate (NZ$)</Label>
                   <Input
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={(e) => handleFileUpload(e.target.files, 'id')}
-                    id="id-document"
+                    type="number"
+                    min="30"
+                    max="500"
+                    value={service.daily_rate || ''}
+                    onChange={(e) => updateService(service.service_type, 'daily_rate', parseFloat(e.target.value) || undefined)}
                   />
-                  {idDocumentUrl && (
-                    <p className="text-sm text-green-600">✓ ID document uploaded</p>
-                  )}
                 </div>
-
-                <div className="space-y-2">
-                  <Label>Blue Card / Working with Children Check (Optional)</Label>
+              )}
+              {serviceType?.rate_types.includes('overnight_rate') && (
+                <div className="space-y-1">
+                  <Label className="text-xs">Overnight Rate (NZ$)</Label>
                   <Input
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={(e) => handleFileUpload(e.target.files, 'blue_card')}
-                    id="blue-card"
+                    type="number"
+                    min="40"
+                    max="300"
+                    value={service.overnight_rate || ''}
+                    onChange={(e) => updateService(service.service_type, 'overnight_rate', parseFloat(e.target.value) || undefined)}
                   />
-                  {blueCardUrl && (
-                    <p className="text-sm text-green-600">✓ Blue Card uploaded</p>
-                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-xs">Service Description</Label>
+                      <Textarea
+                        placeholder="Describe what this service includes..."
+                        value={service.description}
+                        onChange={(e) => updateService(service.service_type, 'description', e.target.value)}
+                        rows={2}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
 
-      <div className="flex justify-end">
-        <Button 
-          onClick={handleSaveAndComplete} 
-          className="px-8"
-          disabled={!isTabComplete('overview') || !isTabComplete('services')}
+      {/* Step 3: Verification */}
+      {currentStep === 3 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Verification Documents</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert>
+              <Shield className="h-4 w-4" />
+              <AlertDescription>
+                Upload verification documents to build trust with pet owners. At least one document is required.
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Photo ID (Driver's License, Passport, etc.)</Label>
+                <Input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => handleFileUpload(e.target.files, 'id')}
+                  id="id-document"
+                />
+                {idDocumentUrl && (
+                  <p className="text-sm text-green-600">✓ ID document uploaded</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Blue Card / Working with Children Check (Optional)</Label>
+                <Input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => handleFileUpload(e.target.files, 'blue_card')}
+                  id="blue-card"
+                />
+                {blueCardUrl && (
+                  <p className="text-sm text-green-600">✓ Blue Card uploaded</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between items-center pt-4">
+        <Button
+          variant="outline"
+          onClick={handlePrevStep}
+          disabled={currentStep === 1}
         >
-          Complete Profile & Submit for Approval
+          Back
         </Button>
+
+        {currentStep < totalSteps ? (
+          <Button
+            onClick={handleNextStep}
+            disabled={!isStepValid(currentStep)}
+          >
+            Continue
+          </Button>
+        ) : (
+          <Button 
+            onClick={handleSaveAndComplete}
+            disabled={!isStepValid(1) || !isStepValid(2) || !isStepValid(3)}
+            className="px-8"
+          >
+            Complete Profile & Submit for Approval
+          </Button>
+        )}
       </div>
     </div>
   );
