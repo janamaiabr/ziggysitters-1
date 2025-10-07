@@ -722,7 +722,7 @@ export type Database = {
           first_name?: string | null
           id?: string | null
           is_verified?: boolean | null
-          last_name?: never
+          last_name?: string | null
           rating?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"] | null
@@ -737,7 +737,7 @@ export type Database = {
           first_name?: string | null
           id?: string | null
           is_verified?: boolean | null
-          last_name?: never
+          last_name?: string | null
           rating?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"] | null
