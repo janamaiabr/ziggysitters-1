@@ -433,7 +433,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           <CardContent className="space-y-4">
             <Alert>
               <AlertDescription>
-                <strong>Important:</strong> Set your rates as what you want to earn. ZiggySitters charges a 15% platform fee to pet owners, which is added to your rate. You receive 100% of the rate you set here.
+                <strong>Important:</strong> The rates you set are what you'll earn. ZiggySitters adds a 10% listing fee to the pet owner's total. You receive 100% of your set rate.
               </AlertDescription>
             </Alert>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

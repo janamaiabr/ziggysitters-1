@@ -39,8 +39,10 @@ export default function TermsOfService() {
               <h2 className="text-2xl font-semibold mt-8 mb-4">2. Bookings & Payment</h2>
               <p className="mb-2"><strong>2.1</strong> All bookings must be made through the Ziggysitters platform.</p>
               <p className="mb-2"><strong>2.2</strong> By confirming a booking, you are entering into a direct agreement with the Sitter, not Ziggysitters.</p>
-              <p className="mb-2"><strong>2.3</strong> Ziggysitters may facilitate payments on behalf of Sitters. Once paid, fees are held and then passed on to the Sitter after the booking.</p>
-              <p className="mb-2"><strong>2.4</strong> Cancellation policies are set by individual Sitters. These must be displayed in their profile and agreed before booking.</p>
+              <p className="mb-2"><strong>2.3</strong> Ziggysitters charges a 10% listing fee on the service cost to Clients, which covers platform operation and payment processing. This fee is added to the Sitter's rate at checkout.</p>
+              <p className="mb-2"><strong>2.4</strong> Payments are facilitated through the platform and held securely. Sitter payments are released after successful service completion.</p>
+              <p className="mb-2"><strong>2.5</strong> For bookings where Clients request daily photo reports, Sitters must complete all requested reports. Failure to submit all requested daily reports will result in a 15% payment deduction from the Sitter's earnings.</p>
+              <p className="mb-2"><strong>2.6</strong> Cancellation policies are set by individual Sitters and must be agreed before booking.</p>
             </section>
 
             <section>
@@ -56,8 +58,9 @@ export default function TermsOfService() {
               <p className="mb-2"><strong>4.1</strong> Sitters agree to provide services with reasonable care and skill, consistent with the Consumer Guarantees Act 1993.</p>
               <p className="mb-2"><strong>4.2</strong> Sitters are responsible for the welfare and safety of pets during their bookings.</p>
               <p className="mb-2"><strong>4.3</strong> Sitters set their own rates, availability, and cancellation policies.</p>
-              <p className="mb-2"><strong>4.4</strong> Sitters are encouraged to maintain public liability insurance but are individually responsible for their own tax, ACC, and other legal obligations.</p>
-              <p className="mb-2"><strong>4.5</strong> Sitters must provide copies of a passport or driving licence, written references and a clear police vet check before offering sitting services.</p>
+              <p className="mb-2"><strong>4.4</strong> When a Client requests daily photo reports, Sitters must submit all required reports with photos. Failure to do so will result in a 15% deduction from their booking payment.</p>
+              <p className="mb-2"><strong>4.5</strong> Sitters are encouraged to maintain public liability insurance but are individually responsible for their own tax, ACC, and other legal obligations.</p>
+              <p className="mb-2"><strong>4.6</strong> Sitters must provide copies of a passport or driving licence, written references and a clear police vet check before offering sitting services.</p>
             </section>
 
             <section>

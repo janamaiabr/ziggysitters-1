@@ -1256,7 +1256,7 @@ export default function Profile() {
                       <span className="font-medium text-foreground">80% of booking amount</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Platform service fee:</span>
+                      <span>Listing fee (10%):</span>
                       <span className="font-medium text-foreground">20% of booking amount</span>
                     </div>
                     <p className="text-xs pt-2 border-t">

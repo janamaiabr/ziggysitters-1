@@ -95,7 +95,7 @@ export default function FindSitters() {
             rating: null, // No rating system
             feedback_count: null, // No reviews system
             baseRate: minRate,
-            hourlyRate: minRate * 1.1, // Add 10% listing fee
+            hourlyRate: minRate, // Sitter's rate - 10% listing fee shown separately at checkout
             bio: sitter.bio || 'Experienced pet sitter who loves caring for animals.',
             image: sitter.avatar_url || null,
             services: serviceNames,
