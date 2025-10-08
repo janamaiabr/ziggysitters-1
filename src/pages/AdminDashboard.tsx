@@ -208,6 +208,10 @@ export default function AdminDashboard() {
                 profile={profile} 
                 onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
                 onReject={() => profile.id && updateVerificationStatus(profile.id, false, 'rejected')}
+                onViewDetails={() => {
+                  setSelectedProfile(profile);
+                  setShowDetailsDialog(true);
+                }}
                 showActions={true}
               />
             ))}
@@ -226,6 +230,10 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
+                onViewDetails={() => {
+                  setSelectedProfile(profile);
+                  setShowDetailsDialog(true);
+                }}
                 showActions={false}
               />
             ))}
@@ -239,6 +247,10 @@ export default function AdminDashboard() {
                 key={profile.id} 
                 profile={profile} 
                 onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
+                onViewDetails={() => {
+                  setSelectedProfile(profile);
+                  setShowDetailsDialog(true);
+                }}
                 showActions={true}
                 isRejected={true}
               />
@@ -265,11 +277,12 @@ interface SitterCardProps {
   profile: PublicSitterProfile;
   onApprove?: () => void;
   onReject?: () => void;
+  onViewDetails?: () => void;
   showActions: boolean;
   isRejected?: boolean;
 }
 
-function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: SitterCardProps) {
+function SitterCard({ profile, onApprove, onReject, onViewDetails, showActions, isRejected }: SitterCardProps) {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-4">
@@ -327,6 +340,21 @@ function SitterCard({ profile, onApprove, onReject, showActions, isRejected }: S
         
         <div className="text-xs text-gray-500">
           Applied: {new Date(profile.created_at).toLocaleDateString()}
+        </div>
+        
+        {/* View Details Button - always visible */}
+        <div className="pt-2">
+          {onViewDetails && (
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={onViewDetails}
+              className="w-full"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              View Full Details
+            </Button>
+          )}
         </div>
         
         {showActions && !profile.is_verified && (
