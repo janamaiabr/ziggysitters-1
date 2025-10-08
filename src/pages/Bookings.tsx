@@ -329,13 +329,13 @@ export default function Bookings() {
               <Card key={booking.id} className="overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
-                    <div className="flex items-start space-x-4">
+                  <div className="flex items-start space-x-4">
                       <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-2xl">
                         {booking.service_type.includes('dog') ? '🐕' : booking.service_type.includes('cat') ? '🐱' : '🐾'}
                       </div>
                       
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
+                        <div className="flex items-center space-x-3 mb-3">
                           <h3 className="text-xl font-semibold">
                             {booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                           </h3>
@@ -344,22 +344,77 @@ export default function Bookings() {
                           </Badge>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <CalendarIcon className="w-4 h-4 mr-2" />
-                            {format(new Date(booking.start_date), 'MMM dd, yyyy')}
-                          </div>
-                          {booking.start_time && (
-                            <div className="flex items-center">
-                              <Clock className="w-4 h-4 mr-2" />
-                              {booking.start_time}
+                        {/* Show who you booked with */}
+                        <div className="mb-3 pb-3 border-b border-border">
+                          {booking.owner_id === profile.id ? (
+                            <div className="flex items-center text-sm">
+                              <User className="w-4 h-4 mr-2 text-muted-foreground" />
+                              <span className="font-medium">Sitter:</span>
+                              <span className="ml-2">{booking.sitter?.first_name} {booking.sitter?.last_name}</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center text-sm">
+                              <User className="w-4 h-4 mr-2 text-muted-foreground" />
+                              <span className="font-medium">Owner:</span>
+                              <span className="ml-2">{booking.owner?.first_name} {booking.owner?.last_name}</span>
                             </div>
                           )}
-                          <div className="flex items-center">
-                            <span className="mr-2">💰</span>
-                            ${booking.total_amount}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <div className="flex items-center mb-2">
+                              <CalendarIcon className="w-4 h-4 mr-2 text-muted-foreground" />
+                              <span className="font-medium">Dates:</span>
+                            </div>
+                            <div className="ml-6 text-muted-foreground">
+                              {format(new Date(booking.start_date), 'MMM dd, yyyy')} 
+                              {booking.start_date !== booking.end_date && (
+                                <> - {format(new Date(booking.end_date), 'MMM dd, yyyy')}</>
+                              )}
+                            </div>
+                            {booking.start_time && (
+                              <div className="flex items-center mt-2">
+                                <Clock className="w-4 h-4 mr-2 text-muted-foreground" />
+                                <span className="text-muted-foreground">{booking.start_time} - {booking.end_time}</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div>
+                            <div className="flex items-center mb-2">
+                              <span className="mr-2">💰</span>
+                              <span className="font-medium">Total:</span>
+                              <span className="ml-2 text-lg font-semibold">${booking.total_amount}</span>
+                            </div>
+                            <div className="ml-6 text-xs text-muted-foreground">
+                              Ref: {booking.booking_reference}
+                            </div>
                           </div>
                         </div>
+                        
+                        {/* Show address for confirmed bookings */}
+                        {booking.status === 'confirmed' && (
+                          <div className="mt-3 pt-3 border-t border-border">
+                            {booking.owner_id === profile.id && booking.sitter?.address ? (
+                              <div className="flex items-start text-sm">
+                                <MapPin className="w-4 h-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
+                                <div>
+                                  <span className="font-medium">Sitter Location:</span>
+                                  <p className="text-muted-foreground">{booking.sitter.address}, {booking.sitter.suburb}, {booking.sitter.city}</p>
+                                </div>
+                              </div>
+                            ) : booking.sitter_id === profile.id && booking.owner?.address ? (
+                              <div className="flex items-start text-sm">
+                                <MapPin className="w-4 h-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
+                                <div>
+                                  <span className="font-medium">Service Location:</span>
+                                  <p className="text-muted-foreground">{booking.owner.address}, {booking.owner.suburb}, {booking.owner.city}</p>
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
                         
                         {(booking.owner_notes || booking.sitter_notes) && (
                           <div className="mt-3 p-3 bg-muted rounded-lg">
@@ -435,16 +490,8 @@ export default function Bookings() {
                              Complete Service
                            </Button>
                          )}
-                       </div>
-                      
-                      {/* Show sitter address if booking is confirmed and user is owner */}
-                      {booking.status === 'confirmed' && booking.owner_id === profile.id && booking.sitter?.address && (
-                        <div className="text-sm text-muted-foreground">
-                          <MapPin className="w-3 h-3 inline mr-1" />
-                          Sitter: {booking.sitter.address}, {booking.sitter.suburb}, {booking.sitter.city}
                         </div>
-                      )}
-                    </div>
+                     </div>
                   </div>
                 </CardContent>
               </Card>
@@ -481,48 +528,113 @@ export default function Bookings() {
           </DialogHeader>
           
           {selectedBooking && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-medium mb-2">Service Information</h4>
-                  <p><strong>Service:</strong> {selectedBooking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
-                  <p><strong>Reference:</strong> {selectedBooking.booking_reference}</p>
-                  <p><strong>Date:</strong> {format(new Date(selectedBooking.start_date), 'MMM dd, yyyy')} - {format(new Date(selectedBooking.end_date), 'MMM dd, yyyy')}</p>
-                  {selectedBooking.start_time && (
-                    <p><strong>Time:</strong> {selectedBooking.start_time} - {selectedBooking.end_time}</p>
-                  )}
-                  <p><strong>Amount:</strong> ${selectedBooking.total_amount}</p>
-                  <p><strong>Status:</strong> <Badge variant={getStatusColor(selectedBooking.status)}>{selectedBooking.status}</Badge></p>
-                </div>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Service Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Service:</span>
+                      <span className="font-medium">{selectedBooking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Reference:</span>
+                      <span className="font-mono text-sm">{selectedBooking.booking_reference}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Dates:</span>
+                      <span className="font-medium">
+                        {format(new Date(selectedBooking.start_date), 'MMM dd, yyyy')}
+                        {selectedBooking.start_date !== selectedBooking.end_date && (
+                          <> - {format(new Date(selectedBooking.end_date), 'MMM dd, yyyy')}</>
+                        )}
+                      </span>
+                    </div>
+                    {selectedBooking.start_time && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Time:</span>
+                        <span className="font-medium">{selectedBooking.start_time} - {selectedBooking.end_time}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between pt-2 border-t">
+                      <span className="text-muted-foreground">Total Amount:</span>
+                      <span className="font-semibold text-lg">${selectedBooking.total_amount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant={getStatusColor(selectedBooking.status)}>{selectedBooking.status}</Badge>
+                    </div>
+                    {selectedBooking.payment_status && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Payment:</span>
+                        <span className="capitalize">{selectedBooking.payment_status}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
                 
-                <div>
-                  <h4 className="font-medium mb-2">Contact Information</h4>
-                  {selectedBooking.owner_id === profile.id ? (
-                    // Show sitter info to owner
-                    <div>
-                      <p><strong>Sitter:</strong> {selectedBooking.sitter?.first_name} {selectedBooking.sitter?.last_name}</p>
-                      {selectedBooking.status === 'confirmed' && (
-                        <>
-                          <p><strong>Email:</strong> {selectedBooking.sitter?.email}</p>
-                          <p><strong>Phone:</strong> {selectedBooking.sitter?.phone}</p>
-                          <p><strong>Address:</strong> {selectedBooking.sitter?.address}, {selectedBooking.sitter?.suburb}, {selectedBooking.sitter?.city}</p>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    // Show owner info to sitter
-                    <div>
-                      <p><strong>Owner:</strong> {selectedBooking.owner?.first_name} {selectedBooking.owner?.last_name}</p>
-                      {selectedBooking.status === 'confirmed' && (
-                        <>
-                          <p><strong>Email:</strong> {selectedBooking.owner?.email}</p>
-                          <p><strong>Phone:</strong> {selectedBooking.owner?.phone}</p>
-                          <p><strong>Address:</strong> {selectedBooking.owner?.address}, {selectedBooking.owner?.suburb}, {selectedBooking.owner?.city}</p>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">
+                      {selectedBooking.owner_id === profile.id ? 'Sitter Information' : 'Owner Information'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {selectedBooking.owner_id === profile.id ? (
+                      // Show sitter info to owner
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Name:</span>
+                          <span className="font-medium">{selectedBooking.sitter?.first_name} {selectedBooking.sitter?.last_name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Email:</span>
+                          <span className="text-sm">{selectedBooking.sitter?.email || 'Not available'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Phone:</span>
+                          <span className="text-sm">{selectedBooking.sitter?.phone || 'Not available'}</span>
+                        </div>
+                        {selectedBooking.sitter?.address && (
+                          <div className="pt-2 border-t">
+                            <span className="text-muted-foreground block mb-1">Address:</span>
+                            <p className="text-sm">
+                              {selectedBooking.sitter.address}<br />
+                              {selectedBooking.sitter.suburb}, {selectedBooking.sitter.city}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      // Show owner info to sitter
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Name:</span>
+                          <span className="font-medium">{selectedBooking.owner?.first_name} {selectedBooking.owner?.last_name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Email:</span>
+                          <span className="text-sm">{selectedBooking.owner?.email || 'Not available'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Phone:</span>
+                          <span className="text-sm">{selectedBooking.owner?.phone || 'Not available'}</span>
+                        </div>
+                        {selectedBooking.owner?.address && (
+                          <div className="pt-2 border-t">
+                            <span className="text-muted-foreground block mb-1">Service Address:</span>
+                            <p className="text-sm">
+                              {selectedBooking.owner.address}<br />
+                              {selectedBooking.owner.suburb}, {selectedBooking.owner.city}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
               
               {selectedBooking.special_instructions && (
