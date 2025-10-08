@@ -145,12 +145,21 @@ export default function BookingAccordion({
   };
 
   const handleBooking = async () => {
+    console.log('=== handleBooking called ===');
+    console.log('User:', user);
+    console.log('Start date:', startDate);
+    console.log('End date:', endDate);
+    console.log('Service type:', serviceType);
+    console.log('Agreed to terms:', agreedToTerms);
+    
     if (!user) {
+      console.log('No user, redirecting to auth');
       navigate('/auth');
       return;
     }
 
     if (!startDate || !endDate || !serviceType) {
+      console.log('Missing required fields');
       toast({
         title: 'Missing Information',
         description: 'Please fill in all required fields.',
@@ -160,6 +169,7 @@ export default function BookingAccordion({
     }
 
     if (!agreedToTerms) {
+      console.log('Terms not agreed');
       toast({
         title: 'Agreement Required',
         description: 'Please agree to the booking terms and conditions.',
@@ -168,10 +178,12 @@ export default function BookingAccordion({
       return;
     }
 
+    console.log('Setting loading to true');
     setLoading(true);
 
     try {
       const total = calculateTotal();
+      console.log('Calculated total:', total);
       
       const bookingData = {
         sitterId: sitter.id,
@@ -186,13 +198,22 @@ export default function BookingAccordion({
         requiresDailyReports
       };
 
+      console.log('Booking data:', bookingData);
+      console.log('Calling create-booking function...');
+
       const { data, error } = await supabase.functions.invoke('create-booking', {
         body: bookingData
       });
 
-      if (error) throw error;
+      console.log('Function response:', { data, error });
+
+      if (error) {
+        console.error('Function returned error:', error);
+        throw error;
+      }
 
       if (data?.requires_payment_setup) {
+        console.log('Booking created, payment setup required');
         // Booking created but sitter needs to complete Stripe setup
         toast({
           title: 'Booking Created',
@@ -207,6 +228,7 @@ export default function BookingAccordion({
           }, 1000);
         }
       } else if (data?.url) {
+        console.log('Opening Stripe checkout URL:', data.url);
         window.open(data.url, '_blank');
         toast({
           title: 'Redirecting to Payment',
@@ -221,7 +243,10 @@ export default function BookingAccordion({
         }
       }
     } catch (error: any) {
-      console.error('Booking error:', error);
+      console.error('=== Booking error ===');
+      console.error('Error object:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error details:', error?.error);
       
       // Extract error message from the response
       const errorMessage = error?.message || error?.error || 'There was an error creating your booking. Please try again.';
@@ -232,6 +257,7 @@ export default function BookingAccordion({
         variant: 'destructive'
       });
     } finally {
+      console.log('Setting loading to false');
       setLoading(false);
     }
   };
