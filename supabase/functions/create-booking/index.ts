@@ -170,66 +170,79 @@ serve(async (req) => {
       throw new Error('Sitter profile not found');
     }
 
-    if (!sitterProfile.stripe_account_id || !sitterProfile.stripe_account_enabled) {
-      throw new Error(`${sitterProfile.first_name} ${sitterProfile.last_name} has not completed Stripe Connect setup yet. Please choose another sitter or contact this sitter to complete their payment setup.`);
+    const hasStripeSetup = sitterProfile.stripe_account_id && sitterProfile.stripe_account_enabled;
+    
+    if (!hasStripeSetup) {
+      logStep('Sitter has not completed Stripe Connect setup - booking will be created without payment', {
+        sitterName: `${sitterProfile.first_name} ${sitterProfile.last_name}`
+      });
+    } else {
+      logStep('Sitter Stripe account verified', { accountId: sitterProfile.stripe_account_id });
     }
 
-    logStep('Sitter Stripe account verified', { accountId: sitterProfile.stripe_account_id });
+    let session = null;
+    let sessionUrl = null;
 
-    // Calculate platform fee (10% of total)
-    const totalAmountCents = Math.round(bookingData.totalAmount * 100);
-    const platformFeeAmount = Math.round(totalAmountCents * 0.10);
+    // Only create Stripe checkout if sitter has completed Stripe setup
+    if (hasStripeSetup) {
+      // Calculate platform fee (10% of total)
+      const totalAmountCents = Math.round(bookingData.totalAmount * 100);
+      const platformFeeAmount = Math.round(totalAmountCents * 0.10);
 
-    logStep('Payment breakdown', { 
-      totalAmount: bookingData.totalAmount,
-      platformFee: platformFeeAmount / 100,
-      sitterReceives: (totalAmountCents - platformFeeAmount) / 100
-    });
+      logStep('Payment breakdown', { 
+        totalAmount: bookingData.totalAmount,
+        platformFee: platformFeeAmount / 100,
+        sitterReceives: (totalAmountCents - platformFeeAmount) / 100
+      });
 
-    // Create a one-time payment session using Stripe Connect destination charge
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price_data: {
-            currency: 'nzd',
-            product_data: {
-              name: `${dbServiceType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`,
-              description: `Pet care service from ${bookingData.startDate} to ${bookingData.endDate}`,
+      // Create a one-time payment session using Stripe Connect destination charge
+      session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        customer_email: customerId ? undefined : user.email,
+        line_items: [
+          {
+            price_data: {
+              currency: 'nzd',
+              product_data: {
+                name: `${dbServiceType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`,
+                description: `Pet care service from ${bookingData.startDate} to ${bookingData.endDate}`,
+              },
+              unit_amount: totalAmountCents,
             },
-            unit_amount: totalAmountCents,
+            quantity: 1,
           },
-          quantity: 1,
+        ],
+        mode: "payment",
+        payment_intent_data: {
+          application_fee_amount: platformFeeAmount,
+          transfer_data: {
+            destination: sitterProfile.stripe_account_id,
+          },
         },
-      ],
-      mode: "payment",
-      payment_intent_data: {
-        application_fee_amount: platformFeeAmount,
-        transfer_data: {
-          destination: sitterProfile.stripe_account_id,
-        },
-      },
-      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${booking.booking_reference}`,
-      cancel_url: `${req.headers.get("origin")}/sitter/${bookingData.sitterId}?booking_cancelled=true`,
-      metadata: {
-        booking_id: booking.id,
-        booking_reference: booking.booking_reference,
-        user_id: user.id,
-        sitter_id: bookingData.sitterId,
+        success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${booking.booking_reference}`,
+        cancel_url: `${req.headers.get("origin")}/sitter/${bookingData.sitterId}?booking_cancelled=true`,
+        metadata: {
+          booking_id: booking.id,
+          booking_reference: booking.booking_reference,
+          user_id: user.id,
+          sitter_id: bookingData.sitterId,
+        }
+      });
+
+      sessionUrl = session.url;
+      logStep("Stripe session created", { sessionId: session.id, url: session.url });
+
+      // Update booking with Stripe session ID
+      const { error: updateError } = await supabaseClient
+        .from('bookings')
+        .update({ stripe_checkout_session_id: session.id })
+        .eq('id', booking.id);
+
+      if (updateError) {
+        logStep("Failed to update booking with session ID", { error: updateError.message });
       }
-    });
-
-    logStep("Stripe session created", { sessionId: session.id, url: session.url });
-
-    // Update booking with Stripe session ID
-    const { error: updateError } = await supabaseClient
-      .from('bookings')
-      .update({ stripe_checkout_session_id: session.id })
-      .eq('id', booking.id);
-
-    if (updateError) {
-      logStep("Failed to update booking with session ID", { error: updateError.message });
+    } else {
+      logStep("Skipping Stripe checkout - sitter needs to complete Stripe Connect setup");
     }
 
     // Send booking notification email to sitter
@@ -262,8 +275,10 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ 
-      url: session.url,
-      booking_reference: booking.booking_reference 
+      url: sessionUrl,
+      booking_reference: booking.booking_reference,
+      requires_payment_setup: !hasStripeSetup,
+      sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
