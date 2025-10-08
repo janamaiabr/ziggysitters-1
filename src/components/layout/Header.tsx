@@ -102,7 +102,7 @@ export default function Header() {
                     My Bookings
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate('/admin')}>
+                    <DropdownMenuItem onClick={() => navigate('/admin-dashboard')}>
                       <Shield className="mr-2 h-4 w-4" />
                       Admin Dashboard
                     </DropdownMenuItem>
@@ -176,7 +176,7 @@ export default function Header() {
                         My Bookings
                       </Button>
                       {isAdmin && (
-                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin')}>
+                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin-dashboard')}>
                           <Shield className="mr-2 h-4 w-4" />
                           Admin Dashboard
                         </Button>
