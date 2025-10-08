@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail, FileText } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail, FileText, Users } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
@@ -48,6 +49,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     checkAdminStatus();
     fetchPendingSitters();
+    fetchAllUsers();
   }, [user]);
 
   const checkAdminStatus = async () => {
@@ -88,6 +90,27 @@ export default function AdminDashboard() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setAllUsers(data || []);
+    } catch (error) {
+      console.error('Error fetching all users:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load users",
+        variant: "destructive"
+      });
     }
   };
 
@@ -169,6 +192,8 @@ export default function AdminDashboard() {
     );
   }
 
+  const [allUsers, setAllUsers] = useState<PublicSitterProfile[]>([]);
+  
   const pendingSitters = profiles.filter(p => p.verification_status === 'pending' || (!p.verification_status && !p.is_verified));
   const approvedSitters = profiles.filter(p => p.is_verified && p.verification_status === 'verified');
   const rejectedSitters = profiles.filter(p => p.verification_status === 'rejected');
@@ -180,8 +205,12 @@ export default function AdminDashboard() {
         <p className="text-gray-600">Manage pet sitter applications and verifications</p>
       </div>
 
-      <Tabs defaultValue="pending" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="all-users" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="all-users" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            All Users ({allUsers.length})
+          </TabsTrigger>
           <TabsTrigger value="pending" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             Pending ({pendingSitters.length})
@@ -199,6 +228,87 @@ export default function AdminDashboard() {
             Payouts
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="all-users">
+          <Card>
+            <CardHeader>
+              <CardTitle>All Platform Users</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Joined</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {allUsers.map((user) => (
+                    <TableRow key={user.id} className="cursor-pointer hover:bg-muted/50">
+                      <TableCell className="font-medium">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={user.avatar_url || ''} alt={user.first_name} />
+                            <AvatarFallback>{user.first_name?.[0]}{user.last_name?.[0]}</AvatarFallback>
+                          </Avatar>
+                          <span>{user.first_name} {user.last_name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <Badge variant={
+                          user.role === 'admin' ? 'default' : 
+                          user.role === 'pet_sitter' ? 'secondary' : 
+                          'outline'
+                        }>
+                          {user.role === 'pet_owner' ? 'Pet Owner' : 
+                           user.role === 'pet_sitter' ? 'Pet Sitter' : 
+                           'Admin'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {user.suburb && user.city ? `${user.suburb}, ${user.city}` : user.city || '-'}
+                      </TableCell>
+                      <TableCell>
+                        {user.role === 'pet_sitter' ? (
+                          <Badge variant={
+                            user.is_verified ? 'default' : 
+                            user.verification_status === 'rejected' ? 'destructive' : 
+                            'secondary'
+                          }>
+                            {user.is_verified ? 'Verified' : user.verification_status || 'Pending'}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedProfile(user);
+                            setShowDetailsDialog(true);
+                          }}
+                        >
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="pending">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
