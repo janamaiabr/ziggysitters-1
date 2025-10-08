@@ -139,9 +139,52 @@ export default function Bookings() {
       case 'confirmed': return 'default';
       case 'pending': return 'secondary';
       case 'awaiting_payment': return 'secondary';
+      case 'in_progress': return 'default';
       case 'completed': return 'outline';
       case 'cancelled': return 'destructive';
       default: return 'secondary';
+    }
+  };
+
+  const getStatusMessage = (booking: any) => {
+    if (!profile) return booking.status;
+
+    const isOwner = booking.owner_id === profile.id;
+    const isSitter = booking.sitter_id === profile.id;
+
+    switch (booking.status) {
+      case 'pending':
+        if (isOwner) {
+          return 'Waiting for sitter to accept';
+        }
+        if (isSitter) {
+          return 'Action required: Accept or decline';
+        }
+        return 'Pending';
+      
+      case 'awaiting_payment':
+        if (isOwner) {
+          return 'Payment required';
+        }
+        if (isSitter) {
+          return 'Waiting for owner payment';
+        }
+        return 'Awaiting payment';
+      
+      case 'confirmed':
+        return 'Confirmed';
+      
+      case 'in_progress':
+        return 'In progress';
+      
+      case 'completed':
+        return 'Completed';
+      
+      case 'cancelled':
+        return 'Cancelled';
+      
+      default:
+        return booking.status;
     }
   };
 
@@ -385,7 +428,7 @@ export default function Bookings() {
                             {booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                           </h3>
                           <Badge variant={getStatusColor(booking.status)}>
-                            {booking.status}
+                            {getStatusMessage(booking)}
                           </Badge>
                         </div>
                         
