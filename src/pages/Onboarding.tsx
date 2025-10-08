@@ -64,7 +64,7 @@ export default function Onboarding() {
 
         if (!error && profile?.role === 'admin') {
           // Admin users skip onboarding and go directly to admin dashboard
-          navigate('/admin');
+          navigate('/admin-dashboard');
           return;
         }
       } catch (error) {
