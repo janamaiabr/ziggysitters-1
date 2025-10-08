@@ -319,7 +319,7 @@ export default function Bookings() {
     
     switch (activeTab) {
       case 'upcoming':
-        return ['pending', 'awaiting_payment', 'confirmed'].includes(booking.status) && endDate >= now;
+        return ['pending', 'awaiting_payment', 'confirmed', 'in_progress'].includes(booking.status) && endDate >= now;
       case 'past':
         return booking.status === 'completed' || endDate < now;
       case 'cancelled':
@@ -519,7 +519,8 @@ export default function Bookings() {
                               {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
                             </Button>
                           )}
-                          {booking.status === 'awaiting_payment' && booking.owner_id === profile.id && (
+                          {/* Owner can pay for awaiting_payment or pending bookings */}
+                          {(booking.status === 'awaiting_payment' || booking.status === 'pending') && booking.owner_id === profile.id && (
                             <Button 
                               size="sm" 
                               onClick={() => handleCompletePayment(booking)}
