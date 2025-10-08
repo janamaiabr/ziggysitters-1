@@ -69,6 +69,8 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
           sitter_id: sitterId,
           date: dateStr,
           is_available: isAvailable
+        }, {
+          onConflict: 'sitter_id,date'
         });
 
       if (error) throw error;
