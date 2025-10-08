@@ -274,9 +274,17 @@ export default function BookingAccordion({
       </CardHeader>
 
       <CardContent>
-        <Accordion type="single" collapsible defaultValue={isOpen ? "booking-form" : undefined}>
+        <Accordion 
+          type="single" 
+          collapsible 
+          defaultValue={isOpen ? "booking-form" : undefined}
+          onValueChange={(value) => console.log('Accordion value changed to:', value)}
+        >
           <AccordionItem value="booking-form">
-            <AccordionTrigger className="text-lg font-medium">
+            <AccordionTrigger 
+              className="text-lg font-medium"
+              onClick={() => console.log('Accordion trigger clicked')}
+            >
               Book Your Service
             </AccordionTrigger>
             <AccordionContent className="space-y-6 pt-4">
