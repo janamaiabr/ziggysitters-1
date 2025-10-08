@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, Phone, Mail, FileText, Users } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 
@@ -39,13 +39,12 @@ type PublicSitterProfile = {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<PublicSitterProfile[]>([]);
   const [allUsers, setAllUsers] = useState<PublicSitterProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState<PublicSitterProfile | null>(null);
-  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
@@ -292,12 +291,10 @@ export default function AdminDashboard() {
                       <TableCell>
                         <Button 
                           size="sm" 
-                          variant="ghost"
-                          onClick={() => {
-                            setSelectedProfile(user);
-                            setShowDetailsDialog(true);
-                          }}
+                          variant="outline"
+                          onClick={() => navigate(`/admin/user/${user.id}`)}
                         >
+                          <Eye className="w-4 h-4 mr-2" />
                           View Details
                         </Button>
                       </TableCell>
@@ -317,10 +314,7 @@ export default function AdminDashboard() {
                 profile={profile} 
                 onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
                 onReject={() => profile.id && updateVerificationStatus(profile.id, false, 'rejected')}
-                onViewDetails={() => {
-                  setSelectedProfile(profile);
-                  setShowDetailsDialog(true);
-                }}
+                onViewDetails={() => navigate(`/admin/user/${profile.id}`)}
                 showActions={true}
               />
             ))}
@@ -339,10 +333,7 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onViewDetails={() => {
-                  setSelectedProfile(profile);
-                  setShowDetailsDialog(true);
-                }}
+                onViewDetails={() => navigate(`/admin/user/${profile.id}`)}
                 showActions={false}
               />
             ))}
@@ -356,10 +347,7 @@ export default function AdminDashboard() {
                 key={profile.id} 
                 profile={profile} 
                 onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
-                onViewDetails={() => {
-                  setSelectedProfile(profile);
-                  setShowDetailsDialog(true);
-                }}
+                onViewDetails={() => navigate(`/admin/user/${profile.id}`)}
                 showActions={true}
                 isRejected={true}
               />
@@ -371,13 +359,6 @@ export default function AdminDashboard() {
           <PayoutsTab />
         </TabsContent>
       </Tabs>
-
-      {/* Profile Details Dialog */}
-      <ProfileDetailsDialog 
-        profile={selectedProfile} 
-        open={showDetailsDialog} 
-        onOpenChange={setShowDetailsDialog} 
-      />
     </div>
   );
 }
@@ -493,163 +474,5 @@ function SitterCard({ profile, onApprove, onReject, onViewDetails, showActions, 
         )}
       </CardContent>
     </Card>
-  );
-}
-
-// Add the detailed profile dialog component
-function ProfileDetailsDialog({ profile, open, onOpenChange }: { 
-  profile: PublicSitterProfile | null; 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void;
-}) {
-  if (!profile) return null;
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Sitter Application Details - {profile.first_name} {profile.last_name}</DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-6">
-          {/* Profile Overview */}
-          <div className="flex items-start space-x-4">
-            <Avatar className="h-16 w-16 flex-shrink-0">
-              <AvatarImage 
-                src={profile.avatar_url || ''} 
-                alt={`${profile.first_name} ${profile.last_name}`}
-                className="object-cover"
-              />
-              <AvatarFallback>{profile.first_name?.[0] || 'U'}{profile.last_name?.[0] || ''}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h3 className="text-xl font-semibold">{profile.first_name} {profile.last_name}</h3>
-              <Badge 
-                variant={profile.is_verified ? "default" : profile.verification_status === 'rejected' ? "destructive" : "secondary"}
-                className="mt-1"
-              >
-                {profile.is_verified ? 'Verified' : profile.verification_status || 'Pending'}
-              </Badge>
-            </div>
-          </div>
-
-          {/* Contact Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Contact Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Email</label>
-                  <p className="text-sm">{profile.email}</p>
-                </div>
-                {profile.phone && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Phone</label>
-                    <p className="text-sm">{profile.phone}</p>
-                  </div>
-                )}
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Address</label>
-                  <p className="text-sm">
-                    {profile.address ? `${profile.address}, ` : ''}
-                    {profile.suburb ? `${profile.suburb}, ` : ''}
-                    {profile.city || 'Not provided'}
-                    {profile.postal_code ? ` ${profile.postal_code}` : ''}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Profile Stats</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Rating</label>
-                  <p className="text-sm">{profile.rating ? `${profile.rating}/5 stars` : 'No ratings yet'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Total Reviews</label>
-                  <p className="text-sm">{profile.total_reviews || 0}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Member Since</label>
-                  <p className="text-sm">{new Date(profile.created_at).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Background Check</label>
-                  <p className="text-sm">{profile.background_check_verified ? 'Completed' : 'Not completed'}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Bio */}
-          {profile.bio && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">About</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm leading-relaxed">{profile.bio}</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Verification Documents */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Verification Documents</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-2">ID Document</label>
-                  {profile.id_document_url ? (
-                    <a 
-                      href={profile.id_document_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
-                    >
-                      <FileText className="w-4 h-4 mr-2" />
-                      View ID Document
-                    </a>
-                  ) : (
-                    <p className="text-sm text-gray-500">Not uploaded</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-gray-500 block mb-2">Blue Card / Working with Children Check</label>
-                  {profile.blue_card_document_url ? (
-                    <a 
-                      href={profile.blue_card_document_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
-                    >
-                      <FileText className="w-4 h-4 mr-2" />
-                      View Blue Card
-                    </a>
-                  ) : (
-                    <p className="text-sm text-gray-500">Not uploaded</p>
-                  )}
-                </div>
-              </div>
-              
-              {profile.verification_documents_uploaded_at && (
-                <p className="text-xs text-gray-500 mt-3">
-                  Documents uploaded on: {new Date(profile.verification_documents_uploaded_at).toLocaleString()}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 }

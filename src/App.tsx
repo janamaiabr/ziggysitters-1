@@ -21,6 +21,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminUserDetails from "./pages/AdminUserDetails";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import DailyReports from "./pages/DailyReports";
@@ -146,10 +147,18 @@ function AppContent() {
                } 
              />
             <Route 
-              path="/admin" 
+              path="/admin-dashboard" 
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/user/:id" 
+              element={
+                <ProtectedRoute>
+                  <AdminUserDetails />
                 </ProtectedRoute>
               } 
             />
