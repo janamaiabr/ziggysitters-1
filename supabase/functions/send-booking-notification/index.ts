@@ -84,17 +84,17 @@ serve(async (req) => {
             </table>
           </div>
 
+          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #92400e; font-size: 14px;">
+              <strong>⏰ Action Required:</strong> Please log in to your Ziggy Sitters account to <strong>accept or decline</strong> this booking request. The owner will be notified once you accept, and they can then complete the payment.
+            </p>
+          </div>
+
           <div style="text-align: center; margin: 30px 0;">
             <a href="https://ziggysitters.com/bookings" 
                style="background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; display: inline-block;">
-              View & Manage Booking
+              Accept or Decline Booking
             </a>
-          </div>
-
-          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0; color: #92400e; font-size: 14px;">
-              <strong>Next Steps:</strong> Please log in to your Ziggy Sitters account to review the booking details and confirm your availability.
-            </p>
           </div>
 
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">

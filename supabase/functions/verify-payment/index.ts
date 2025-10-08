@@ -41,7 +41,7 @@ serve(async (req) => {
     console.log('Stripe session status:', session.payment_status);
 
     if (session.payment_status === 'paid') {
-      // Update booking status to confirmed
+      // Update booking status to confirmed (from either 'pending' or 'awaiting_payment')
       const { data: booking, error: updateError } = await supabaseClient
         .from('bookings')
         .update({ 
@@ -50,6 +50,7 @@ serve(async (req) => {
           stripe_payment_intent_id: session.payment_intent
         })
         .eq('id', booking_id)
+        .in('status', ['pending', 'awaiting_payment'])
         .select()
         .single();
 

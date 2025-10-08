@@ -138,10 +138,55 @@ export default function Bookings() {
     switch (status) {
       case 'confirmed': return 'default';
       case 'pending': return 'secondary';
+      case 'awaiting_payment': return 'secondary';
       case 'completed': return 'outline';
       case 'cancelled': return 'destructive';
       default: return 'secondary';
     }
+  };
+
+  const handleAcceptBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase.rpc('accept_booking', { 
+        booking_id: bookingId 
+      });
+
+      if (error) throw error;
+
+      // Send acceptance notification to owner
+      const acceptedBooking = bookings.find(b => b.id === bookingId);
+      if (acceptedBooking) {
+        await supabase.functions.invoke('send-booking-acceptance-email', {
+          body: {
+            owner_email: acceptedBooking.owner.email,
+            owner_name: `${acceptedBooking.owner.first_name} ${acceptedBooking.owner.last_name}`,
+            sitter_name: `${profile.first_name} ${profile.last_name}`,
+            service_type: acceptedBooking.service_type,
+            start_date: acceptedBooking.start_date,
+            end_date: acceptedBooking.end_date,
+            booking_reference: acceptedBooking.booking_reference,
+            total_amount: acceptedBooking.total_amount
+          }
+        });
+      }
+
+      toast({
+        title: "Booking Accepted",
+        description: "The owner will be notified to complete payment.",
+      });
+
+      fetchBookings();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeclineBooking = async (booking) => {
+    await handleCancelBooking(booking);
   };
 
   const handleCancelBooking = async (booking) => {
@@ -274,7 +319,7 @@ export default function Bookings() {
     
     switch (activeTab) {
       case 'upcoming':
-        return ['pending', 'confirmed'].includes(booking.status) && endDate >= now;
+        return ['pending', 'awaiting_payment', 'confirmed'].includes(booking.status) && endDate >= now;
       case 'past':
         return booking.status === 'completed' || endDate < now;
       case 'cancelled':
@@ -426,7 +471,7 @@ export default function Bookings() {
                       </div>
                     </div>
                     
-                     <div className="flex flex-col space-y-2 lg:items-end">
+                        <div className="flex flex-col space-y-2 lg:items-end">
                         <div className="flex flex-wrap gap-2">
                           <Button 
                             variant="outline" 
@@ -436,6 +481,28 @@ export default function Bookings() {
                           >
                             View Details
                           </Button>
+                          
+                          {/* Sitter Accept/Decline buttons for pending bookings */}
+                          {booking.status === 'pending' && booking.sitter_id === profile.id && (
+                            <>
+                              <Button 
+                                size="sm" 
+                                onClick={() => handleAcceptBooking(booking.id)}
+                                className="bg-green-600 hover:bg-green-700 min-w-[100px]"
+                              >
+                                Accept
+                              </Button>
+                              <Button 
+                                variant="destructive" 
+                                size="sm" 
+                                onClick={() => handleDeclineBooking(booking)}
+                                className="min-w-[100px]"
+                              >
+                                Decline
+                              </Button>
+                            </>
+                          )}
+                          
                           {(booking.status === 'confirmed' || booking.status === 'in_progress') && (
                             <Button 
                               variant="outline" 
@@ -452,7 +519,7 @@ export default function Bookings() {
                               {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
                             </Button>
                           )}
-                          {booking.status === 'pending' && booking.owner_id === profile.id && (
+                          {booking.status === 'awaiting_payment' && booking.owner_id === profile.id && (
                             <Button 
                               size="sm" 
                               onClick={() => handleCompletePayment(booking)}
@@ -462,7 +529,7 @@ export default function Bookings() {
                               Complete Payment
                             </Button>
                           )}
-                         {booking.status === 'pending' && (
+                          {(booking.status === 'pending' || booking.status === 'awaiting_payment') && booking.owner_id === profile.id && (
                            <Button 
                              variant="destructive" 
                              size="sm" 
@@ -490,7 +557,7 @@ export default function Bookings() {
                              Complete Service
                            </Button>
                          )}
-                        </div>
+                       </div>
                      </div>
                   </div>
                 </CardContent>

@@ -748,6 +748,10 @@ export type Database = {
       }
     }
     Functions: {
+      accept_booking: {
+        Args: { booking_id: string }
+        Returns: undefined
+      }
       can_access_pet_basic_info: {
         Args: { pet_id: string }
         Returns: boolean
@@ -798,6 +802,7 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+        | "awaiting_payment"
       pet_size: "small" | "medium" | "large" | "extra_large"
       pet_species:
         | "dog"
@@ -952,6 +957,7 @@ export const Constants = {
         "in_progress",
         "completed",
         "cancelled",
+        "awaiting_payment",
       ],
       pet_size: ["small", "medium", "large", "extra_large"],
       pet_species: [

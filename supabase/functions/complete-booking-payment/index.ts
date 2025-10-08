@@ -65,8 +65,8 @@ serve(async (req) => {
       throw new Error("Unauthorized: You can only complete payment for your own bookings");
     }
 
-    // Verify booking is pending
-    if (booking.status !== 'pending') {
+    // Verify booking is pending or awaiting payment
+    if (!['pending', 'awaiting_payment'].includes(booking.status)) {
       throw new Error("Booking is not pending payment");
     }
 
