@@ -494,7 +494,16 @@ export default function BookingAccordion({
                     I agree to the booking terms *
                   </label>
                   <p className="text-xs text-muted-foreground mt-1">
-                    I understand that this booking is subject to ZiggySitters' terms of service and cancellation policy. 
+                    I understand that this booking is subject to ZiggySitters'{' '}
+                    <a 
+                      href="/terms-of-service" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      terms of service
+                    </a>
+                    {' '}and cancellation policy. 
                     The sitter agrees to provide the selected service, and I agree to pay the stated amount.
                   </p>
                 </div>
