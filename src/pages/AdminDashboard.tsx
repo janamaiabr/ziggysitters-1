@@ -41,6 +41,7 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<PublicSitterProfile[]>([]);
+  const [allUsers, setAllUsers] = useState<PublicSitterProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState<PublicSitterProfile | null>(null);
@@ -192,8 +193,6 @@ export default function AdminDashboard() {
     );
   }
 
-  const [allUsers, setAllUsers] = useState<PublicSitterProfile[]>([]);
-  
   const pendingSitters = profiles.filter(p => p.verification_status === 'pending' || (!p.verification_status && !p.is_verified));
   const approvedSitters = profiles.filter(p => p.is_verified && p.verification_status === 'verified');
   const rejectedSitters = profiles.filter(p => p.verification_status === 'rejected');
