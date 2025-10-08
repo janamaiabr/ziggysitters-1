@@ -199,11 +199,15 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
           description: `Booking reference: ${data.booking_reference}`,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Booking error:', error);
+      
+      // Extract error message from the response
+      const errorMessage = error?.message || error?.error || 'There was an error creating your booking. Please try again.';
+      
       toast({
         title: 'Booking Failed',
-        description: 'There was an error creating your booking. Please try again.',
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
