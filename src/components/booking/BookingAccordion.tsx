@@ -80,6 +80,7 @@ export default function BookingAccordion({
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState(initialServiceType || '');
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [requiresDailyReports, setRequiresDailyReports] = useState(true);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
@@ -181,7 +182,8 @@ export default function BookingAccordion({
         endTime: (serviceType === 'dog-walking' || serviceType === 'drop-in-visits') ? endTime : undefined,
         petIds: [],
         specialInstructions,
-        totalAmount: total
+        totalAmount: total,
+        requiresDailyReports
       };
 
       const { data, error } = await supabase.functions.invoke('create-booking', {
@@ -190,7 +192,21 @@ export default function BookingAccordion({
 
       if (error) throw error;
 
-      if (data?.url) {
+      if (data?.requires_payment_setup) {
+        // Booking created but sitter needs to complete Stripe setup
+        toast({
+          title: 'Booking Created',
+          description: `Your booking (${data.booking_reference}) has been created! However, ${data.sitter_name} needs to complete their payment setup before payment can be processed. They will be notified to complete this step.`,
+          duration: 8000,
+        });
+        
+        // Call the callback to redirect to bookings after successful booking creation
+        if (onBookingComplete) {
+          setTimeout(() => {
+            onBookingComplete();
+          }, 1000);
+        }
+      } else if (data?.url) {
         window.open(data.url, '_blank');
         toast({
           title: 'Redirecting to Payment',
@@ -204,11 +220,15 @@ export default function BookingAccordion({
           }, 1000);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Booking error:', error);
+      
+      // Extract error message from the response
+      const errorMessage = error?.message || error?.error || 'There was an error creating your booking. Please try again.';
+      
       toast({
         title: 'Booking Failed',
-        description: 'There was an error creating your booking. Please try again.',
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
@@ -223,6 +243,7 @@ export default function BookingAccordion({
     setEndTime('17:00');
     setServiceType('');
     setSpecialInstructions('');
+    setRequiresDailyReports(true);
     setAgreedToTerms(false);
   };
 
@@ -410,6 +431,29 @@ export default function BookingAccordion({
                   onChange={(e) => setSpecialInstructions(e.target.value)}
                   rows={3}
                 />
+              </div>
+
+              {/* Daily Reports Option */}
+              <div className="flex items-start space-x-3 p-4 border-2 rounded-lg bg-primary/5 border-primary/20">
+                <input
+                  type="checkbox"
+                  id="daily-reports"
+                  checked={requiresDailyReports}
+                  onChange={(e) => setRequiresDailyReports(e.target.checked)}
+                  className="mt-1 h-4 w-4"
+                />
+                <div className="flex-1">
+                  <label htmlFor="daily-reports" className="text-sm font-semibold cursor-pointer flex items-center gap-2">
+                    Request daily reports
+                    <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                  </label>
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    Get daily updates with photos and detailed information about your pet's activities, meals, mood, and wellbeing during their stay.
+                  </p>
+                  <p className="text-xs font-medium text-primary mt-2">
+                    💡 Note: If the sitter doesn't provide the requested daily reports, they may receive a reduced payment.
+                  </p>
+                </div>
               </div>
 
               {/* Terms Agreement */}
