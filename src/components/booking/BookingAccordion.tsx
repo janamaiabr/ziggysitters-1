@@ -228,19 +228,9 @@ export default function BookingAccordion({
           }, 1000);
         }
       } else if (data?.url) {
-        console.log('Opening Stripe checkout URL:', data.url);
-        window.open(data.url, '_blank');
-        toast({
-          title: 'Redirecting to Payment',
-          description: `Booking reference: ${data.booking_reference}`,
-        });
-        
-        // Call the callback to redirect to bookings after successful booking creation
-        if (onBookingComplete) {
-          setTimeout(() => {
-            onBookingComplete();
-          }, 1000);
-        }
+        console.log('Redirecting to Stripe checkout URL:', data.url);
+        // Redirect to Stripe checkout in the same window
+        window.location.href = data.url;
       }
     } catch (error: any) {
       console.error('=== Booking error ===');

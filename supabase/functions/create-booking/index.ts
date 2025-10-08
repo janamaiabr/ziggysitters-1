@@ -219,8 +219,8 @@ serve(async (req) => {
             destination: sitterProfile.stripe_account_id,
           },
         },
-        success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${booking.booking_reference}`,
-        cancel_url: `${req.headers.get("origin")}/sitter/${bookingData.sitterId}?booking_cancelled=true`,
+        success_url: `${req.headers.get("origin")}/bookings?payment=success&session_id={CHECKOUT_SESSION_ID}&booking_id=${booking.id}`,
+        cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
         metadata: {
           booking_id: booking.id,
           booking_reference: booking.booking_reference,
