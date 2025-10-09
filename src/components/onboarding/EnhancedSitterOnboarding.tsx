@@ -156,7 +156,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
         }
         
         toast({
-          title: `${type === 'id' ? 'ID' : 'Blue Card'} document uploaded!`,
+          title: `${type === 'id' ? 'ID' : 'Police Vet Check'} document uploaded!`,
           description: "Document uploaded successfully.",
         });
       }
@@ -243,15 +243,35 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
       }
 
 
-      // Send notification to admin about new sitter for approval
-      await supabase.functions.invoke('send-verification-request-email', {
-        body: {
-          user_name: `${userId}`, // We'll get this from profile in the edge function
-          user_email: `${userId}`, // We'll get this from profile in the edge function  
-          user_id: userId,
-          documents_uploaded: !!(idDocumentUrl || blueCardUrl)
+      // Send email notification about verification request
+      try {
+        await supabase.functions.invoke('send-verification-request-email', {
+          body: {
+            user_id: userId,
+            documents_uploaded: !!(idDocumentUrl || blueCardUrl)
+          }
+        });
+        
+        // Send reminder email for police vet if not uploaded
+        if (!blueCardUrl) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('email, first_name, last_name')
+            .eq('user_id', userId)
+            .single();
+            
+          if (profileData) {
+            await supabase.functions.invoke('send-police-vet-reminder', {
+              body: {
+                user_email: profileData.email,
+                user_name: `${profileData.first_name} ${profileData.last_name}`
+              }
+            });
+          }
         }
-      });
+      } catch (emailError) {
+        console.error('Error sending verification email:', emailError);
+      }
 
       // Show Stripe Connect onboarding prompt
       toast({
@@ -633,15 +653,18 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
               </div>
 
               <div className="space-y-2">
-                <Label>Blue Card / Working with Children Check (Optional)</Label>
+                <Label>Police Vet Check</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Required: NZ Police Vetting Service check. <a href="https://www.police.govt.nz/advice-services/businesses-and-organisations/nz-police-vetting-service/forms-and-guides" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Get your police vet here</a>
+                </p>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
                   onChange={(e) => handleFileUpload(e.target.files, 'blue_card')}
-                  id="blue-card"
+                  id="police-vet"
                 />
                 {blueCardUrl && (
-                  <p className="text-sm text-green-600">✓ Blue Card uploaded</p>
+                  <p className="text-sm text-green-600">✓ Police Vet uploaded</p>
                 )}
               </div>
             </div>

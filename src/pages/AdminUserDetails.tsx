@@ -206,6 +206,38 @@ export default function AdminUserDetails() {
 
       if (error) throw error;
 
+      // Delete verification documents after approval
+      if (isVerified && verificationStatus === 'verified') {
+        try {
+          const filesToDelete: string[] = [];
+          
+          if (profile.id_document_url) {
+            const idPath = profile.id_document_url.split('/verification-docs/')[1];
+            if (idPath) filesToDelete.push(idPath);
+          }
+          
+          if (profile.blue_card_document_url) {
+            const vetPath = profile.blue_card_document_url.split('/verification-docs/')[1];
+            if (vetPath) filesToDelete.push(vetPath);
+          }
+
+          if (filesToDelete.length > 0) {
+            await supabase.storage.from('verification-docs').remove(filesToDelete);
+            
+            // Clear document URLs from profile
+            await supabase
+              .from('profiles')
+              .update({ 
+                id_document_url: null,
+                blue_card_document_url: null 
+              })
+              .eq('id', profile.id);
+          }
+        } catch (deleteError) {
+          console.error('Error deleting verification documents:', deleteError);
+        }
+      }
+
       // Send verification update email
       try {
         await supabase.functions.invoke('send-verification-update', {
@@ -658,7 +690,7 @@ export default function AdminUserDetails() {
                   <Separator />
                   
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground block mb-2">Blue Card / Working with Children Check</label>
+                    <label className="text-sm font-medium text-muted-foreground block mb-2">NZ Police Vetting Service Check</label>
                     {blueCardUrl ? (
                       <div className="space-y-2">
                         <a 
@@ -668,7 +700,7 @@ export default function AdminUserDetails() {
                           className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
                         >
                           <FileText className="w-4 h-4 mr-2" />
-                          View Blue Card
+                          View Police Vet
                         </a>
                         <p className="text-xs text-muted-foreground">This link is valid for 1 hour</p>
                       </div>

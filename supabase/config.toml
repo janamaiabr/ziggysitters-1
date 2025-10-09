@@ -15,6 +15,9 @@ verify_jwt = false
 [functions.send-daily-report-reminder]
 verify_jwt = false
 
+[functions.send-police-vet-reminder]
+verify_jwt = false
+
 [functions.stripe-connect-onboarding]
 verify_jwt = true
 

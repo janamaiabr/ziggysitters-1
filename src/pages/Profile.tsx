@@ -227,7 +227,7 @@ export default function Profile() {
 
       toast({
         title: "Document uploaded successfully",
-        description: `${type === 'id' ? 'ID' : 'Blue card'} document uploaded for verification.`,
+        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for verification.`,
       });
 
       // Refresh profile data
@@ -1110,19 +1110,19 @@ export default function Profile() {
                   )}
                 </div>
 
-                {/* Blue Card Upload */}
+                {/* Police Vet Upload */}
                 <div>
-                  <h3 className="font-medium mb-2">Working with Children Check (Blue Card)</h3>
+                  <h3 className="font-medium mb-2">NZ Police Vetting Service Check</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Upload your Queensland Blue Card or equivalent working with children check.
+                    Upload your NZ Police Vetting Service check. <a href="https://www.police.govt.nz/advice-services/businesses-and-organisations/nz-police-vetting-service/forms-and-guides" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Get your police vet here</a>
                   </p>
                   {profile.blue_card_document_url ? (
                     <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       <div>
-                        <p className="font-medium text-green-700">Blue Card Uploaded</p>
+                        <p className="font-medium text-green-700">Police Vet Uploaded</p>
                         <p className="text-sm text-green-600">
-                          Blue Card uploaded - pending assessment
+                          Police Vet uploaded - pending assessment
                         </p>
                       </div>
                     </div>
@@ -1143,7 +1143,7 @@ export default function Profile() {
                         onClick={() => document.getElementById('blue-card-upload')?.click()}
                       >
                         <Upload className="w-4 h-4 mr-2" />
-                        Upload Blue Card
+                        Upload Police Vet
                       </Button>
                     </div>
                   )}
