@@ -20,13 +20,33 @@ export default function ResetPassword() {
 
   useEffect(() => {
     // Check if we have a valid session from the reset link
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         // User clicked the reset link and is now authenticated
         // We can proceed with password update
+        console.log('Password recovery event detected');
+      } else if (event === 'SIGNED_OUT') {
+        // If user is signed out, redirect to forgot password
+        navigate('/forgot-password');
       }
     });
-  }, []);
+
+    // Check if there's an active session for password recovery
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        toast({
+          title: "Invalid reset link",
+          description: "Please request a new password reset link.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          navigate('/forgot-password');
+        }, 2000);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +88,9 @@ export default function ResetPassword() {
           title: "Success",
           description: "Your password has been updated successfully",
         });
+        
+        // Sign out the user after password reset
+        await supabase.auth.signOut();
         
         // Redirect to login after 3 seconds
         setTimeout(() => {
