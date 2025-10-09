@@ -26,19 +26,19 @@ export default function ForgotPassword() {
         redirectTo: redirectUrl,
       });
 
+      // Always show success to prevent email enumeration attacks
+      // Even if there's an error (like unconfirmed email), we show success
+      setSent(true);
+      
       if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        setSent(true);
-        toast({
-          title: "Reset email sent",
-          description: "Check your email for a password reset link.",
-        });
+        console.error('Password reset error:', error);
+        // Still show success to user for security
       }
+      
+      toast({
+        title: "Reset email sent",
+        description: "If an account exists with this email, you'll receive a password reset link.",
+      });
     } catch (error) {
       toast({
         title: "Error",
