@@ -19,33 +19,43 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isRecoverySession = false;
+    
     // Check if we have a valid session from the reset link
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state change:', event);
+      
       if (event === 'PASSWORD_RECOVERY') {
         // User clicked the reset link and is now authenticated
-        // We can proceed with password update
-        console.log('Password recovery event detected');
-      } else if (event === 'SIGNED_OUT') {
-        // If user is signed out, redirect to forgot password
+        isRecoverySession = true;
+        console.log('Password recovery event detected - session valid');
+      } else if (event === 'SIGNED_OUT' && !isRecoverySession) {
+        // If user is signed out and not in recovery, redirect to forgot password
         navigate('/forgot-password');
       }
     });
 
-    // Check if there's an active session for password recovery
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        toast({
-          title: "Invalid reset link",
-          description: "Please request a new password reset link.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          navigate('/forgot-password');
-        }, 2000);
-      }
-    });
+    // Give Supabase time to process the recovery token before checking session
+    const timeoutId = setTimeout(() => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session && !isRecoverySession) {
+          console.log('No valid session found after timeout');
+          toast({
+            title: "Invalid reset link",
+            description: "Please request a new password reset link.",
+            variant: "destructive",
+          });
+          setTimeout(() => {
+            navigate('/forgot-password');
+          }, 2000);
+        }
+      });
+    }, 1000); // Wait 1 second for Supabase to establish recovery session
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeoutId);
+    };
   }, [navigate, toast]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {

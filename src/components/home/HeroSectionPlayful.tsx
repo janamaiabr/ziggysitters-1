@@ -152,23 +152,35 @@ const HeroSectionPlayful = ({
                   </SelectContent>
                 </Select>
                 
-                <Input 
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="h-11 w-full lg:w-[180px]"
-                  min={new Date().toISOString().split('T')[0]}
-                  placeholder="Check-in"
-                />
+                <div className="relative w-full lg:w-[180px]">
+                  <Input 
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    className="h-11 w-full"
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                  {!checkIn && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none text-sm">
+                      Check-in
+                    </span>
+                  )}
+                </div>
                 
-                <Input 
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="h-11 w-full lg:w-[180px]"
-                  min={checkIn || new Date().toISOString().split('T')[0]}
-                  placeholder="Check-out"
-                />
+                <div className="relative w-full lg:w-[180px]">
+                  <Input 
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="h-11 w-full"
+                    min={checkIn || new Date().toISOString().split('T')[0]}
+                  />
+                  {!checkOut && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none text-sm">
+                      Check-out
+                    </span>
+                  )}
+                </div>
                 
                 <Button 
                   size="lg" 
