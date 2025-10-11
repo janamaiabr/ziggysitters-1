@@ -185,6 +185,9 @@ export default function BookingAccordion({
       const total = calculateTotal();
       console.log('Calculated total:', total);
       
+      // Only allow daily reports for overnight pet sitting services
+      const allowsDailyReports = serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home';
+      
       const bookingData = {
         sitterId: sitter.id,
         serviceType,
@@ -195,7 +198,7 @@ export default function BookingAccordion({
         petIds: [],
         specialInstructions,
         totalAmount: total,
-        requiresDailyReports
+        requiresDailyReports: allowsDailyReports ? requiresDailyReports : false
       };
 
       console.log('Booking data:', bookingData);
@@ -457,28 +460,30 @@ export default function BookingAccordion({
                 />
               </div>
 
-              {/* Daily Reports Option */}
-              <div className="flex items-start space-x-3 p-4 border-2 rounded-lg bg-primary/5 border-primary/20">
-                <input
-                  type="checkbox"
-                  id="daily-reports"
-                  checked={requiresDailyReports}
-                  onChange={(e) => setRequiresDailyReports(e.target.checked)}
-                  className="mt-1 h-4 w-4"
-                />
-                <div className="flex-1">
-                  <label htmlFor="daily-reports" className="text-sm font-semibold cursor-pointer flex items-center gap-2">
-                    Request daily reports
-                    <Badge variant="secondary" className="text-xs">Recommended</Badge>
-                  </label>
-                  <p className="text-xs text-muted-foreground mt-1.5">
-                    Get daily updates with photos and detailed information about your pet's activities, meals, mood, and wellbeing during their stay.
-                  </p>
-                  <p className="text-xs font-medium text-primary mt-2">
-                    💡 Note: If the sitter doesn't provide the requested daily reports, they may receive a reduced payment.
-                  </p>
+              {/* Daily Reports Option - Only for overnight pet sitting services */}
+              {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (
+                <div className="flex items-start space-x-3 p-4 border-2 rounded-lg bg-primary/5 border-primary/20">
+                  <input
+                    type="checkbox"
+                    id="daily-reports"
+                    checked={requiresDailyReports}
+                    onChange={(e) => setRequiresDailyReports(e.target.checked)}
+                    className="mt-1 h-4 w-4"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="daily-reports" className="text-sm font-semibold cursor-pointer flex items-center gap-2">
+                      Request daily reports
+                      <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      Get daily updates with photos and detailed information about your pet's activities, meals, mood, and wellbeing during their overnight stay.
+                    </p>
+                    <p className="text-xs font-medium text-primary mt-2">
+                      💡 Note: If the sitter doesn't provide the requested daily reports, they may receive a reduced payment.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Terms Agreement */}
               <div className="flex items-start space-x-3 p-4 border rounded-lg bg-primary/5">
