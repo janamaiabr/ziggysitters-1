@@ -248,6 +248,19 @@ export default function ClientDailyReports() {
         <h2 className="text-2xl font-bold">Daily Reports</h2>
       </div>
 
+      {/* How to Get Daily Reports Notice */}
+      <Card className="border-l-4 border-l-blue-500 bg-blue-50/50">
+        <CardContent className="p-4">
+          <h3 className="font-semibold mb-2 text-blue-900">💡 How to Get Daily Reports</h3>
+          <ul className="text-sm space-y-1 text-blue-800">
+            <li>✅ <strong>Select "Daily Reports"</strong> when creating a booking to request them from your sitter</li>
+            <li>✅ <strong>Your choice:</strong> Reports are optional - choose them only if you want daily updates</li>
+            <li>✅ <strong>Guaranteed delivery:</strong> When you request reports, sitters must deliver them or face payment reduction</li>
+            <li>✅ <strong>What you'll see:</strong> Photos, feeding info, exercise details, mood, and sitter's notes</li>
+          </ul>
+        </CardContent>
+      </Card>
+
       {bookingsWithReports.length === 0 ? (
         <Card>
           <CardContent className="text-center py-12">

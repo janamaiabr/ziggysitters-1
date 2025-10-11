@@ -115,7 +115,10 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
 
           <p className="text-xs text-center text-muted-foreground">
             <button 
-              onClick={() => navigate('/terms-of-service')} 
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open('/terms-of-service', '_blank');
+              }} 
               className="underline hover:no-underline"
             >
               View full Terms of Service

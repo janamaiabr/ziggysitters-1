@@ -116,6 +116,13 @@ const Index = () => {
         structuredData={structuredData}
       />
       <div className="bg-gradient-to-b from-background to-accent/20">
+      {/* Launch Location Notice */}
+      <div className="bg-primary text-primary-foreground py-3 text-center">
+        <p className="text-sm font-medium">
+          🚀 Now Live in Auckland! More cities coming soon.
+        </p>
+      </div>
+      
       {/* Hero Section - To rollback, replace HeroSectionPlayful with HeroSectionV2 */}
       <HeroSectionPlayful
         location={location}

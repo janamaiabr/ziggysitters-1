@@ -107,6 +107,19 @@ export default function DailyReports() {
         <p className="text-muted-foreground">
           Manage daily pet reports for bookings that request them. Stay on top of your reporting to ensure full payment.
         </p>
+        
+        {/* How It Works Notice */}
+        <Card className="mt-4 border-l-4 border-l-blue-500 bg-blue-50/50">
+          <CardContent className="p-4">
+            <h3 className="font-semibold mb-2 text-blue-900">📋 How Daily Reports Work</h3>
+            <ul className="text-sm space-y-1 text-blue-800">
+              <li>✅ <strong>Pet owners choose</strong> whether to request daily reports when booking</li>
+              <li>✅ <strong>You only provide reports</strong> when specifically requested by the pet owner</li>
+              <li>✅ <strong>Short visits (e.g., 1-hour walks)</strong> typically don't require reports unless requested</li>
+              <li>✅ <strong>When reports are requested,</strong> you must submit them daily by 9 PM to receive full payment</li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Stats Cards */}
