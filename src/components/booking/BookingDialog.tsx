@@ -190,26 +190,13 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
 
       if (error) throw error;
 
-      if (data?.requires_payment_setup) {
-        // Booking created but sitter needs to complete Stripe setup
-        onClose();
-        toast({
-          title: 'Booking Created',
-          description: `Your booking (${data.booking_reference}) has been created! However, ${data.sitter_name} needs to complete their payment setup before payment can be processed. They will be notified to complete this step.`,
-          duration: 8000,
-        });
-      } else if (data?.url) {
-        // Track initiate checkout
-        metaPixel.trackInitiateCheckout({ value: total, currency: 'NZD' });
-        
-        // Redirect to Stripe checkout
-        window.open(data.url, '_blank');
-        onClose();
-        toast({
-          title: 'Redirecting to Payment',
-          description: `Booking reference: ${data.booking_reference}`,
-        });
-      }
+      // Booking created successfully - payment will be requested after sitter accepts
+      onClose();
+      toast({
+        title: 'Booking Request Sent!',
+        description: data?.message || 'Your booking has been sent to the sitter. You will be notified when they accept, and then you can complete payment.',
+        duration: 8000,
+      });
     } catch (error: any) {
       console.error('Booking error:', error);
       

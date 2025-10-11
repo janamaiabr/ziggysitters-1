@@ -215,25 +215,19 @@ export default function BookingAccordion({
         throw error;
       }
 
-      if (data?.requires_payment_setup) {
-        console.log('Booking created, payment setup required');
-        // Booking created but sitter needs to complete Stripe setup
-        toast({
-          title: 'Booking Created',
-          description: `Your booking (${data.booking_reference}) has been created! However, ${data.sitter_name} needs to complete their payment setup before payment can be processed. They will be notified to complete this step.`,
-          duration: 8000,
-        });
-        
-        // Call the callback to redirect to bookings after successful booking creation
-        if (onBookingComplete) {
-          setTimeout(() => {
-            onBookingComplete();
-          }, 1000);
-        }
-      } else if (data?.url) {
-        console.log('Redirecting to Stripe checkout URL:', data.url);
-        // Redirect to Stripe checkout in the same window
-        window.location.href = data.url;
+      // Booking created successfully - payment will be requested after sitter accepts
+      console.log('Booking created successfully:', data);
+      toast({
+        title: 'Booking Request Sent!',
+        description: data?.message || 'Your booking has been sent to the sitter. You will be notified when they accept, and then you can complete payment.',
+        duration: 8000,
+      });
+      
+      // Call the callback to redirect to bookings after successful booking creation
+      if (onBookingComplete) {
+        setTimeout(() => {
+          onBookingComplete();
+        }, 1000);
       }
     } catch (error: any) {
       console.error('=== Booking error ===');

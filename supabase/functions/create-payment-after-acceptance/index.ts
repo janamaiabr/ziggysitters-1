@@ -7,8 +7,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const logStep = (step: string, details?: any) => {
+  console.log(`[CREATE-PAYMENT-AFTER-ACCEPTANCE] ${step}`, details ? JSON.stringify(details) : '');
+};
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -19,56 +22,67 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Retrieve authenticated user
+    // Authenticate user
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
+    logStep('User authenticated', { userId: user.id, email: user.email });
+
     const { booking_id } = await req.json();
     if (!booking_id) throw new Error("Booking ID is required");
 
-    console.log('Looking for booking:', booking_id, 'for user:', user.email);
+    logStep('Looking for booking', { bookingId: booking_id });
 
-    // Get booking details using service role for admin access
+    // Get booking details with sitter Stripe account
     const { data: booking, error: bookingError } = await supabaseClient
       .from('bookings')
       .select(`
         id, 
         total_amount, 
+        platform_fee,
         service_type, 
         start_date, 
         end_date,
         status,
         booking_reference,
         owner_id,
-        owner:profiles!owner_id(user_id, email, first_name, last_name)
+        owner:profiles!owner_id(user_id, email, first_name, last_name),
+        sitter:profiles!sitter_id(stripe_account_id, stripe_account_enabled)
       `)
       .eq('id', booking_id)
       .maybeSingle();
 
-    console.log('Booking query result:', { booking, bookingError });
-
     if (bookingError) {
-      console.error('Database error:', bookingError);
+      logStep('Database error', { error: bookingError });
       throw new Error(`Database error: ${bookingError.message}`);
     }
     
     if (!booking) {
-      console.error('Booking not found for ID:', booking_id);
+      logStep('Booking not found', { bookingId: booking_id });
       throw new Error("Booking not found");
     }
 
+    logStep('Booking retrieved', { booking });
+
     // Verify user owns this booking
     if (booking.owner.user_id !== user.id) {
-      throw new Error("Unauthorized: You can only complete payment for your own bookings");
+      throw new Error("Unauthorized: You can only pay for your own bookings");
     }
 
-    // Verify booking is pending or awaiting payment
-    if (!['pending', 'awaiting_payment'].includes(booking.status)) {
-      throw new Error("Booking is not pending payment");
+    // Verify booking is awaiting payment
+    if (booking.status !== 'awaiting_payment') {
+      throw new Error(`Booking is not awaiting payment. Current status: ${booking.status}`);
     }
+
+    // Verify sitter has Stripe Connect enabled
+    if (!booking.sitter.stripe_account_id || !booking.sitter.stripe_account_enabled) {
+      throw new Error("Sitter has not completed Stripe setup. Please contact support.");
+    }
+
+    logStep('Sitter Stripe account verified', { accountId: booking.sitter.stripe_account_id });
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -80,9 +94,10 @@ serve(async (req) => {
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      logStep('Existing Stripe customer found', { customerId });
     }
 
-    // Create checkout session with dynamic pricing
+    // Create checkout session with Stripe Connect (escrow via destination charge)
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -100,7 +115,13 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/bookings?payment=success&session_id={CHECKOUT_SESSION_ID}&booking_id=${booking_id}`,
+      payment_intent_data: {
+        application_fee_amount: Math.round(booking.platform_fee * 100),
+        transfer_data: {
+          destination: booking.sitter.stripe_account_id,
+        },
+      },
+      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${booking_id}`,
       cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
       metadata: {
         booking_id: booking_id,
@@ -108,7 +129,17 @@ serve(async (req) => {
       },
     });
 
-    console.log('Checkout session created:', session.id);
+    logStep('Checkout session created', { sessionId: session.id });
+
+    // Update booking with Stripe session ID
+    const { error: updateError } = await supabaseClient
+      .from('bookings')
+      .update({ stripe_checkout_session_id: session.id })
+      .eq('id', booking_id);
+
+    if (updateError) {
+      logStep('Failed to update booking with session ID', { error: updateError });
+    }
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -116,7 +147,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error creating payment session:', error);
+    logStep('Error creating payment session', { error: error.message });
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -94,33 +93,6 @@ serve(async (req) => {
       throw new Error(`Invalid service type: ${bookingData.serviceType} -> ${dbServiceType}`);
     }
 
-    // Use dynamic pricing instead of fixed price IDs to match the actual booking amount
-    logStep("Using dynamic pricing for booking", { totalAmount: bookingData.totalAmount, currency: "nzd" });
-
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
-
-    // Check if a Stripe customer record exists for this user
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      logStep("Existing Stripe customer found", { customerId });
-    } else {
-      logStep("No existing Stripe customer found");
-    }
-
-    // Create a booking record in pending state
-    logStep("About to create booking", { 
-      owner_id: profile.id, 
-      sitter_id: bookingData.sitterId,
-      service_type: dbServiceType,
-      user_id: user.id,
-      profile_user_id: profile.user_id 
-    });
-
     // Calculate daily reports required (only if owner explicitly requested them)
     const requiresDailyReports = bookingData.requiresDailyReports === true; // Default to false
     let dailyReportsRequired = 0;
@@ -157,12 +129,12 @@ serve(async (req) => {
     if (bookingError || !booking) {
       throw new Error(`Failed to create booking: ${bookingError?.message}`);
     }
-    logStep("Booking created", { bookingId: booking.id, reference: booking.booking_reference });
+    logStep("Booking created - payment will occur after sitter acceptance", { bookingId: booking.id, reference: booking.booking_reference });
 
-    // Get sitter's Stripe account
+    // Get sitter's profile for notification
     const { data: sitterProfile, error: sitterError } = await supabaseClient
       .from('profiles')
-      .select('stripe_account_id, stripe_account_enabled, first_name, last_name')
+      .select('first_name, last_name, email')
       .eq('id', bookingData.sitterId)
       .maybeSingle();
 
@@ -170,115 +142,33 @@ serve(async (req) => {
       throw new Error('Sitter profile not found');
     }
 
-    const hasStripeSetup = sitterProfile.stripe_account_id && sitterProfile.stripe_account_enabled;
-    
-    if (!hasStripeSetup) {
-      logStep('Sitter has not completed Stripe Connect setup - booking will be created without payment', {
-        sitterName: `${sitterProfile.first_name} ${sitterProfile.last_name}`
-      });
-    } else {
-      logStep('Sitter Stripe account verified', { accountId: sitterProfile.stripe_account_id });
-    }
-
-    let session = null;
-    let sessionUrl = null;
-
-    // Only create Stripe checkout if sitter has completed Stripe setup
-    if (hasStripeSetup) {
-      // Calculate platform fee (10% of total)
-      const totalAmountCents = Math.round(bookingData.totalAmount * 100);
-      const platformFeeAmount = Math.round(totalAmountCents * 0.10);
-
-      logStep('Payment breakdown', { 
-        totalAmount: bookingData.totalAmount,
-        platformFee: platformFeeAmount / 100,
-        sitterReceives: (totalAmountCents - platformFeeAmount) / 100
-      });
-
-      // Create a one-time payment session using Stripe Connect destination charge
-      session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        customer_email: customerId ? undefined : user.email,
-        line_items: [
-          {
-            price_data: {
-              currency: 'nzd',
-              product_data: {
-                name: `${dbServiceType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`,
-                description: `Pet care service from ${bookingData.startDate} to ${bookingData.endDate}`,
-              },
-              unit_amount: totalAmountCents,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        payment_intent_data: {
-          application_fee_amount: platformFeeAmount,
-          transfer_data: {
-            destination: sitterProfile.stripe_account_id,
-          },
-        },
-        success_url: `${req.headers.get("origin")}/bookings?payment=success&session_id={CHECKOUT_SESSION_ID}&booking_id=${booking.id}`,
-        cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
-        metadata: {
-          booking_id: booking.id,
-          booking_reference: booking.booking_reference,
-          user_id: user.id,
-          sitter_id: bookingData.sitterId,
-        }
-      });
-
-      sessionUrl = session.url;
-      logStep("Stripe session created", { sessionId: session.id, url: session.url });
-
-      // Update booking with Stripe session ID
-      const { error: updateError } = await supabaseClient
-        .from('bookings')
-        .update({ stripe_checkout_session_id: session.id })
-        .eq('id', booking.id);
-
-      if (updateError) {
-        logStep("Failed to update booking with session ID", { error: updateError.message });
-      }
-    } else {
-      logStep("Skipping Stripe checkout - sitter needs to complete Stripe Connect setup");
-    }
-
     // Send booking notification email to sitter
     try {
-      const { data: sitterData, error: sitterError } = await supabaseClient
-        .from('profiles')
-        .select('first_name, last_name, email')
-        .eq('id', bookingData.sitterId)
-        .single();
-
-      if (!sitterError && sitterData) {
-        await supabaseClient.functions.invoke('send-booking-notification', {
-          body: {
-            booking_id: booking.id,
-            sitter_email: sitterData.email,
-            sitter_name: `${sitterData.first_name} ${sitterData.last_name}`,
-            owner_name: `${profile.first_name} ${profile.last_name}`,
-            service_type: dbServiceType,
-            start_date: bookingData.startDate,
-            end_date: bookingData.endDate,
-            booking_reference: booking.booking_reference,
-            total_amount: bookingData.totalAmount
-          }
-        });
-        logStep("Booking notification email sent to sitter");
-      }
+      await supabaseClient.functions.invoke('send-booking-notification', {
+        body: {
+          booking_id: booking.id,
+          sitter_email: sitterProfile.email,
+          sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
+          owner_name: `${profile.first_name} ${profile.last_name}`,
+          service_type: dbServiceType,
+          start_date: bookingData.startDate,
+          end_date: bookingData.endDate,
+          booking_reference: booking.booking_reference,
+          total_amount: bookingData.totalAmount
+        }
+      });
+      logStep("Booking notification email sent to sitter");
     } catch (emailError) {
       logStep("Failed to send booking notification email", { error: emailError.message });
       // Don't fail the booking if email fails
     }
 
     return new Response(JSON.stringify({ 
-      url: sessionUrl,
+      success: true,
       booking_reference: booking.booking_reference,
-      requires_payment_setup: !hasStripeSetup,
-      sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`
+      booking_id: booking.id,
+      sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
+      message: 'Booking request sent. Payment will be requested after sitter accepts.'
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

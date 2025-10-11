@@ -134,6 +134,43 @@ export default function Bookings() {
     }
   };
 
+  const handleCompletePayment = async (booking: any) => {
+    try {
+      setLoading(true);
+      console.log('Starting payment for booking:', booking.id);
+      
+      const { data, error } = await supabase.functions.invoke('create-payment-after-acceptance', {
+        body: { booking_id: booking.id }
+      });
+
+      if (error) {
+        console.error('Payment function error:', error);
+        throw error;
+      }
+
+      console.log('Payment session created:', data);
+
+      if (data.url) {
+        window.open(data.url, '_blank');
+        toast({
+          title: "Payment Window Opened",
+          description: "Complete payment to confirm your booking.",
+        });
+      } else {
+        throw new Error('No payment URL received');
+      }
+    } catch (error: any) {
+      console.error('Error creating payment:', error);
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to initiate payment. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed': return 'default';
@@ -316,37 +353,6 @@ export default function Bookings() {
         title: "Error",
         description: error.message,
         variant: "destructive",
-      });
-    }
-  };
-
-  const handleCompletePayment = async (booking) => {
-    try {
-      console.log('Creating payment session for booking:', booking.id);
-      
-      const { data, error } = await supabase.functions.invoke('complete-booking-payment', {
-        body: { booking_id: booking.id }
-      });
-
-      console.log('Payment session response:', { data, error });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
-
-      if (data?.url) {
-        console.log('Redirecting to Stripe checkout:', data.url);
-        window.open(data.url, '_blank');
-      } else {
-        throw new Error('No checkout URL received from payment service');
-      }
-    } catch (error) {
-      console.error('Error creating payment session:', error);
-      toast({
-        title: "Payment Error", 
-        description: `Failed to create payment session: ${error.message || 'Please try again.'}`,
-        variant: "destructive"
       });
     }
   };
