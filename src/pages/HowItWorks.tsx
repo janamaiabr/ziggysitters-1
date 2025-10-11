@@ -163,7 +163,7 @@ export default function HowItWorks() {
         "name": "What pet care services does ZiggySitters offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ZiggySitters offers comprehensive pet care services including dog walking, pet sitting (in-home and at sitter's home), overnight care, drop-in visits, pet boarding, and grooming services. All services include mandatory daily photo updates and detailed care reports."
+          "text": "ZiggySitters offers four main pet care services: Pet Sitting at the sitter's home, Pet Sitting at your home, Dog Walking, and Drop-in Visits. All services can include optional daily photo updates and detailed care reports when requested at booking."
         }
       }
     ]
@@ -421,7 +421,7 @@ export default function HowItWorks() {
               },
               {
                 question: 'What pet care services does ZiggySitters offer?',
-                answer: 'ZiggySitters offers comprehensive pet care services including dog walking, pet sitting (in-home and at sitter\'s home), overnight care, drop-in visits, pet boarding, and grooming services. All services include mandatory daily photo updates and detailed care reports.'
+                answer: 'ZiggySitters offers four main pet care services: Pet Sitting at the sitter\'s home ($66/day), Pet Sitting at your home ($55/day), Dog Walking ($25/hour), and Drop-in Visits ($27.50/hour). All services can include optional daily photo updates and detailed care reports when you request them at booking.'
               }
             ].map((faq, index) => (
               <Card key={index}>

@@ -40,12 +40,14 @@ const serviceRates = {
   'pet_sitting_sitters_home': 66.00, // per day
   'pet_sitting_owners_home': 55.00,  // per day
   'drop_in_visits': 27.50,           // per hour
+  'dog_walking': 25.00,              // per hour
 };
 
 const serviceLabels = {
-  'pet_sitting_sitters_home': 'Pet Sitting in Sitter\'s Home',
-  'pet_sitting_owners_home': 'Pet Sitting in Owner\'s Home', 
+  'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)',
+  'pet_sitting_owners_home': 'Pet Sitting (Your Home)', 
   'drop_in_visits': 'Drop-in Visits',
+  'dog_walking': 'Dog Walking',
 };
 
 export default function BookingDialog({ isOpen, onClose, sitter, initialDates }: BookingDialogProps) {
@@ -221,8 +223,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
         serviceType,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
-        startTime: serviceType === 'drop_in_visits' ? startTime : undefined,
-        endTime: serviceType === 'drop_in_visits' ? endTime : undefined,
+        startTime: (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') ? startTime : undefined,
+        endTime: (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') ? endTime : undefined,
         petIds: selectedPetIds,
         specialInstructions,
         totalAmount: total,
@@ -348,21 +350,27 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="pet_sitting_sitters_home">
-                  <div className="flex justify-between w-full">
-                    <span>Pet Sitting in Sitter's Home</span>
-                    <span className="text-muted-foreground ml-4">$66.00/day</span>
+                  <div className="flex justify-between w-full items-center">
+                    <span>Pet Sitting (Sitter's Home)</span>
+                    <span className="text-sm text-muted-foreground ml-4">$66.00/day</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="pet_sitting_owners_home">
-                  <div className="flex justify-between w-full">
-                    <span>Pet Sitting in Owner's Home</span>
-                    <span className="text-muted-foreground ml-4">$55.00/day</span>
+                  <div className="flex justify-between w-full items-center">
+                    <span>Pet Sitting (Your Home)</span>
+                    <span className="text-sm text-muted-foreground ml-4">$55.00/day</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="drop_in_visits">
-                  <div className="flex justify-between w-full">
+                  <div className="flex justify-between w-full items-center">
                     <span>Drop-in Visits</span>
-                    <span className="text-muted-foreground ml-4">$27.50/hour</span>
+                    <span className="text-sm text-muted-foreground ml-4">$27.50/hour</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="dog_walking">
+                  <div className="flex justify-between w-full items-center">
+                    <span>Dog Walking</span>
+                    <span className="text-sm text-muted-foreground ml-4">$25.00/hour</span>
                   </div>
                 </SelectItem>
               </SelectContent>
@@ -472,7 +480,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
           </div>
 
           {/* Time Selection - Only for drop-in visits */}
-          {serviceType && serviceType === 'drop_in_visits' && (
+          {serviceType && (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-3">
                 <label className="text-sm font-medium">Start Time</label>

@@ -25,10 +25,10 @@ const Index = () => {
   const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || '');
 
   const popularServices = [
-    { name: 'Pet Sitting with Optional Reports', icon: '🏠', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them' },
-    { name: 'In-Home Care', icon: '🏡', description: 'Sitter comes to your home - request daily reports when booking' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick visits with optional photo documentation' },
-    { name: 'Dog Walking', icon: '🚶‍♂️', description: 'Professional walks - add daily reports for extra peace of mind' },
+    { name: 'Pet Sitting (Sitter\'s Home)', icon: '🏠', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them', value: 'pet_sitting_sitters_home' },
+    { name: 'Pet Sitting (Your Home)', icon: '🏡', description: 'Sitter comes to your home - request daily reports when booking', value: 'pet_sitting_owners_home' },
+    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick visits with optional photo documentation', value: 'drop_in_visits' },
+    { name: 'Dog Walking', icon: '🚶‍♂️', description: 'Professional walks - add daily reports for extra peace of mind', value: 'dog_walking' },
   ];
 
   // Real data from database
@@ -147,7 +147,11 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto px-4">
             {popularServices.map((service, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow cursor-pointer group">
+              <Card 
+                key={index} 
+                className="text-center hover:shadow-lg transition-shadow cursor-pointer group"
+                onClick={() => navigate(`/find-sitters?serviceType=${service.value}`)}
+              >
                 <CardContent className="p-4 md:p-8">
                   <div className="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">
                     {service.icon}

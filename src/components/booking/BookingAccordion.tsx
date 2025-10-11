@@ -35,30 +35,24 @@ interface BookingAccordionProps {
 }
 
 const serviceRates = {
-  'dog-walking': 27.50,     // per service
-  'pet-sitting': 55.00,     // per day
-  'overnight-care': 75.00,  // per night
-  'drop-in-visits': 27.50,  // per service
-  'pet-boarding': 75.00,    // per night
-  'grooming': 27.50,        // per service
+  'pet_sitting_sitters_home': 66.00, // per day
+  'pet_sitting_owners_home': 55.00,  // per day
+  'drop_in_visits': 27.50,           // per hour
+  'dog_walking': 25.00,              // per hour
 };
 
 const serviceLabels = {
-  'dog-walking': 'Dog Walking',
-  'pet-sitting': 'Pet Sitting', 
-  'overnight-care': 'Overnight Care',
-  'drop-in-visits': 'Drop-in Visits',
-  'pet-boarding': 'Pet Boarding',
-  'grooming': 'Grooming',
+  'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)',
+  'pet_sitting_owners_home': 'Pet Sitting (Your Home)', 
+  'drop_in_visits': 'Drop-in Visits',
+  'dog_walking': 'Dog Walking',
 };
 
 const serviceUnits = {
-  'dog-walking': 'service',
-  'pet-sitting': 'day',
-  'overnight-care': 'night',
-  'drop-in-visits': 'service',
-  'pet-boarding': 'night',
-  'grooming': 'service',
+  'pet_sitting_sitters_home': 'day',
+  'pet_sitting_owners_home': 'day',
+  'drop_in_visits': 'hour',
+  'dog_walking': 'hour',
 };
 
 export default function BookingAccordion({ 
@@ -116,14 +110,23 @@ export default function BookingAccordion({
     // Try to find the service in real data first
     const realService = servicesData.find(s => s.service_type === serviceType);
     if (realService) {
-      if (serviceType === 'dog_walking' || serviceType === 'pet_care') {
-        return realService.hourly_rate || realService.daily_rate || 0;
-      } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home' || serviceType === 'daycare') {
+      if (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') {
+        // Hourly services
+        if (startTime && endTime) {
+          const startDateTime = new Date(startDate);
+          startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
+          
+          const endDateTime = new Date(endDate);
+          endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
+          
+          const hours = Math.max(1, differenceInHours(endDateTime, startDateTime));
+          return hours * (realService.hourly_rate || 25);
+        }
+        return realService.hourly_rate || 25;
+      } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home') {
+        // Daily services
         const days = Math.max(1, differenceInDays(endDate, startDate) + 1);
-        return days * (realService.daily_rate || realService.hourly_rate || 0);
-      } else if (serviceType === 'overnight_boarding') {
-        const nights = Math.max(1, differenceInDays(endDate, startDate));
-        return nights * (realService.overnight_rate || realService.daily_rate || 0);
+        return days * (realService.daily_rate || 55);
       }
     }
     
@@ -131,14 +134,23 @@ export default function BookingAccordion({
     const rate = serviceRates[serviceType as keyof typeof serviceRates];
     if (!rate) return 0;
 
-    if (serviceType === 'dog-walking' || serviceType === 'drop-in-visits' || serviceType === 'grooming') {
-      return 1 * rate;
-    } else if (serviceType === 'pet-sitting') {
+    if (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') {
+      // Hourly services
+      if (startTime && endTime) {
+        const startDateTime = new Date(startDate);
+        startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
+        
+        const endDateTime = new Date(endDate);
+        endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
+        
+        const hours = Math.max(1, differenceInHours(endDateTime, startDateTime));
+        return hours * rate;
+      }
+      return rate;
+    } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home') {
+      // Daily services
       const days = Math.max(1, differenceInDays(endDate, startDate) + 1);
       return days * rate;
-    } else if (serviceType === 'overnight-care' || serviceType === 'pet-boarding') {
-      const nights = Math.max(1, differenceInDays(endDate, startDate));
-      return nights * rate;
     }
     
     return 0;
@@ -193,8 +205,8 @@ export default function BookingAccordion({
         serviceType,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
-        startTime: (serviceType === 'dog-walking' || serviceType === 'drop-in-visits') ? startTime : undefined,
-        endTime: (serviceType === 'dog-walking' || serviceType === 'drop-in-visits') ? endTime : undefined,
+        startTime: (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') ? startTime : undefined,
+        endTime: (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') ? endTime : undefined,
         petIds: [],
         specialInstructions,
         totalAmount: total,
@@ -314,11 +326,9 @@ export default function BookingAccordion({
                         const getServiceDisplayName = (type: string) => {
                           switch (type) {
                             case 'dog_walking': return 'Dog Walking';
-                            case 'daycare': return 'Pet Sitting';
-                            case 'overnight_boarding': return 'Overnight Care';
-                            case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
-                            case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
-                            case 'pet_care': return 'Pet Care';
+                            case 'pet_sitting_owners_home': return 'Pet Sitting (Your Home)';
+                            case 'pet_sitting_sitters_home': return 'Pet Sitting (Sitter\'s Home)';
+                            case 'drop_in_visits': return 'Drop-in Visits';
                             default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                           }
                         };
@@ -326,7 +336,6 @@ export default function BookingAccordion({
                         const getRate = () => {
                           if (service.hourly_rate) return `$${service.hourly_rate.toFixed(2)}/hour`;
                           if (service.daily_rate) return `$${service.daily_rate.toFixed(2)}/day`;
-                          if (service.overnight_rate) return `$${service.overnight_rate.toFixed(2)}/night`;
                           return 'Contact for pricing';
                         };
 
@@ -342,15 +351,14 @@ export default function BookingAccordion({
                         );
                       })
                     ) : (
-                      // Fallback to hardcoded services if no real data
-                      sitter.services.map((service) => {
-                        const serviceKey = service.toLowerCase().replace(' ', '-');
-                        const rate = serviceRates[serviceKey as keyof typeof serviceRates];
-                        const unit = serviceUnits[serviceKey as keyof typeof serviceUnits];
+                      // Fallback to standard services
+                      Object.entries(serviceLabels).map(([key, label]) => {
+                        const rate = serviceRates[key as keyof typeof serviceRates];
+                        const unit = serviceUnits[key as keyof typeof serviceUnits];
                         return (
-                          <SelectItem key={serviceKey} value={serviceKey}>
+                          <SelectItem key={key} value={key}>
                             <div className="flex justify-between w-full">
-                              <span>{service}</span>
+                              <span>{label}</span>
                               <span className="text-muted-foreground ml-4">
                                 ${rate}/{unit}
                               </span>
@@ -412,8 +420,8 @@ export default function BookingAccordion({
                 </div>
               </div>
 
-              {/* Time Selection - Only for dog walking */}
-              {serviceType && serviceType === 'dog-walking' && (
+              {/* Time Selection - Only for hourly services */}
+              {serviceType && (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <label className="text-sm font-medium">Start Time</label>
@@ -520,30 +528,28 @@ export default function BookingAccordion({
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span>Service</span>
-                      <span>{serviceLabels[serviceType as keyof typeof serviceLabels]}</span>
+                     <span>{serviceLabels[serviceType as keyof typeof serviceLabels]}</span>
                     </div>
                     
-                    {(serviceType === 'dog-walking' || serviceType === 'drop-in-visits' || serviceType === 'grooming') && (
-                      <div className="flex justify-between">
-                        <span>Duration</span>
-                        <span>1 service</span>
-                      </div>
-                    )}
-                    
-                    {serviceType === 'pet-sitting' && (
+                    {(serviceType === 'dog_walking' || serviceType === 'drop_in_visits') && (
                       <div className="flex justify-between">
                         <span>Duration</span>
                         <span>
-                          {startDate && endDate ? differenceInDays(endDate, startDate) + 1 : 0} days
+                          {startTime && endTime ? 
+                            Math.max(1, differenceInHours(
+                              new Date(`2000-01-01 ${endTime}`), 
+                              new Date(`2000-01-01 ${startTime}`)
+                            )) + ' hours' 
+                            : '1 hour'}
                         </span>
                       </div>
                     )}
                     
-                    {(serviceType === 'overnight-care' || serviceType === 'pet-boarding') && (
+                    {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (
                       <div className="flex justify-between">
                         <span>Duration</span>
                         <span>
-                          {startDate && endDate ? differenceInDays(endDate, startDate) : 0} nights
+                          {startDate && endDate ? differenceInDays(endDate, startDate) + 1 : 0} days
                         </span>
                       </div>
                     )}
