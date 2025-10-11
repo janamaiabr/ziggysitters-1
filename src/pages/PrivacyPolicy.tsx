@@ -312,6 +312,44 @@ export default function PrivacyPolicy() {
           </CardContent>
         </Card>
 
+        {/* Data Storage & Retention */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <FileText className="w-5 h-5 mr-2" />
+              Data Storage & Retention
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Where We Store Your Data</h4>
+              <p className="text-muted-foreground">
+                Your personal information is stored securely on servers located in New Zealand and may be stored on cloud-based servers provided by our hosting partners. All data storage complies with New Zealand Privacy Act 2020 requirements.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">How Long We Retain Your Data</h4>
+              <ul className="list-disc ml-6 space-y-2 text-muted-foreground">
+                <li><strong>Account Information:</strong> Retained while your account is active and for 7 years after account closure for legal and tax compliance purposes.</li>
+                <li><strong>Booking Records:</strong> Retained for 7 years after the booking date for accounting and dispute resolution purposes.</li>
+                <li><strong>Payment Information:</strong> Card details are not stored by us - they are tokenized and stored securely by our payment processor (Stripe).</li>
+                <li><strong>Verification Documents:</strong> Police checks and ID documents are retained for the duration of active sitter registration plus 2 years.</li>
+                <li><strong>Communications:</strong> Messages and daily reports are retained for 2 years after the related booking completion.</li>
+                <li><strong>Marketing Data:</strong> Retained until you unsubscribe or request deletion.</li>
+              </ul>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+              <p className="text-sm text-blue-800">
+                <strong>Your Right to Deletion:</strong> You can request deletion of your personal information at any time by emailing{' '}
+                <a href="mailto:hello@ziggysitters.com" className="underline">hello@ziggysitters.com</a>. 
+                Please note we may need to retain certain information for legal compliance purposes even after your deletion request.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Children */}
         <Card className="mb-8">
           <CardHeader>
