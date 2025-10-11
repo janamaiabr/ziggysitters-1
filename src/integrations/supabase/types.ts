@@ -26,6 +26,10 @@ export type Database = {
           owner_id: string
           owner_notes: string | null
           payment_status: string | null
+          penalty_amount: number | null
+          penalty_applied: boolean | null
+          penalty_applied_at: string | null
+          penalty_reason: string | null
           pet_ids: string[]
           platform_fee: number
           requires_daily_reports: boolean
@@ -52,6 +56,10 @@ export type Database = {
           owner_id: string
           owner_notes?: string | null
           payment_status?: string | null
+          penalty_amount?: number | null
+          penalty_applied?: boolean | null
+          penalty_applied_at?: string | null
+          penalty_reason?: string | null
           pet_ids: string[]
           platform_fee?: number
           requires_daily_reports?: boolean
@@ -78,6 +86,10 @@ export type Database = {
           owner_id?: string
           owner_notes?: string | null
           payment_status?: string | null
+          penalty_amount?: number | null
+          penalty_applied?: boolean | null
+          penalty_applied_at?: string | null
+          penalty_reason?: string | null
           pet_ids?: string[]
           platform_fee?: number
           requires_daily_reports?: boolean

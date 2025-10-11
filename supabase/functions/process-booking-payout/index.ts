@@ -7,13 +7,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const logStep = (step: string, details?: any) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[PROCESS-PAYOUT] ${step}${detailsStr}`);
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log("Processing booking payout");
+    logStep("Processing booking payout");
     
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -26,9 +31,9 @@ serve(async (req) => {
       throw new Error("Booking ID is required");
     }
 
-    console.log("Processing payout for booking:", booking_id);
+    logStep("Processing payout for booking", { booking_id });
 
-    // Get booking details
+    // Get booking details with owner and sitter info
     const { data: booking, error: bookingError } = await supabaseClient
       .from("bookings")
       .select(`
@@ -39,9 +44,14 @@ serve(async (req) => {
         total_amount,
         platform_fee,
         sitter_id,
+        owner_id,
         requires_daily_reports,
         daily_reports_required,
-        daily_reports_completed
+        daily_reports_completed,
+        penalty_applied,
+        booking_reference,
+        owner:profiles!bookings_owner_id_fkey(email, first_name, last_name),
+        sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name, stripe_account_id, stripe_account_enabled)
       `)
       .eq("id", booking_id)
       .single();
@@ -49,6 +59,13 @@ serve(async (req) => {
     if (bookingError || !booking) {
       throw new Error("Booking not found");
     }
+
+    logStep("Booking retrieved", { 
+      status: booking.status, 
+      requires_reports: booking.requires_daily_reports,
+      reports_completed: booking.daily_reports_completed,
+      reports_required: booking.daily_reports_required 
+    });
 
     // Verify booking is completed
     if (booking.status !== "completed") {
@@ -60,54 +77,126 @@ serve(async (req) => {
       throw new Error("Booking payment not confirmed");
     }
 
-    // Check if all daily reports are submitted (only if reports were required)
-    if (booking.requires_daily_reports && 
-        booking.daily_reports_required > 0 && 
-        booking.daily_reports_completed < booking.daily_reports_required) {
-      throw new Error("All daily reports must be submitted before payout");
-    }
-
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Get sitter profile
-    const { data: sitter, error: sitterError } = await supabaseClient
-      .from("profiles")
-      .select("stripe_account_id, stripe_account_enabled")
-      .eq("id", booking.sitter_id)
-      .single();
-
-    if (sitterError || !sitter?.stripe_account_id || !sitter.stripe_account_enabled) {
+    // Verify sitter's Stripe account
+    if (!booking.sitter.stripe_account_id || !booking.sitter.stripe_account_enabled) {
       throw new Error("Sitter Stripe account not found or not enabled");
     }
 
-    console.log("Sitter account verified:", sitter.stripe_account_id);
+    logStep("Sitter Stripe account verified", { account_id: booking.sitter.stripe_account_id });
 
-    // The payment has already been made to the sitter through Connect destination charge
-    // This function is mainly for verification and logging
-    // We can add a payout_processed flag if needed
+    // Check if penalty needs to be applied
+    let penaltyAmount = 0;
+    let penaltyApplied = false;
+    
+    if (booking.requires_daily_reports && 
+        booking.daily_reports_required > 0 && 
+        booking.daily_reports_completed < booking.daily_reports_required &&
+        !booking.penalty_applied) {
+      
+      // Calculate 15% penalty
+      penaltyAmount = Math.round(booking.total_amount * 0.15 * 100) / 100;
+      logStep("Incomplete reports detected - applying 15% penalty", { 
+        penalty_amount: penaltyAmount,
+        reports_completed: booking.daily_reports_completed,
+        reports_required: booking.daily_reports_required 
+      });
 
+      try {
+        // Retrieve the payment intent to get charge ID
+        const paymentIntent = await stripe.paymentIntents.retrieve(booking.stripe_payment_intent_id);
+        
+        if (!paymentIntent.latest_charge) {
+          throw new Error("No charge found for payment intent");
+        }
+
+        const chargeId = typeof paymentIntent.latest_charge === 'string' 
+          ? paymentIntent.latest_charge 
+          : paymentIntent.latest_charge.id;
+
+        logStep("Creating refund for penalty", { charge_id: chargeId, amount: penaltyAmount });
+
+        // Create a refund for 15% back to the owner
+        // This also reverses the transfer to the sitter automatically
+        const refund = await stripe.refunds.create({
+          charge: chargeId,
+          amount: Math.round(penaltyAmount * 100), // Convert to cents
+          reason: 'requested_by_customer',
+          metadata: {
+            booking_id: booking_id,
+            reason: 'Incomplete daily reports',
+            reports_completed: booking.daily_reports_completed.toString(),
+            reports_required: booking.daily_reports_required.toString(),
+          },
+          reverse_transfer: true, // This reverses the transfer from sitter's account
+        });
+
+        logStep("Refund created successfully", { refund_id: refund.id, amount: penaltyAmount });
+        penaltyApplied = true;
+
+        // Send notification email to owner about refund
+        await supabaseClient.functions.invoke('send-penalty-notification', {
+          body: {
+            booking_id: booking_id,
+            owner_email: booking.owner.email,
+            owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+            sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+            penalty_amount: penaltyAmount,
+            reports_completed: booking.daily_reports_completed,
+            reports_required: booking.daily_reports_required,
+            booking_reference: booking.booking_reference,
+          }
+        });
+
+        logStep("Penalty notification email sent");
+
+      } catch (refundError) {
+        logStep("ERROR creating refund", { error: refundError.message });
+        throw new Error(`Failed to process penalty refund: ${refundError.message}`);
+      }
+    } else {
+      logStep("No penalty required", { 
+        requires_reports: booking.requires_daily_reports,
+        reports_match: booking.daily_reports_completed >= booking.daily_reports_required,
+        already_applied: booking.penalty_applied 
+      });
+    }
+
+    // Update booking with payout status and penalty info
     const { error: updateError } = await supabaseClient
       .from("bookings")
       .update({
         payment_status: "paid_out",
+        penalty_applied: penaltyApplied,
+        penalty_amount: penaltyAmount,
+        penalty_applied_at: penaltyApplied ? new Date().toISOString() : null,
+        penalty_reason: penaltyApplied ? `Incomplete daily reports: ${booking.daily_reports_completed}/${booking.daily_reports_required} submitted` : null,
       })
       .eq("id", booking_id);
 
     if (updateError) {
-      console.error("Error updating booking:", updateError);
+      logStep("ERROR updating booking", { error: updateError.message });
       throw updateError;
     }
 
-    console.log("Payout processed successfully");
+    logStep("Payout processed successfully", { penalty_applied: penaltyApplied });
+
+    const sitterReceived = booking.total_amount - booking.platform_fee - penaltyAmount;
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Payout processed successfully",
-        sitter_received: booking.total_amount - booking.platform_fee,
+        message: penaltyApplied 
+          ? "Payout processed with 15% penalty for incomplete reports" 
+          : "Payout processed successfully",
+        sitter_received: sitterReceived,
         platform_fee: booking.platform_fee,
+        penalty_applied: penaltyApplied,
+        penalty_amount: penaltyAmount,
+        owner_refunded: penaltyAmount,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -115,7 +204,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error in process-booking-payout:", error);
+    logStep("ERROR in process-booking-payout", { error: error.message });
     return new Response(
       JSON.stringify({ error: error.message }),
       {
