@@ -776,6 +776,10 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
+      cleanup_stale_payments: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_pet_basic_info_for_booking: {
         Args: { booking_id: string }
         Returns: {
@@ -797,6 +801,13 @@ export type Database = {
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      update_booking_status: {
+        Args: {
+          booking_id: string
+          new_status: Database["public"]["Enums"]["booking_status"]
+        }
+        Returns: undefined
       }
       update_verification_status: {
         Args: {

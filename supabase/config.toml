@@ -27,3 +27,6 @@ verify_jwt = true
 [functions.process-booking-payout]
 verify_jwt = false
 
+[functions.cleanup-stale-payments]
+verify_jwt = false
+

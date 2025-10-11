@@ -306,10 +306,10 @@ export default function Bookings() {
 
   const handleStartBooking = async (bookingId: string) => {
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'in_progress' })
-        .eq('id', bookingId);
+      const { error } = await supabase.rpc('update_booking_status', {
+        booking_id: bookingId,
+        new_status: 'in_progress'
+      });
 
       if (error) throw error;
 
@@ -330,10 +330,10 @@ export default function Bookings() {
 
   const handleCompleteBooking = async (bookingId: string) => {
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'completed' })
-        .eq('id', bookingId);
+      const { error } = await supabase.rpc('update_booking_status', {
+        booking_id: bookingId,
+        new_status: 'completed'
+      });
 
       if (error) throw error;
 
