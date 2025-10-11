@@ -121,8 +121,8 @@ serve(async (req) => {
       profile_user_id: profile.user_id 
     });
 
-    // Calculate daily reports required (only if owner requested them)
-    const requiresDailyReports = bookingData.requiresDailyReports !== false; // Default to true
+    // Calculate daily reports required (only if owner explicitly requested them)
+    const requiresDailyReports = bookingData.requiresDailyReports === true; // Default to false
     let dailyReportsRequired = 0;
     if (requiresDailyReports) {
       const startDateTime = new Date(bookingData.startDate);
