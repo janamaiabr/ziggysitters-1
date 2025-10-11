@@ -56,15 +56,18 @@ export default function AdminDashboard() {
     if (!user) return;
     
     try {
+      // Use new user_roles table for security
       const { data } = await supabase
-        .from('profiles')
+        .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
+        .eq('role', 'admin')
         .maybeSingle();
       
-      setIsAdmin(data?.role === 'admin');
+      setIsAdmin(!!data);
     } catch (error) {
       console.error('Error checking admin status:', error);
+      setIsAdmin(false);
     }
   };
 

@@ -75,8 +75,18 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         console.log('ProfileContext: Profile found:', data);
         setProfile(data);
         
+        // Check if user is admin using secure user_roles table
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user?.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        
+        const isAdmin = !!roleData;
+        
         // Admin users should never need onboarding
-        if (data.role === 'admin') {
+        if (isAdmin) {
           // Ensure admin users have onboarding_completed set to true
           if (!data.onboarding_completed) {
             await supabase

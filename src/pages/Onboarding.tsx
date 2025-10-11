@@ -56,13 +56,15 @@ export default function Onboarding() {
     // Check if user is admin - if so, skip onboarding
     const checkAdminStatus = async () => {
       try {
-        const { data: profile, error } = await supabase
-          .from('profiles')
+        // Use secure user_roles table
+        const { data: roleData, error } = await supabase
+          .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
+          .eq('role', 'admin')
           .maybeSingle();
 
-        if (!error && profile?.role === 'admin') {
+        if (!error && roleData) {
           // Admin users skip onboarding and go directly to admin dashboard
           navigate('/admin-dashboard');
           return;
