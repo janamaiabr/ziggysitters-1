@@ -47,7 +47,7 @@ export default function ReportsCalendar({ sitterId }: ReportsCalendarProps) {
 
   const fetchBookingsAndReports = async () => {
     try {
-      // Fetch sitter's bookings
+      // Fetch sitter's bookings that require daily reports
       const { data: bookingData, error: bookingError } = await supabase
         .from('bookings')
         .select(`
@@ -57,12 +57,14 @@ export default function ReportsCalendar({ sitterId }: ReportsCalendarProps) {
           status,
           owner_id,
           pet_ids,
+          requires_daily_reports,
           profiles!bookings_owner_id_fkey (
             first_name,
             last_name
           )
         `)
         .eq('sitter_id', sitterId)
+        .eq('requires_daily_reports', true)
         .in('status', ['confirmed', 'in_progress', 'completed']);
 
       if (bookingError) throw bookingError;
