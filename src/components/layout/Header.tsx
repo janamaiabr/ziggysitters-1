@@ -30,14 +30,23 @@ export default function Header() {
     }
     
     try {
-      const { data } = await supabase
+      // Fetch profile info
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('role, avatar_url, first_name, last_name')
         .eq('user_id', user.id)
         .maybeSingle();
       
-      setIsAdmin(data?.role === 'admin');
-      setProfile(data);
+      // Check admin status using secure user_roles table
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      setIsAdmin(!!roleData);
+      setProfile(profileData);
     } catch (error) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);
