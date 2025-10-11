@@ -50,7 +50,7 @@ serve(async (req) => {
         booking_reference,
         owner_id,
         owner:profiles!owner_id(user_id, email, first_name, last_name),
-        sitter:profiles!sitter_id(stripe_account_id, stripe_account_enabled)
+        sitter:profiles!sitter_id(stripe_account_id, stripe_account_enabled, first_name, last_name)
       `)
       .eq('id', booking_id)
       .maybeSingle();
@@ -79,7 +79,8 @@ serve(async (req) => {
 
     // Verify sitter has Stripe Connect enabled
     if (!booking.sitter.stripe_account_id || !booking.sitter.stripe_account_enabled) {
-      throw new Error("Sitter has not completed Stripe setup. Please contact support.");
+      const sitterName = `${booking.sitter.first_name} ${booking.sitter.last_name}`;
+      throw new Error(`${sitterName} hasn't completed payment setup yet. Please contact them or try again later.`);
     }
 
     logStep('Sitter Stripe account verified', { accountId: booking.sitter.stripe_account_id });
@@ -121,7 +122,7 @@ serve(async (req) => {
           destination: booking.sitter.stripe_account_id,
         },
       },
-      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${booking_id}`,
+      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${booking.booking_reference}`,
       cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
       metadata: {
         booking_id: booking_id,
