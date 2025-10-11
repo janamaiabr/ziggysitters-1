@@ -60,6 +60,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
   const [requiresDailyReports, setRequiresDailyReports] = useState(true);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [ownerPets, setOwnerPets] = useState<any[]>([]);
+  const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -78,6 +80,42 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
       }
     }
   }, [initialDates]);
+
+  // Fetch owner's pets when dialog opens
+  useEffect(() => {
+    const fetchOwnerPets = async () => {
+      if (!user || !isOpen) return;
+
+      try {
+        // Get owner's profile ID
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!profile) return;
+
+        // Fetch owner's pets
+        const { data: pets, error } = await supabase
+          .from('pets')
+          .select('id, name, species, breed')
+          .eq('owner_id', profile.id);
+
+        if (error) throw error;
+
+        setOwnerPets(pets || []);
+        // Pre-select all pets by default
+        if (pets && pets.length > 0) {
+          setSelectedPetIds(pets.map(p => p.id));
+        }
+      } catch (error) {
+        console.error('Error fetching pets:', error);
+      }
+    };
+
+    fetchOwnerPets();
+  }, [user, isOpen]);
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
     console.log(`=== handleDateSelect called ===`);
@@ -152,6 +190,15 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
       return;
     }
 
+    if (ownerPets.length > 0 && selectedPetIds.length === 0) {
+      toast({
+        title: 'No Pets Selected',
+        description: 'Please select at least one pet for this booking.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     if (!agreedToTerms) {
       toast({
         title: 'Agreement Required',
@@ -176,7 +223,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
         endDate: format(endDate, 'yyyy-MM-dd'),
         startTime: serviceType === 'drop_in_visits' ? startTime : undefined,
         endTime: serviceType === 'drop_in_visits' ? endTime : undefined,
-        petIds: [], // This would come from user's pets in a real implementation
+        petIds: selectedPetIds,
         specialInstructions,
         totalAmount: total,
         requiresDailyReports: allowsDailyReports ? requiresDailyReports : false
@@ -224,6 +271,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
     setSpecialInstructions('');
     setRequiresDailyReports(true);
     setAgreedToTerms(false);
+    setSelectedPetIds([]);
   };
 
   const handleClose = () => {
@@ -457,6 +505,41 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
                   />
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Pet Selection */}
+          {ownerPets.length > 0 && (
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Select Pets for this Booking</label>
+              <div className="grid grid-cols-2 gap-2">
+                {ownerPets.map((pet) => (
+                  <div
+                    key={pet.id}
+                    onClick={() => {
+                      setSelectedPetIds(prev =>
+                        prev.includes(pet.id)
+                          ? prev.filter(id => id !== pet.id)
+                          : [...prev, pet.id]
+                      );
+                    }}
+                    className={cn(
+                      "p-3 border-2 rounded-lg cursor-pointer transition-colors",
+                      selectedPetIds.includes(pet.id)
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    )}
+                  >
+                    <div className="font-medium">{pet.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {pet.species} • {pet.breed}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {selectedPetIds.length === 0 && (
+                <p className="text-sm text-destructive">Please select at least one pet</p>
+              )}
             </div>
           )}
 
