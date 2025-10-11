@@ -1,5 +1,8 @@
 project_id = "qermxzepyzbenemcordv"
 
+[functions.test-all-emails]
+verify_jwt = false
+
 [functions.create-admin]
 verify_jwt = false
 

@@ -18,6 +18,32 @@ export default function Contact() {
     message: ''
   });
   const [loading, setLoading] = useState(false);
+  const [testEmailLoading, setTestEmailLoading] = useState(false);
+
+  const sendTestEmails = async () => {
+    setTestEmailLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("test-all-emails");
+
+      if (error) throw error;
+
+      toast({
+        title: "Test emails sent!",
+        description: "Check janamaia@gmail.com for all test emails",
+      });
+
+      console.log("Test email results:", data);
+    } catch (error) {
+      console.error("Error sending test emails:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send test emails",
+        variant: "destructive",
+      });
+    } finally {
+      setTestEmailLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +114,17 @@ export default function Contact() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Have questions or need help? We're here for you. Get in touch and we'll respond as quickly as possible.
           </p>
+        </div>
+
+        {/* Test Emails Button - Development Only */}
+        <div className="mb-8 p-4 bg-muted rounded-lg">
+          <h2 className="text-lg font-semibold mb-2">Email Testing</h2>
+          <p className="text-sm text-muted-foreground mb-3">
+            Send test emails of all email types to janamaia@gmail.com
+          </p>
+          <Button onClick={sendTestEmails} disabled={testEmailLoading}>
+            {testEmailLoading ? "Sending..." : "Send All Test Emails"}
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
