@@ -41,13 +41,24 @@ serve(async (req) => {
     console.log('Stripe session status:', session.payment_status);
 
     if (session.payment_status === 'paid') {
+      // Extract payment intent ID (could be string or object)
+      const paymentIntentId = typeof session.payment_intent === 'string' 
+        ? session.payment_intent 
+        : session.payment_intent?.id;
+      
+      if (!paymentIntentId) {
+        throw new Error('No payment intent found in session');
+      }
+
+      console.log('Payment intent ID:', paymentIntentId);
+
       // Update booking status to confirmed (ONLY from 'awaiting_payment' to prevent bypassing sitter acceptance)
       const { data: booking, error: updateError } = await supabaseClient
         .from('bookings')
         .update({ 
           status: 'confirmed',
           payment_status: 'paid',
-          stripe_payment_intent_id: session.payment_intent
+          stripe_payment_intent_id: paymentIntentId
         })
         .eq('id', booking_id)
         .eq('status', 'awaiting_payment') // Only allow transition from awaiting_payment
@@ -64,7 +75,8 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         success: true, 
         booking_status: 'confirmed',
-        payment_status: 'paid' 
+        payment_status: 'paid',
+        amount: booking.total_amount
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
