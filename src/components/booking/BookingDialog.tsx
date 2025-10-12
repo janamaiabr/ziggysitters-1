@@ -479,6 +479,43 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
             </div>
           </div>
 
+          {/* Pet Selection */}
+          {ownerPets.length > 0 && (
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Select Pet(s) for this Booking *</label>
+              <Card className="p-4">
+                <div className="space-y-3">
+                  {ownerPets.map((pet) => (
+                    <div key={pet.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                      <input
+                        type="checkbox"
+                        id={`pet-${pet.id}`}
+                        checked={selectedPetIds.includes(pet.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedPetIds([...selectedPetIds, pet.id]);
+                          } else {
+                            setSelectedPetIds(selectedPetIds.filter(id => id !== pet.id));
+                          }
+                        }}
+                        className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                      />
+                      <label htmlFor={`pet-${pet.id}`} className="flex-1 cursor-pointer">
+                        <div className="font-medium">{pet.name}</div>
+                        <div className="text-sm text-muted-foreground capitalize">
+                          {pet.species} {pet.breed ? `• ${pet.breed}` : ''}
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {selectedPetIds.length === 0 && (
+                  <p className="text-sm text-orange-600 mt-2">Please select at least one pet</p>
+                )}
+              </Card>
+            </div>
+          )}
+
           {/* Time Selection - Only for drop-in visits */}
           {serviceType && (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
             <div className="grid grid-cols-2 gap-4">

@@ -23,12 +23,16 @@ interface Pet {
   breed: string;
   age: number;
   size: string;
+  gender?: string;
+  weight?: number;
   photo_urls: string[];
   personality_traits: string[];
   medical_conditions: string[];
   feeding_instructions: string;
   exercise_needs: string;
   special_care_notes: string;
+  is_neutered?: boolean;
+  vaccination_status?: boolean;
 }
 
 interface Booking {
@@ -260,30 +264,32 @@ export default function BookingDetails() {
   const canAccept = isSitter && booking.status === 'pending';
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       <Button
         variant="ghost"
         onClick={() => navigate(-1)}
-        className="mb-6"
+        className="mb-6 gap-2"
       >
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Back
+        <ArrowLeft className="h-4 w-4" />
+        Back to Bookings
       </Button>
 
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold">Booking Details</h1>
-          <Badge className={statusColors[booking.status]}>
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Booking Details
+          </h1>
+          <Badge className={`${statusColors[booking.status]} text-lg px-4 py-2`}>
             {booking.status.replace('_', ' ').toUpperCase()}
           </Badge>
         </div>
-        <p className="text-muted-foreground">Reference: {booking.booking_reference}</p>
+        <p className="text-lg text-muted-foreground">Reference: {booking.booking_reference}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-8">
           {/* Service Information */}
           <Card>
             <CardHeader>
@@ -356,95 +362,132 @@ export default function BookingDetails() {
             </CardContent>
           </Card>
 
-          {/* Pet Information */}
+          {/* Pet Information - Enhanced */}
           {pets.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PawPrint className="h-5 w-5" />
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardTitle className="flex items-center gap-2 text-2xl">
+                  <PawPrint className="h-6 w-6" />
                   Pet Information
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {pets.map((pet) => (
-                    <div key={pet.id} className="border rounded-lg p-4">
-                      <div className="flex gap-4 mb-4">
-                        {pet.photo_urls && pet.photo_urls.length > 0 && (
-                          <img
-                            src={pet.photo_urls[0]}
-                            alt={pet.name}
-                            className="w-24 h-24 rounded-lg object-cover"
-                          />
-                        )}
-                        <div className="flex-1">
-                          <h3 className="text-xl font-semibold mb-2">{pet.name}</h3>
-                          <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div>
-                              <span className="text-muted-foreground">Species:</span>
-                              <span className="ml-2 font-medium">{pet.species}</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Breed:</span>
-                              <span className="ml-2 font-medium">{pet.breed || 'Mixed'}</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Age:</span>
-                              <span className="ml-2 font-medium">{pet.age} years</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Size:</span>
-                              <span className="ml-2 font-medium">{pet.size}</span>
-                            </div>
+              <CardContent className="p-0">
+                {pets.map((pet, index) => (
+                  <div key={pet.id} className={`p-6 ${index !== pets.length - 1 ? 'border-b' : ''}`}>
+                    {/* Pet Header with Photos */}
+                    <div className="flex flex-col sm:flex-row gap-6 mb-6">
+                      {pet.photo_urls && pet.photo_urls.length > 0 && (
+                        <div className="flex gap-3 overflow-x-auto pb-2">
+                          {pet.photo_urls.slice(0, 3).map((url, idx) => (
+                            <img 
+                              key={idx}
+                              src={url} 
+                              alt={`${pet.name} ${idx + 1}`}
+                              className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl object-cover flex-shrink-0 border-2 border-primary/10 shadow-md"
+                            />
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold mb-4 text-primary">{pet.name}</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Species</p>
+                            <p className="font-medium capitalize">{pet.species}</p>
                           </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Breed</p>
+                            <p className="font-medium">{pet.breed || 'Mixed'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Age</p>
+                            <p className="font-medium">{pet.age} {pet.age === 1 ? 'year' : 'years'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Size</p>
+                            <p className="font-medium capitalize">{pet.size}</p>
+                          </div>
+                          {pet.gender && (
+                            <div>
+                              <p className="text-sm text-muted-foreground">Gender</p>
+                              <p className="font-medium capitalize">{pet.gender}</p>
+                            </div>
+                          )}
+                          {pet.weight && (
+                            <div>
+                              <p className="text-sm text-muted-foreground">Weight</p>
+                              <p className="font-medium">{pet.weight} kg</p>
+                            </div>
+                          )}
                         </div>
                       </div>
+                    </div>
 
-                      {pet.personality_traits && pet.personality_traits.length > 0 && (
-                        <div className="mb-3">
-                          <p className="text-sm font-medium mb-2">Personality:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {pet.personality_traits.map((trait) => (
-                              <Badge key={trait} variant="secondary">{trait}</Badge>
-                            ))}
-                          </div>
+                    {/* Personality Traits */}
+                    {pet.personality_traits && pet.personality_traits.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold mb-2 text-sm text-muted-foreground">Personality Traits</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {pet.personality_traits.map((trait) => (
+                            <Badge key={trait} variant="secondary" className="text-sm px-3 py-1">
+                              {trait}
+                            </Badge>
+                          ))}
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      {pet.medical_conditions && pet.medical_conditions.length > 0 && (
-                        <div className="mb-3">
-                          <p className="text-sm font-medium mb-2">Medical Conditions:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {pet.medical_conditions.map((condition) => (
-                              <Badge key={condition} variant="destructive">{condition}</Badge>
-                            ))}
-                          </div>
+                    {/* Medical Conditions */}
+                    {pet.medical_conditions && pet.medical_conditions.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold mb-2 text-sm text-muted-foreground">Medical Conditions</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {pet.medical_conditions.map((condition) => (
+                            <Badge key={condition} variant="outline" className="text-sm px-3 py-1 border-orange-500 text-orange-700">
+                              {condition}
+                            </Badge>
+                          ))}
                         </div>
-                      )}
+                      </div>
+                    )}
 
+                    {/* Care Instructions */}
+                    <div className="grid sm:grid-cols-2 gap-4 mt-6">
                       {pet.feeding_instructions && (
-                        <div className="mb-3">
-                          <p className="text-sm font-medium mb-1">Feeding Instructions:</p>
-                          <p className="text-sm text-muted-foreground">{pet.feeding_instructions}</p>
+                        <div className="bg-muted/30 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-sm">Feeding Instructions</h4>
+                          <p className="text-sm">{pet.feeding_instructions}</p>
                         </div>
                       )}
-
                       {pet.exercise_needs && (
-                        <div className="mb-3">
-                          <p className="text-sm font-medium mb-1">Exercise Needs:</p>
-                          <p className="text-sm text-muted-foreground">{pet.exercise_needs}</p>
-                        </div>
-                      )}
-
-                      {pet.special_care_notes && (
-                        <div>
-                          <p className="text-sm font-medium mb-1">Special Care Notes:</p>
-                          <p className="text-sm text-muted-foreground">{pet.special_care_notes}</p>
+                        <div className="bg-muted/30 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-sm">Exercise Needs</h4>
+                          <p className="text-sm">{pet.exercise_needs}</p>
                         </div>
                       )}
                     </div>
-                  ))}
-                </div>
+
+                    {/* Special Care Notes */}
+                    {pet.special_care_notes && (
+                      <div className="mt-4 bg-primary/5 p-4 rounded-lg border border-primary/20">
+                        <h4 className="font-semibold mb-2 text-sm">Special Care Notes</h4>
+                        <p className="text-sm">{pet.special_care_notes}</p>
+                      </div>
+                    )}
+
+                    {/* Health Information */}
+                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${pet.is_neutered ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <span className="text-sm">{pet.is_neutered ? 'Spayed/Neutered' : 'Not Neutered'}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${pet.vaccination_status ? 'bg-green-500' : 'bg-orange-500'}`} />
+                        <span className="text-sm">{pet.vaccination_status ? 'Vaccinations Up-to-Date' : 'Vaccinations Needed'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </CardContent>
             </Card>
           )}
