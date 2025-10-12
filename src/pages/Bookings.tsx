@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
@@ -20,8 +20,6 @@ export default function Bookings() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -358,8 +356,7 @@ export default function Bookings() {
   };
 
   const handleViewDetails = (booking) => {
-    setSelectedBooking(booking);
-    setShowDetailsDialog(true);
+    navigate(`/booking/${booking.id}`);
   };
 
   const filteredBookings = bookings.filter(booking => {
@@ -636,148 +633,6 @@ export default function Bookings() {
           )}
         </div>
       </div>
-
-      {/* Booking Details Dialog */}
-      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Booking Details</DialogTitle>
-          </DialogHeader>
-          
-          {selectedBooking && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Service Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Service:</span>
-                      <span className="font-medium">{selectedBooking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Reference:</span>
-                      <span className="font-mono text-sm">{selectedBooking.booking_reference}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Dates:</span>
-                      <span className="font-medium">
-                        {format(new Date(selectedBooking.start_date), 'MMM dd, yyyy')}
-                        {selectedBooking.start_date !== selectedBooking.end_date && (
-                          <> - {format(new Date(selectedBooking.end_date), 'MMM dd, yyyy')}</>
-                        )}
-                      </span>
-                    </div>
-                    {selectedBooking.start_time && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Time:</span>
-                        <span className="font-medium">{selectedBooking.start_time} - {selectedBooking.end_time}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between pt-2 border-t">
-                      <span className="text-muted-foreground">Total Amount:</span>
-                      <span className="font-semibold text-lg">${selectedBooking.total_amount}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Status:</span>
-                      <Badge variant={getStatusColor(selectedBooking.status)}>{selectedBooking.status}</Badge>
-                    </div>
-                    {selectedBooking.payment_status && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Payment:</span>
-                        <span className="capitalize">{selectedBooking.payment_status}</span>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      {selectedBooking.owner_id === profile.id ? 'Sitter Information' : 'Owner Information'}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {selectedBooking.owner_id === profile.id ? (
-                      // Show sitter info to owner
-                      <>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Name:</span>
-                          <span className="font-medium">{selectedBooking.sitter?.first_name} {selectedBooking.sitter?.last_name}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Email:</span>
-                          <span className="text-sm">{selectedBooking.sitter?.email || 'Not available'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Phone:</span>
-                          <span className="text-sm">{selectedBooking.sitter?.phone || 'Not available'}</span>
-                        </div>
-                        {selectedBooking.sitter?.address && (
-                          <div className="pt-2 border-t">
-                            <span className="text-muted-foreground block mb-1">Address:</span>
-                            <p className="text-sm">
-                              {selectedBooking.sitter.address}<br />
-                              {selectedBooking.sitter.suburb}, {selectedBooking.sitter.city}
-                            </p>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      // Show owner info to sitter
-                      <>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Name:</span>
-                          <span className="font-medium">{selectedBooking.owner?.first_name} {selectedBooking.owner?.last_name}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Email:</span>
-                          <span className="text-sm">{selectedBooking.owner?.email || 'Not available'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Phone:</span>
-                          <span className="text-sm">{selectedBooking.owner?.phone || 'Not available'}</span>
-                        </div>
-                        {selectedBooking.owner?.address && (
-                          <div className="pt-2 border-t">
-                            <span className="text-muted-foreground block mb-1">Service Address:</span>
-                            <p className="text-sm">
-                              {selectedBooking.owner.address}<br />
-                              {selectedBooking.owner.suburb}, {selectedBooking.owner.city}
-                            </p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-              
-              {selectedBooking.special_instructions && (
-                <div>
-                  <h4 className="font-medium mb-2">Special Instructions</h4>
-                  <div className="text-muted-foreground bg-muted p-3 rounded max-h-[200px] overflow-y-auto">
-                    {selectedBooking.special_instructions}
-                  </div>
-                </div>
-              )}
-              
-              {(selectedBooking.owner_notes || selectedBooking.sitter_notes) && (
-                <div>
-                  <h4 className="font-medium mb-2">Notes</h4>
-                  {selectedBooking.owner_notes && (
-                    <p className="text-sm mb-2"><strong>Owner notes:</strong> {selectedBooking.owner_notes}</p>
-                  )}
-                  {selectedBooking.sitter_notes && (
-                    <p className="text-sm"><strong>Sitter notes:</strong> {selectedBooking.sitter_notes}</p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
