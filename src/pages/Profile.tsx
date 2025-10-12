@@ -102,8 +102,18 @@ export default function Profile() {
       const { data, error } = await supabase
         .from('bookings')
         .select(`
-          id, service_type, start_date, end_date, total_amount, status,
-          pet_ids
+          id, 
+          service_type, 
+          start_date, 
+          end_date, 
+          total_amount, 
+          status,
+          pet_ids,
+          booking_reference,
+          owner_id,
+          sitter_id,
+          owner:profiles!owner_id(id, first_name, last_name, email),
+          sitter:profiles!sitter_id(id, first_name, last_name, email)
         `)
         .or(`owner_id.eq.${profile.id},sitter_id.eq.${profile.id}`)
         .order('created_at', { ascending: false })
@@ -440,6 +450,88 @@ export default function Profile() {
       toast({
         title: "Connection failed",
         description: "Failed to connect to Stripe. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAcceptBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase.rpc('accept_booking', { 
+        booking_id: bookingId 
+      });
+
+      if (error) throw error;
+
+      // Send acceptance notification to owner
+      const acceptedBooking = recentBookings.find(b => b.id === bookingId);
+      if (acceptedBooking) {
+        await supabase.functions.invoke('send-booking-acceptance-email', {
+          body: {
+            owner_email: acceptedBooking.owner.email,
+            owner_name: `${acceptedBooking.owner.first_name} ${acceptedBooking.owner.last_name}`,
+            sitter_name: `${profile.first_name} ${profile.last_name}`,
+            service_type: acceptedBooking.service_type,
+            start_date: acceptedBooking.start_date,
+            end_date: acceptedBooking.end_date,
+            booking_reference: acceptedBooking.booking_reference,
+            total_amount: acceptedBooking.total_amount
+          }
+        });
+      }
+
+      toast({
+        title: "Booking Accepted",
+        description: "The owner will be notified to complete payment.",
+      });
+
+      fetchBookings();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeclineBooking = async (booking: any) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', booking.id);
+
+      if (error) throw error;
+
+      // Send cancellation email
+      const recipient = booking.owner;
+      
+      await supabase.functions.invoke('send-booking-cancellation', {
+        body: {
+          recipient_email: recipient.email,
+          recipient_name: `${recipient.first_name} ${recipient.last_name}`,
+          cancelled_by_name: `${profile.first_name} ${profile.last_name}`,
+          cancelled_by_type: 'sitter',
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date,
+          booking_reference: booking.booking_reference,
+          total_amount: booking.total_amount
+        }
+      });
+
+      toast({
+        title: "Booking Declined",
+        description: "The booking has been cancelled.",
+      });
+
+      fetchBookings();
+    } catch (error) {
+      console.error('Error declining booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to decline booking.",
         variant: "destructive",
       });
     }
@@ -1034,27 +1126,60 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 {recentBookings.length > 0 ? (
-                  <div className="space-y-3">
-                    {recentBookings.map((booking: any) => (
-                      <div key={booking.id} className="flex justify-between items-center p-4 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{booking.service_type.replace(/_/g, ' ')}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
-                          </p>
+                  <div className="space-y-4">
+                    {recentBookings.map((booking: any) => {
+                      const isSitter = booking.sitter_id === profile.id;
+                      const isPending = booking.status === 'pending';
+                      
+                      return (
+                        <div key={booking.id} className="p-4 border rounded-lg space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-medium">{booking.service_type.replace(/_/g, ' ')}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Ref: {booking.booking_reference}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <Badge variant={
+                                booking.status === 'completed' ? 'default' :
+                                booking.status === 'confirmed' ? 'secondary' :
+                                booking.status === 'awaiting_payment' ? 'secondary' :
+                                booking.status === 'cancelled' ? 'destructive' :
+                                'outline'
+                              }>
+                                {booking.status}
+                              </Badge>
+                              <p className="text-sm text-muted-foreground mt-1">${booking.total_amount}</p>
+                            </div>
+                          </div>
+                          
+                          {/* Show action buttons for pending bookings (sitters only) */}
+                          {isSitter && isPending && (
+                            <div className="flex gap-2 pt-2 border-t">
+                              <Button
+                                size="sm"
+                                onClick={() => handleAcceptBooking(booking.id)}
+                                className="flex-1"
+                              >
+                                Accept
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDeclineBooking(booking)}
+                                className="flex-1"
+                              >
+                                Decline
+                              </Button>
+                            </div>
+                          )}
                         </div>
-                        <div className="text-right">
-                          <Badge variant={
-                            booking.status === 'completed' ? 'default' :
-                            booking.status === 'confirmed' ? 'secondary' :
-                            'outline'
-                          }>
-                            {booking.status}
-                          </Badge>
-                          <p className="text-sm text-muted-foreground mt-1">${booking.total_amount}</p>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-muted-foreground">No bookings yet</p>
