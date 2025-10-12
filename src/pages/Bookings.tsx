@@ -565,23 +565,25 @@ export default function Bookings() {
                               {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
                             </Button>
                           )}
-                          {/* Owner can pay for awaiting_payment or pending bookings */}
-                          {(booking.status === 'awaiting_payment' || booking.status === 'pending') && booking.owner_id === profile.id && (
+                          {/* Owner can pay only when status is awaiting_payment (after sitter accepts) */}
+                          {booking.owner_id === profile.id && (booking.status === 'awaiting_payment' || booking.status === 'pending') && (
                             <Button 
                               size="sm" 
                               onClick={() => handleCompletePayment(booking)}
-                              className="bg-green-600 hover:bg-green-700 min-w-[150px] whitespace-nowrap"
+                              disabled={booking.status === 'pending'}
+                              className="bg-green-600 hover:bg-green-700 min-w-[150px] whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               <CreditCard className="w-4 h-4 mr-2" />
                               Complete Payment
                             </Button>
                           )}
-                          {(booking.status === 'pending' || booking.status === 'awaiting_payment') && booking.owner_id === profile.id && (
+                          {booking.owner_id === profile.id && (booking.status === 'pending' || booking.status === 'awaiting_payment') && (
                            <Button 
                              variant="destructive" 
                              size="sm" 
                              onClick={() => handleCancelBooking(booking)}
-                             className="min-w-[80px]"
+                             disabled={booking.status === 'pending'}
+                             className="min-w-[80px] disabled:opacity-50 disabled:cursor-not-allowed"
                            >
                              Cancel
                            </Button>
