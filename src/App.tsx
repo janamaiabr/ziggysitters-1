@@ -20,6 +20,7 @@ import BecomeSitter from "./pages/BecomeSitter";
 import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
+import BookingDetails from "./pages/BookingDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUserDetails from "./pages/AdminUserDetails";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -141,6 +142,14 @@ function AppContent() {
               } 
              />
              <Route 
+               path="/booking/:id" 
+               element={
+                 <ProtectedRoute>
+                   <BookingDetails />
+                 </ProtectedRoute>
+               } 
+             />
+             <Route
                path="/daily-reports" 
                element={
                  <ProtectedRoute>

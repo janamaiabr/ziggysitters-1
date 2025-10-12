@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +22,7 @@ import SitterDailyReports from '@/components/SitterDailyReports';
 import ClientDailyReports from '@/components/ClientDailyReports';
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { profile, loading } = useProfile();
   const { toast } = useToast();
@@ -1143,7 +1145,7 @@ export default function Profile() {
                                 Ref: {booking.booking_reference}
                               </p>
                             </div>
-                            <div className="text-right">
+                           <div className="flex items-center gap-2">
                               <Badge variant={
                                 booking.status === 'completed' ? 'default' :
                                 booking.status === 'confirmed' ? 'secondary' :
@@ -1153,30 +1155,40 @@ export default function Profile() {
                               }>
                                 {booking.status}
                               </Badge>
-                              <p className="text-sm text-muted-foreground mt-1">${booking.total_amount}</p>
+                              <p className="text-sm text-muted-foreground">${booking.total_amount}</p>
                             </div>
                           </div>
                           
-                          {/* Show action buttons for pending bookings (sitters only) */}
-                          {isSitter && isPending && (
-                            <div className="flex gap-2 pt-2 border-t">
-                              <Button
-                                size="sm"
-                                onClick={() => handleAcceptBooking(booking.id)}
-                                className="flex-1"
-                              >
-                                Accept
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDeclineBooking(booking)}
-                                className="flex-1"
-                              >
-                                Decline
-                              </Button>
-                            </div>
-                          )}
+                          {/* Action buttons */}
+                          <div className="flex gap-2 pt-2 border-t">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(`/booking/${booking.id}`)}
+                              className="flex-1"
+                            >
+                              View Details
+                            </Button>
+                            {isSitter && isPending && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleAcceptBooking(booking.id)}
+                                  className="flex-1"
+                                >
+                                  Accept
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleDeclineBooking(booking)}
+                                  className="flex-1"
+                                >
+                                  Decline
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       );
                     })}
