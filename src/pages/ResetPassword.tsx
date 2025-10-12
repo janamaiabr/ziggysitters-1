@@ -19,42 +19,23 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let recoveryDetected = false;
-    
-    // Set up auth state listener
+    // Supabase automatically processes the hash fragment and triggers PASSWORD_RECOVERY event
+    // No need to manually validate - just listen for the event
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change event:', event, 'Session exists:', !!session);
+      console.log('ResetPassword - Auth event:', event, 'Has session:', !!session);
       
       if (event === 'PASSWORD_RECOVERY') {
-        recoveryDetected = true;
-        console.log('Password recovery event detected');
+        console.log('Password recovery session established');
+      } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out, redirecting to forgot password');
+        navigate('/forgot-password');
       }
     });
 
-    // Check session after a delay to allow URL hash processing
-    const checkSession = setTimeout(async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      console.log('Session check - Recovery detected:', recoveryDetected, 'Session:', !!session, 'Error:', error);
-      
-      if (!session && !recoveryDetected) {
-        console.log('No valid recovery session found');
-        toast({
-          title: "Invalid or expired link",
-          description: "Please request a new password reset link.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          navigate('/forgot-password');
-        }, 2000);
-      }
-    }, 2000); // Increased delay to allow full URL processing
-
     return () => {
       subscription.unsubscribe();
-      clearTimeout(checkSession);
     };
-  }, [navigate, toast]);
+  }, [navigate]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
