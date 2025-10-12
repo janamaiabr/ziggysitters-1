@@ -17,6 +17,10 @@ interface BookingCancellationRequest {
   booking_reference: string;
   total_amount: number;
   cancellation_reason?: string;
+  refund_amount?: number;
+  refund_percentage?: number;
+  platform_fee_retained?: number;
+  was_paid?: boolean;
 }
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
@@ -37,7 +41,11 @@ serve(async (req) => {
       end_date,
       booking_reference,
       total_amount,
-      cancellation_reason
+      cancellation_reason,
+      refund_amount = 0,
+      refund_percentage = 0,
+      platform_fee_retained = 0,
+      was_paid = false
     }: BookingCancellationRequest = await req.json();
 
     const serviceTypeFormatted = service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -99,11 +107,28 @@ serve(async (req) => {
             </div>
           ` : ''}
 
-          <div style="background-color: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
-              <strong>Refund Information:</strong> If payment was processed, a full refund will be issued automatically within 5-10 business days.
-            </p>
-          </div>
+          ${was_paid ? `
+            <div style="background-color: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 15px; margin: 20px 0;">
+              <h3 style="color: #0c4a6e; margin-top: 0;">Refund Information</h3>
+              ${refund_percentage > 0 ? `
+                <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
+                  <strong>Refund Amount:</strong> ${refund_percentage}% of service fee = NZ$${refund_amount.toFixed(2)}<br>
+                  <strong>Platform Fee:</strong> NZ$${platform_fee_retained.toFixed(2)} (non-refundable)<br>
+                  <strong>Processing Time:</strong> Refunds will appear in your account within 5-10 business days.
+                </p>
+              ` : `
+                <p style="margin: 0; color: #dc2626; font-size: 14px;">
+                  <strong>No Refund:</strong> Cancellation occurred within 24 hours of the booking start time or after the service began. Per our cancellation policy, no refund will be issued.
+                </p>
+              `}
+            </div>
+          ` : `
+            <div style="background-color: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 15px; margin: 20px 0;">
+              <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
+                <strong>Payment Status:</strong> This booking was cancelled before payment was processed. No charges were made.
+              </p>
+            </div>
+          `}
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="https://ziggysitters.com/find-sitters" 

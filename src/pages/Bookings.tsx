@@ -309,6 +309,7 @@ export default function Bookings() {
     
     try {
       setLoading(true);
+      let refundData = null;
 
       // If booking is confirmed (payment made), process refund
       if (booking.status === 'confirmed') {
@@ -317,6 +318,7 @@ export default function Bookings() {
         });
 
         if (error) throw error;
+        refundData = data;
 
         const refundInfo = data?.refund_percentage > 0 
           ? `Refund: ${data.refund_percentage}% ($${data.refund_amount}). Platform fee ($${data.platform_fee_retained}) not refunded.`
@@ -341,7 +343,7 @@ export default function Bookings() {
         });
       }
 
-      // Send cancellation email
+      // Send cancellation email with refund info if available
       const isOwner = booking.owner_id === profile.id;
       const recipient = isOwner ? booking.sitter : booking.owner;
       
@@ -355,7 +357,11 @@ export default function Bookings() {
           start_date: booking.start_date,
           end_date: booking.end_date,
           booking_reference: booking.booking_reference,
-          total_amount: booking.total_amount
+          total_amount: booking.total_amount,
+          refund_amount: refundData?.refund_amount || 0,
+          refund_percentage: refundData?.refund_percentage || 0,
+          platform_fee_retained: refundData?.platform_fee_retained || 0,
+          was_paid: booking.status === 'confirmed'
         }
       });
 
