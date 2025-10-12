@@ -363,15 +363,28 @@ export default function BookingDetails() {
           </Card>
 
           {/* Pet Information - Enhanced */}
-          {pets.length > 0 && (
-            <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                <CardTitle className="flex items-center gap-2 text-2xl">
-                  <PawPrint className="h-6 w-6" />
-                  Pet Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <PawPrint className="h-6 w-6" />
+                Pet Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {pets.length === 0 ? (
+                <div className="p-8 text-center">
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                    <PawPrint className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">No Pet Information Available</h3>
+                  <p className="text-muted-foreground">
+                    {booking?.owner.id === profile?.id 
+                      ? "You haven't added any pets to this booking yet. Please add pet information to help your sitter prepare."
+                      : "The pet owner hasn't added pet information to this booking yet."}
+                  </p>
+                </div>
+              ) : (
+                <>
                 {pets.map((pet, index) => (
                   <div key={pet.id} className={`p-6 ${index !== pets.length - 1 ? 'border-b' : ''}`}>
                     {/* Pet Header with Photos */}
@@ -488,9 +501,10 @@ export default function BookingDetails() {
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
-          )}
+                </>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Daily Reports */}
           {booking.requires_daily_reports && (
