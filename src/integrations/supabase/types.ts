@@ -858,6 +858,7 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "awaiting_payment"
+        | "declined"
       pet_size: "small" | "medium" | "large" | "extra_large"
       pet_species:
         | "dog"
@@ -1013,6 +1014,7 @@ export const Constants = {
         "completed",
         "cancelled",
         "awaiting_payment",
+        "declined",
       ],
       pet_size: ["small", "medium", "large", "extra_large"],
       pet_species: [

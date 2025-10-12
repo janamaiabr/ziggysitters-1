@@ -177,6 +177,7 @@ export default function Bookings() {
       case 'in_progress': return 'default';
       case 'completed': return 'outline';
       case 'cancelled': return 'destructive';
+      case 'declined': return 'destructive';
       default: return 'secondary';
     }
   };
@@ -264,19 +265,81 @@ export default function Bookings() {
   };
 
   const handleDeclineBooking = async (booking) => {
-    await handleCancelBooking(booking);
+    if (!profile) return;
+    
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'declined' })
+        .eq('id', booking.id);
+
+      if (error) throw error;
+
+      // Send decline notification to owner
+      await supabase.functions.invoke('send-booking-decline-notification', {
+        body: {
+          owner_email: booking.owner.email,
+          owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+          sitter_name: `${profile.first_name} ${profile.last_name}`,
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date,
+          booking_reference: booking.booking_reference,
+          total_amount: booking.total_amount
+        }
+      });
+
+      toast({
+        title: "Booking Declined",
+        description: "The owner has been notified.",
+      });
+
+      fetchBookings();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCancelBooking = async (booking) => {
     if (!profile) return;
     
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'cancelled' })
-        .eq('id', booking.id);
+      setLoading(true);
 
-      if (error) throw error;
+      // If booking is confirmed (payment made), process refund
+      if (booking.status === 'confirmed') {
+        const { data, error } = await supabase.functions.invoke('process-booking-refund', {
+          body: { booking_id: booking.id }
+        });
+
+        if (error) throw error;
+
+        const refundInfo = data?.refund_percentage > 0 
+          ? `Refund: ${data.refund_percentage}% ($${data.refund_amount}). Platform fee ($${data.platform_fee_retained}) not refunded.`
+          : "No refund issued (cancelled within 24 hours or after start date).";
+
+        toast({
+          title: "Booking Cancelled",
+          description: refundInfo,
+        });
+      } else {
+        // Just cancel without refund
+        const { error } = await supabase
+          .from('bookings')
+          .update({ status: 'cancelled' })
+          .eq('id', booking.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Booking Cancelled",
+          description: "The booking has been cancelled.",
+        });
+      }
 
       // Send cancellation email
       const isOwner = booking.owner_id === profile.id;
@@ -297,8 +360,15 @@ export default function Bookings() {
       });
 
       fetchBookings();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error cancelling booking:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to cancel booking",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -370,6 +440,8 @@ export default function Bookings() {
         return booking.status === 'completed' || endDate < now;
       case 'cancelled':
         return booking.status === 'cancelled';
+      case 'declined':
+        return booking.status === 'declined';
       default:
         return true;
     }
@@ -401,7 +473,8 @@ export default function Bookings() {
           {[
             { id: 'upcoming', label: 'Upcoming' },
             { id: 'past', label: 'Past Bookings' },
-            { id: 'cancelled', label: 'Cancelled' }
+            { id: 'cancelled', label: 'Cancelled' },
+            { id: 'declined', label: 'Declined' }
           ].map((tab) => (
             <Button
               key={tab.id}
@@ -588,13 +661,33 @@ export default function Bookings() {
                              Cancel
                            </Button>
                          )}
-                         {booking.status === 'confirmed' && booking.sitter_id === profile?.id && (
-                           <Button
-                             size="sm"
-                             onClick={() => handleStartBooking(booking.id)}
-                             className="min-w-[120px]"
+                          {booking.status === 'confirmed' && booking.sitter_id === profile?.id && (
+                           <>
+                             <Button
+                               size="sm"
+                               onClick={() => handleStartBooking(booking.id)}
+                               className="min-w-[120px]"
+                             >
+                               Start Service
+                             </Button>
+                             <Button 
+                               variant="destructive" 
+                               size="sm" 
+                               onClick={() => handleCancelBooking(booking)}
+                               className="min-w-[80px]"
+                             >
+                               Cancel
+                             </Button>
+                           </>
+                         )}
+                         {booking.status === 'confirmed' && booking.owner_id === profile?.id && (
+                           <Button 
+                             variant="destructive" 
+                             size="sm" 
+                             onClick={() => handleCancelBooking(booking)}
+                             className="min-w-[80px]"
                            >
-                             Start Service
+                             Cancel
                            </Button>
                          )}
                          {booking.status === 'in_progress' && booking.sitter_id === profile?.id && (
