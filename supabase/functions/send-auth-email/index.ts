@@ -17,25 +17,9 @@ serve(async (req) => {
   }
 
   try {
-    const payload = await req.text();
-    const headers = Object.fromEntries(req.headers);
-    const wh = new Webhook(hookSecret);
-    
-    const {
-      user,
-      email_data: { token, token_hash, redirect_to, email_action_type },
-    } = wh.verify(payload, headers) as {
-      user: {
-        email: string;
-        new_email?: string;
-      };
-      email_data: {
-        token: string;
-        token_hash: string;
-        redirect_to: string;
-        email_action_type: string;
-      };
-    };
+    const payload = await req.json();
+    const { user, email_data } = payload;
+    const { token, token_hash, redirect_to, email_action_type } = email_data;
 
     let html: string;
     let subject: string;

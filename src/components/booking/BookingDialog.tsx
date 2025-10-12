@@ -671,7 +671,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
               disabled={!startDate || !endDate || !serviceType || loading}
               className="flex-1"
             >
-              {loading ? 'Creating Booking...' : `Book Now - $${grandTotal.toFixed(2)}`}
+              {loading ? 'Creating Booking...' : 'Send Booking Request'}
             </Button>
           </div>
         </div>

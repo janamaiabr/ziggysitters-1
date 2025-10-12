@@ -589,7 +589,7 @@ export default function BookingAccordion({
                   disabled={!startDate || !endDate || !serviceType || !agreedToTerms || loading}
                   className="flex-1"
                 >
-                  {loading ? 'Creating Booking...' : `Pay with Stripe - $${grandTotal.toFixed(2)}`}
+                  {loading ? 'Creating Booking...' : 'Send Booking Request'}
                 </Button>
               </div>
             </AccordionContent>
