@@ -378,9 +378,7 @@ export default function BookingDetails() {
                   </div>
                   <h3 className="font-semibold text-lg mb-2">No Pet Information Available</h3>
                   <p className="text-muted-foreground">
-                    {booking?.owner.id === profile?.id 
-                      ? "You haven't added any pets to this booking yet. Please add pet information to help your sitter prepare."
-                      : "The pet owner hasn't added pet information to this booking yet."}
+                    No pets were selected for this booking.
                   </p>
                 </div>
               ) : (
