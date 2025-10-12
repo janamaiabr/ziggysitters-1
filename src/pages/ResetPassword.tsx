@@ -19,42 +19,40 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isRecoverySession = false;
+    let recoveryDetected = false;
     
-    // Check if we have a valid session from the reset link
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change:', event);
+      console.log('Auth state change event:', event, 'Session exists:', !!session);
       
       if (event === 'PASSWORD_RECOVERY') {
-        // User clicked the reset link and is now authenticated
-        isRecoverySession = true;
-        console.log('Password recovery event detected - session valid');
-      } else if (event === 'SIGNED_OUT' && !isRecoverySession) {
-        // If user is signed out and not in recovery, redirect to forgot password
-        navigate('/forgot-password');
+        recoveryDetected = true;
+        console.log('Password recovery event detected');
       }
     });
 
-    // Give Supabase time to process the recovery token before checking session
-    const timeoutId = setTimeout(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (!session && !isRecoverySession) {
-          console.log('No valid session found after timeout');
-          toast({
-            title: "Invalid reset link",
-            description: "Please request a new password reset link.",
-            variant: "destructive",
-          });
-          setTimeout(() => {
-            navigate('/forgot-password');
-          }, 2000);
-        }
-      });
-    }, 1000); // Wait 1 second for Supabase to establish recovery session
+    // Check session after a delay to allow URL hash processing
+    const checkSession = setTimeout(async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      console.log('Session check - Recovery detected:', recoveryDetected, 'Session:', !!session, 'Error:', error);
+      
+      if (!session && !recoveryDetected) {
+        console.log('No valid recovery session found');
+        toast({
+          title: "Invalid or expired link",
+          description: "Please request a new password reset link.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          navigate('/forgot-password');
+        }, 2000);
+      }
+    }, 2000); // Increased delay to allow full URL processing
 
     return () => {
       subscription.unsubscribe();
-      clearTimeout(timeoutId);
+      clearTimeout(checkSession);
     };
   }, [navigate, toast]);
 
