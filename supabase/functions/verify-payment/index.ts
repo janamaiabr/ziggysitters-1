@@ -72,6 +72,26 @@ serve(async (req) => {
 
       console.log('Booking updated successfully:', booking.id);
 
+      // Record transaction for accounting
+      const platformFee = booking.platform_fee || 0;
+      const gstAmount = Math.round((platformFee / 1.15) * 0.15 * 100) / 100; // Extract GST from fee
+      const platformEarnings = platformFee; // Full platform fee (GST inclusive)
+
+      await supabaseClient.from('transactions').insert({
+        booking_id: booking.id,
+        transaction_type: 'booking_payment',
+        amount: booking.total_amount,
+        gst_amount: gstAmount,
+        platform_earnings: platformEarnings,
+        description: `Payment received for booking ${booking.booking_reference}`,
+        stripe_payment_intent_id: paymentIntentId,
+        metadata: {
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date
+        }
+      });
+
       return new Response(JSON.stringify({ 
         success: true, 
         booking_status: 'confirmed',

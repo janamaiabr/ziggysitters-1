@@ -131,6 +131,23 @@ serve(async (req) => {
       });
 
       logStep("Stripe refund created", { refundId: refund.id, status: refund.status });
+
+      // Record refund transaction
+      await supabaseClient.from('transactions').insert({
+        booking_id: booking_id,
+        transaction_type: 'refund',
+        amount: -(refundAmount / 100), // Convert from cents and negative for refund
+        gst_amount: 0,
+        platform_earnings: 0,
+        description: `Refund for booking ${booking.booking_reference} (${refundPercentage}% refund)`,
+        stripe_refund_id: refund.id,
+        stripe_payment_intent_id: booking.stripe_payment_intent_id,
+        metadata: {
+          refund_percentage: refundPercentage,
+          cancellation_date: new Date().toISOString(),
+          hours_until_start: hoursUntilStart
+        }
+      });
     }
 
     // Update booking status

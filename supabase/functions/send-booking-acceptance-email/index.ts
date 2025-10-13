@@ -81,6 +81,12 @@ serve(async (req) => {
             </table>
           </div>
 
+          <div style="background-color: #fee2e2; border: 1px solid #dc2626; border-radius: 6px; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #991b1b; font-size: 14px;">
+              <strong>⚠️ SAFETY WARNING:</strong> For your protection, please do not contact sitters outside of the ZiggySitters platform. All communication should occur through our secure messaging system.
+            </p>
+          </div>
+
           <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
             <p style="margin: 0; color: #92400e; font-size: 14px;">
               <strong>⏰ Next Step:</strong> Please complete your payment to confirm the booking. Once payment is received, your booking will be fully confirmed.

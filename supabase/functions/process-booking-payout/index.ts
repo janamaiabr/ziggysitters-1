@@ -186,6 +186,23 @@ serve(async (req) => {
 
     const sitterReceived = booking.total_amount - booking.platform_fee - penaltyAmount;
 
+    // Record payout transaction
+    await supabaseClient.from('transactions').insert({
+      booking_id: booking_id,
+      transaction_type: 'payout',
+      amount: -sitterReceived, // Negative for money leaving platform
+      gst_amount: 0,
+      platform_earnings: 0,
+      description: `Payout to sitter for booking ${booking.booking_reference}${penaltyApplied ? ` (with ${penaltyAmount} penalty)` : ''}`,
+      stripe_payment_intent_id: booking.stripe_payment_intent_id,
+      metadata: {
+        penalty_applied: penaltyApplied,
+        penalty_amount: penaltyAmount,
+        incomplete_reports: penaltyApplied ? incompleteDays : 0,
+        net_payout: sitterReceived
+      }
+    });
+
     return new Response(
       JSON.stringify({
         success: true,

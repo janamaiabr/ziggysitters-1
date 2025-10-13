@@ -96,6 +96,12 @@ serve(async (req) => {
             </div>
           ` : ''}
 
+          <div style="background-color: #fee2e2; border: 1px solid #dc2626; border-radius: 6px; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #991b1b; font-size: 14px;">
+              <strong>⚠️ SAFETY REMINDER:</strong> For your protection, please do not contact sitters outside of the ZiggySitters platform. All communication should occur through our secure messaging system.
+            </p>
+          </div>
+
           <div style="background-color: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 15px; margin: 20px 0;">
             <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
               <strong>Don't worry!</strong> There are many other qualified sitters available. Browse our sitters to find the perfect match for your pet.

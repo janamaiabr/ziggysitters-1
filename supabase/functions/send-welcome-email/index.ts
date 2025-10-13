@@ -86,6 +86,28 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Welcome email sent successfully:", emailResponse);
 
+    // Send notification to admin about new user
+    try {
+      await resend.emails.send({
+        from: "ZiggySitters <notifications@ziggysitters.com>",
+        to: ["admin@ziggysitters.com"],
+        subject: `New User Registered - ${role === 'pet_sitter' ? 'Pet Sitter' : 'Pet Owner'}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2>New User Registration</h2>
+            <p><strong>Name:</strong> ${firstName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Role:</strong> ${role === 'pet_sitter' ? 'Pet Sitter' : 'Pet Owner'}</p>
+            <p><strong>Registered:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+        `,
+      });
+      console.log("Admin notification sent for new user");
+    } catch (error) {
+      console.error("Failed to send admin notification:", error);
+      // Don't fail if admin email fails
+    }
+
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },

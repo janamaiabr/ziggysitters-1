@@ -116,7 +116,7 @@ serve(async (req) => {
         pet_ids: bookingData.petIds,
         special_instructions: bookingData.specialInstructions,
         total_amount: bookingData.totalAmount,
-        platform_fee: Math.round(bookingData.totalAmount * 0.10 * 100) / 100, // 10% platform fee
+        platform_fee: Math.round(bookingData.totalAmount * 0.10 * 100) / 100, // 10% platform fee (GST inclusive)
         status: 'pending',
         payment_status: 'pending',
         requires_daily_reports: requiresDailyReports,
@@ -160,6 +160,27 @@ serve(async (req) => {
       logStep("Booking notification email sent to sitter");
     } catch (emailError) {
       logStep("Failed to send booking notification email", { error: emailError.message });
+      // Don't fail the booking if email fails
+    }
+
+    // Send notification to admin
+    try {
+      await supabaseClient.functions.invoke('send-admin-booking-notification', {
+        body: {
+          booking_id: booking.id,
+          owner_name: `${profile.first_name} ${profile.last_name}`,
+          owner_email: profile.email,
+          sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
+          service_type: dbServiceType,
+          start_date: bookingData.startDate,
+          end_date: bookingData.endDate,
+          booking_reference: booking.booking_reference,
+          total_amount: bookingData.totalAmount
+        }
+      });
+      logStep("Admin notification email sent");
+    } catch (emailError) {
+      logStep("Failed to send admin notification email", { error: emailError.message });
       // Don't fail the booking if email fails
     }
 
