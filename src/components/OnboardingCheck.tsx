@@ -19,8 +19,14 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    // Exclude password reset flow from onboarding redirects
-    const excludedPaths = ['/onboarding', '/reset-password', '/forgot-password'];
+    // Exclude password reset flow and onboarding completion pages from redirects
+    const excludedPaths = [
+      '/onboarding', 
+      '/reset-password', 
+      '/forgot-password',
+      '/onboarding-complete',
+      '/onboarding-pending-approval'
+    ];
     
     // Only redirect if user is authenticated and we have profile info
     if (user && !loading && needsOnboarding && !excludedPaths.includes(location.pathname)) {
