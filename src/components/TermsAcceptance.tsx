@@ -31,44 +31,58 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
         <ScrollArea className="h-[400px] p-4">
           <div className="space-y-4 text-sm">
             <p>
-              <strong>Last updated:</strong> {new Date().toLocaleDateString()}
+              <strong>Last updated:</strong> 15 October 2025
+            </p>
+
+            <p>
+              Ziggysitters (operated by Ziggysitters Limited) is a marketplace that connects pet owners with independent pet sitters. 
+              By using our website or booking a sitter through Ziggysitters, you agree to these Terms & Conditions.
             </p>
 
             <section>
-              <h3 className="font-semibold mb-2">Agreement to Terms</h3>
-              <p>
-                By accessing and using ZiggySitters ("the Service"), you agree to be bound 
-                by these Terms of Service ("Terms").
+              <h3 className="font-semibold mb-2">1. Our Role</h3>
+              <p className="mb-2">
+                Ziggysitters provides an online platform where pet owners ("Clients") and independent pet sitters ("Sitters") 
+                can connect, communicate, and arrange services. Ziggysitters is not a party to the agreement between Clients and Sitters. 
+                The actual pet care service is provided by the Sitter, not by Ziggysitters.
               </p>
             </section>
 
             <section>
-              <h3 className="font-semibold mb-2">Services Offered</h3>
-              <p>ZiggySitters connects pet owners with verified pet sitters offering:</p>
+              <h3 className="font-semibold mb-2">2. Bookings & Payment</h3>
+              <p className="mb-2">All bookings must be made through the Ziggysitters platform. Ziggysitters may facilitate payments on behalf of Sitters.</p>
+              <p className="mb-2"><strong>Cancellation Policy:</strong></p>
               <ul className="list-disc list-inside ml-4 space-y-1">
-                <li>Pet sitting in sitter's home</li>
-                <li>Pet sitting in owner's home</li>
-                <li>Drop-in visits</li>
+                <li>Cancellations at least 24 hours before start: 100% refund of sitting fee (less Ziggysitters fee)</li>
+                <li>Cancellations less than 24 hours before start: 50% refund of sitting fee (less Ziggysitters listing fee)</li>
+                <li>After job has started: No cancellation possible, all fees remain due</li>
               </ul>
             </section>
 
             <section>
-              <h3 className="font-semibold mb-2">Cancellation Policy</h3>
+              <h3 className="font-semibold mb-2">3. Client Responsibilities</h3>
               <ul className="list-disc list-inside ml-4 space-y-1">
-                <li><strong>48+ hours notice:</strong> Full refund of service cost only</li>
-                <li><strong>Less than 48 hours:</strong> No refund</li>
-                <li><strong>Listing fee (10% of service cost):</strong> Non-refundable under all circumstances</li>
+                <li>Provide accurate information about your pet, including health, behaviour, and special needs</li>
+                <li>Ensure safe access for the Sitter and disclose who else will enter during the booking</li>
+                <li>Provide proof of vaccinations, flea and worm treatment when required</li>
+                <li>You are responsible for your pet's behaviour and any damage it causes</li>
               </ul>
             </section>
 
             <section>
-              <h3 className="font-semibold mb-2">User Responsibilities</h3>
-              <ul className="list-disc list-inside ml-4 space-y-1">
-                <li>Provide accurate information about pets and requirements</li>
-                <li>Treat sitters with respect and professionalism</li>
-                <li>Pay for services as agreed</li>
-                <li>Follow platform safety guidelines</li>
-              </ul>
+              <h3 className="font-semibold mb-2">4. Sitter Responsibilities</h3>
+              <p className="mb-2">
+                Sitters agree to provide services with reasonable care and skill, consistent with the Consumer Guarantees Act 1993. 
+                Sitters are responsible for the welfare and safety of pets during their bookings.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold mb-2">5. Liability</h3>
+              <p className="mb-2">
+                Ziggysitters is not responsible for loss, injury, or illness to pets, people, or property during a booking, 
+                or disputes between Clients and Sitters.
+              </p>
             </section>
 
             <section>

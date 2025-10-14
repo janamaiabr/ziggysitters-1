@@ -17,13 +17,13 @@ export default function TermsOfService() {
               Ziggysitters – Marketplace Terms & Conditions (NZ)
             </CardTitle>
             <p className="text-center text-muted-foreground mt-2">
-              Last updated: {new Date().toLocaleDateString()}
+              Last updated: 15 October 2025
             </p>
           </CardHeader>
 
           <CardContent className="prose prose-sm max-w-none dark:prose-invert space-y-6">
             <p className="lead text-base">
-              Ziggysitters is a marketplace that connects pet owners with independent pet sitters. 
+              Ziggysitters (operated by Ziggysitters Limited) is a marketplace that connects pet owners with independent pet sitters. 
               By using our website or booking a sitter through Ziggysitters, you agree to these Terms & Conditions.
             </p>
 
@@ -39,18 +39,21 @@ export default function TermsOfService() {
               <h2 className="text-2xl font-semibold mt-8 mb-4">2. Bookings & Payment</h2>
               <p className="mb-2"><strong>2.1</strong> All bookings must be made through the Ziggysitters platform.</p>
               <p className="mb-2"><strong>2.2</strong> By confirming a booking, you are entering into a direct agreement with the Sitter, not Ziggysitters.</p>
-              <p className="mb-2"><strong>2.3</strong> Ziggysitters charges a 10% listing fee on the service cost to Clients, which covers platform operation and payment processing. This fee is added to the Sitter's rate at checkout.</p>
-              <p className="mb-2"><strong>2.4</strong> Payments are facilitated through the platform and held securely. Sitter payments are released after successful service completion.</p>
-              <p className="mb-2"><strong>2.5</strong> For bookings where Clients request daily photo reports, Sitters must complete all requested reports. Failure to submit all requested daily reports will result in a 15% payment deduction from the Sitter's earnings.</p>
-              <p className="mb-2"><strong>2.6</strong> Cancellation policies are set by individual Sitters and must be agreed before booking.</p>
+              <p className="mb-2"><strong>2.3</strong> Ziggysitters may facilitate payments on behalf of Sitters. Once paid, fees are held and then passed on to the Sitter after the booking.</p>
+              <p className="mb-2"><strong>2.4</strong> Ziggysitters provides a cancellation fee principle as follows:</p>
+              <ul className="list-disc ml-6 mb-2">
+                <li>cancellations at least 24 hours before start of a job result in 100 percent of Sitting fee (less Ziggysitters fee) be returned;</li>
+                <li>cancellation less than 24 hours before the start of a job results in 50 percent of Sitting fees (less Ziggysitters listing fee) be returned;</li>
+                <li>attempted cancellation after a job has started is not possible and all fees will remain due, however Sitters and Clients may agree alternative arrangements as part of the specific agreement between them.</li>
+              </ul>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mt-8 mb-4">3. Client Responsibilities</h2>
               <p className="mb-2"><strong>3.1</strong> You must provide accurate and all relevant information about your pet, including health, behaviour, and special needs.</p>
-              <p className="mb-2"><strong>3.2</strong> For care in your home, you must ensure safe access for the sitter, provide keys, and disclose who else will enter during the booking.</p>
-              <p className="mb-2"><strong>3.3</strong> For care in a sitter's home, you must provide proof of vaccinations, flea and worm treatment, and ensure your pet is suitable for the environment.</p>
-              <p className="mb-2"><strong>3.4</strong> You are responsible for your pet's behaviour and any damage it causes to property, people, or other animals.</p>
+              <p className="mb-2"><strong>3.2</strong> For care in your home, you must ensure safe access for the Sitter, provide keys, and disclose who else will enter during the booking.</p>
+              <p className="mb-2"><strong>3.3</strong> For care in a Sitter's home, you must provide proof of vaccinations, flea and worm treatment, and ensure your pet is suitable for the environment.</p>
+              <p className="mb-2"><strong>3.4</strong> You are responsible for your pet's behaviour and any damage it causes to property, people, or other animals. We recommend you consider insurance in case any damage or incident.</p>
             </section>
 
             <section>
@@ -58,22 +61,21 @@ export default function TermsOfService() {
               <p className="mb-2"><strong>4.1</strong> Sitters agree to provide services with reasonable care and skill, consistent with the Consumer Guarantees Act 1993.</p>
               <p className="mb-2"><strong>4.2</strong> Sitters are responsible for the welfare and safety of pets during their bookings.</p>
               <p className="mb-2"><strong>4.3</strong> Sitters set their own rates, availability, and cancellation policies.</p>
-              <p className="mb-2"><strong>4.4</strong> When a Client requests daily photo reports, Sitters must submit all required reports with photos. Failure to do so will result in a 15% deduction from their booking payment.</p>
-              <p className="mb-2"><strong>4.5</strong> Sitters are encouraged to maintain public liability insurance but are individually responsible for their own tax, ACC, and other legal obligations.</p>
-              <p className="mb-2"><strong>4.6</strong> Sitters must provide copies of a passport or driving licence, written references and a clear police vet check before offering sitting services.</p>
+              <p className="mb-2"><strong>4.4</strong> Sitters are encouraged to maintain public liability insurance but are individually responsible for their own tax, ACC, and other legal obligations.</p>
+              <p className="mb-2"><strong>4.5</strong> Sitters must provide copies of a passport or driving licence, written references and preferably a clear police vet check before offering sitting services on the Ziggysitters platform.</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mt-8 mb-4">5. Veterinary Care & Emergencies</h2>
-              <p className="mb-2"><strong>5.1</strong> In an emergency, the Sitter will attempt to contact the Client. If the Client cannot be reached, the Sitter may act in the pet's best interests and seek veterinary care.</p>
+              <p className="mb-2"><strong>5.1</strong> If not provided for in the individual agreement between a Sitter and a Client, the following provisions apply: in an emergency, the Sitter will attempt to contact the Client. If the Client cannot be reached, the Sitter may act in the pet's best interests and seek veterinary care.</p>
               <p className="mb-2"><strong>5.2</strong> The Client is responsible for all vet costs, plus any reasonable transport/time charges from the Sitter.</p>
               <p className="mb-2"><strong>5.3</strong> Ziggysitters is not liable for illness, injury, or death arising during a booking.</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mt-8 mb-4">6. Marketplace Limitations</h2>
-              <p className="mb-2"><strong>6.1</strong> Ziggysitters does not directly supervise sitters, inspect homes, or monitor bookings.</p>
-              <p className="mb-2"><strong>6.2</strong> While we may perform basic checks on sitters, we do not guarantee their qualifications, insurance, or suitability.</p>
+              <p className="mb-2"><strong>6.1</strong> Ziggysitters does not supervise Sitters, inspect homes, or monitor bookings.</p>
+              <p className="mb-2"><strong>6.2</strong> While we may perform basic checks on Sitters, we do not guarantee their qualifications, insurance, or suitability.</p>
               <p className="mb-2"><strong>6.3</strong> All agreements, risks, and liabilities relating to pet care rest with the Sitter and Client.</p>
             </section>
 
@@ -98,29 +100,18 @@ export default function TermsOfService() {
             <section>
               <h2 className="text-2xl font-semibold mt-8 mb-4">9. Complaints & Disputes</h2>
               <p className="mb-2"><strong>9.1</strong> If you have a complaint about a booking, you should first raise it directly with the Sitter.</p>
-              <p className="mb-2"><strong>9.2</strong> If unresolved, you may contact Ziggysitters at <a href="mailto:support@ziggysitters.co.nz" className="text-primary hover:underline">support@ziggysitters.co.nz</a></p>
-              <p className="mb-2"><strong>9.3</strong> Disputes may be referred to third-party dispute resolution in line with New Zealand consumer law.</p>
+              <p className="mb-2"><strong>9.2</strong> If not resolved, you may contact Ziggysitters for support, but we are not legally responsible for resolving disputes.</p>
+              <p className="mb-2"><strong>9.3</strong> Ziggysitters may suspend or remove Sitters or Clients who breach these Terms or create safety risks.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mt-8 mb-4">10. Governing Law</h2>
-              <p className="mb-2"><strong>10.1</strong> These Terms are governed by the laws of New Zealand.</p>
-              <p className="mb-2"><strong>10.2</strong> Any disputes arising from these Terms will be subject to the exclusive jurisdiction of New Zealand courts.</p>
+              <h2 className="text-2xl font-semibold mt-8 mb-4">10. Force Majeure</h2>
+              <p className="mb-2">Ziggysitters and Sitters are not liable for failure to perform services due to natural disasters, extreme weather, or events beyond reasonable control.</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mt-8 mb-4">11. Changes to Terms</h2>
-              <p className="mb-2"><strong>11.1</strong> Ziggysitters may update these Terms at any time.</p>
-              <p className="mb-2"><strong>11.2</strong> Continued use of the platform after changes indicates acceptance of the new Terms.</p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mt-8 mb-4">12. Contact</h2>
-              <p className="mb-2">For questions about these Terms, please contact us at:</p>
-              <p className="ml-4 mb-2">
-                <strong>Email:</strong> <a href="mailto:legal@ziggysitters.co.nz" className="text-primary hover:underline">legal@ziggysitters.co.nz</a><br />
-                <strong>Website:</strong> <a href="https://ziggysitters.co.nz" className="text-primary hover:underline">www.ziggysitters.co.nz</a>
-              </p>
+              <p className="mb-2">We may update these Terms & Conditions at any time. The latest version will always be published on our website.</p>
             </section>
 
             <div className="mt-8 p-6 bg-muted rounded-lg">

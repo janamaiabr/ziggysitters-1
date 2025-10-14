@@ -42,7 +42,7 @@ export default function FAQ() {
         "name": "What's your cancellation policy?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Cancellation policies are set by individual sitters and must be agreed upon before booking. Standard policies typically allow free cancellation up to 7 days before the booking start date. Details are always shown before you confirm your booking."
+          "text": "Ziggysitters provides a cancellation policy as follows: cancellations at least 24 hours before start result in 100% refund of sitting fee (less Ziggysitters fee); cancellation less than 24 hours before start results in 50% refund of sitting fees (less Ziggysitters listing fee); attempted cancellation after a job has started is not possible and all fees remain due."
         }
       },
       {
@@ -117,13 +117,13 @@ export default function FAQ() {
               <AccordionItem value="cancellation">
                 <AccordionTrigger>What's your cancellation policy?</AccordionTrigger>
                 <AccordionContent>
-                  Cancellation policies are set by individual sitters and must be agreed upon before booking. Standard policies typically allow:
+                  Ziggysitters provides a cancellation policy as follows:
                   <ul className="list-disc ml-6 mt-2 space-y-1">
-                    <li>Free cancellation up to 7 days before booking start</li>
-                    <li>50% refund for cancellations 3-7 days before</li>
-                    <li>No refund for cancellations within 3 days of start date</li>
+                    <li>Cancellations at least 24 hours before start: 100% refund of sitting fee (less Ziggysitters fee)</li>
+                    <li>Cancellations less than 24 hours before start: 50% refund of sitting fees (less Ziggysitters listing fee)</li>
+                    <li>After job has started: No cancellation possible, all fees remain due</li>
                   </ul>
-                  <p className="mt-2">The specific policy is always shown before you confirm your booking.</p>
+                  <p className="mt-2">Sitters and Clients may agree alternative arrangements as part of their specific agreement.</p>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
