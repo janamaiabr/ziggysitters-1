@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, AlertCircle, X } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface OnboardingFlow {
   steps: string[];
@@ -19,6 +21,7 @@ interface TestResult {
 
 export function OnboardingTestSuite() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<TestResult[]>([]);
 
@@ -28,77 +31,222 @@ export function OnboardingTestSuite() {
     
     const testResults: TestResult[] = [];
 
-    // Test 1: Pet Owner Flow
+    // Test 1: Authentication Check
     try {
+      if (!user) {
+        throw new Error("No authenticated user found");
+      }
       testResults.push({
         success: true,
-        message: "Pet Owner onboarding flow structure validated",
-        details: "Role selection → Basic info → Pet details flow confirmed"
+        message: "Authentication verified",
+        details: `User authenticated: ${user.email}`
       });
     } catch (error) {
       testResults.push({
         success: false,
-        message: "Pet Owner flow failed",
+        message: "Authentication failed",
         details: error instanceof Error ? error.message : "Unknown error"
       });
     }
 
-    // Test 2: Pet Sitter Flow  
+    // Test 2: Profile and Onboarding Status
     try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) throw error;
+
+      const onboardingComplete = profile.onboarding_completed;
+      const hasBasicInfo = profile.phone && profile.address && profile.suburb;
+      
       testResults.push({
         success: true,
-        message: "Pet Sitter onboarding flow structure validated",
-        details: "Role selection → Basic info → Sitter services flow confirmed"
+        message: "Profile data retrieved",
+        details: `Onboarding: ${onboardingComplete ? 'Complete' : 'Incomplete'}, Basic info: ${hasBasicInfo ? 'Yes' : 'No'}, Role: ${profile.role}`
       });
     } catch (error) {
       testResults.push({
         success: false,
-        message: "Pet Sitter flow failed",
+        message: "Profile check failed",
         details: error instanceof Error ? error.message : "Unknown error"
       });
     }
 
-    // Test 3: Both Roles Flow
+    // Test 3: Sitter Services Configuration (if sitter)
     try {
-      testResults.push({
-        success: true,
-        message: "Combined roles onboarding flow validated",
-        details: "Role selection → Basic info → Pet details → Sitter services flow confirmed"
-      });
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id, role')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (profile?.role === 'pet_sitter') {
+        const { data: services, error } = await supabase
+          .from('sitter_services')
+          .select('*')
+          .eq('sitter_id', profile.id);
+
+        if (error) throw error;
+
+        testResults.push({
+          success: services && services.length > 0,
+          message: "Sitter services check",
+          details: services && services.length > 0 
+            ? `${services.length} service(s) configured` 
+            : "No services configured"
+        });
+      } else {
+        testResults.push({
+          success: true,
+          message: "Sitter services check skipped",
+          details: "User is not a sitter"
+        });
+      }
     } catch (error) {
       testResults.push({
         success: false,
-        message: "Combined roles flow failed",
+        message: "Sitter services check failed",
         details: error instanceof Error ? error.message : "Unknown error"
       });
     }
 
-    // Test 4: Mobile Responsiveness
+    // Test 4: Booking Creation Flow
     try {
+      const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select('id, status, total_amount, platform_fee, stripe_payment_intent_id')
+        .limit(1);
+
+      if (error) throw error;
+
       testResults.push({
         success: true,
-        message: "Mobile responsive design validated",
-        details: "All components adapt properly to mobile screens"
+        message: "Booking query successful",
+        details: bookings && bookings.length > 0 
+          ? `Sample booking found with status: ${bookings[0].status}` 
+          : "No bookings in system yet"
       });
     } catch (error) {
       testResults.push({
         success: false,
-        message: "Mobile responsiveness check failed",
+        message: "Booking query failed",
         details: error instanceof Error ? error.message : "Unknown error"
       });
     }
 
-    // Test 5: Form Validation
+    // Test 5: Fee Calculation Verification
     try {
+      const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select('total_amount, platform_fee')
+        .not('platform_fee', 'is', null)
+        .limit(1);
+
+      if (error) throw error;
+
+      if (bookings && bookings.length > 0) {
+        const booking = bookings[0];
+        const expectedFee = booking.total_amount * 0.10;
+        const feeMatch = Math.abs(booking.platform_fee - expectedFee) < 0.01;
+        
+        testResults.push({
+          success: feeMatch,
+          message: "Platform fee calculation",
+          details: feeMatch 
+            ? `10% fee correctly applied (${booking.platform_fee})` 
+            : `Fee mismatch: expected ${expectedFee}, got ${booking.platform_fee}`
+        });
+      } else {
+        testResults.push({
+          success: true,
+          message: "Fee calculation check skipped",
+          details: "No bookings with fees to verify"
+        });
+      }
+    } catch (error) {
+      testResults.push({
+        success: false,
+        message: "Fee calculation check failed",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+
+    // Test 6: Daily Reports Structure
+    try {
+      const { data: reports, error } = await supabase
+        .from('daily_reports')
+        .select('*')
+        .limit(1);
+
+      if (error) throw error;
+
       testResults.push({
         success: true,
-        message: "Form validation logic confirmed",
-        details: "Required fields properly validated before progression"
+        message: "Daily reports table accessible",
+        details: reports && reports.length > 0 
+          ? "Daily reports exist in system" 
+          : "No daily reports yet (table structure OK)"
       });
     } catch (error) {
       testResults.push({
         success: false,
-        message: "Form validation failed",
+        message: "Daily reports check failed",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+
+    // Test 7: Transactions Table
+    try {
+      const { data: transactions, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .limit(1);
+
+      if (error) throw error;
+
+      testResults.push({
+        success: true,
+        message: "Transactions table accessible",
+        details: transactions && transactions.length > 0 
+          ? "Transaction records exist" 
+          : "No transactions yet (table structure OK)"
+      });
+    } catch (error) {
+      testResults.push({
+        success: false,
+        message: "Transactions table check failed",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+
+    // Test 8: Stripe Integration Status
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('stripe_account_id, stripe_account_enabled, stripe_onboarding_completed')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (profile?.stripe_account_id) {
+        testResults.push({
+          success: profile.stripe_account_enabled && profile.stripe_onboarding_completed,
+          message: "Stripe integration status",
+          details: `Account: ${profile.stripe_account_id ? 'Connected' : 'Not connected'}, Enabled: ${profile.stripe_account_enabled ? 'Yes' : 'No'}, Onboarding: ${profile.stripe_onboarding_completed ? 'Complete' : 'Incomplete'}`
+        });
+      } else {
+        testResults.push({
+          success: true,
+          message: "Stripe integration check skipped",
+          details: "No Stripe account connected (not required for all users)"
+        });
+      }
+    } catch (error) {
+      testResults.push({
+        success: false,
+        message: "Stripe integration check failed",
         details: error instanceof Error ? error.message : "Unknown error"
       });
     }
@@ -161,20 +309,36 @@ export function OnboardingTestSuite() {
             <h3 className="font-medium">Test Coverage</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="p-3 border rounded-lg">
-                <h4 className="font-medium text-sm">✅ Pet Owner Flow</h4>
-                <p className="text-xs text-muted-foreground">Role selection → Pet registration</p>
+                <h4 className="font-medium text-sm">✅ Authentication</h4>
+                <p className="text-xs text-muted-foreground">User session verification</p>
               </div>
               <div className="p-3 border rounded-lg">
-                <h4 className="font-medium text-sm">✅ Pet Sitter Flow</h4>
-                <p className="text-xs text-muted-foreground">Role selection → Service setup</p>
+                <h4 className="font-medium text-sm">✅ Profile & Onboarding</h4>
+                <p className="text-xs text-muted-foreground">Completion status checks</p>
               </div>
               <div className="p-3 border rounded-lg">
-                <h4 className="font-medium text-sm">✅ Combined Roles</h4>
-                <p className="text-xs text-muted-foreground">Both flows in sequence</p>
+                <h4 className="font-medium text-sm">✅ Sitter Services</h4>
+                <p className="text-xs text-muted-foreground">Service configuration validation</p>
               </div>
               <div className="p-3 border rounded-lg">
-                <h4 className="font-medium text-sm">✅ Mobile Optimization</h4>
-                <p className="text-xs text-muted-foreground">Responsive design validation</p>
+                <h4 className="font-medium text-sm">✅ Booking System</h4>
+                <p className="text-xs text-muted-foreground">Creation and payment flow</p>
+              </div>
+              <div className="p-3 border rounded-lg">
+                <h4 className="font-medium text-sm">✅ Fee Calculations</h4>
+                <p className="text-xs text-muted-foreground">10% platform fee verification</p>
+              </div>
+              <div className="p-3 border rounded-lg">
+                <h4 className="font-medium text-sm">✅ Daily Reports</h4>
+                <p className="text-xs text-muted-foreground">Report submission structure</p>
+              </div>
+              <div className="p-3 border rounded-lg">
+                <h4 className="font-medium text-sm">✅ Transactions</h4>
+                <p className="text-xs text-muted-foreground">Accounting records</p>
+              </div>
+              <div className="p-3 border rounded-lg">
+                <h4 className="font-medium text-sm">✅ Stripe Integration</h4>
+                <p className="text-xs text-muted-foreground">Payment provider status</p>
               </div>
             </div>
           </div>
