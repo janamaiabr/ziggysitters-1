@@ -15,7 +15,6 @@ import EnhancedSitterOnboarding from '@/components/onboarding/EnhancedSitterOnbo
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/contexts/ProfileContext';
-import OnboardingLayout from '@/components/layout/OnboardingLayout';
 
 type UserRole = 'pet_owner' | 'pet_sitter';
 
@@ -484,11 +483,10 @@ export default function Onboarding() {
   const totalSteps = getTotalSteps();
 
   return (
-    <OnboardingLayout>
-      <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
-        <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
-          <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
-            <Card>
+    <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
+      <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
+        <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
+          <Card>
               <CardHeader className="text-center">
                 <div className="flex items-center justify-center mb-4">
                   <PawPrint className="w-8 h-8 text-primary mr-2" />
@@ -549,6 +547,5 @@ export default function Onboarding() {
           </div>
         </div>
       </div>
-    </OnboardingLayout>
   );
 }
