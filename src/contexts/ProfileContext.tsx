@@ -25,6 +25,9 @@ export interface Profile {
   id_document_url?: string;
   blue_card_document_url?: string;
   verification_documents_uploaded_at?: string;
+  stripe_account_id?: string;
+  stripe_account_enabled?: boolean;
+  stripe_onboarding_completed?: boolean;
   created_at: string;
   updated_at: string;
 }
