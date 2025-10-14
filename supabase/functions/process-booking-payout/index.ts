@@ -184,7 +184,21 @@ serve(async (req) => {
 
     logStep("Payout processed successfully", { penalty_applied: penaltyApplied });
 
-    const sitterReceived = booking.total_amount - booking.platform_fee - penaltyAmount;
+    // Calculate Stripe fees (2.9% + $0.30)
+    const stripeFeePercentage = 0.029;
+    const stripeFeeFixed = 0.30;
+    const stripeFee = Math.round((booking.total_amount * stripeFeePercentage + stripeFeeFixed) * 100) / 100;
+
+    // Sitter receives: Total - Platform Fee - Stripe Fee - Penalty
+    const sitterReceived = booking.total_amount - booking.platform_fee - stripeFee - penaltyAmount;
+
+    logStep("Payout calculation", {
+      total_amount: booking.total_amount,
+      platform_fee: booking.platform_fee,
+      stripe_fee: stripeFee,
+      penalty: penaltyAmount,
+      sitter_receives: sitterReceived
+    });
 
     // Record payout transaction
     await supabaseClient.from('transactions').insert({
@@ -198,7 +212,8 @@ serve(async (req) => {
       metadata: {
         penalty_applied: penaltyApplied,
         penalty_amount: penaltyAmount,
-        incomplete_reports: penaltyApplied ? incompleteDays : 0,
+        stripe_fee: stripeFee,
+        platform_fee: booking.platform_fee,
         net_payout: sitterReceived
       }
     });
@@ -211,6 +226,7 @@ serve(async (req) => {
           : "Payout processed successfully",
         sitter_received: sitterReceived,
         platform_fee: booking.platform_fee,
+        stripe_fee: stripeFee,
         penalty_applied: penaltyApplied,
         penalty_amount: penaltyAmount,
         owner_refunded: penaltyAmount,

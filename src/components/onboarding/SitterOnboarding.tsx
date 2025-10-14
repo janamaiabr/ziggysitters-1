@@ -64,9 +64,11 @@ export default function SitterOnboarding({ profileId, userId, onComplete }: Sitt
 
   const addService = (serviceType: any) => {
     if (!services.find(s => s.service_type === serviceType.key)) {
+      // Suggest lower, competitive rates
+      const defaultRate = serviceType.rate_type === 'hourly' ? 15 : 35;
       setServices(prev => [...prev, {
         service_type: serviceType.key,
-        rate: 25,
+        rate: defaultRate,
         description: '',
         what_included: ''
       }]);
@@ -313,6 +315,12 @@ export default function SitterOnboarding({ profileId, userId, onComplete }: Sitt
           <CardTitle>Services & Rates</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-900">
+              <strong>Important:</strong> From your listed price, 10% platform fee + 3% Stripe payment processing fee will be deducted. 
+              For example: $100 booking → You receive $87 ($100 - $10 platform fee - $3 Stripe fee).
+            </p>
+          </div>
           <div className="space-y-2">
             <Label>Available Services</Label>
             <div className="flex flex-wrap gap-2">
@@ -361,9 +369,17 @@ export default function SitterOnboarding({ profileId, userId, onComplete }: Sitt
                       onChange={(e) => updateService(service.service_type, 'rate', parseFloat(e.target.value) || 0)}
                       required
                     />
+                    {service.rate > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        You'll receive approximately ${Math.round(service.rate * 0.87 * 100) / 100} after fees (87% of ${service.rate})
+                      </p>
+                    )}
                     {service.rate <= 0 && (
                       <p className="text-sm text-destructive">Rate must be greater than $0</p>
                     )}
+                    <p className="text-xs text-muted-foreground">
+                      Suggested: ${serviceType?.rate_type === 'hourly' ? '15-25/hr' : '35-50/day'} for competitive pricing
+                    </p>
                   </div>
                   
                   <div className="space-y-2">
