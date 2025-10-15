@@ -28,12 +28,15 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
       '/onboarding-pending-approval'
     ];
     
-    // Only redirect if user is authenticated and we have profile info
-    if (user && !loading && needsOnboarding && !excludedPaths.includes(location.pathname)) {
-      console.log('Redirecting to onboarding...');
+    // Only redirect if user is authenticated, we have profile info, AND profile lacks basic info
+    // Don't redirect if they have basic info (name, phone, address) - let them use the app
+    const hasBasicInfo = profile && profile.first_name && profile.last_name && profile.phone && profile.address;
+    
+    if (user && !loading && needsOnboarding && !hasBasicInfo && !excludedPaths.includes(location.pathname)) {
+      console.log('Redirecting to onboarding - missing basic info...');
       navigate('/onboarding');
     }
-  }, [user, loading, needsOnboarding, navigate, location.pathname]);
+  }, [user, loading, needsOnboarding, profile, navigate, location.pathname]);
 
   // Show loading while checking profile
   if (user && loading) {

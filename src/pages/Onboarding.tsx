@@ -230,9 +230,9 @@ export default function Onboarding() {
 
   const handleSitterOnboardingComplete = async () => {
     try {
-      console.log('Completing onboarding for sitter role');
+      console.log('Completing basic onboarding for sitter role');
       
-      // Use updateProfile to update the onboarding status - this ensures all instances get updated
+      // Mark basic onboarding as complete - sitter-specific setup can be done later
       const { error } = await updateProfile({ onboarding_completed: true });
 
       if (error) {
@@ -245,12 +245,15 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Sitter onboarding marked as complete via updateProfile');
+      console.log('Basic onboarding marked as complete');
       
-      console.log('Redirecting to pending approval...');
+      toast({
+        title: "Welcome to ZiggySitters!",
+        description: "Complete your sitter profile to start accepting bookings.",
+      });
       
-      // For sitters, show pending approval page
-      navigate('/onboarding-pending-approval', { replace: true });
+      // Redirect to home page - they can complete sitter setup from their profile
+      navigate('/', { replace: true });
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({
