@@ -168,89 +168,20 @@ export default function Auth() {
         <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="container max-w-6xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-          
-          {/* Left side - Visual Section (hidden on mobile) */}
-          <div className="hidden lg:block animate-fade-in">
-            <div className="relative">
-              {/* Trust Badge */}
-              <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-5 py-2.5 shadow-lg mb-6">
-                <Sparkles className="w-5 h-5 text-primary" />
-                <span className="text-sm font-bold text-primary">Trusted by 10,000+ Pet Parents</span>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-                <span className="block">Join Our</span>
-                <span className="block relative inline-block">
-                  <span className="relative z-10">Pet-Loving</span>
-                  <span className="absolute bottom-1 left-0 w-full h-4 bg-primary/20 -rotate-1"></span>
-                </span>
-                <span className="block">Community</span>
-              </h2>
-
-              <p className="text-lg text-muted-foreground mb-6">
-                Connect with verified pet sitters who treat your furry friends like family
-              </p>
-
-              {/* Feature badges */}
-              <div className="flex flex-wrap gap-3 mb-8">
-                {[
-                  { icon: Shield, text: "Verified Sitters", color: "bg-blue-50 text-blue-600 border-blue-200" },
-                  { icon: Heart, text: "Happy Pets", color: "bg-pink-50 text-pink-600 border-pink-200" },
-                  { icon: Sparkles, text: "Daily Updates", color: "bg-yellow-50 text-yellow-600 border-yellow-200" }
-                ].map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className={`flex items-center gap-2 ${item.color} rounded-full px-4 py-2.5 shadow-sm border-2 font-semibold text-sm hover:scale-105 transition-transform`}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.text}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Image collage */}
-              <div className="relative w-full h-[400px]">
-                {/* Main large photo - tilted right */}
-                <div className="absolute top-0 right-0 w-[280px] h-[200px] rotate-3 shadow-[var(--shadow-hover)] rounded-2xl overflow-hidden border-8 border-white bg-white">
-                  <img 
-                    src={petServicesImg} 
-                    alt="Happy pet with sitter" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                
-                {/* Second photo - tilted left */}
-                <div className="absolute top-32 left-0 w-[240px] h-[180px] -rotate-6 shadow-[var(--shadow-hover)] rounded-2xl overflow-hidden border-8 border-white bg-white">
-                  <img 
-                    src={petServicesImg} 
-                    alt="Pet care service" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Decorative paw print */}
-                <div className="absolute bottom-4 right-12 text-primary/10 text-7xl">🐾</div>
-              </div>
-            </div>
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-full mb-4 shadow-lg">
+            <PawPrint className="w-10 h-10 text-white" />
           </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-2">Welcome to ZiggySitters</h1>
+          <p className="text-muted-foreground text-lg">Your pet's perfect companion awaits</p>
+        </div>
 
-          {/* Right side - Auth Form */}
-          <div className="w-full max-w-md mx-auto lg:mx-0">
-            <div className="text-center mb-8 animate-fade-in lg:text-left">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-full mb-4 shadow-lg">
-                <PawPrint className="w-10 h-10 text-white" />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold mb-2">Welcome Back</h1>
-              <p className="text-muted-foreground text-lg">Sign in or create your account</p>
-            </div>
-
-            <Card className="shadow-[var(--shadow-hover)] border-border/50 backdrop-blur-sm animate-scale-in">
-              <CardHeader className="space-y-1 pb-6">
-                <CardTitle className="text-2xl text-center font-bold">Get Started</CardTitle>
-              </CardHeader>
-              <CardContent>
+        <Card className="shadow-[var(--shadow-hover)] border-border/50 backdrop-blur-sm animate-scale-in">
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-2xl text-center font-bold">Get Started</CardTitle>
+          </CardHeader>
+          <CardContent>
             <Tabs defaultValue={defaultTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-muted/50 p-1">
                 <TabsTrigger value="signin" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign In</TabsTrigger>
@@ -394,10 +325,8 @@ export default function Auth() {
             <div className="mt-6 pt-4 border-t border-border/50 text-center text-sm text-muted-foreground">
               <p>By continuing, you agree to our <Link to="/terms-of-service" className="text-primary hover:underline">Terms of Service</Link> and <Link to="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>.</p>
             </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       <TermsAcceptance
