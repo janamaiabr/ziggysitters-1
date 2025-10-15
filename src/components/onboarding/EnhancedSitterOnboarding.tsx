@@ -6,10 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Upload, PlusCircle, X, Shield } from 'lucide-react';
+import { Upload, PlusCircle, X, Shield, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { format } from 'date-fns';
 
 interface Service {
   service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
@@ -39,7 +41,7 @@ const serviceTypes = [
 export default function EnhancedSitterOnboarding({ profileId, userId, onComplete }: EnhancedSitterOnboardingProps) {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 4; // Updated to 4 steps
   
   // Overview
   const [bio, setBio] = useState('');
@@ -55,7 +57,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
   const [allowsSeniorPets, setAllowsSeniorPets] = useState(true);
   
   // Calendar/Availability 
-  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
+  const [unavailableDates, setUnavailableDates] = useState<Date[]>([]);
   
   // Portfolio
   const [portfolioPhotos, setPortfolioPhotos] = useState<string[]>([]);
@@ -242,6 +244,21 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           });
       }
 
+      // Save unavailable dates
+      if (unavailableDates.length > 0) {
+        const availabilityData = unavailableDates.map(date => ({
+          sitter_id: profileId,
+          date: format(date, 'yyyy-MM-dd'),
+          is_available: false
+        }));
+
+        await supabase
+          .from('sitter_availability')
+          .upsert(availabilityData, {
+            onConflict: 'sitter_id,date'
+          });
+      }
+
 
       // Send email notification about verification request
       try {
@@ -324,6 +341,8 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
       case 2:
         return services.length > 0 && services.every(s => s.hourly_rate || s.daily_rate || s.overnight_rate);
       case 3:
+        return true; // Calendar is optional
+      case 4:
         return idDocumentUrl || blueCardUrl; // At least one document
       default:
         return false;
@@ -338,7 +357,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           description: "Please add at least one service with rates before continuing.",
           variant: "destructive",
         });
-      } else if (currentStep === 3) {
+      } else if (currentStep === 4) {
         toast({
           title: "Document required",
           description: "Please upload at least one verification document.",
@@ -362,11 +381,12 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           Step {currentStep} of {totalSteps}: {
             currentStep === 1 ? 'About You' :
             currentStep === 2 ? 'Services & Pricing' :
+            currentStep === 3 ? 'Calendar & Availability' :
             'Verification'
           }
         </p>
         <div className="flex justify-center gap-2 mt-4">
-          {[1, 2, 3].map(step => (
+          {[1, 2, 3, 4].map(step => (
             <div
               key={step}
               className={`h-2 w-12 rounded-full ${
@@ -624,8 +644,46 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
         </Card>
       )}
 
-      {/* Step 3: Verification */}
+      {/* Step 3: Calendar & Availability */}
       {currentStep === 3 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Calendar & Availability</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert>
+              <Calendar className="h-4 w-4" />
+              <AlertDescription>
+                Block out dates when you're unavailable. This helps pet owners know when you can take bookings. You can skip this step and update it later from your profile.
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-2">
+              <Label>Select Unavailable Dates (Optional)</Label>
+              <p className="text-sm text-muted-foreground mb-4">
+                Click on dates to mark them as unavailable. Click again to unmark.
+              </p>
+              <div className="flex justify-center">
+                <CalendarComponent
+                  mode="multiple"
+                  selected={unavailableDates}
+                  onSelect={(dates) => setUnavailableDates(dates || [])}
+                  className="rounded-md border"
+                  disabled={(date) => date < new Date()}
+                />
+              </div>
+              {unavailableDates.length > 0 && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  {unavailableDates.length} date(s) marked as unavailable
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Step 4: Verification */}
+      {currentStep === 4 && (
         <Card>
           <CardHeader>
             <CardTitle>Verification Documents</CardTitle>
@@ -692,7 +750,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
         ) : (
           <Button 
             onClick={handleSaveAndComplete}
-            disabled={!isStepValid(1) || !isStepValid(2) || !isStepValid(3)}
+            disabled={!isStepValid(1) || !isStepValid(2) || !isStepValid(4)}
             className="px-8"
           >
             Complete Profile & Submit for Approval
