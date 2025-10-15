@@ -169,28 +169,28 @@ export default function Auth() {
       </div>
 
       <div className="w-full max-w-xl relative z-10">
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-6 md:mb-8 animate-fade-in">
           {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-5 py-2.5 shadow-lg mb-6">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <span className="text-sm font-bold text-primary">Trusted by 10,000+ Pet Parents</span>
+          <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 md:px-5 md:py-2.5 shadow-lg mb-4 md:mb-6">
+            <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            <span className="text-xs md:text-sm font-bold text-primary">Trusted by 10,000+ Pet Parents</span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 md:mb-4 leading-tight px-4">
             <span className="block">Join Our</span>
-            <span className="block relative inline-block">
+            <span className="block relative inline-block my-1">
               <span className="relative z-10">Pet-Loving</span>
-              <span className="absolute bottom-1 left-0 w-full h-3 md:h-4 bg-primary/20 -rotate-1"></span>
+              <span className="absolute bottom-0 md:bottom-1 left-0 w-full h-2 md:h-3 lg:h-4 bg-primary/20 -rotate-1"></span>
             </span>
             <span className="block">Community</span>
           </h1>
           
-          <p className="text-muted-foreground text-lg mb-6">
+          <p className="text-muted-foreground text-sm md:text-base lg:text-lg mb-4 md:mb-6 px-4">
             Connect with verified pet sitters who treat your furry friends like family
           </p>
 
           {/* Feature badges */}
-          <div className="flex flex-wrap justify-center gap-3 mb-6">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4 md:mb-6 px-4">
             {[
               { icon: Shield, text: "Verified Sitters", color: "bg-blue-50 text-blue-600 border-blue-200" },
               { icon: Heart, text: "Happy Pets", color: "bg-pink-50 text-pink-600 border-pink-200" },
@@ -198,9 +198,9 @@ export default function Auth() {
             ].map((item, idx) => (
               <div 
                 key={idx} 
-                className={`flex items-center gap-2 ${item.color} rounded-full px-3 md:px-4 py-2 shadow-sm border-2 font-semibold text-xs md:text-sm hover:scale-105 transition-transform`}
+                className={`flex items-center gap-1.5 md:gap-2 ${item.color} rounded-full px-2.5 py-1.5 md:px-4 md:py-2 shadow-sm border-2 font-semibold text-xs md:text-sm hover:scale-105 transition-transform`}
               >
-                <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <item.icon className="w-3 h-3 md:w-4 md:h-4" />
                 <span>{item.text}</span>
               </div>
             ))}
