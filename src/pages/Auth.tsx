@@ -168,7 +168,7 @@ export default function Auth() {
         <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-xl relative z-10">
         <div className="text-center mb-8 animate-fade-in">
           {/* Trust Badge */}
           <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-5 py-2.5 shadow-lg mb-6">
