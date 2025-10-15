@@ -193,26 +193,41 @@ export default function Onboarding() {
   const handleOnboardingComplete = async () => {
     try {
       console.log('Completing onboarding for pet owner role');
+      console.log('Current user ID:', user?.id);
       
-      // Use updateProfile to update the onboarding status - this ensures all instances get updated
-      const { error } = await updateProfile({ onboarding_completed: true });
+      // Mark onboarding as complete using direct Supabase update
+      const { data: updateData, error: updateError } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('user_id', user?.id)
+        .select()
+        .single();
 
-      if (error) {
-        console.error('Error marking onboarding complete:', error);
+      console.log('Update result:', { updateData, updateError });
+
+      if (updateError) {
+        console.error('Error marking onboarding complete:', updateError);
         toast({
           title: "Error completing onboarding",
-          description: error.message || "Please try again.",
+          description: updateError.message || "Please try again.",
           variant: "destructive",
         });
         return;
       }
 
-      console.log('Onboarding marked as complete via updateProfile, refreshing profile...');
+      console.log('Onboarding marked as complete in database, refreshing profile...');
 
       // CRITICAL: Wait for profile to refresh before redirecting
       await refetch();
       
-      console.log('Profile refreshed, now redirecting...');
+      // Verify the profile was updated
+      const { data: verifyData } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('user_id', user?.id)
+        .single();
+      
+      console.log('Verification check - onboarding_completed:', verifyData?.onboarding_completed);
 
       toast({
         title: "Profile completed!",
@@ -227,7 +242,7 @@ export default function Onboarding() {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
         title: "Error completing onboarding",
-        description: "Please try again.",
+        description: error?.message || "Please try again.",
         variant: "destructive",
       });
     }
@@ -236,26 +251,42 @@ export default function Onboarding() {
   const handleSitterOnboardingComplete = async () => {
     try {
       console.log('Completing basic onboarding for sitter role');
+      console.log('Current user ID:', user?.id);
+      console.log('Current profile:', profile);
       
-      // Mark basic onboarding as complete - sitter-specific setup can be done later
-      const { error } = await updateProfile({ onboarding_completed: true });
+      // Mark basic onboarding as complete using direct Supabase update
+      const { data: updateData, error: updateError } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('user_id', user?.id)
+        .select()
+        .single();
 
-      if (error) {
-        console.error('Error marking onboarding complete:', error);
+      console.log('Update result:', { updateData, updateError });
+
+      if (updateError) {
+        console.error('Error marking onboarding complete:', updateError);
         toast({
           title: "Error completing onboarding",
-          description: error.message || "Please try again.",
+          description: updateError.message || "Please try again.",
           variant: "destructive",
         });
         return;
       }
 
-      console.log('Basic onboarding marked as complete, refreshing profile...');
+      console.log('Onboarding marked as complete in database, refreshing profile...');
       
       // CRITICAL: Wait for profile to refresh before redirecting
       await refetch();
       
-      console.log('Profile refreshed, now redirecting...');
+      // Verify the profile was updated
+      const { data: verifyData } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('user_id', user?.id)
+        .single();
+      
+      console.log('Verification check - onboarding_completed:', verifyData?.onboarding_completed);
       
       toast({
         title: "Welcome to ZiggySitters!",
@@ -270,7 +301,7 @@ export default function Onboarding() {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({
         title: "Error completing onboarding",
-        description: "Please try again.",
+        description: error?.message || "Please try again.",
         variant: "destructive",
       });
     }
