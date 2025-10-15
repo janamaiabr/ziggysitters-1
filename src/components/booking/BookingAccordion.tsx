@@ -110,8 +110,9 @@ export default function BookingAccordion({
     // Try to find the service in real data first
     const realService = servicesData.find(s => s.service_type === serviceType);
     if (realService) {
-      if (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') {
-        // Hourly services
+      // Check if this service is billed hourly or daily based on which rate is set
+      if (realService.hourly_rate) {
+        // Hourly billing - need time inputs
         if (startTime && endTime) {
           const startDateTime = new Date(startDate);
           startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
@@ -120,17 +121,21 @@ export default function BookingAccordion({
           endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
           
           const hours = Math.max(1, differenceInHours(endDateTime, startDateTime));
-          return hours * (realService.hourly_rate || 25);
+          return hours * realService.hourly_rate;
         }
-        return realService.hourly_rate || 25;
-      } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home') {
-        // Daily services
-        const days = Math.max(1, differenceInDays(endDate, startDate) + 1);
-        return days * (realService.daily_rate || 55);
+        // Default to 1 hour if no times specified
+        return realService.hourly_rate;
+      } else if (realService.daily_rate || realService.overnight_rate) {
+        // Daily/overnight billing
+        const rate = realService.daily_rate || realService.overnight_rate;
+        const days = Math.max(1, differenceInDays(endDate, startDate));
+        // For overnight stays, same day to next day = 1 night
+        const totalDays = days === 0 ? 1 : days;
+        return totalDays * rate;
       }
     }
     
-    // Fallback to hardcoded rates
+    // Fallback to hardcoded rates if no real service data
     const rate = serviceRates[serviceType as keyof typeof serviceRates];
     if (!rate) return 0;
 
@@ -149,8 +154,9 @@ export default function BookingAccordion({
       return rate;
     } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home') {
       // Daily services
-      const days = Math.max(1, differenceInDays(endDate, startDate) + 1);
-      return days * rate;
+      const days = Math.max(1, differenceInDays(endDate, startDate));
+      const totalDays = days === 0 ? 1 : days;
+      return totalDays * rate;
     }
     
     return 0;
@@ -421,8 +427,11 @@ export default function BookingAccordion({
               </div>
 
               {/* Time Selection - Only for hourly services */}
-              {serviceType && (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {(() => {
+                const realService = servicesData.find(s => s.service_type === serviceType);
+                const isHourlyService = realService?.hourly_rate || serviceType === 'dog_walking' || serviceType === 'drop_in_visits';
+                return isHourlyService && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <label className="text-sm font-medium">Start Time</label>
                     <div className="relative">
@@ -449,7 +458,8 @@ export default function BookingAccordion({
                     </div>
                   </div>
                 </div>
-              )}
+                );
+              })()}
 
               {/* Special Instructions */}
               <div className="space-y-3">

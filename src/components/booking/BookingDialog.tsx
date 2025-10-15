@@ -29,19 +29,13 @@ interface BookingDialogProps {
     services: string[];
     avatar: string;
   };
+  servicesData?: any[]; // Actual sitter services with rates
   initialDates?: {
     checkIn?: string;
     checkOut?: string;
     serviceType?: string;
   };
 }
-
-const serviceRates = {
-  'pet_sitting_sitters_home': 66.00, // per day
-  'pet_sitting_owners_home': 55.00,  // per day
-  'drop_in_visits': 27.50,           // per hour
-  'dog_walking': 25.00,              // per hour
-};
 
 const serviceLabels = {
   'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)',
@@ -50,7 +44,19 @@ const serviceLabels = {
   'dog_walking': 'Dog Walking',
 };
 
-export default function BookingDialog({ isOpen, onClose, sitter, initialDates }: BookingDialogProps) {
+export default function BookingDialog({ isOpen, onClose, sitter, servicesData = [], initialDates }: BookingDialogProps) {
+  // Get service rates from actual sitter services or use defaults
+  const getServiceRate = (serviceType: string) => {
+    const service = servicesData.find(s => s.service_type === serviceType);
+    if (!service) return 0;
+    
+    // Return appropriate rate based on service type
+    if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
+      return service.daily_rate || service.overnight_rate || 0;
+    } else {
+      return service.hourly_rate || 0;
+    }
+  };
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [startDateOpen, setStartDateOpen] = useState(false);
@@ -157,14 +163,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
   const calculateTotal = () => {
     if (!startDate || !endDate || !serviceType) return 0;
     
-    const rate = serviceRates[serviceType as keyof typeof serviceRates];
+    const rate = getServiceRate(serviceType);
     if (!rate) return 0;
 
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
-      const days = differenceInDays(endDate, startDate) || 1;
-      return Math.max(1, days) * rate;
-    } else if (serviceType === 'drop_in_visits') {
-      // For drop-in visits, calculate based on time on the same or different days
+      // For overnight/day stays, calculate number of days
+      const days = differenceInDays(endDate, startDate);
+      // If same day or 1 day difference, count as 1 day minimum
+      const totalDays = days === 0 ? 1 : days;
+      return totalDays * rate;
+    } else if (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') {
+      // For hourly services, calculate based on time
       const startDateTime = new Date(startDate);
       startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
       
@@ -349,30 +358,37 @@ export default function BookingDialog({ isOpen, onClose, sitter, initialDates }:
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pet_sitting_sitters_home">
-                  <div className="flex justify-between w-full items-center">
-                    <span>Pet Sitting (Sitter's Home)</span>
-                    <span className="text-sm text-muted-foreground ml-4">$66.00/day</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="pet_sitting_owners_home">
-                  <div className="flex justify-between w-full items-center">
-                    <span>Pet Sitting (Your Home)</span>
-                    <span className="text-sm text-muted-foreground ml-4">$55.00/day</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="drop_in_visits">
-                  <div className="flex justify-between w-full items-center">
-                    <span>Drop-in Visits</span>
-                    <span className="text-sm text-muted-foreground ml-4">$27.50/hour</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="dog_walking">
-                  <div className="flex justify-between w-full items-center">
-                    <span>Dog Walking</span>
-                    <span className="text-sm text-muted-foreground ml-4">$25.00/hour</span>
-                  </div>
-                </SelectItem>
+                {servicesData.map((service) => {
+                  const rate = service.hourly_rate || service.daily_rate || service.overnight_rate || 0;
+                  const rateType = service.hourly_rate ? '/hour' : '/day';
+                  let serviceName = '';
+                  
+                  switch (service.service_type) {
+                    case 'pet_sitting_sitters_home':
+                      serviceName = "Pet Sitting (Sitter's Home)";
+                      break;
+                    case 'pet_sitting_owners_home':
+                      serviceName = "Pet Sitting (Your Home)";
+                      break;
+                    case 'drop_in_visits':
+                      serviceName = "Drop-in Visits";
+                      break;
+                    case 'dog_walking':
+                      serviceName = "Dog Walking";
+                      break;
+                    default:
+                      serviceName = service.service_type;
+                  }
+                  
+                  return (
+                    <SelectItem key={service.id} value={service.service_type}>
+                      <div className="flex justify-between w-full items-center">
+                        <span>{serviceName}</span>
+                        <span className="text-sm text-muted-foreground ml-4">${rate.toFixed(2)}{rateType}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
