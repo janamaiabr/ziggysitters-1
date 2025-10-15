@@ -170,11 +170,41 @@ export default function Auth() {
 
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-full mb-4 shadow-lg">
-            <PawPrint className="w-10 h-10 text-white" />
+          {/* Trust Badge */}
+          <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-5 py-2.5 shadow-lg mb-6">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <span className="text-sm font-bold text-primary">Trusted by 10,000+ Pet Parents</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold mb-2">Welcome to ZiggySitters</h1>
-          <p className="text-muted-foreground text-lg">Your pet's perfect companion awaits</p>
+
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
+            <span className="block">Join Our</span>
+            <span className="block relative inline-block">
+              <span className="relative z-10">Pet-Loving</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 md:h-4 bg-primary/20 -rotate-1"></span>
+            </span>
+            <span className="block">Community</span>
+          </h1>
+          
+          <p className="text-muted-foreground text-lg mb-6">
+            Connect with verified pet sitters who treat your furry friends like family
+          </p>
+
+          {/* Feature badges */}
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
+            {[
+              { icon: Shield, text: "Verified Sitters", color: "bg-blue-50 text-blue-600 border-blue-200" },
+              { icon: Heart, text: "Happy Pets", color: "bg-pink-50 text-pink-600 border-pink-200" },
+              { icon: Sparkles, text: "Daily Updates", color: "bg-yellow-50 text-yellow-600 border-yellow-200" }
+            ].map((item, idx) => (
+              <div 
+                key={idx} 
+                className={`flex items-center gap-2 ${item.color} rounded-full px-3 md:px-4 py-2 shadow-sm border-2 font-semibold text-xs md:text-sm hover:scale-105 transition-transform`}
+              >
+                <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <span>{item.text}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <Card className="shadow-[var(--shadow-hover)] border-border/50 backdrop-blur-sm animate-scale-in">
