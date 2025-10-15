@@ -450,6 +450,12 @@ export default function Profile() {
         throw error;
       }
       
+      // Check if the response contains an error
+      if (data?.error) {
+        console.error('Stripe Connect returned error:', data.error);
+        throw new Error(data.error);
+      }
+      
       if (data?.url) {
         console.log('Opening Stripe Connect URL:', data.url);
         window.open(data.url, '_blank');
