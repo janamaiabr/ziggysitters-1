@@ -159,25 +159,32 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4">
-            <PawPrint className="w-8 h-8 text-primary-foreground" />
+    <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-accent via-background to-secondary/10 overflow-hidden">
+      {/* Playful background blobs - matching hero */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-10 right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-80 h-80 bg-secondary/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-full mb-4 shadow-lg">
+            <PawPrint className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-2xl font-bold">Welcome to ZiggySitters</h1>
-          <p className="text-muted-foreground">Sign in to your account or create a new one</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-2">Welcome to ZiggySitters</h1>
+          <p className="text-muted-foreground text-lg">Your pet's perfect companion awaits</p>
         </div>
 
-        <Card className="shadow-xl">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Authentication</CardTitle>
+        <Card className="shadow-[var(--shadow-hover)] border-border/50 backdrop-blur-sm animate-scale-in">
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-2xl text-center font-bold">Get Started</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue={defaultTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-muted/50 p-1">
+                <TabsTrigger value="signin" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign Up</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin" className="space-y-4">
@@ -217,7 +224,7 @@ export default function Auth() {
                       </Button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]" disabled={isLoading}>
                     {isLoading ? "Signing In..." : "Sign In"}
                   </Button>
                   
@@ -305,7 +312,7 @@ export default function Auth() {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full" 
+                    className="w-full shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]" 
                     disabled={isLoading || (formData.password && formData.password.length < 6)}
                   >
                     {isLoading ? "Creating Account..." : "Create Account"}
@@ -314,8 +321,8 @@ export default function Auth() {
               </TabsContent>
             </Tabs>
 
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              <p>By continuing, you agree to our Terms of Service and Privacy Policy.</p>
+            <div className="mt-6 pt-4 border-t border-border/50 text-center text-sm text-muted-foreground">
+              <p>By continuing, you agree to our <Link to="/terms-of-service" className="text-primary hover:underline">Terms of Service</Link> and <Link to="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>.</p>
             </div>
           </CardContent>
         </Card>
