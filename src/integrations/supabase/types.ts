@@ -895,11 +895,17 @@ export type Database = {
         Returns: undefined
       }
       update_verification_status: {
-        Args: {
-          is_verified: boolean
-          profile_id: string
-          verification_status: string
-        }
+        Args:
+          | {
+              is_verified: boolean
+              profile_id: string
+              verification_status: Database["public"]["Enums"]["verification_status"]
+            }
+          | {
+              is_verified: boolean
+              profile_id: string
+              verification_status: string
+            }
         Returns: undefined
       }
     }
