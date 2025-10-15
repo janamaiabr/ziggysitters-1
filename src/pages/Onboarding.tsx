@@ -207,17 +207,22 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Onboarding marked as complete via updateProfile');
+      console.log('Onboarding marked as complete via updateProfile, refreshing profile...');
+
+      // CRITICAL: Wait for profile to refresh before redirecting
+      await refetch();
+      
+      console.log('Profile refreshed, now redirecting...');
 
       toast({
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      console.log('Redirecting to onboarding complete page...');
-      
-      // Redirect to onboarding complete page
-      navigate('/onboarding-complete', { replace: true });
+      // Small delay to ensure profile context is fully updated
+      setTimeout(() => {
+        navigate('/onboarding-complete', { replace: true });
+      }, 100);
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
@@ -245,15 +250,22 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Basic onboarding marked as complete');
+      console.log('Basic onboarding marked as complete, refreshing profile...');
+      
+      // CRITICAL: Wait for profile to refresh before redirecting
+      await refetch();
+      
+      console.log('Profile refreshed, now redirecting...');
       
       toast({
         title: "Welcome to ZiggySitters!",
-        description: "Complete your sitter profile to start accepting bookings.",
+        description: "Your sitter profile is set up!",
       });
       
-      // Redirect to home page - they can complete sitter setup from their profile
-      navigate('/', { replace: true });
+      // Small delay to ensure profile context is fully updated
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 100);
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({
