@@ -6,12 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Upload, PlusCircle, X, Shield, Calendar } from 'lucide-react';
+import { Upload, PlusCircle, X, Shield, Calendar, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { format, eachDayOfInterval, parseISO } from 'date-fns';
 
 interface Service {
   service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
@@ -57,7 +56,9 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
   const [allowsSeniorPets, setAllowsSeniorPets] = useState(true);
   
   // Calendar/Availability 
-  const [unavailableDates, setUnavailableDates] = useState<Date[]>([]);
+  const [unavailableDates, setUnavailableDates] = useState<{startDate: string, endDate: string}[]>([]);
+  const [newUnavailableStart, setNewUnavailableStart] = useState('');
+  const [newUnavailableEnd, setNewUnavailableEnd] = useState('');
   
   // Portfolio
   const [portfolioPhotos, setPortfolioPhotos] = useState<string[]>([]);
@@ -246,9 +247,24 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
 
       // Save unavailable dates
       if (unavailableDates.length > 0) {
-        const availabilityData = unavailableDates.map(date => ({
+        const allDates: string[] = [];
+        
+        // Generate all dates from each date range
+        unavailableDates.forEach(range => {
+          const start = parseISO(range.startDate);
+          const end = parseISO(range.endDate);
+          const datesInRange = eachDayOfInterval({ start, end });
+          datesInRange.forEach(date => {
+            allDates.push(format(date, 'yyyy-MM-dd'));
+          });
+        });
+
+        // Remove duplicates
+        const uniqueDates = [...new Set(allDates)];
+
+        const availabilityData = uniqueDates.map(date => ({
           sitter_id: profileId,
-          date: format(date, 'yyyy-MM-dd'),
+          date: date,
           is_available: false
         }));
 
@@ -658,24 +674,92 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
               </AlertDescription>
             </Alert>
             
-            <div className="space-y-2">
-              <Label>Select Unavailable Dates (Optional)</Label>
-              <p className="text-sm text-muted-foreground mb-4">
-                Click on dates to mark them as unavailable. Click again to unmark.
+            <div className="space-y-4">
+              <Label>Add Unavailable Date Ranges (Optional)</Label>
+              <p className="text-sm text-muted-foreground">
+                Select start and end dates to block out periods when you're not available.
               </p>
-              <div className="flex justify-center">
-                <CalendarComponent
-                  mode="multiple"
-                  selected={unavailableDates}
-                  onSelect={(dates) => setUnavailableDates(dates || [])}
-                  className="rounded-md border"
-                  disabled={(date) => date < new Date()}
-                />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="start-date" className="text-sm">Start Date</Label>
+                  <Input
+                    id="start-date"
+                    type="date"
+                    value={newUnavailableStart}
+                    onChange={(e) => setNewUnavailableStart(e.target.value)}
+                    min={format(new Date(), 'yyyy-MM-dd')}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="end-date" className="text-sm">End Date</Label>
+                  <Input
+                    id="end-date"
+                    type="date"
+                    value={newUnavailableEnd}
+                    onChange={(e) => setNewUnavailableEnd(e.target.value)}
+                    min={newUnavailableStart || format(new Date(), 'yyyy-MM-dd')}
+                  />
+                </div>
               </div>
+              
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (newUnavailableStart && newUnavailableEnd) {
+                    if (new Date(newUnavailableEnd) >= new Date(newUnavailableStart)) {
+                      setUnavailableDates([...unavailableDates, {
+                        startDate: newUnavailableStart,
+                        endDate: newUnavailableEnd
+                      }]);
+                      setNewUnavailableStart('');
+                      setNewUnavailableEnd('');
+                      toast({
+                        title: "Date range added",
+                        description: "Your unavailable dates have been saved.",
+                      });
+                    } else {
+                      toast({
+                        title: "Invalid date range",
+                        description: "End date must be after start date.",
+                        variant: "destructive",
+                      });
+                    }
+                  }
+                }}
+                disabled={!newUnavailableStart || !newUnavailableEnd}
+                className="w-full sm:w-auto"
+              >
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Add Date Range
+              </Button>
+              
               {unavailableDates.length > 0 && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {unavailableDates.length} date(s) marked as unavailable
-                </p>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Unavailable Periods:</Label>
+                  <div className="space-y-2">
+                    {unavailableDates.map((range, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <span className="text-sm">
+                          {format(parseISO(range.startDate), 'MMM d, yyyy')} - {format(parseISO(range.endDate), 'MMM d, yyyy')}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setUnavailableDates(unavailableDates.filter((_, i) => i !== index));
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           </CardContent>
