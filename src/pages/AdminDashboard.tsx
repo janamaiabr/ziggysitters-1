@@ -117,7 +117,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const updateVerificationStatus = async (profileId: string, isVerified: boolean, verificationStatus: string) => {
+  const updateVerificationStatus = async (profileId: string, isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
     try {
       const profileToUpdate = profiles.find(p => p.id === profileId);
       if (!profileToUpdate) throw new Error('Profile not found');

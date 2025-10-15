@@ -108,22 +108,38 @@ export default function AdminUserDetails() {
 
       // Fetch signed URLs for documents if they exist
       if (data.id_document_url) {
-        const path = data.id_document_url.split('/verification-docs/')[1];
-        if (path) {
-          const { data: signedData } = await supabase.storage
+        // Extract filename from the full URL path
+        const fileName = data.id_document_url.includes('/verification-docs/')
+          ? data.id_document_url.split('/verification-docs/')[1].split('?')[0]
+          : data.id_document_url.split('/').pop()?.split('?')[0];
+        
+        if (fileName) {
+          const { data: signedData, error: signError } = await supabase.storage
             .from('verification-docs')
-            .createSignedUrl(path, 3600);
-          if (signedData) setIdDocUrl(signedData.signedUrl);
+            .createSignedUrl(fileName, 3600);
+          if (signedData && !signError) {
+            setIdDocUrl(signedData.signedUrl);
+          } else {
+            console.error('Error creating signed URL for ID doc:', signError);
+          }
         }
       }
 
       if (data.blue_card_document_url) {
-        const path = data.blue_card_document_url.split('/verification-docs/')[1];
-        if (path) {
-          const { data: signedData } = await supabase.storage
+        // Extract filename from the full URL path
+        const fileName = data.blue_card_document_url.includes('/verification-docs/')
+          ? data.blue_card_document_url.split('/verification-docs/')[1].split('?')[0]
+          : data.blue_card_document_url.split('/').pop()?.split('?')[0];
+        
+        if (fileName) {
+          const { data: signedData, error: signError } = await supabase.storage
             .from('verification-docs')
-            .createSignedUrl(path, 3600);
-          if (signedData) setBlueCardUrl(signedData.signedUrl);
+            .createSignedUrl(fileName, 3600);
+          if (signedData && !signError) {
+            setBlueCardUrl(signedData.signedUrl);
+          } else {
+            console.error('Error creating signed URL for police vet doc:', signError);
+          }
         }
       }
 
@@ -194,7 +210,7 @@ export default function AdminUserDetails() {
     }
   };
 
-  const updateVerificationStatus = async (isVerified: boolean, verificationStatus: string) => {
+  const updateVerificationStatus = async (isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
     if (!profile) return;
 
     try {
@@ -212,13 +228,17 @@ export default function AdminUserDetails() {
           const filesToDelete: string[] = [];
           
           if (profile.id_document_url) {
-            const idPath = profile.id_document_url.split('/verification-docs/')[1];
-            if (idPath) filesToDelete.push(idPath);
+            const fileName = profile.id_document_url.includes('/verification-docs/')
+              ? profile.id_document_url.split('/verification-docs/')[1].split('?')[0]
+              : profile.id_document_url.split('/').pop()?.split('?')[0];
+            if (fileName) filesToDelete.push(fileName);
           }
           
           if (profile.blue_card_document_url) {
-            const vetPath = profile.blue_card_document_url.split('/verification-docs/')[1];
-            if (vetPath) filesToDelete.push(vetPath);
+            const fileName = profile.blue_card_document_url.includes('/verification-docs/')
+              ? profile.blue_card_document_url.split('/verification-docs/')[1].split('?')[0]
+              : profile.blue_card_document_url.split('/').pop()?.split('?')[0];
+            if (fileName) filesToDelete.push(fileName);
           }
 
           if (filesToDelete.length > 0) {
