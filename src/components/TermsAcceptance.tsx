@@ -23,12 +23,12 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onDecline()}>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Terms of Service Agreement</DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="h-[400px] p-4">
+        <ScrollArea className="flex-1 min-h-0 max-h-[50vh] p-4">
           <div className="space-y-4 text-sm">
             <p>
               <strong>Last updated:</strong> 15 October 2025
@@ -94,7 +94,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
           </div>
         </ScrollArea>
 
-        <div className="space-y-4 pt-4 border-t">
+        <div className="space-y-4 pt-4 border-t flex-shrink-0">
           <div className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
             <Checkbox 
               id="accept-terms"
