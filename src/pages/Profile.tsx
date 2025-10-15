@@ -440,18 +440,27 @@ export default function Profile() {
 
   const handleStripeConnect = async () => {
     try {
+      console.log('Initiating Stripe Connect onboarding...');
       const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
       
-      if (error) throw error;
+      console.log('Stripe Connect response:', { data, error });
+      
+      if (error) {
+        console.error('Stripe Connect error details:', error);
+        throw error;
+      }
       
       if (data?.url) {
+        console.log('Opening Stripe Connect URL:', data.url);
         window.open(data.url, '_blank');
+      } else {
+        throw new Error('No URL returned from Stripe Connect');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error initiating Stripe Connect:', error);
       toast({
         title: "Connection failed",
-        description: "Failed to connect to Stripe. Please try again.",
+        description: error?.message || error?.error || "Failed to connect to Stripe. Please try again.",
         variant: "destructive",
       });
     }
