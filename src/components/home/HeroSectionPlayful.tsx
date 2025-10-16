@@ -156,7 +156,7 @@ const HeroSectionPlayful = ({
                   type="date"
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="h-11 w-full lg:w-[180px]"
+                  className="h-11 w-full min-w-full lg:w-[180px]"
                   min={new Date().toISOString().split('T')[0]}
                   aria-label="Check-in date"
                 />
@@ -165,7 +165,7 @@ const HeroSectionPlayful = ({
                   type="date"
                   value={checkOut}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="h-11 w-full lg:w-[180px]"
+                  className="h-11 w-full min-w-full lg:w-[180px]"
                   min={checkIn || new Date().toISOString().split('T')[0]}
                   aria-label="Check-out date"
                 />
