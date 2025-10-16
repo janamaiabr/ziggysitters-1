@@ -364,11 +364,11 @@ export default function FindSitters() {
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
                 </Button>
-                {(location || serviceType || selectedDate || checkOutDate) && (
+                {(location || serviceType || selectedDate || checkOutDate || searchPerformed) && (
                   <Button 
                     variant="outline" 
                     size="lg"
-                    className="px-8 h-12"
+                    className="px-8 h-14 md:h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
                     onClick={() => {
                       setLocation('');
                       setServiceType('');

@@ -164,6 +164,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     if (!startDate || !endDate || !serviceType) return 0;
     
     const rate = getServiceRate(serviceType);
+    console.log('Calculating total - rate:', rate, 'serviceType:', serviceType);
     if (!rate) return 0;
 
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
@@ -180,8 +181,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       const endDateTime = new Date(endDate);
       endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
       
+      console.log('Start DateTime:', startDateTime);
+      console.log('End DateTime:', endDateTime);
+      
       const hours = differenceInHours(endDateTime, startDateTime);
-      return Math.max(1, hours) * rate;
+      console.log('Hours calculated:', hours);
+      
+      // Minimum 1 hour charge for hourly services
+      const totalHours = Math.max(1, hours);
+      const total = totalHours * rate;
+      console.log('Total calculation:', totalHours, 'hours *', rate, '=', total);
+      return total;
     }
     return 0;
   };

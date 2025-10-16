@@ -109,6 +109,8 @@ export default function BookingAccordion({
     
     // Try to find the service in real data first
     const realService = servicesData.find(s => s.service_type === serviceType);
+    console.log('Calculating total - service:', realService, 'serviceType:', serviceType);
+    
     if (realService) {
       // Check if this service is billed hourly or daily based on which rate is set
       if (realService.hourly_rate) {
@@ -120,10 +122,13 @@ export default function BookingAccordion({
           const endDateTime = new Date(endDate);
           endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
           
+          console.log('Hourly calc - start:', startDateTime, 'end:', endDateTime);
           const hours = Math.max(1, differenceInHours(endDateTime, startDateTime));
+          console.log('Hours:', hours, 'Rate:', realService.hourly_rate);
           return hours * realService.hourly_rate;
         }
         // Default to 1 hour if no times specified
+        console.log('No times specified, using 1 hour * rate:', realService.hourly_rate);
         return realService.hourly_rate;
       } else if (realService.daily_rate || realService.overnight_rate) {
         // Daily/overnight billing
@@ -131,6 +136,7 @@ export default function BookingAccordion({
         const days = Math.max(1, differenceInDays(endDate, startDate));
         // For overnight stays, same day to next day = 1 night
         const totalDays = days === 0 ? 1 : days;
+        console.log('Daily calc - days:', totalDays, 'rate:', rate);
         return totalDays * rate;
       }
     }
