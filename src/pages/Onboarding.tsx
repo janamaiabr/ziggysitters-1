@@ -195,15 +195,10 @@ export default function Onboarding() {
       console.log('Completing onboarding for pet owner role');
       console.log('Current user ID:', user?.id);
       
-      // Mark onboarding as complete using direct Supabase update
-      const { data: updateData, error: updateError } = await supabase
-        .from('profiles')
-        .update({ onboarding_completed: true })
-        .eq('user_id', user?.id)
-        .select()
-        .single();
-
-      console.log('Update result:', { updateData, updateError });
+      // CRITICAL: Use updateProfile to update both database AND context state
+      const { error: updateError } = await updateProfile({ 
+        onboarding_completed: true 
+      });
 
       if (updateError) {
         console.error('Error marking onboarding complete:', updateError);
@@ -215,29 +210,15 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Onboarding marked as complete in database, refreshing profile...');
-
-      // CRITICAL: Wait for profile to refresh before redirecting
-      await refetch();
-      
-      // Verify the profile was updated
-      const { data: verifyData } = await supabase
-        .from('profiles')
-        .select('onboarding_completed')
-        .eq('user_id', user?.id)
-        .single();
-      
-      console.log('Verification check - onboarding_completed:', verifyData?.onboarding_completed);
+      console.log('Onboarding marked as complete, context updated');
 
       toast({
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
       });
 
-      // Small delay to ensure profile context is fully updated
-      setTimeout(() => {
-        navigate('/onboarding-complete', { replace: true });
-      }, 100);
+      // Navigate immediately - context state is already updated
+      navigate('/onboarding-complete', { replace: true });
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
@@ -254,15 +235,10 @@ export default function Onboarding() {
       console.log('Current user ID:', user?.id);
       console.log('Current profile:', profile);
       
-      // Mark basic onboarding as complete using direct Supabase update
-      const { data: updateData, error: updateError } = await supabase
-        .from('profiles')
-        .update({ onboarding_completed: true })
-        .eq('user_id', user?.id)
-        .select()
-        .single();
-
-      console.log('Update result:', { updateData, updateError });
+      // CRITICAL: Use updateProfile to update both database AND context state
+      const { error: updateError } = await updateProfile({ 
+        onboarding_completed: true 
+      });
 
       if (updateError) {
         console.error('Error marking onboarding complete:', updateError);
@@ -274,29 +250,15 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Onboarding marked as complete in database, refreshing profile...');
-      
-      // CRITICAL: Wait for profile to refresh before redirecting
-      await refetch();
-      
-      // Verify the profile was updated
-      const { data: verifyData } = await supabase
-        .from('profiles')
-        .select('onboarding_completed')
-        .eq('user_id', user?.id)
-        .single();
-      
-      console.log('Verification check - onboarding_completed:', verifyData?.onboarding_completed);
+      console.log('Onboarding marked as complete, context updated');
       
       toast({
         title: "Welcome to ZiggySitters!",
         description: "Your sitter profile is set up!",
       });
       
-      // Small delay to ensure profile context is fully updated
-      setTimeout(() => {
-        navigate('/', { replace: true });
-      }, 100);
+      // Navigate immediately - context state is already updated
+      navigate('/', { replace: true });
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({
