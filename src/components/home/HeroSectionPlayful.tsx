@@ -153,23 +153,43 @@ const HeroSectionPlayful = ({
                   </SelectContent>
                 </Select>
                 
-                <Input 
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="h-11 w-full lg:w-[180px] text-base"
-                  min={new Date().toISOString().split('T')[0]}
-                  aria-label="Check-in date"
-                />
+                <div className="relative w-full lg:w-[180px]">
+                  <Input 
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    className="h-11 w-full text-base [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
+                    style={{
+                      opacity: checkIn ? 1 : undefined
+                    }}
+                    min={new Date().toISOString().split('T')[0]}
+                    aria-label="Check-in date"
+                  />
+                  {!checkIn && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none">
+                      Check-in date
+                    </span>
+                  )}
+                </div>
                 
-                <Input 
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="h-11 w-full lg:w-[180px] text-base"
-                  min={checkIn || new Date().toISOString().split('T')[0]}
-                  aria-label="Check-out date"
-                />
+                <div className="relative w-full lg:w-[180px]">
+                  <Input 
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="h-11 w-full text-base [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
+                    style={{
+                      opacity: checkOut ? 1 : undefined
+                    }}
+                    min={checkIn || new Date().toISOString().split('T')[0]}
+                    aria-label="Check-out date"
+                  />
+                  {!checkOut && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none">
+                      Check-out date
+                    </span>
+                  )}
+                </div>
                 
                 <Button 
                   size="lg" 
