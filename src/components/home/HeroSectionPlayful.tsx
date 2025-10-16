@@ -138,10 +138,11 @@ const HeroSectionPlayful = ({
                   value={location}
                   onChange={setLocation}
                   placeholder="Enter suburb or city"
+                  className="h-11"
                 />
                 
                 <Select value={serviceType} onValueChange={setServiceType}>
-                  <SelectTrigger className="h-11 w-full lg:w-[180px]">
+                  <SelectTrigger className="h-11 w-full lg:w-[180px] text-base placeholder:text-muted-foreground">
                     <SelectValue placeholder="Service type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -152,27 +153,41 @@ const HeroSectionPlayful = ({
                   </SelectContent>
                 </Select>
                 
-                <Input 
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="h-11 w-full min-w-full lg:w-[180px]"
-                  min={new Date().toISOString().split('T')[0]}
-                  aria-label="Check-in date"
-                />
+                <div className="relative w-full lg:w-[180px]">
+                  <Input 
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    className="h-11 w-full text-base"
+                    min={new Date().toISOString().split('T')[0]}
+                    aria-label="Check-in date"
+                  />
+                  {!checkIn && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none">
+                      Check-in
+                    </span>
+                  )}
+                </div>
                 
-                <Input 
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="h-11 w-full min-w-full lg:w-[180px]"
-                  min={checkIn || new Date().toISOString().split('T')[0]}
-                  aria-label="Check-out date"
-                />
+                <div className="relative w-full lg:w-[180px]">
+                  <Input 
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="h-11 w-full text-base"
+                    min={checkIn || new Date().toISOString().split('T')[0]}
+                    aria-label="Check-out date"
+                  />
+                  {!checkOut && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none">
+                      Check-out
+                    </span>
+                  )}
+                </div>
                 
                 <Button 
                   size="lg" 
-                  className="w-full lg:w-auto h-11 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-6 md:px-8 whitespace-nowrap"
+                  className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-6 md:px-8 whitespace-nowrap"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />

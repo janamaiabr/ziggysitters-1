@@ -28,9 +28,10 @@ interface SuburbAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  className?: string;
 }
 
-export default function SuburbAutocomplete({ value, onChange, placeholder = "Enter suburb or city" }: SuburbAutocompleteProps) {
+export default function SuburbAutocomplete({ value, onChange, placeholder = "Enter suburb or city", className }: SuburbAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredSuburbs, setFilteredSuburbs] = useState<string[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -113,7 +114,7 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
               setIsOpen(true);
             }
           }}
-          className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+          className={cn("h-11 text-base", className)}
           autoComplete="off"
         />
       </div>
