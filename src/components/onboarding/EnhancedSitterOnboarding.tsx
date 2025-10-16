@@ -488,8 +488,20 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           </CardHeader>
           <CardContent className="space-y-4">
             <Alert>
-              <AlertDescription>
-                <strong>Important:</strong> The rates you set are what you'll earn. ZiggySitters adds a 10% listing fee to the pet owner's total. You receive 100% of your set rate.
+              <AlertDescription className="space-y-2">
+                <div>
+                  <strong>Pricing Information:</strong>
+                </div>
+                <ul className="text-sm space-y-1 list-disc list-inside">
+                  <li><strong>Your Earnings:</strong> You receive 100% of your set rate</li>
+                  <li><strong>Platform Fee:</strong> ZiggySitters adds a 10% listing fee to the pet owner's total (not deducted from your earnings)</li>
+                  <li><strong>Suggested Rates:</strong> Hourly: $15-25 | Daily: $35-60 | Overnight: $45-80</li>
+                </ul>
+                <div className="text-sm mt-2">
+                  <strong>What's Typically Included:</strong> Basic care, feeding, exercise, updates to owner
+                  <br />
+                  <strong>Not Included:</strong> Pet food, medications, vet visits, grooming (unless specified)
+                </div>
               </AlertDescription>
             </Alert>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -612,6 +624,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
                     type="number"
                     min="10"
                     max="200"
+                    placeholder="Suggested: $15-25"
                     value={service.hourly_rate || ''}
                     onChange={(e) => updateService(service.service_type, 'hourly_rate', parseFloat(e.target.value) || undefined)}
                   />
@@ -624,6 +637,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
                     type="number"
                     min="30"
                     max="500"
+                    placeholder="Suggested: $35-60"
                     value={service.daily_rate || ''}
                     onChange={(e) => updateService(service.service_type, 'daily_rate', parseFloat(e.target.value) || undefined)}
                   />
@@ -636,6 +650,7 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
                     type="number"
                     min="40"
                     max="300"
+                    placeholder="Suggested: $45-80"
                     value={service.overnight_rate || ''}
                     onChange={(e) => updateService(service.service_type, 'overnight_rate', parseFloat(e.target.value) || undefined)}
                   />
