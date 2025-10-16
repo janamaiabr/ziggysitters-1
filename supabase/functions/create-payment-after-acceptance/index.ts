@@ -49,7 +49,7 @@ serve(async (req) => {
         status,
         booking_reference,
         owner_id,
-        owner:profiles!owner_id(user_id, email, first_name, last_name),
+        owner:profiles!owner_id(user_id, email, first_name, last_name, phone),
         sitter:profiles!sitter_id(stripe_account_id, stripe_account_enabled, first_name, last_name)
       `)
       .eq('id', booking_id)
@@ -90,12 +90,28 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Check if customer exists
+    // Check if customer exists or create one with phone number
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
       logStep('Existing Stripe customer found', { customerId });
+      
+      // Update customer with phone number if provided
+      if (booking.owner.phone) {
+        await stripe.customers.update(customerId, {
+          phone: booking.owner.phone,
+        });
+        logStep('Updated customer phone number', { phone: booking.owner.phone });
+      }
+    } else if (booking.owner.phone) {
+      // Create customer with phone number
+      const customer = await stripe.customers.create({
+        email: user.email,
+        phone: booking.owner.phone,
+      });
+      customerId = customer.id;
+      logStep('Created new Stripe customer with phone', { customerId, phone: booking.owner.phone });
     }
 
     // Create checkout session with Stripe Connect (escrow via destination charge)
