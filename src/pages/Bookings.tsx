@@ -596,13 +596,13 @@ export default function Bookings() {
                       </div>
                     </div>
                     
-                        <div className="flex flex-col space-y-2 lg:items-end">
-                        <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col space-y-2 lg:items-end w-full">
+                        <div className="flex flex-wrap gap-2 w-full">
                           <Button 
                             variant="outline" 
                             size="sm" 
                             onClick={() => handleViewDetails(booking)}
-                            className="min-w-[100px]"
+                            className="flex-1 sm:flex-none sm:min-w-[100px]"
                           >
                             View Details
                           </Button>
@@ -613,7 +613,7 @@ export default function Bookings() {
                               <Button 
                                 size="sm" 
                                 onClick={() => handleAcceptBooking(booking.id)}
-                                className="bg-green-600 hover:bg-green-700 min-w-[100px]"
+                                className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none sm:min-w-[100px]"
                               >
                                 Accept
                               </Button>
@@ -621,7 +621,7 @@ export default function Bookings() {
                                 variant="destructive" 
                                 size="sm" 
                                 onClick={() => handleDeclineBooking(booking)}
-                                className="min-w-[100px]"
+                                className="flex-1 sm:flex-none sm:min-w-[100px]"
                               >
                                 Decline
                               </Button>
@@ -639,7 +639,7 @@ export default function Bookings() {
                                   navigate('/daily-reports');
                                 }
                               }}
-                              className="min-w-[120px]"
+                              className="flex-1 sm:flex-none sm:min-w-[120px]"
                             >
                               {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
                             </Button>
@@ -650,7 +650,7 @@ export default function Bookings() {
                               size="sm" 
                               onClick={() => handleCompletePayment(booking)}
                               disabled={booking.status === 'pending'}
-                              className="bg-green-600 hover:bg-green-700 min-w-[150px] whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none sm:min-w-[150px] whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               <CreditCard className="w-4 h-4 mr-2" />
                               Complete Payment
@@ -662,7 +662,7 @@ export default function Bookings() {
                              size="sm" 
                              onClick={() => handleCancelBooking(booking)}
                              disabled={booking.status === 'pending'}
-                             className="min-w-[80px] disabled:opacity-50 disabled:cursor-not-allowed"
+                             className="flex-1 sm:flex-none sm:min-w-[80px] disabled:opacity-50 disabled:cursor-not-allowed"
                            >
                              Cancel
                            </Button>
@@ -672,7 +672,7 @@ export default function Bookings() {
                              <Button
                                size="sm"
                                onClick={() => handleStartBooking(booking.id)}
-                               className="min-w-[120px]"
+                               className="flex-1 sm:flex-none sm:min-w-[120px]"
                              >
                                Start Service
                              </Button>
@@ -680,7 +680,7 @@ export default function Bookings() {
                                variant="destructive" 
                                size="sm" 
                                onClick={() => handleCancelBooking(booking)}
-                               className="min-w-[80px]"
+                               className="flex-1 sm:flex-none sm:min-w-[80px]"
                              >
                                Cancel
                              </Button>
@@ -691,7 +691,7 @@ export default function Bookings() {
                              variant="destructive" 
                              size="sm" 
                              onClick={() => handleCancelBooking(booking)}
-                             className="min-w-[80px]"
+                             className="flex-1 sm:flex-none sm:min-w-[80px]"
                            >
                              Cancel
                            </Button>
@@ -700,7 +700,7 @@ export default function Bookings() {
                            <Button
                              size="sm"
                              onClick={() => handleCompleteBooking(booking.id)}
-                             className="min-w-[140px]"
+                             className="flex-1 sm:flex-none sm:min-w-[140px]"
                            >
                              Complete Service
                            </Button>
