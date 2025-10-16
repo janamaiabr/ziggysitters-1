@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   ArrowLeft, Calendar, Clock, DollarSign, MapPin, 
   User, Mail, Phone, FileText, AlertCircle, CheckCircle,
@@ -355,7 +356,9 @@ export default function BookingDetails() {
                   <Separator />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Special Instructions</p>
-                    <p className="whitespace-pre-wrap">{booking.special_instructions}</p>
+                    <ScrollArea className="h-[200px] w-full rounded-md border p-4">
+                      <p className="whitespace-pre-wrap">{booking.special_instructions}</p>
+                    </ScrollArea>
                   </div>
                 </>
               )}
