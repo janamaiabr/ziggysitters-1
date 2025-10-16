@@ -596,14 +596,14 @@ export default function BookingAccordion({
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={resetForm} className="flex-1">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Button variant="outline" onClick={resetForm} className="w-full sm:flex-1">
                   Reset Form
                 </Button>
                 <Button 
                   onClick={handleBooking} 
                   disabled={!startDate || !endDate || !serviceType || !agreedToTerms || loading}
-                  className="flex-1"
+                  className="w-full sm:flex-1"
                 >
                   {loading ? 'Creating Booking...' : 'Send Booking Request'}
                 </Button>

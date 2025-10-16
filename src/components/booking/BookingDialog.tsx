@@ -725,14 +725,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={handleClose} className="flex-1">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            <Button variant="outline" onClick={handleClose} className="w-full sm:flex-1">
               Cancel
             </Button>
             <Button 
               onClick={handleBooking} 
               disabled={!startDate || !endDate || !serviceType || loading}
-              className="flex-1"
+              className="w-full sm:flex-1"
             >
               {loading ? 'Creating Booking...' : 'Send Booking Request'}
             </Button>
