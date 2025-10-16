@@ -423,7 +423,7 @@ export default function FindSitters() {
           {searchPerformed && filteredSitters.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredSitters.map((sitter) => (
-                <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+                <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
                   <div className="relative">
                     <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
                       {sitter.image ? (
@@ -476,7 +476,7 @@ export default function FindSitters() {
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex flex-col flex-grow">
                     <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
                     
                     <div className="flex flex-wrap gap-1">
@@ -562,7 +562,7 @@ export default function FindSitters() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {allSitters.slice(0, 6).map((sitter) => (
-                  <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+                  <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
                     <div className="relative">
                       <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
                         {sitter.image ? (
@@ -613,7 +613,7 @@ export default function FindSitters() {
                       </div>
                     </CardHeader>
                     
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 flex flex-col flex-grow">
                       <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
                       
                       <div className="flex flex-wrap gap-1">
