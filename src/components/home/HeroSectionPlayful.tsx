@@ -193,7 +193,7 @@ const HeroSectionPlayful = ({
                 
                 <Button 
                   size="lg" 
-                  className="w-full lg:w-auto h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-6 md:px-8 whitespace-nowrap"
+                  className="w-full lg:w-auto min-h-[44px] h-11 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] px-6 md:px-8 whitespace-nowrap"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
