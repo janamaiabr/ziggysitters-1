@@ -805,37 +805,53 @@ export default function Profile() {
                     <CardTitle>Contact Information</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    {isEditing && (
+                      <div className="mb-4 p-3 bg-muted rounded-lg">
+                        <p className="text-sm text-muted-foreground">
+                          <span className="text-destructive">*</span> indicates required fields
+                        </p>
+                      </div>
+                    )}
                     {isEditing ? (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label>First Name</Label>
+                            <Label>First Name <span className="text-destructive">*</span></Label>
                             <Input
                               value={editData.first_name}
                               onChange={(e) => setEditData({...editData, first_name: e.target.value})}
+                              required
+                              placeholder="Required"
                             />
                           </div>
                           <div>
-                            <Label>Last Name</Label>
+                            <Label>Last Name <span className="text-destructive">*</span></Label>
                             <Input
                               value={editData.last_name}
                               onChange={(e) => setEditData({...editData, last_name: e.target.value})}
+                              required
+                              placeholder="Required"
                             />
                           </div>
                         </div>
                         <div>
-                          <Label>Email</Label>
+                          <Label>Email <span className="text-destructive">*</span></Label>
                           <Input
+                            type="email"
                             value={editData.email}
                             onChange={(e) => setEditData({...editData, email: e.target.value})}
+                            required
+                            placeholder="Required"
                           />
                         </div>
                         <div>
-                          <Label>Phone</Label>
+                          <Label>Phone <span className="text-destructive">*</span></Label>
                           <Input
+                            type="tel"
                             value={editData.phone}
                             onChange={(e) => setEditData({...editData, phone: e.target.value})}
-                            placeholder="Enter your phone number"
+                            required
+                            placeholder="Required"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -855,10 +871,12 @@ export default function Profile() {
                           </div>
                         </div>
                         <div>
-                          <Label>Address</Label>
+                          <Label>Address <span className="text-destructive">*</span></Label>
                           <Input
                             value={editData.address}
                             onChange={(e) => setEditData({...editData, address: e.target.value})}
+                            required
+                            placeholder="Required"
                           />
                         </div>
                       </div>
