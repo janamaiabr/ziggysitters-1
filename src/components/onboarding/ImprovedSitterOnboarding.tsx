@@ -259,19 +259,35 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     try {
       const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Stripe connect error:', error);
+        throw error;
+      }
       
       if (data?.url) {
+        console.log('Opening Stripe URL in new tab:', data.url);
         // Open in new tab so user can complete Stripe setup
-        window.open(data.url, '_blank');
+        const newWindow = window.open(data.url, '_blank', 'noopener,noreferrer');
+        
+        if (!newWindow) {
+          toast({
+            title: "Pop-up blocked",
+            description: "Please allow pop-ups for this site and try again.",
+            variant: "destructive",
+          });
+          return;
+        }
         
         toast({
           title: "Stripe setup opened",
-          description: "Complete your payment setup in the new tab, then click 'Complete Onboarding' here when done.",
+          description: "Complete your payment setup in the new tab, then return here to verify and complete onboarding.",
           duration: 10000,
         });
+      } else {
+        throw new Error('No URL returned from Stripe');
       }
     } catch (error: any) {
+      console.error('Error in handleInitiatePaymentSetup:', error);
       toast({
         title: "Connection failed",
         description: error?.message || "Failed to connect to Stripe.",
