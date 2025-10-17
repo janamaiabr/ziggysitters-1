@@ -54,34 +54,6 @@ export default function Onboarding() {
       return;
     }
 
-    // Check for Stripe success/refresh from URL params
-    const searchParams = new URLSearchParams(window.location.search);
-    const stripeSuccess = searchParams.get('stripe_success');
-    const stripeRefresh = searchParams.get('stripe_refresh');
-    
-    if (stripeSuccess === 'true') {
-      // User returned from successful Stripe setup - go to payment step
-      setStep(7); // Payment setup step for sitters
-      toast({
-        title: "Payment setup complete!",
-        description: "Your Stripe account has been connected successfully.",
-      });
-      // Clean up URL params
-      window.history.replaceState({}, '', '/onboarding');
-      return; // Exit early to prevent other logic from running
-    } else if (stripeRefresh === 'true') {
-      // User needs to continue Stripe setup - stay on payment step
-      setStep(7);
-      toast({
-        title: "Please complete Stripe setup",
-        description: "Continue setting up your payment account.",
-        variant: "destructive",
-      });
-      // Clean up URL params
-      window.history.replaceState({}, '', '/onboarding');
-      return; // Exit early
-    }
-
     // Check if user is admin - if so, skip onboarding
     const checkAdminStatus = async () => {
       try {

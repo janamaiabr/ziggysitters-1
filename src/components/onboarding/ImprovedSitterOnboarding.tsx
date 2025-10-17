@@ -71,17 +71,6 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   // Step 5: Payment setup flag
   const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(false);
 
-  // Check if returning from Stripe and set to payment step
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.get('stripe_success') === 'true') {
-      setCurrentStep(5); // Payment setup step
-      setPaymentSetupCompleted(true);
-    } else if (searchParams.get('stripe_refresh') === 'true') {
-      setCurrentStep(5); // Stay on payment setup step
-    }
-  }, []);
-
   const toggleSpecies = (species: string) => {
     setAcceptedSpecies(prev => 
       prev.includes(species) 
@@ -273,13 +262,13 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       if (error) throw error;
       
       if (data?.url) {
-        // Open in same window instead of new tab so we stay in the flow
-        window.location.href = data.url;
+        // Open in new tab so user can complete Stripe setup
+        window.open(data.url, '_blank');
         
         toast({
-          title: "Redirecting to Stripe...",
-          description: "Complete your payment setup. You'll return here when done.",
-          duration: 3000,
+          title: "Stripe setup opened",
+          description: "Complete your payment setup in the new tab, then click 'Complete Onboarding' here when done.",
+          duration: 10000,
         });
       }
     } catch (error: any) {
@@ -288,6 +277,44 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         description: error?.message || "Failed to connect to Stripe.",
         variant: "destructive",
       });
+    }
+  };
+
+  const checkStripeStatus = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-connect-account-status');
+      
+      if (error) throw error;
+      
+      if (data?.enabled) {
+        setPaymentSetupCompleted(true);
+        toast({
+          title: "Payment setup verified!",
+          description: "Your Stripe account is connected and ready.",
+        });
+        return true;
+      } else if (data?.connected && !data?.enabled) {
+        toast({
+          title: "Payment setup incomplete",
+          description: "Please complete all required steps in your Stripe setup tab.",
+          variant: "destructive",
+        });
+        return false;
+      } else {
+        toast({
+          title: "Not connected",
+          description: "Please click 'Connect Payment Account' to set up payments.",
+          variant: "destructive",
+        });
+        return false;
+      }
+    } catch (error: any) {
+      console.error('Error checking Stripe status:', error);
+      toast({
+        title: "Could not verify payment setup",
+        description: "You can skip this step and set up payments later from your profile.",
+      });
+      return false;
     }
   };
 
@@ -313,6 +340,21 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       });
       setCurrentStep(4);
       return;
+    }
+
+    // Check Stripe status if on payment step
+    if (currentStep === 5) {
+      console.log('Checking Stripe status before completion...');
+      const stripeConnected = await checkStripeStatus();
+      if (!stripeConnected) {
+        // Show a warning but allow continuing
+        const confirmed = window.confirm(
+          "Your payment account is not fully set up. You can continue and set it up later from your profile, but you won't be able to receive payments until it's complete. Continue anyway?"
+        );
+        if (!confirmed) {
+          return;
+        }
+      }
     }
 
     try {
@@ -894,25 +936,43 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
               </div>
 
               {paymentSetupCompleted ? (
-                <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
-                  <div>
-                    <p className="font-semibold text-green-900">Payment setup initiated!</p>
-                    <p className="text-sm text-green-700">Complete the Stripe setup in the new tab to start receiving payments.</p>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <CheckCircle2 className="w-6 h-6 text-green-600" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-green-900">Payment setup verified!</p>
+                      <p className="text-sm text-green-700">Your Stripe account is connected and ready to receive payments.</p>
+                    </div>
                   </div>
                 </div>
               ) : (
-                <Button
-                  onClick={handleInitiatePaymentSetup}
-                  size="lg"
-                  className="w-full"
-                >
-                  <DollarSign className="w-5 h-5 mr-2" />
-                  Connect Bank Account with Stripe
-                </Button>
+                <div className="space-y-4">
+                  <Button
+                    onClick={handleInitiatePaymentSetup}
+                    size="lg"
+                    className="w-full"
+                  >
+                    <DollarSign className="w-5 h-5 mr-2" />
+                    Connect Bank Account with Stripe
+                  </Button>
+                  
+                  <Button
+                    onClick={checkStripeStatus}
+                    variant="outline"
+                    size="lg"
+                    className="w-full"
+                  >
+                    <CheckCircle2 className="w-5 h-5 mr-2" />
+                    Verify Connection Status
+                  </Button>
+                  
+                  <p className="text-xs text-muted-foreground text-center">
+                    After completing Stripe setup in the new tab, click "Verify Connection Status" to confirm.
+                  </p>
+                </div>
               )}
 
-              <p className="text-sm text-muted-foreground text-center">
+              <p className="text-sm text-muted-foreground text-center mt-4">
                 You can also set this up later from your profile settings.
               </p>
             </div>

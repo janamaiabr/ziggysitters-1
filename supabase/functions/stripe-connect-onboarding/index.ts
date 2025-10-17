@@ -139,8 +139,8 @@ serve(async (req) => {
     try {
       const accountLink = await stripe.accountLinks.create({
         account: accountId,
-        refresh_url: `${origin}/onboarding?stripe_refresh=true`,
-        return_url: `${origin}/onboarding?stripe_success=true`,
+        refresh_url: `${origin}/profile?stripe_refresh=true`,
+        return_url: `${origin}/profile?stripe_success=true`,
         type: "account_onboarding",
       });
 
