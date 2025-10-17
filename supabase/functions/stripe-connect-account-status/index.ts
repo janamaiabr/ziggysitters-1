@@ -61,8 +61,14 @@ serve(async (req) => {
     
     const enabled = account.charges_enabled && account.payouts_enabled;
     const onboardingCompleted = account.details_submitted;
+    const payoutReady = account.requirements?.currently_due?.length === 0;
 
-    console.log("Account status:", { enabled, onboardingCompleted });
+    console.log("Account status:", { 
+      enabled, 
+      onboardingCompleted, 
+      payoutReady,
+      currentlyDue: account.requirements?.currently_due 
+    });
 
     // Update profile if status changed
     if (enabled !== profile.stripe_account_enabled || 
@@ -85,6 +91,8 @@ serve(async (req) => {
         connected: true,
         enabled,
         onboarding_completed: onboardingCompleted,
+        payout_ready: payoutReady,
+        requirements_due: account.requirements?.currently_due || [],
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
