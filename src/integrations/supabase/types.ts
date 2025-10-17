@@ -438,6 +438,7 @@ export type Database = {
           stripe_account_id: string | null
           stripe_onboarding_completed: boolean | null
           suburb: string | null
+          terms_accepted: boolean | null
           total_reviews: number | null
           updated_at: string
           user_id: string
@@ -472,6 +473,7 @@ export type Database = {
           stripe_account_id?: string | null
           stripe_onboarding_completed?: boolean | null
           suburb?: string | null
+          terms_accepted?: boolean | null
           total_reviews?: number | null
           updated_at?: string
           user_id: string
@@ -506,6 +508,7 @@ export type Database = {
           stripe_account_id?: string | null
           stripe_onboarding_completed?: boolean | null
           suburb?: string | null
+          terms_accepted?: boolean | null
           total_reviews?: number | null
           updated_at?: string
           user_id?: string
