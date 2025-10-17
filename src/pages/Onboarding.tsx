@@ -38,10 +38,11 @@ export default function Onboarding() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
-  const [step, setStep] = useState(0); // Start at 0 for T&Cs
+  const [step, setStep] = useState(1); // Start at 1 for role selection
   const [isLoading, setIsLoading] = useState(false);
   const [profileId, setProfileId] = useState<string>('');
-  const [showTerms, setShowTerms] = useState(true);
+  const [showTerms, setShowTerms] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(false);
   const [data, setData] = useState<OnboardingData>({
     role: null,
     city: 'Auckland'
@@ -86,6 +87,17 @@ export default function Onboarding() {
           .maybeSingle();
 
         if (!error && profile) {
+          // Check if user has already accepted terms
+          const hasAcceptedTerms = profile.terms_accepted === true;
+          setTermsChecked(hasAcceptedTerms);
+          setShowTerms(!hasAcceptedTerms);
+          
+          if (hasAcceptedTerms) {
+            setStep(1); // Skip to role selection if terms already accepted
+          } else {
+            setStep(0); // Show terms if not accepted
+          }
+
           setData(prev => ({
             ...prev,
             first_name: profile.first_name || user.user_metadata?.first_name || '',
@@ -99,7 +111,9 @@ export default function Onboarding() {
             avatar_url: profile.avatar_url || '',
           }));
         } else {
-          // If no profile exists, use signup metadata
+          // If no profile exists, show terms and use signup metadata
+          setShowTerms(true);
+          setStep(0);
           setData(prev => ({
             ...prev,
             first_name: user.user_metadata?.first_name || '',
@@ -122,18 +136,38 @@ export default function Onboarding() {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleAcceptTerms = () => {
-    setShowTerms(false);
-    setStep(1); // Move to role selection
+  const handleAcceptTerms = async () => {
+    try {
+      // Save terms acceptance to database
+      const { error } = await supabase
+        .from('profiles')
+        .update({ terms_accepted: true })
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      setShowTerms(false);
+      setTermsChecked(true);
+      setStep(1); // Move to role selection
+      
+      toast({
+        title: "Terms Accepted",
+        description: "Let's continue setting up your profile.",
+      });
+    } catch (error: any) {
+      console.error('Error saving terms acceptance:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save terms acceptance. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleDeclineTerms = () => {
-    toast({
-      title: "Terms Required",
-      description: "You must accept the terms to continue.",
-      variant: "destructive",
-    });
-    navigate('/');
+  const handleDeclineTerms = async () => {
+    // Sign out user if they decline terms
+    await supabase.auth.signOut();
+    navigate('/auth', { replace: true });
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -512,8 +546,8 @@ export default function Onboarding() {
 
   const totalSteps = getTotalSteps();
 
-  // Show T&Cs first
-  if (showTerms && step === 0) {
+  // Show T&Cs first if not yet accepted
+  if (showTerms) {
     return (
       <TermsAcceptance
         isOpen={showTerms}

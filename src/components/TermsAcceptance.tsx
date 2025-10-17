@@ -22,8 +22,8 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => onDecline()}>
-      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onDecline(); }}>
+      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>Terms of Service Agreement</DialogTitle>
         </DialogHeader>
