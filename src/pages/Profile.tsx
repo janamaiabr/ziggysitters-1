@@ -316,13 +316,14 @@ export default function Profile() {
   };
 
   const handleEditService = (service: any) => {
-    setEditingService(service.id);
+    setEditingService(service.id || service.key);
     setServiceEditData({
-      daily_rate: service.daily_rate,
-      overnight_rate: service.overnight_rate,
-      description: service.description,
-      max_pets: service.max_pets,
-      is_offered: service.is_offered
+      daily_rate: service.daily_rate || null,
+      overnight_rate: service.overnight_rate || null,
+      description: service.description || '',
+      max_pets: service.max_pets || 1,
+      is_offered: service.is_offered !== false,
+      service_type: service.service_type || service.key
     });
   };
 
@@ -341,47 +342,137 @@ export default function Profile() {
     }
 
     try {
-      const { error } = await supabase
-        .from('sitter_services')
-        .update(serviceEditData)
-        .eq('id', editingService)
-        .eq('sitter_id', profile.id);
+      // Check if this is a new service (using key) or existing (using id)
+      const existingService = sitterServices.find(s => s.id === editingService);
+      
+      if (existingService) {
+        // Update existing service
+        const { error } = await supabase
+          .from('sitter_services')
+          .update(serviceEditData)
+          .eq('id', editingService)
+          .eq('sitter_id', profile.id);
 
-      if (!error) {
-        setSitterServices(prev => 
-          prev.map(service => 
-            service.id === editingService 
-              ? { ...service, ...serviceEditData }
-              : service
-          )
-        );
-        setEditingService(null);
-        setServiceEditData({});
-        toast({
-          title: "Service updated",
-          description: "Your service has been successfully updated.",
-        });
+        if (!error) {
+          setSitterServices(prev => 
+            prev.map(service => 
+              service.id === editingService 
+                ? { ...service, ...serviceEditData }
+                : service
+            )
+          );
+          setEditingService(null);
+          setServiceEditData({});
+          toast({
+            title: "Service updated",
+            description: "Your service has been successfully updated.",
+          });
+        }
+      } else {
+        // Insert new service
+        const { error } = await supabase
+          .from('sitter_services')
+          .insert({
+            sitter_id: profile.id,
+            service_type: serviceEditData.service_type,
+            daily_rate: serviceEditData.daily_rate,
+            overnight_rate: serviceEditData.overnight_rate,
+            description: serviceEditData.description,
+            max_pets: serviceEditData.max_pets,
+            is_offered: serviceEditData.is_offered
+          });
+
+        if (!error) {
+          setEditingService(null);
+          setServiceEditData({});
+          // Refresh services list
+          fetchSitterServices();
+          toast({
+            title: "Service added",
+            description: "Your new service has been added successfully.",
+          });
+        }
       }
     } catch (error) {
-      console.error('Error updating service:', error);
+      console.error('Error saving service:', error);
       toast({
         title: "Error",
-        description: "Failed to update service. Please try again.",
+        description: "Failed to save service. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const getRateLabel = (serviceType: string) => {
-    switch (serviceType) {
-      case 'dog_walking': return 'Per Walk';
-      case 'pet_sitting_owners_home': return 'Per Day / Per Night';
-      case 'pet_sitting_sitters_home': return 'Per Day / Per Night';
-      case 'dog_daycare': return 'Per Day';
-      case 'overnight_boarding': return 'Per Night';
-      default: return 'Rate';
+  const allServiceTypes = [
+    { 
+      key: 'dog_walking', 
+      label: 'Dog Walking', 
+      description: 'Take dogs for walks around the neighborhood, providing exercise and outdoor time.',
+      rateLabel: 'Per Walk',
+      icon: '🚶'
+    },
+    { 
+      key: 'dog_daycare', 
+      label: 'Daycare', 
+      description: 'Care for pets during the day while owners are at work. Pets stay at your home and receive attention, playtime, and supervision.',
+      rateLabel: 'Per Day',
+      icon: '🏠'
+    },
+    { 
+      key: 'pet_sitting_owners_home', 
+      label: 'Pet Sitting (Owner\'s Home)', 
+      description: 'Stay at the pet owner\'s home to care for their pets in their familiar environment.',
+      rateLabel: 'Per Day / Per Night',
+      icon: '🏡'
+    },
+    { 
+      key: 'pet_sitting_sitters_home', 
+      label: 'Pet Sitting (Your Home)', 
+      description: 'Pets stay at your home where you provide care, attention, and a safe environment.',
+      rateLabel: 'Per Day / Per Night',
+      icon: '🏘️'
+    },
+    { 
+      key: 'overnight_boarding', 
+      label: 'Overnight Boarding', 
+      description: 'Pets stay overnight at your home with 24/7 care and supervision.',
+      rateLabel: 'Per Night',
+      icon: '🌙'
+    },
+    { 
+      key: 'drop_in_visits', 
+      label: 'Drop-in Visits', 
+      description: 'Short visits to check on pets, provide food, water, and quick playtime or bathroom breaks.',
+      rateLabel: 'Per Visit',
+      icon: '⏰'
     }
+  ];
+
+  const getRateLabel = (serviceType: string) => {
+    const service = allServiceTypes.find(s => s.key === serviceType);
+    return service?.rateLabel || 'Rate';
   };
+
+  const getServiceInfo = (serviceType: string) => {
+    return allServiceTypes.find(s => s.key === serviceType) || {
+      key: serviceType,
+      label: serviceType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      description: '',
+      rateLabel: 'Rate',
+      icon: '💼'
+    };
+  };
+
+  // Merge all service types with configured services
+  const allServicesDisplay = allServiceTypes.map(serviceType => {
+    const configuredService = sitterServices.find(s => s.service_type === serviceType.key);
+    return {
+      ...serviceType,
+      ...configuredService,
+      isConfigured: !!configuredService,
+      service_type: serviceType.key
+    };
+  });
 
   const getRateDisplay = (service: any) => {
     const rates = [];
@@ -1029,37 +1120,53 @@ export default function Profile() {
           {profile.role === 'pet_sitter' && (
             <TabsContent value="services" className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
-                {sitterServices.length > 0 ? (
-                  sitterServices.map((service: any) => (
-                    <Card key={service.id}>
+                {allServicesDisplay.map((service: any) => (
+                    <Card key={service.key} className={!service.isConfigured ? 'border-dashed' : ''}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <CardTitle>
-                            {service.service_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                          </CardTitle>
+                          <div className="space-y-1">
+                            <CardTitle className="flex items-center gap-2">
+                              <span>{service.icon}</span>
+                              {service.label}
+                            </CardTitle>
+                            <p className="text-xs text-muted-foreground">{service.description}</p>
+                          </div>
                           <div className="flex items-center gap-2">
-                            <Badge variant={service.is_offered ? 'default' : 'secondary'}>
-                              {service.is_offered ? 'Active' : 'Inactive'}
-                            </Badge>
-                            {editingService === service.id ? (
+                            {service.isConfigured ? (
+                              <>
+                                <Badge variant={service.is_offered ? 'default' : 'secondary'}>
+                                  {service.is_offered ? 'Active' : 'Inactive'}
+                                </Badge>
+                                {editingService === service.id ? (
                               <div className="flex gap-1">
                                 <Button size="sm" onClick={handleSaveService}>
                                   <Save className="w-3 h-3" />
                                 </Button>
-                                <Button size="sm" variant="outline" onClick={() => setEditingService(null)}>
-                                  <X className="w-3 h-3" />
+                                  <Button size="sm" variant="outline" onClick={() => setEditingService(null)}>
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              ) : (
+                                <Button size="sm" variant="outline" onClick={() => handleEditService(service)}>
+                                  <Edit3 className="w-3 h-3" />
                                 </Button>
-                              </div>
+                              )}
+                            </>
                             ) : (
-                              <Button size="sm" variant="outline" onClick={() => handleEditService(service)}>
-                                <Edit3 className="w-3 h-3" />
+                              <Button size="sm" onClick={() => handleEditService(service)}>
+                                <Plus className="w-3 h-3 mr-1" />
+                                Add Service
                               </Button>
                             )}
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        {editingService === service.id ? (
+                        {!service.isConfigured && editingService !== service.key ? (
+                          <p className="text-sm text-muted-foreground italic py-2">
+                            This service hasn't been configured yet. Click "Add Service" to set it up!
+                          </p>
+                        ) : editingService === service.id || editingService === service.key ? (
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
@@ -1104,17 +1211,17 @@ export default function Profile() {
                             </div>
                             <div className="flex items-center space-x-2">
                               <Checkbox
-                                id={`offered-${service.id}`}
+                                id={`offered-${service.id || service.key}`}
                                 checked={serviceEditData.is_offered}
                                 onCheckedChange={(checked) => setServiceEditData((prev: any) => ({
                                   ...prev,
                                   is_offered: checked
                                 }))}
                               />
-                              <Label htmlFor={`offered-${service.id}`}>Service offered</Label>
+                              <Label htmlFor={`offered-${service.id || service.key}`}>Service offered</Label>
                             </div>
                           </div>
-                        ) : (
+                        ) : service.isConfigured ? (
                           <div className="space-y-3">
                             <div className="text-2xl font-bold">
                               {(() => {
@@ -1146,17 +1253,10 @@ export default function Profile() {
                               <span>📅 {service.experience_years || 0} years experience</span>
                             </div>
                           </div>
-                        )}
+                        ) : null}
                       </CardContent>
                     </Card>
-                  ))
-                ) : (
-                  <Card>
-                    <CardContent className="text-center py-8">
-                      <p className="text-muted-foreground">No services configured yet.</p>
-                    </CardContent>
-                  </Card>
-                )}
+                  ))}
               </div>
             </TabsContent>
           )}
