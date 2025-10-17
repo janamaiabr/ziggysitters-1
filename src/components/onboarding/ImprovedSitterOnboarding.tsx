@@ -255,7 +255,10 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     }
   };
 
-  const handleInitiatePaymentSetup = async () => {
+  const handleInitiatePaymentSetup = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    
     try {
       const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
       
@@ -296,7 +299,10 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     }
   };
 
-  const checkStripeStatus = async () => {
+  const checkStripeStatus = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    
     try {
       const { data, error } = await supabase.functions.invoke('stripe-connect-account-status');
       
@@ -965,7 +971,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                 <div className="space-y-4">
                   <Button
                     type="button"
-                    onClick={handleInitiatePaymentSetup}
+                    onClick={(e) => handleInitiatePaymentSetup(e)}
                     size="lg"
                     className="w-full"
                   >
@@ -975,7 +981,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                   
                   <Button
                     type="button"
-                    onClick={checkStripeStatus}
+                    onClick={(e) => checkStripeStatus(e)}
                     variant="outline"
                     size="lg"
                     className="w-full"
