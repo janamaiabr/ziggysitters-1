@@ -1121,7 +1121,7 @@ export default function Profile() {
             <TabsContent value="services" className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
                 {allServicesDisplay.map((service: any) => (
-                    <Card key={service.key} className={!service.isConfigured ? 'border-dashed' : ''}>
+                    <Card key={service.key}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="space-y-1">
@@ -1129,7 +1129,7 @@ export default function Profile() {
                               <span>{service.icon}</span>
                               {service.label}
                             </CardTitle>
-                            <p className="text-xs text-muted-foreground">{service.description}</p>
+                            <p className="text-sm text-muted-foreground">{service.description}</p>
                           </div>
                           <div className="flex items-center gap-2">
                             {service.isConfigured ? (
