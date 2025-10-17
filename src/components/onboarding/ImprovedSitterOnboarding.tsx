@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -70,6 +70,17 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   
   // Step 5: Payment setup flag
   const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(false);
+
+  // Check if returning from Stripe and set to payment step
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('stripe_success') === 'true') {
+      setCurrentStep(5); // Payment setup step
+      setPaymentSetupCompleted(true);
+    } else if (searchParams.get('stripe_refresh') === 'true') {
+      setCurrentStep(5); // Stay on payment setup step
+    }
+  }, []);
 
   const toggleSpecies = (species: string) => {
     setAcceptedSpecies(prev => 
@@ -262,12 +273,13 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       if (error) throw error;
       
       if (data?.url) {
-        window.open(data.url, '_blank');
-        setPaymentSetupCompleted(true);
+        // Open in same window instead of new tab so we stay in the flow
+        window.location.href = data.url;
+        
         toast({
-          title: "Payment setup initiated",
-          description: "Complete Stripe setup in the new tab to receive payments.",
-          duration: 8000,
+          title: "Redirecting to Stripe...",
+          description: "Complete your payment setup. You'll return here when done.",
+          duration: 3000,
         });
       }
     } catch (error: any) {
