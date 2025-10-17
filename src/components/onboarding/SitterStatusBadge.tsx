@@ -17,7 +17,8 @@ export function SitterStatusBadge({ profile, stripeStatus }: SitterStatusBadgePr
     // Check if profile needs completion
     const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address;
     const hasDocuments = profile.id_document_url || profile.blue_card_document_url;
-    const hasStripeConnected = stripeStatus?.connected && stripeStatus?.onboarding_completed;
+    // Accept if onboarding is completed, even if not fully enabled yet (Stripe verification pending)
+    const hasStripeConnected = stripeStatus?.onboarding_completed || stripeStatus?.enabled;
     const isVerified = profile.is_verified && profile.verification_status === 'approved';
 
     // Priority order of statuses

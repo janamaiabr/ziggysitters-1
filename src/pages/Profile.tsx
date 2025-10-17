@@ -1116,14 +1116,30 @@ export default function Profile() {
                           </div>
                         ) : (
                           <div className="space-y-3">
-                            <div className="text-2xl font-bold text-primary">
-                              {getRateDisplay(service)}
+                            <div className="text-2xl font-bold">
+                              {(() => {
+                                const rates = [];
+                                if (service.daily_rate) rates.push(`$${service.daily_rate}/day`);
+                                if (service.overnight_rate) rates.push(`$${service.overnight_rate}/night`);
+                                if (rates.length > 0) {
+                                  return <span className="text-primary">{rates.join(' • ')}</span>;
+                                }
+                                return (
+                                  <span className="text-blue-500 animate-pulse">
+                                    🎯 Rate not set - Click edit to add pricing!
+                                  </span>
+                                );
+                              })()}
                             </div>
                             <p className="text-sm text-muted-foreground">
                               {getRateLabel(service.service_type)}
                             </p>
-                            {service.description && (
+                            {service.description ? (
                               <p className="text-sm">{service.description}</p>
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic">
+                                💡 Add a description to make your service stand out!
+                              </p>
                             )}
                             <div className="flex items-center gap-4 text-xs text-muted-foreground">
                               <span>🐾 Max pets: {service.max_pets || 1}</span>
