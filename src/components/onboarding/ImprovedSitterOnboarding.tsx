@@ -312,22 +312,27 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         setPaymentSetupCompleted(true);
         toast({
           title: "Payment setup verified!",
-          description: "Your Stripe account is connected and ready.",
+          description: "Your Stripe account is connected and ready for payments.",
         });
         return true;
-      } else if (data?.connected && !data?.enabled) {
+      } else if (data?.onboarding_completed) {
+        // Onboarding is complete, just waiting for Stripe verification
+        setPaymentSetupCompleted(true);
         toast({
-          title: "Payment setup incomplete",
-          description: "Please complete all required steps in your Stripe setup tab.",
+          title: "Payment setup complete!",
+          description: "Stripe is processing your verification. You can continue with onboarding.",
+        });
+        return true;
+      } else if (data?.connected && !data?.onboarding_completed) {
+        // Connected but onboarding not finished
+        toast({
+          title: "Complete Stripe setup",
+          description: "Please finish all required steps in your Stripe setup tab.",
           variant: "destructive",
         });
         return false;
       } else {
-        toast({
-          title: "Not connected",
-          description: "Please click 'Connect Payment Account' to set up payments.",
-          variant: "destructive",
-        });
+        // Not connected at all - no error needed, just informational
         return false;
       }
     } catch (error: any) {
