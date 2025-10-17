@@ -10,8 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { PawPrint, User, UserCheck, Heart } from 'lucide-react';
 import PetOwnerOnboarding from '@/components/onboarding/PetOwnerOnboarding';
-import SitterOnboarding from '@/components/onboarding/SitterOnboarding';
-import EnhancedSitterOnboarding from '@/components/onboarding/EnhancedSitterOnboarding';
+import ImprovedSitterOnboarding from '@/components/onboarding/ImprovedSitterOnboarding';
+import TermsAcceptance from '@/components/TermsAcceptance';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/contexts/ProfileContext';
@@ -38,9 +38,10 @@ export default function Onboarding() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); // Start at 0 for T&Cs
   const [isLoading, setIsLoading] = useState(false);
   const [profileId, setProfileId] = useState<string>('');
+  const [showTerms, setShowTerms] = useState(true);
   const [data, setData] = useState<OnboardingData>({
     role: null,
     city: 'Auckland'
@@ -119,6 +120,20 @@ export default function Onboarding() {
 
   const handleInputChange = (field: string, value: any) => {
     setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAcceptTerms = () => {
+    setShowTerms(false);
+    setStep(1); // Move to role selection
+  };
+
+  const handleDeclineTerms = () => {
+    toast({
+      title: "Terms Required",
+      description: "You must accept the terms to continue.",
+      variant: "destructive",
+    });
+    navigate('/');
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -466,7 +481,7 @@ export default function Onboarding() {
     }
     
     if (data.role === 'pet_sitter') {
-      return <EnhancedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
+      return <ImprovedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
     }
     
     return null;
@@ -490,11 +505,22 @@ export default function Onboarding() {
 
   const totalSteps = getTotalSteps();
 
+  // Show T&Cs first
+  if (showTerms && step === 0) {
+    return (
+      <TermsAcceptance
+        isOpen={showTerms}
+        onAccept={handleAcceptTerms}
+        onDecline={handleDeclineTerms}
+      />
+    );
+  }
+
   return (
-    <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 ${isMobile ? 'p-4' : 'py-12'}`}>
       <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
         <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
-          <Card>
+          <Card className="shadow-2xl border-border/50">
               <CardHeader className="text-center">
                 <div className="flex items-center justify-center mb-4">
                   <PawPrint className="w-8 h-8 text-primary mr-2" />

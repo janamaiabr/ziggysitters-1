@@ -20,6 +20,7 @@ import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 import PetsManagement from '@/components/PetsManagement';
 import SitterDailyReports from '@/components/SitterDailyReports';
 import ClientDailyReports from '@/components/ClientDailyReports';
+import { SitterStatusBadge } from '@/components/onboarding/SitterStatusBadge';
 
 export default function Profile() {
   const navigate = useNavigate();
