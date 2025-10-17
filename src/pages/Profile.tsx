@@ -1162,11 +1162,7 @@ export default function Profile() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        {!service.isConfigured && editingService !== service.key ? (
-                          <p className="text-sm text-muted-foreground italic py-2">
-                            This service hasn't been configured yet. Click "Add Service" to set it up!
-                          </p>
-                        ) : editingService === service.id || editingService === service.key ? (
+                        {editingService === service.id || editingService === service.key ? (
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
@@ -1221,7 +1217,7 @@ export default function Profile() {
                               <Label htmlFor={`offered-${service.id || service.key}`}>Service offered</Label>
                             </div>
                           </div>
-                        ) : service.isConfigured ? (
+                        ) : (
                           <div className="space-y-3">
                             <div className="text-2xl font-bold">
                               {(() => {
@@ -1253,7 +1249,7 @@ export default function Profile() {
                               <span>📅 {service.experience_years || 0} years experience</span>
                             </div>
                           </div>
-                        ) : null}
+                        )}
                       </CardContent>
                     </Card>
                   ))}
