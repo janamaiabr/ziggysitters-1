@@ -13,12 +13,23 @@ export function OnboardingCompletionTracker() {
   useEffect(() => {
     // Only run auto-completion logic when NOT on onboarding pages
     if (location.pathname.includes('/onboarding')) {
+      console.log('OnboardingCompletionTracker: Skipping - on onboarding page');
       return;
     }
 
     // Auto-complete onboarding for users who have basic info but missing completion flag
     const autoCompleteIfReady = async () => {
-      if (!user || !profile || !needsOnboarding) return;
+      if (!user || !profile) {
+        console.log('OnboardingCompletionTracker: Skipping - no user or profile');
+        return;
+      }
+      
+      if (!needsOnboarding) {
+        console.log('OnboardingCompletionTracker: Skipping - onboarding already complete');
+        return;
+      }
+      
+      console.log('OnboardingCompletionTracker: Checking if auto-complete is possible...');
       
       // Check basic info requirements
       const hasBasicInfo = profile.phone && profile.address && profile.suburb && 

@@ -778,6 +778,11 @@ export default function Profile() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
+            {/* Sitter Status Badge - shows current onboarding/verification status */}
+            {profile.role === 'pet_sitter' && (
+              <SitterStatusBadge profile={profile} stripeStatus={stripeStatus} />
+            )}
+            
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column */}
               <div className="lg:col-span-2 space-y-6">

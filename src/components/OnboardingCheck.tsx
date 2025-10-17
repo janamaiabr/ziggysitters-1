@@ -28,13 +28,26 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
       '/onboarding-pending-approval'
     ];
     
+    // Check if we're on an excluded path
+    const isExcludedPath = excludedPaths.some(path => location.pathname.startsWith(path));
+    
     // Only redirect if user is authenticated, we have profile info, AND profile lacks basic info
     // Don't redirect if they have basic info (name, phone, address) - let them use the app
     const hasBasicInfo = profile && profile.first_name && profile.last_name && profile.phone && profile.address;
     
-    if (user && !loading && needsOnboarding && !hasBasicInfo && !excludedPaths.includes(location.pathname)) {
-      console.log('Redirecting to onboarding - missing basic info...');
-      navigate('/onboarding');
+    console.log('OnboardingCheck useEffect:', {
+      user: !!user,
+      loading,
+      needsOnboarding,
+      hasBasicInfo,
+      isExcludedPath,
+      currentPath: location.pathname,
+      shouldRedirect: user && !loading && needsOnboarding && !hasBasicInfo && !isExcludedPath
+    });
+    
+    if (user && !loading && needsOnboarding && !hasBasicInfo && !isExcludedPath) {
+      console.log('OnboardingCheck: Redirecting to onboarding - missing basic info');
+      navigate('/onboarding', { replace: true });
     }
   }, [user, loading, needsOnboarding, profile, navigate, location.pathname]);
 

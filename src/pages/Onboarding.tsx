@@ -246,11 +246,12 @@ export default function Onboarding() {
 
   const handleSitterOnboardingComplete = async () => {
     try {
-      console.log('Completing basic onboarding for sitter role');
+      console.log('=== Starting Sitter Onboarding Completion ===');
       console.log('Current user ID:', user?.id);
       console.log('Current profile:', profile);
       
       // CRITICAL: Use updateProfile to update both database AND context state
+      console.log('Updating profile with onboarding_completed: true');
       const { error: updateError } = await updateProfile({ 
         onboarding_completed: true 
       });
@@ -265,15 +266,21 @@ export default function Onboarding() {
         return;
       }
 
-      console.log('Onboarding marked as complete, context updated');
+      console.log('Onboarding marked as complete in DB and context');
       
+      // Wait a brief moment for state to propagate
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log('Showing success toast');
       toast({
         title: "Welcome to ZiggySitters!",
-        description: "Your sitter profile is set up!",
+        description: "Your sitter profile is set up! Our team will review and approve your profile within 1-2 business days.",
+        duration: 5000,
       });
       
-      // Navigate immediately - context state is already updated
-      navigate('/', { replace: true });
+      // Navigate to onboarding-pending-approval page
+      console.log('Navigating to /onboarding-pending-approval');
+      navigate('/onboarding-pending-approval', { replace: true });
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({

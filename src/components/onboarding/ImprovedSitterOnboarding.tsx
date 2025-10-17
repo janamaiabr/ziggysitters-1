@@ -278,11 +278,13 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   };
 
   const handleCompleteOnboarding = async () => {
+    console.log('handleCompleteOnboarding called');
+    
     // Validate all required fields
     if (services.length === 0) {
       toast({
         title: "Services required",
-        description: "Please add at least one service.",
+        description: "Please add at least one service before submitting.",
         variant: "destructive",
       });
       setCurrentStep(2);
@@ -299,21 +301,35 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       return;
     }
 
-    await handleSaveProgress();
-
-    // Send verification email
     try {
-      await supabase.functions.invoke('send-verification-request-email', {
-        body: {
-          user_id: userId,
-          documents_uploaded: !!(idDocumentUrl || blueCardUrl)
-        }
-      });
-    } catch (error) {
-      console.error('Error sending verification email:', error);
-    }
+      console.log('Saving progress before completion...');
+      await handleSaveProgress();
 
-    onComplete(profileId);
+      // Send verification email
+      console.log('Sending verification request email...');
+      try {
+        await supabase.functions.invoke('send-verification-request-email', {
+          body: {
+            user_id: userId,
+            documents_uploaded: !!(idDocumentUrl || blueCardUrl)
+          }
+        });
+      } catch (error) {
+        console.error('Error sending verification email:', error);
+        // Don't block onboarding completion if email fails
+      }
+
+      console.log('Calling onComplete with profileId:', profileId);
+      // Call onComplete which will mark onboarding as complete
+      onComplete(profileId);
+    } catch (error: any) {
+      console.error('Error in handleCompleteOnboarding:', error);
+      toast({
+        title: "Error completing onboarding",
+        description: error?.message || "Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const isStepValid = (step: number) => {
