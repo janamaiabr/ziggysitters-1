@@ -964,6 +964,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
               ) : (
                 <div className="space-y-4">
                   <Button
+                    type="button"
                     onClick={handleInitiatePaymentSetup}
                     size="lg"
                     className="w-full"
@@ -973,6 +974,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                   </Button>
                   
                   <Button
+                    type="button"
                     onClick={checkStripeStatus}
                     variant="outline"
                     size="lg"
@@ -1000,6 +1002,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       {/* Navigation Buttons */}
       <div className="flex justify-between items-center pt-4">
         <Button
+          type="button"
           variant="outline"
           onClick={handlePrevStep}
           disabled={currentStep === 1}
@@ -1010,6 +1013,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
 
         {currentStep < totalSteps ? (
           <Button
+            type="button"
             onClick={handleNextStep}
             size="lg"
             className="px-8"
@@ -1018,6 +1022,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           </Button>
         ) : (
           <Button 
+            type="button"
             onClick={handleCompleteOnboarding}
             disabled={!isStepValid(2) || !isStepValid(4)}
             size="lg"
