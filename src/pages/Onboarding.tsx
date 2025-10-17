@@ -48,6 +48,32 @@ export default function Onboarding() {
     city: 'Auckland'
   });
 
+  // Handle Stripe return parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const stripeSuccess = params.get('stripe_success');
+    const stripeRefresh = params.get('stripe_refresh');
+    
+    if (stripeSuccess === 'true') {
+      toast({
+        title: "Stripe setup completed!",
+        description: "Please verify your connection status below.",
+        duration: 5000,
+      });
+      // Clean up URL
+      window.history.replaceState({}, '', '/onboarding');
+    } else if (stripeRefresh === 'true') {
+      toast({
+        title: "Please try again",
+        description: "Complete all required steps in Stripe setup.",
+        variant: "destructive",
+        duration: 5000,
+      });
+      // Clean up URL
+      window.history.replaceState({}, '', '/onboarding');
+    }
+  }, [toast]);
+
   useEffect(() => {
     if (!user) {
       navigate('/auth');
