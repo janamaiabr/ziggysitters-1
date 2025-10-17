@@ -310,18 +310,10 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       
       if (data?.enabled) {
         setPaymentSetupCompleted(true);
-        toast({
-          title: "Payment setup verified!",
-          description: "Your Stripe account is connected and ready for payments.",
-        });
         return true;
       } else if (data?.onboarding_completed) {
         // Onboarding is complete, just waiting for Stripe verification
         setPaymentSetupCompleted(true);
-        toast({
-          title: "Payment setup complete!",
-          description: "Stripe is processing your verification. You can continue with onboarding.",
-        });
         return true;
       } else if (data?.connected && !data?.onboarding_completed) {
         // Connected but onboarding not finished
