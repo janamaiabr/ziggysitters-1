@@ -25,6 +25,8 @@ interface ImprovedSitterOnboardingProps {
   profileId: string;
   userId: string;
   onComplete: (sitterId: string) => void;
+  overallStep?: number; // The overall step number from parent (3-7)
+  onStepChange?: (newStep: number) => void; // Callback to update parent step
 }
 
 const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit', 'horse'];
@@ -38,10 +40,10 @@ const serviceTypes = [
   { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (Sitter\'s Home)', rate_types: ['hourly_rate', 'daily_rate'], suggestedHourly: 20, suggestedDaily: 45, suggestedOvernight: null }
 ];
 
-export default function ImprovedSitterOnboarding({ profileId, userId, onComplete }: ImprovedSitterOnboardingProps) {
+export default function ImprovedSitterOnboarding({ profileId, userId, onComplete, overallStep, onStepChange }: ImprovedSitterOnboardingProps) {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 6; // Experience, Services, Calendar, Verification, Payment Setup, Complete
+  const totalSteps = 5; // Experience, Services, Calendar, Verification, Payment Setup
   
   // Step 1: Experience
   const [bio, setBio] = useState('');
@@ -356,12 +358,22 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     // Auto-save on next
     if (currentStep < totalSteps) {
       handleSaveProgress();
-      setCurrentStep(prev => prev + 1);
+      const newStep = currentStep + 1;
+      setCurrentStep(newStep);
+      // Notify parent of step change if callback provided
+      if (onStepChange && overallStep) {
+        onStepChange(overallStep + 1);
+      }
     }
   };
 
   const handlePrevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
+    const newStep = Math.max(currentStep - 1, 1);
+    setCurrentStep(newStep);
+    // Notify parent of step change if callback provided
+    if (onStepChange && overallStep && newStep < currentStep) {
+      onStepChange(overallStep - 1);
+    }
   };
 
   const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
@@ -383,7 +395,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           
           <h2 className="text-2xl sm:text-3xl font-bold">Complete Your Sitter Profile</h2>
           <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">
-            Step {currentStep} of {totalSteps}: {
+            {overallStep ? `Step ${overallStep} of 7` : `Step ${currentStep} of ${totalSteps}`}: {
               currentStep === 1 ? 'About Your Experience' :
               currentStep === 2 ? 'Services & Pricing' :
               currentStep === 3 ? 'Calendar & Availability' :

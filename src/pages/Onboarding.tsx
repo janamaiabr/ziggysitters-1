@@ -514,6 +514,10 @@ export default function Onboarding() {
     </div>
   );
 
+  const handleSitterStepChange = (newStep: number) => {
+    setStep(newStep);
+  };
+
   const renderRoleSpecificOnboarding = () => {
     if (!data.role) return null;
 
@@ -522,14 +526,23 @@ export default function Onboarding() {
     }
     
     if (data.role === 'pet_sitter') {
-      return <ImprovedSitterOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleSitterOnboardingComplete} />;
+      return (
+        <ImprovedSitterOnboarding 
+          profileId={profile?.id || ''} 
+          userId={user?.id || ''} 
+          onComplete={handleSitterOnboardingComplete}
+          overallStep={step}
+          onStepChange={handleSitterStepChange}
+        />
+      );
     }
     
     return null;
   };
 
   const getTotalSteps = () => {
-    if (data.role === 'pet_owner' || data.role === 'pet_sitter') return 3;
+    if (data.role === 'pet_sitter') return 7; // User type + Basic info + 5 sitter steps
+    if (data.role === 'pet_owner') return 3; // User type + Basic info + Pets
     return 2;
   };
 
@@ -539,7 +552,11 @@ export default function Onboarding() {
     if (data.role === 'pet_owner') {
       if (step === 3) return 'Your Pets';
     } else if (data.role === 'pet_sitter') {
-      if (step === 3) return 'Sitter Services';
+      // Steps 3-7 are handled by ImprovedSitterOnboarding
+      const sitterSteps = ['Experience', 'Services & Pricing', 'Calendar', 'Verification', 'Payment Setup'];
+      if (step >= 3 && step <= 7) {
+        return sitterSteps[step - 3];
+      }
     }
     return '';
   };
