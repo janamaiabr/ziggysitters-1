@@ -43,6 +43,7 @@ export default function Onboarding() {
   const [profileId, setProfileId] = useState<string>('');
   const [showTerms, setShowTerms] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [data, setData] = useState<OnboardingData>({
     role: null,
     city: 'Auckland'
@@ -118,14 +119,18 @@ export default function Onboarding() {
           setTermsChecked(hasAcceptedTerms);
           setShowTerms(!hasAcceptedTerms);
           
-          if (hasAcceptedTerms) {
-            setStep(1); // Skip to role selection if terms already accepted
-          } else {
-            setStep(0); // Show terms if not accepted
+          // Only set initial step on first load, not on subsequent re-renders
+          if (!initialLoadComplete) {
+            if (hasAcceptedTerms) {
+              setStep(1); // Skip to role selection if terms already accepted
+            } else {
+              setStep(0); // Show terms if not accepted
+            }
           }
 
           setData(prev => ({
             ...prev,
+            role: (profile.role === 'pet_owner' || profile.role === 'pet_sitter') ? profile.role : prev.role, // Only set role if it's a valid UserRole
             first_name: profile.first_name || user.user_metadata?.first_name || '',
             last_name: profile.last_name || user.user_metadata?.last_name || '',
             phone: profile.phone || '',
@@ -138,16 +143,21 @@ export default function Onboarding() {
           }));
         } else {
           // If no profile exists, show terms and use signup metadata
-          setShowTerms(true);
-          setStep(0);
+          if (!initialLoadComplete) {
+            setShowTerms(true);
+            setStep(0);
+          }
           setData(prev => ({
             ...prev,
             first_name: user.user_metadata?.first_name || '',
             last_name: user.user_metadata?.last_name || '',
           }));
         }
+        
+        setInitialLoadComplete(true);
       } catch (error) {
         console.error('Error fetching profile:', error);
+        setInitialLoadComplete(true);
       }
     };
 
