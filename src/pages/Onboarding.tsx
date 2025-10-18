@@ -38,16 +38,40 @@ export default function Onboarding() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
-  const [step, setStep] = useState(1); // Start at 1 for role selection
+  const [step, setStep] = useState(() => {
+    const saved = localStorage.getItem('onboarding_step');
+    return saved ? parseInt(saved) : 1;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [profileId, setProfileId] = useState<string>('');
   const [showTerms, setShowTerms] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const [data, setData] = useState<OnboardingData>({
-    role: null,
-    city: 'Auckland'
+  const [data, setData] = useState<OnboardingData>(() => {
+    // Try to load from localStorage first
+    const saved = localStorage.getItem('onboarding_data');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved onboarding data', e);
+      }
+    }
+    return {
+      role: null,
+      city: 'Auckland'
+    };
   });
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('onboarding_data', JSON.stringify(data));
+  }, [data]);
+
+  // Save step to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('onboarding_step', step.toString());
+  }, [step]);
 
   // Handle Stripe return parameters
   useEffect(() => {
@@ -106,6 +130,8 @@ export default function Onboarding() {
 
     // Pre-fill with existing user data if available
     const fetchExistingProfile = async () => {
+      if (initialLoadComplete) return; // Prevent multiple loads
+      
       try {
         const { data: profile, error } = await supabase
           .from('profiles')
@@ -114,43 +140,49 @@ export default function Onboarding() {
           .maybeSingle();
 
         if (!error && profile) {
-          // Check if user has already accepted terms
+          // Check if user has already accepted terms in the database
           const hasAcceptedTerms = profile.terms_accepted === true;
           setTermsChecked(hasAcceptedTerms);
-          setShowTerms(!hasAcceptedTerms);
           
-          // Only set initial step on first load, not on subsequent re-renders
-          if (!initialLoadComplete) {
-            if (hasAcceptedTerms) {
-              setStep(1); // Skip to role selection if terms already accepted
-            } else {
-              setStep(0); // Show terms if not accepted
-            }
-          }
-
-          setData(prev => ({
-            ...prev,
-            role: (profile.role === 'pet_owner' || profile.role === 'pet_sitter') ? profile.role : prev.role, // Only set role if it's a valid UserRole
-            first_name: profile.first_name || user.user_metadata?.first_name || '',
-            last_name: profile.last_name || user.user_metadata?.last_name || '',
-            phone: profile.phone || '',
-            address: profile.address || '',
-            suburb: profile.suburb || '',
-            city: profile.city || 'Auckland',
-            postal_code: profile.postal_code || '',
-            bio: profile.bio || '',
-            avatar_url: profile.avatar_url || '',
-          }));
-        } else {
-          // If no profile exists, show terms and use signup metadata
-          if (!initialLoadComplete) {
+          // Only show terms if not accepted AND not currently showing
+          if (!hasAcceptedTerms && !showTerms) {
             setShowTerms(true);
             setStep(0);
+            localStorage.setItem('onboarding_step', '0');
+          } else if (hasAcceptedTerms && step === 0) {
+            // If terms already accepted and we're at step 0, move forward
+            setStep(1);
+            localStorage.setItem('onboarding_step', '1');
+          }
+
+          // Only update data if localStorage doesn't have it
+          const savedData = localStorage.getItem('onboarding_data');
+          if (!savedData) {
+            setData(prev => ({
+              ...prev,
+              role: (profile.role === 'pet_owner' || profile.role === 'pet_sitter') ? profile.role : prev.role,
+              first_name: profile.first_name || user.user_metadata?.first_name || '',
+              last_name: profile.last_name || user.user_metadata?.last_name || '',
+              phone: profile.phone || '',
+              address: profile.address || '',
+              suburb: profile.suburb || '',
+              city: profile.city || 'Auckland',
+              postal_code: profile.postal_code || '',
+              bio: profile.bio || '',
+              avatar_url: profile.avatar_url || '',
+            }));
+          }
+        } else {
+          // If no profile exists, show terms
+          if (!showTerms) {
+            setShowTerms(true);
+            setStep(0);
+            localStorage.setItem('onboarding_step', '0');
           }
           setData(prev => ({
             ...prev,
-            first_name: user.user_metadata?.first_name || '',
-            last_name: user.user_metadata?.last_name || '',
+            first_name: user.user_metadata?.first_name || prev.first_name || '',
+            last_name: user.user_metadata?.last_name || prev.last_name || '',
           }));
         }
         
@@ -162,7 +194,7 @@ export default function Onboarding() {
     };
 
     fetchExistingProfile();
-  }, [user, navigate]);
+  }, [user, navigate, initialLoadComplete, showTerms, step]);
 
   const handleRoleSelection = (role: UserRole) => {
     setData(prev => ({ ...prev, role }));
@@ -185,6 +217,7 @@ export default function Onboarding() {
       setShowTerms(false);
       setTermsChecked(true);
       setStep(1); // Move to role selection
+      localStorage.setItem('onboarding_step', '1');
       
       toast({
         title: "Terms Accepted",
@@ -297,6 +330,10 @@ export default function Onboarding() {
 
       console.log('Onboarding marked as complete, context updated');
 
+      // Clear localStorage after successful completion
+      localStorage.removeItem('onboarding_data');
+      localStorage.removeItem('onboarding_step');
+
       toast({
         title: "Profile completed!",
         description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
@@ -337,6 +374,10 @@ export default function Onboarding() {
       }
 
       console.log('Onboarding marked as complete in DB and context');
+      
+      // Clear localStorage after successful completion
+      localStorage.removeItem('onboarding_data');
+      localStorage.removeItem('onboarding_step');
       
       // Wait a brief moment for state to propagate
       await new Promise(resolve => setTimeout(resolve, 100));
