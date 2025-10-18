@@ -47,10 +47,26 @@ export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
     checkAdminStatus();
     fetchPendingSitters();
     fetchAllUsers();
   }, [user]);
+
+  // CRITICAL FIX: Redirect non-admin users
+  useEffect(() => {
+    if (!loading && !isAdmin && user) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access this page.",
+        variant: "destructive",
+      });
+      navigate('/');
+    }
+  }, [isAdmin, loading, user, navigate, toast]);
 
   const checkAdminStatus = async () => {
     if (!user) return;

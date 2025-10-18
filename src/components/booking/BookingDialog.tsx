@@ -95,14 +95,25 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       if (!user || !isOpen) return;
 
       try {
-        // Get owner's profile ID
+        // Get owner's profile ID and role
         const { data: profile } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, role')
           .eq('user_id', user.id)
           .single();
 
         if (!profile) return;
+        
+        // CRITICAL FIX: Prevent sitters from booking other sitters
+        if (profile.role === 'pet_sitter') {
+          toast({
+            title: "Not Available",
+            description: "Pet sitters cannot book other sitters. Please switch to a pet owner account.",
+            variant: "destructive",
+          });
+          onClose();
+          return;
+        }
 
         // Fetch owner's pets
         const { data: pets, error } = await supabase

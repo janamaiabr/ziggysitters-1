@@ -97,6 +97,16 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
   };
 
   const handleSubmit = async (data: ReportFormData) => {
+    // CRITICAL FIX: Validate general notes not empty/spaces-only
+    if (!data.general_notes || !data.general_notes.trim() || data.general_notes.trim().length < 10) {
+      toast({
+        title: "Invalid Notes",
+        description: "Please provide detailed notes (at least 10 meaningful characters).",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (uploadedPhotos.length === 0) {
       toast({
         title: "Photo required",
