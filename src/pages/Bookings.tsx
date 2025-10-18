@@ -141,14 +141,21 @@ export default function Bookings() {
         body: { booking_id: booking.id }
       });
 
+      // Check for error from edge function
       if (error) {
         console.error('Payment function error:', error);
-        throw error;
+        throw new Error(error.message || 'Failed to create payment session');
+      }
+
+      // Check for error in response data
+      if (data?.error) {
+        console.error('Payment error from response:', data.error);
+        throw new Error(data.error);
       }
 
       console.log('Payment session created:', data);
 
-      if (data.url) {
+      if (data?.url) {
         window.open(data.url, '_blank');
         toast({
           title: "Payment Window Opened",
