@@ -196,14 +196,51 @@ export default function Profile() {
   const uploadVerificationDocument = async (file: File, type: 'id' | 'blue_card') => {
     if (!user || !profile) return;
 
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      toast({
+        title: "File too large",
+        description: `File size must be under 5MB. Your file is ${(file.size / 1024 / 1024).toFixed(2)}MB.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file format
+    const allowedFormats = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    const fileExt = file.name.split('.').pop()?.toLowerCase();
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+    
+    if (!allowedFormats.includes(file.type) && !allowedExtensions.includes(fileExt || '')) {
+      toast({
+        title: "Invalid file format",
+        description: "Please upload a PDF, JPG, JPEG, or PNG file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${type}_document_${Date.now()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
+      const fileName = `${user.id}-${type}.${fileExt}`;
+      const filePath = fileName;
+
+      // Delete old file if it exists
+      const oldUrl = type === 'id' ? profile.id_document_url : profile.blue_card_document_url;
+      if (oldUrl) {
+        const oldFileName = oldUrl.split('/').pop();
+        if (oldFileName) {
+          await supabase.storage
+            .from('verification-docs')
+            .remove([oldFileName]);
+        }
+      }
 
       const { error: uploadError } = await supabase.storage
         .from('verification-docs')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: true
+        });
 
       if (uploadError) throw uploadError;
 
@@ -245,11 +282,22 @@ export default function Profile() {
 
       // Refresh profile data
       window.location.reload();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading document:', error);
+      
+      let errorMessage = "Failed to upload document. Please try again.";
+      
+      if (error.message?.includes('duplicate')) {
+        errorMessage = "A document with this name already exists. Please try again.";
+      } else if (error.message?.includes('size')) {
+        errorMessage = "File size exceeds the allowed limit.";
+      } else if (error.message?.includes('storage')) {
+        errorMessage = "Storage error. Please check your connection and try again.";
+      }
+      
       toast({
         title: "Upload failed",
-        description: "Failed to upload document. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -1362,8 +1410,11 @@ export default function Profile() {
                 {/* ID Document Upload */}
                 <div>
                   <h3 className="font-medium mb-2">Government Issued Photo ID</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-2">
                     Upload a clear photo of your driver's license, passport, or government ID card.
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    📄 Accepted formats: PDF, JPG, JPEG, PNG | 📦 Max size: 5MB
                   </p>
                   {profile.id_document_url ? (
                     <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -1401,8 +1452,11 @@ export default function Profile() {
                 {/* Police Vet Upload */}
                 <div>
                   <h3 className="font-medium mb-2">NZ Police Vetting Service Check</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-2">
                     Upload your NZ Police Vetting Service check. <a href="https://www.police.govt.nz/advice-services/businesses-and-organisations/nz-police-vetting-service/forms-and-guides" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Get your police vet here</a>
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    📄 Accepted formats: PDF, JPG, JPEG, PNG | 📦 Max size: 5MB
                   </p>
                   {profile.blue_card_document_url ? (
                     <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
