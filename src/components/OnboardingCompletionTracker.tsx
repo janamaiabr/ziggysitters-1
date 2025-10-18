@@ -72,7 +72,8 @@ export function OnboardingCompletionTracker() {
 
           const hasServices = services && services.length > 0;
           const hasVerificationDocs = profile.id_document_url || profile.blue_card_document_url;
-          const hasStripeSetup = profile.stripe_account_enabled && profile.stripe_onboarding_completed;
+          // Only consider Stripe setup complete when account is actually enabled, not just onboarding completed
+          const hasStripeSetup = profile.stripe_account_enabled === true;
 
           // Only auto-complete if sitter has ALL requirements
           if (hasServices && hasVerificationDocs && hasStripeSetup) {

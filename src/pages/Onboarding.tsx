@@ -73,31 +73,17 @@ export default function Onboarding() {
     localStorage.setItem('onboarding_step', step.toString());
   }, [step]);
 
-  // Handle Stripe return parameters
+  // Handle Stripe return parameters - redirect to profile page
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const stripeSuccess = params.get('stripe_success');
     const stripeRefresh = params.get('stripe_refresh');
     
-    if (stripeSuccess === 'true') {
-      toast({
-        title: "Stripe setup completed!",
-        description: "Please verify your connection status below.",
-        duration: 5000,
-      });
-      // Clean up URL
-      window.history.replaceState({}, '', '/onboarding');
-    } else if (stripeRefresh === 'true') {
-      toast({
-        title: "Please try again",
-        description: "Complete all required steps in Stripe setup.",
-        variant: "destructive",
-        duration: 5000,
-      });
-      // Clean up URL
-      window.history.replaceState({}, '', '/onboarding');
+    if (stripeSuccess === 'true' || stripeRefresh === 'true') {
+      // User returned from Stripe setup - redirect to profile page
+      navigate(`/profile?tab=verification&stripe_success=${stripeSuccess}&stripe_refresh=${stripeRefresh}`);
     }
-  }, [toast]);
+  }, [navigate]);
 
   useEffect(() => {
     if (!user) {

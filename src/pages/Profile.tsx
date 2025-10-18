@@ -25,7 +25,7 @@ import { SitterStatusBadge } from '@/components/onboarding/SitterStatusBadge';
 export default function Profile() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { profile, loading } = useProfile();
+  const { profile, loading, refetch } = useProfile();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [recentBookings, setRecentBookings] = useState([]);
@@ -65,11 +65,15 @@ export default function Profile() {
         if (urlParams.get('stripe_success') === 'true') {
           setActiveTab('verification');
           toast({
-            title: "Stripe Connected!",
-            description: "Your bank account has been successfully connected.",
+            title: "Stripe Setup Complete!",
+            description: "Your bank account connection has been saved. Verifying status...",
           });
-          // Refresh status after a short delay
-          setTimeout(() => checkStripeStatus(), 2000);
+          // Refresh status and profile data
+          setTimeout(async () => {
+            await checkStripeStatus();
+            // Refetch profile to get updated Stripe status
+            await refetch();
+          }, 2000);
           // Clean up URL
           window.history.replaceState({}, '', '/profile?tab=verification');
         } else if (urlParams.get('stripe_refresh') === 'true') {
@@ -1560,9 +1564,10 @@ export default function Profile() {
                     <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <AlertCircle className="w-5 h-5 text-yellow-500" />
                       <div className="flex-1">
-                        <p className="font-medium text-yellow-700">Setup Incomplete</p>
+                        <p className="font-medium text-yellow-700">Additional Verification Required</p>
                         <p className="text-sm text-yellow-600">
-                          Please complete your Stripe account setup to receive payments
+                          Stripe requires additional verification documents to enable payments.
+                          {stripeStatus.onboarding_completed && " Click below to submit the required documents."}
                         </p>
                       </div>
                       <Button
@@ -1570,7 +1575,7 @@ export default function Profile() {
                         size="sm"
                         onClick={handleStripeConnect}
                       >
-                        Complete Setup
+                        Submit Documents
                       </Button>
                     </div>
                   ) : (
