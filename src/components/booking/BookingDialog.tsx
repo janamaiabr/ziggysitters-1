@@ -65,7 +65,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
-  const [requiresDailyReports, setRequiresDailyReports] = useState(true);
+  const [requiresDailyReports, setRequiresDailyReports] = useState(false); // Default to false - pet owners opt-in
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
@@ -202,6 +202,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
 
+    // Validate required fields
     if (!startDate || !endDate || !serviceType) {
       toast({
         title: 'Missing Information',
@@ -211,10 +212,30 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
 
-    if (ownerPets.length > 0 && selectedPetIds.length === 0) {
+    // Require pet selection - pet owners MUST have pets registered
+    if (ownerPets.length === 0) {
+      toast({
+        title: 'No Pets Registered',
+        description: 'Please add your pets to your profile before booking a sitter.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (selectedPetIds.length === 0) {
       toast({
         title: 'No Pets Selected',
         description: 'Please select at least one pet for this booking.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Validate special instructions - prevent empty or spaces-only
+    if (specialInstructions && !specialInstructions.trim()) {
+      toast({
+        title: 'Invalid Instructions',
+        description: 'Special instructions cannot be empty or contain only spaces.',
         variant: 'destructive'
       });
       return;
@@ -290,7 +311,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     setEndTime('17:00');
     setServiceType('');
     setSpecialInstructions('');
-    setRequiresDailyReports(true);
+    setRequiresDailyReports(false); // Reset to false - pet owners must opt-in each time
     setAgreedToTerms(false);
     setSelectedPetIds([]);
   };

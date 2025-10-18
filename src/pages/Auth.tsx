@@ -42,10 +42,22 @@ export default function Auth() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate inputs are not empty or spaces-only
+    if (!formData.email.trim() || !formData.password.trim()) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter valid email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
-      const { error } = await signIn(formData.email, formData.password);
+      // Trim values before sending to API
+      const { error } = await signIn(formData.email.trim(), formData.password.trim());
       
       if (error) {
         toast({
@@ -75,7 +87,13 @@ export default function Auth() {
     setIsLoading(true);
 
     try {
-      const { error } = await signUp(formData.email, formData.password, formData.firstName, formData.lastName);
+      // Trim all values before sending to API
+      const { error } = await signUp(
+        formData.email.trim(), 
+        formData.password.trim(), 
+        formData.firstName.trim(), 
+        formData.lastName.trim()
+      );
       
       if (error) {
         if (error.message.includes('already registered')) {
@@ -129,6 +147,17 @@ export default function Auth() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate inputs are not empty or spaces-only
+    if (!formData.firstName.trim() || !formData.lastName.trim() || 
+        !formData.email.trim() || !formData.password.trim()) {
+      toast({
+        title: "Invalid Input",
+        description: "Please fill in all fields with valid information.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Show terms acceptance dialog
     setPendingAuthAction(() => executeSignUp);
     setShowTerms(true);
@@ -153,9 +182,10 @@ export default function Auth() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value.trim() // Trim whitespace to prevent spaces-only validation bypass
+      [e.target.name]: value
     }));
   };
 
