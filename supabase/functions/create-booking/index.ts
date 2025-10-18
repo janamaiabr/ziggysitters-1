@@ -65,6 +65,73 @@ serve(async (req) => {
     const bookingData: BookingRequest = await req.json();
     logStep("Booking request received", bookingData);
 
+    // ============= CRITICAL VALIDATION: Edge Cases & Boundary Conditions =============
+    
+    // Validate dates are not in the past
+    const startDate = new Date(bookingData.startDate);
+    const endDate = new Date(bookingData.endDate);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Reset to start of day for comparison
+    
+    if (startDate < now) {
+      throw new Error("Start date cannot be in the past");
+    }
+    
+    if (endDate < startDate) {
+      throw new Error("End date must be after start date");
+    }
+    
+    // Validate booking duration (max 90 days)
+    const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)) + 1;
+    if (daysDiff > 90) {
+      throw new Error("Booking duration cannot exceed 90 days");
+    }
+    
+    // Validate pet count (max 10 pets per booking)
+    if (!bookingData.petIds || bookingData.petIds.length === 0) {
+      throw new Error("At least one pet must be selected");
+    }
+    if (bookingData.petIds.length > 10) {
+      throw new Error("Maximum 10 pets per booking");
+    }
+    
+    // Validate total amount is positive and reasonable
+    if (bookingData.totalAmount <= 0) {
+      throw new Error("Total amount must be greater than 0");
+    }
+    if (bookingData.totalAmount > 100000) {
+      throw new Error("Total amount exceeds maximum allowed ($100,000)");
+    }
+    
+    // Validate special instructions length (max 2000 characters)
+    if (bookingData.specialInstructions && bookingData.specialInstructions.length > 2000) {
+      throw new Error("Special instructions cannot exceed 2000 characters");
+    }
+    
+    // Trim and validate special instructions not empty/spaces-only
+    if (bookingData.specialInstructions) {
+      bookingData.specialInstructions = bookingData.specialInstructions.trim();
+      if (bookingData.specialInstructions.length === 0) {
+        bookingData.specialInstructions = undefined; // Convert empty string to undefined
+      }
+    }
+    
+    logStep("Edge case validation passed");
+
+    // ============= CRITICAL VALIDATION: Data Integrity - Pet IDs exist =============
+    
+    // Validate all pet IDs exist and belong to the owner
+    const { data: validPets, error: petsError } = await supabaseClient
+      .from('pets')
+      .select('id')
+      .eq('owner_id', profile.id)
+      .in('id', bookingData.petIds);
+    
+    if (petsError || !validPets || validPets.length !== bookingData.petIds.length) {
+      throw new Error("One or more pet IDs are invalid or do not belong to you");
+    }
+    logStep("Pet IDs validated", { petCount: validPets.length });
+
     // Service type mapping from frontend to database enum
     const serviceTypeMapping = {
       // Legacy frontend mappings (for backward compatibility)
@@ -92,14 +159,122 @@ serve(async (req) => {
     if (!validServiceTypes.includes(dbServiceType)) {
       throw new Error(`Invalid service type: ${bookingData.serviceType} -> ${dbServiceType}`);
     }
+    
+    // ============= CRITICAL VALIDATION: Data Integrity - Amount Validation =============
+    
+    // Get sitter's service pricing to validate amount
+    const { data: sitterService, error: serviceError } = await supabaseClient
+      .from('sitter_services')
+      .select('hourly_rate, daily_rate, overnight_rate, is_offered')
+      .eq('sitter_id', bookingData.sitterId)
+      .eq('service_type', dbServiceType)
+      .maybeSingle();
+    
+    if (serviceError || !sitterService) {
+      throw new Error("Sitter does not offer this service");
+    }
+    
+    if (!sitterService.is_offered) {
+      throw new Error("This service is not currently offered by the sitter");
+    }
+    
+    // Calculate expected amount based on service type and duration
+    let expectedAmount = 0;
+    const numDays = daysDiff;
+    
+    if (dbServiceType === 'dog_walking' && sitterService.hourly_rate) {
+      // Dog walking uses hourly rate - estimate 1 hour per walk
+      expectedAmount = Number(sitterService.hourly_rate) * numDays;
+    } else if (sitterService.overnight_rate) {
+      expectedAmount = Number(sitterService.overnight_rate) * numDays;
+    } else if (sitterService.daily_rate) {
+      expectedAmount = Number(sitterService.daily_rate) * numDays;
+    } else if (sitterService.hourly_rate) {
+      // Fallback to hourly rate - estimate 4 hours per day
+      expectedAmount = Number(sitterService.hourly_rate) * 4 * numDays;
+    }
+    
+    // Allow 50% variance for multi-pet bookings and special cases
+    const minExpected = expectedAmount * 0.5;
+    const maxExpected = expectedAmount * 2.0;
+    
+    if (bookingData.totalAmount < minExpected || bookingData.totalAmount > maxExpected) {
+      logStep("Amount validation warning", { 
+        provided: bookingData.totalAmount, 
+        expected: expectedAmount,
+        range: `${minExpected}-${maxExpected}` 
+      });
+      // Note: We log but don't fail - allows flexibility for custom pricing
+    }
+    
+    logStep("Service pricing validated");
+
+    // ============= CRITICAL VALIDATION: Race Conditions - Check Availability =============
+    
+    // Check if sitter has any conflicting bookings for the requested dates
+    const { data: conflictingBookings, error: conflictError } = await supabaseClient
+      .from('bookings')
+      .select('id, start_date, end_date, status')
+      .eq('sitter_id', bookingData.sitterId)
+      .in('status', ['pending', 'awaiting_payment', 'confirmed', 'in_progress'])
+      .or(`and(start_date.lte.${bookingData.endDate},end_date.gte.${bookingData.startDate})`);
+    
+    if (conflictError) {
+      logStep("Error checking availability", { error: conflictError });
+      throw new Error("Failed to check sitter availability");
+    }
+    
+    if (conflictingBookings && conflictingBookings.length > 0) {
+      logStep("Conflicting bookings found", { count: conflictingBookings.length, bookings: conflictingBookings });
+      throw new Error("Sitter is not available for the selected dates. Please choose different dates.");
+    }
+    
+    // Check sitter's availability calendar for blocked dates
+    const { data: unavailableDates, error: availabilityError } = await supabaseClient
+      .from('sitter_availability')
+      .select('date, is_available')
+      .eq('sitter_id', bookingData.sitterId)
+      .eq('is_available', false)
+      .gte('date', bookingData.startDate)
+      .lte('date', bookingData.endDate);
+    
+    if (availabilityError) {
+      logStep("Error checking availability calendar", { error: availabilityError });
+      // Don't fail - calendar is optional
+    } else if (unavailableDates && unavailableDates.length > 0) {
+      logStep("Unavailable dates found", { dates: unavailableDates });
+      throw new Error(`Sitter has marked themselves unavailable on ${unavailableDates.length} day(s) in your selected range`);
+    }
+    
+    logStep("Availability check passed - no conflicts found");
+    
+    // ============= CRITICAL VALIDATION: Payment State - Stripe Account Status =============
+    
+    // Get sitter's profile to check Stripe status
+    const { data: sitterProfile, error: sitterProfileError } = await supabaseClient
+      .from('profiles')
+      .select('id, first_name, last_name, email, stripe_account_id, stripe_account_enabled, stripe_onboarding_completed')
+      .eq('id', bookingData.sitterId)
+      .maybeSingle();
+    
+    if (sitterProfileError || !sitterProfile) {
+      throw new Error('Sitter profile not found');
+    }
+    
+    // Check if sitter has completed Stripe onboarding
+    if (!sitterProfile.stripe_account_id || !sitterProfile.stripe_account_enabled) {
+      throw new Error('This sitter has not completed payment setup. Please choose another sitter.');
+    }
+    
+    logStep("Sitter Stripe status validated", { 
+      accountId: sitterProfile.stripe_account_id,
+      enabled: sitterProfile.stripe_account_enabled 
+    });
 
     // Calculate daily reports required (only if owner explicitly requested them)
     const requiresDailyReports = bookingData.requiresDailyReports === true; // Default to false
     let dailyReportsRequired = 0;
     if (requiresDailyReports) {
-      const startDateTime = new Date(bookingData.startDate);
-      const endDateTime = new Date(bookingData.endDate);
-      const daysDiff = Math.ceil((endDateTime.getTime() - startDateTime.getTime()) / (1000 * 3600 * 24)) + 1;
       dailyReportsRequired = Math.max(1, daysDiff);
     }
 
@@ -130,17 +305,6 @@ serve(async (req) => {
       throw new Error(`Failed to create booking: ${bookingError?.message}`);
     }
     logStep("Booking created - payment will occur after sitter acceptance", { bookingId: booking.id, reference: booking.booking_reference });
-
-    // Get sitter's profile for notification
-    const { data: sitterProfile, error: sitterError } = await supabaseClient
-      .from('profiles')
-      .select('first_name, last_name, email')
-      .eq('id', bookingData.sitterId)
-      .maybeSingle();
-
-    if (sitterError || !sitterProfile) {
-      throw new Error('Sitter profile not found');
-    }
 
     // Send booking notification email to sitter
     try {
