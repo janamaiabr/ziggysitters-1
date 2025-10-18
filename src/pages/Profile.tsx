@@ -622,7 +622,7 @@ export default function Profile() {
 
       // Send acceptance notification to owner
       const acceptedBooking = recentBookings.find(b => b.id === bookingId);
-      if (acceptedBooking) {
+      if (acceptedBooking && acceptedBooking.owner) {
         await supabase.functions.invoke('send-booking-acceptance-email', {
           body: {
             owner_email: acceptedBooking.owner.email,
