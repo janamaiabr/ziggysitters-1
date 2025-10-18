@@ -94,21 +94,32 @@ serve(async (req) => {
     if (!accountId) {
       console.log("Creating new Stripe Connect account for:", profile.email);
       try {
-        const account = await stripe.accounts.create({
-          type: "express",
-          country: "NZ",
+      const account = await stripe.accounts.create({
+        type: "express",
+        country: "NZ",
+        email: profile.email,
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+        business_type: "individual",
+        business_profile: {
+          mcc: "7299", // Pet care services
+          product_description: "Pet sitting and care services",
+        },
+        individual: {
+          first_name: profile.first_name,
+          last_name: profile.last_name,
           email: profile.email,
-          capabilities: {
-            card_payments: { requested: true },
-            transfers: { requested: true },
+        },
+        settings: {
+          payouts: {
+            schedule: {
+              interval: "manual", // Manual payouts for better control
+            },
           },
-          business_type: "individual",
-          individual: {
-            first_name: profile.first_name,
-            last_name: profile.last_name,
-            email: profile.email,
-          },
-        });
+        },
+      });
 
         accountId = account.id;
         console.log("Stripe account created successfully:", accountId);
@@ -142,6 +153,7 @@ serve(async (req) => {
         refresh_url: `${origin}/profile?tab=verification&stripe_refresh=true`,
         return_url: `${origin}/profile?tab=verification&stripe_success=true`,
         type: "account_onboarding",
+        collect: "eventually_due", // Collect all required information upfront
       });
 
       console.log("Account link created successfully:", accountLink.url);
