@@ -41,10 +41,12 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Use the secure public_sitter_profiles view that excludes PII
+        // Fetch profiles - filter for verified sitters with Stripe enabled
         const { data: profilesData, error: profilesError } = await supabase
-          .from('public_sitter_profiles')
-          .select('*')
+          .from('profiles')
+          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, role, stripe_account_enabled')
+          .eq('role', 'pet_sitter')
+          .eq('stripe_account_enabled', true)  // Only show sitters who can accept payments
           .order('rating', { ascending: false });
         
         console.log('Profiles data:', profilesData);

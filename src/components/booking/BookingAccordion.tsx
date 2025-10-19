@@ -244,6 +244,16 @@ export default function BookingAccordion({
       return;
     }
 
+    // Check selected pets
+    if (selectedPetIds.length === 0) {
+      toast({
+        title: 'No Pets Selected',
+        description: 'Please select at least one pet for this booking.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     console.log('Setting loading to true');
     setLoading(true);
 

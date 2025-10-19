@@ -18,8 +18,11 @@ import {
 } from 'lucide-react';
 import BookingAccordion from '@/components/booking/BookingAccordion';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 interface SitterData {
   id: string;
@@ -46,10 +49,12 @@ export default function SitterProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { profile } = useProfile();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sitterStripeEnabled, setSitterStripeEnabled] = useState(false);
   
   // Get dates from URL params
   const checkInDate = searchParams.get('checkIn');
@@ -132,6 +137,9 @@ export default function SitterProfile() {
 
         // Store services data for displaying rates
         setServicesData(servicesData || []);
+        
+        // Check if sitter has Stripe enabled for payments
+        setSitterStripeEnabled(data.stripe_account_enabled || false);
 
         // Fetch portfolio photos from storage
         const { data: portfolioFiles } = await supabase.storage
@@ -307,25 +315,47 @@ export default function SitterProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Booking Form - Always visible, no button needed */}
-            <div id="booking-section">
-              <BookingAccordion
-                sitter={{
-                  id: sitterData.id,
-                  name: sitterData.display_name,
-                  location: sitterData.location,
-                  hourlyRate: sitterData.hourlyRate,
-                  services: sitterData.services,
-                  avatar: sitterData.avatar
-                }}
-                servicesData={servicesData}
-                isOpen={isBookingOpen}
-                onBookingComplete={() => navigate('/bookings')}
-                initialCheckIn={checkInDate || undefined}
-                initialCheckOut={checkOutDate || undefined}
-                initialServiceType={serviceTypeParam || undefined}
-              />
-            </div>
+            {/* Show alert if current user is a sitter */}
+            {profile?.role === 'pet_sitter' && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Pet sitters cannot book other sitters. Only pet owners can make bookings.
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            {/* Show alert if sitter hasn't completed payment setup */}
+            {!sitterStripeEnabled && profile?.role !== 'pet_sitter' && (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  This sitter is currently setting up their payment account and cannot accept bookings yet. Please check back soon or choose another sitter.
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            {/* Booking Form - Only show if user is pet owner and sitter has Stripe enabled */}
+            {profile?.role !== 'pet_sitter' && sitterStripeEnabled && (
+              <div id="booking-section">
+                <BookingAccordion
+                  sitter={{
+                    id: sitterData.id,
+                    name: sitterData.display_name,
+                    location: sitterData.location,
+                    hourlyRate: sitterData.hourlyRate,
+                    services: sitterData.services,
+                    avatar: sitterData.avatar
+                  }}
+                  servicesData={servicesData}
+                  isOpen={isBookingOpen}
+                  onBookingComplete={() => navigate('/bookings')}
+                  initialCheckIn={checkInDate || undefined}
+                  initialCheckOut={checkOutDate || undefined}
+                  initialServiceType={serviceTypeParam || undefined}
+                />
+              </div>
+            )}
             {/* About */}
             <Card>
               <CardHeader>
