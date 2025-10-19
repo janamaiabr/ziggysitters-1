@@ -150,7 +150,6 @@ serve(async (req) => {
     if (!validServiceTypes.includes(dbServiceType)) {
       throw new Error(`Invalid service type: ${bookingData.serviceType}`);
     }
-    }
     
     // Get sitter's service pricing to validate amount
     const { data: sitterService, error: serviceError } = await supabaseClient
