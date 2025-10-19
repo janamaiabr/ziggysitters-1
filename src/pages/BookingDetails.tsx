@@ -318,6 +318,41 @@ export default function BookingDetails() {
     }
   };
 
+  const handleManualVerifyPayment = async () => {
+    if (!booking) return;
+    
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('manual-verify-payment', {
+        body: { booking_id: booking.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: 'Payment Verified',
+          description: 'Your payment has been verified and the booking is now confirmed.',
+        });
+        fetchBookingDetails();
+      } else {
+        toast({
+          title: 'Payment Not Found',
+          description: data?.message || 'No successful payment found for this booking.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Verification Error',
+        description: error.message || 'Failed to verify payment',
+        variant: 'destructive',
+      });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <Button
@@ -356,18 +391,29 @@ export default function BookingDetails() {
                 </h3>
                 <p className="text-green-800 mb-4">
                   <span className="font-semibold">
-                    {booking.sitter.first_name} {booking.sitter.last_name}
+                    {booking.sitter?.first_name} {booking.sitter?.last_name}
                   </span> has accepted your booking request. 
                   Please complete your payment to confirm the booking.
                 </p>
-                <Button 
-                  size="lg"
-                  onClick={handleProceedToPayment}
-                  disabled={actionLoading}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  {actionLoading ? 'Processing...' : 'Proceed to Payment'}
-                </Button>
+                <div className="flex gap-3">
+                  <Button 
+                    size="lg"
+                    onClick={handleProceedToPayment}
+                    disabled={actionLoading}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    {actionLoading ? 'Processing...' : 'Proceed to Payment'}
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    onClick={handleManualVerifyPayment}
+                    disabled={actionLoading}
+                    className="border-green-600 text-green-700 hover:bg-green-50"
+                  >
+                    Already Paid? Verify Payment
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
