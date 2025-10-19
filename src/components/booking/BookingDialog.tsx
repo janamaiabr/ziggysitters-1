@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
-import { CalendarIcon, Clock, DollarSign, MapPin, User } from 'lucide-react';
+import { CalendarIcon, Clock, DollarSign, MapPin, User, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { metaPixel } from '@/lib/metaPixel';
 
@@ -364,8 +364,19 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   };
 
   const total = calculateTotal();
-  const platformFee = Math.round(total * 0.1 * 100) / 100;
-  const grandTotal = total;
+  
+  // GST is included in the price (15% GST in NZ)
+  // So if total is $100, the GST component is $13.04 (100/1.15 * 0.15)
+  const serviceCostExGST = total / 1.15;
+  const gstAmount = total - serviceCostExGST;
+  
+  // Platform fee is 10% of the service cost (ex GST)
+  const platformFee = serviceCostExGST * 0.1;
+  const platformFeeGST = platformFee * 0.15;
+  const platformFeeIncGST = platformFee + platformFeeGST;
+  
+  // Grand total = service cost (inc GST) + platform fee (inc GST)
+  const grandTotal = total + platformFeeIncGST;
 
   // Debug render cycles
   console.log(`=== BookingDialog render ===`);
@@ -688,6 +699,47 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             />
           </div>
 
+          {/* Agreement Download - Only for pet sitting in owner's home */}
+          {serviceType === 'pet_sitting_owners_home' && (
+            <Card className="border-2 border-blue-200 bg-blue-50/50">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  Recommended: House & Pet Sitting Agreement
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  We strongly recommend completing a short agreement between you and the sitter to confirm terms, responsibilities, and care instructions.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/templates/House_Pet_Sitting_Agreement_NZ_Template.docx';
+                      link.download = 'House_Pet_Sitting_Agreement_NZ_Template.docx';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      toast({
+                        title: "Template Downloaded",
+                        description: "Please print, complete, and sign this agreement with your sitter for your records.",
+                      });
+                    }}
+                  >
+                    📄 Download Agreement Template
+                  </Button>
+                  <p className="text-xs text-muted-foreground italic">
+                    Print and complete this form with your sitter outside of the platform. Keep it for your records.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Daily Reports Option - Only for overnight pet sitting services */}
           {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (
             <div className="flex items-start space-x-3 p-4 border-2 rounded-lg bg-primary/5 border-primary/20">
@@ -767,21 +819,45 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   </div>
                 )}
 
-                <div className="flex justify-between">
-                  <span>Service Cost</span>
-                  <span>${total.toFixed(2)}</span>
+                <div className="flex justify-between text-sm">
+                  <span>Service Cost (ex GST)</span>
+                  <span>${serviceCostExGST.toFixed(2)}</span>
+                </div>
+                
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>GST (15%)</span>
+                  <span>${gstAmount.toFixed(2)}</span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span>Listing Fee (10%)</span>
+                  <span>Service Cost (inc GST)</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
+                
+                <div className="flex justify-between text-sm">
+                  <span>Platform Fee (10% ex GST)</span>
                   <span>${platformFee.toFixed(2)}</span>
+                </div>
+                
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Platform Fee GST (15%)</span>
+                  <span>${platformFeeGST.toFixed(2)}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span>Platform Fee (inc GST)</span>
+                  <span>${platformFeeIncGST.toFixed(2)}</span>
                 </div>
                 
                 <Separator />
                 
                 <div className="flex justify-between font-semibold text-lg">
-                  <span>Total</span>
+                  <span>Total (inc GST)</span>
                   <span>${grandTotal.toFixed(2)}</span>
+                </div>
+                
+                <div className="text-xs text-muted-foreground text-right">
+                  Total GST: ${(gstAmount + platformFeeGST).toFixed(2)}
                 </div>
               </CardContent>
             </Card>
