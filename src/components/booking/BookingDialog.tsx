@@ -498,61 +498,79 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Service Selection */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium">Service Type *</label>
-            <Select value={serviceType} onValueChange={(value) => {
-              console.log('Service type selected:', value);
-              setServiceType(value);
-            }}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a service" />
-              </SelectTrigger>
-              <SelectContent>
-                {servicesData.map((service) => {
-                  let rate = 0;
-                  let rateLabel = '';
-                  let serviceName = '';
-                  
-                  switch (service.service_type) {
-                    case 'pet_sitting_sitters_home':
-                      serviceName = "Pet Sitting (Sitter's Home)";
-                      rate = service.daily_rate || 0;
-                      rateLabel = '/day/pet';
-                      break;
-                    case 'pet_sitting_owners_home':
-                      serviceName = "Pet Sitting (Your Home)";
-                      rate = service.daily_rate || 0;
-                      rateLabel = '/day/pet';
-                      break;
-                    case 'drop_in_visits':
-                      serviceName = "Drop-in Visits";
-                      rate = service.hourly_rate || 0;
-                      rateLabel = '/visit';
-                      break;
-                    case 'dog_walking':
-                      serviceName = "Dog Walking";
-                      rate = service.hourly_rate || 0;
-                      rateLabel = '/hour/pet';
-                      break;
-                    default:
-                      serviceName = service.service_type;
-                      rate = service.daily_rate || service.hourly_rate || 0;
-                      rateLabel = '/day';
-                  }
-                  
-                  return (
-                    <SelectItem key={service.id} value={service.service_type}>
-                      <div className="flex justify-between w-full items-center">
-                        <span>{serviceName}</span>
-                        <span className="text-sm text-muted-foreground ml-4">${rate.toFixed(2)}{rateLabel}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* No Services Available Message */}
+          {servicesData.length === 0 ? (
+            <Card className="p-6 text-center">
+              <div className="space-y-3">
+                <div className="text-lg font-semibold text-muted-foreground">No Services Available</div>
+                <p className="text-sm text-muted-foreground">
+                  This sitter hasn't configured their services yet. Please check back later or contact them directly.
+                </p>
+              </div>
+            </Card>
+          ) : (
+            <>
+              {/* Service Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium">Service Type *</label>
+                <Select value={serviceType} onValueChange={(value) => {
+                  console.log('Service type selected:', value);
+                  setServiceType(value);
+                }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {servicesData.map((service) => {
+                      let rate = 0;
+                      let rateLabel = '';
+                      let serviceName = '';
+                      
+                      switch (service.service_type) {
+                        case 'pet_sitting_sitters_home':
+                          serviceName = "Pet Sitting (Sitter's Home)";
+                          rate = service.daily_rate || 0;
+                          rateLabel = '/day/pet';
+                          break;
+                        case 'pet_sitting_owners_home':
+                          serviceName = "Pet Sitting (Your Home)";
+                          rate = service.daily_rate || 0;
+                          rateLabel = '/day/pet';
+                          break;
+                        case 'drop_in_visits':
+                          serviceName = "Drop-in Visits";
+                          rate = service.hourly_rate || 0;
+                          rateLabel = '/visit';
+                          break;
+                        case 'dog_walking':
+                          serviceName = "Dog Walking";
+                          rate = service.hourly_rate || 0;
+                          rateLabel = '/hour/pet';
+                          break;
+                        default:
+                          serviceName = service.service_type;
+                          rate = service.daily_rate || service.hourly_rate || 0;
+                          rateLabel = '/day';
+                      }
+                      
+                      return (
+                        <SelectItem key={service.id} value={service.service_type}>
+                          <div className="flex justify-between w-full items-center">
+                            <span>{serviceName}</span>
+                            <span className="text-sm text-muted-foreground ml-4">${rate.toFixed(2)}{rateLabel}</span>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
+          )}
+          
+          {/* Only show rest of form if services are available and service is selected */}
+          {servicesData.length > 0 && serviceType && (
+            <>
 
           {/* Date Selection - For pet sitting and dog walking (start date only) */}
           {serviceType && (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home' || serviceType === 'dog_walking') && (
@@ -1031,19 +1049,27 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
               </CardContent>
             </Card>
           )}
+          
+          {/* Close conditional wrapper for when service is selected */}
+          </>
+          )}
 
-          {/* Action Buttons */}
+          {/* Action Buttons - Show cancel button always, submit only when services exist */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <Button variant="outline" onClick={handleClose} className="w-full sm:flex-1">
               Cancel
             </Button>
-            <Button 
-              onClick={handleBooking} 
-              disabled={!startDate || !endDate || !serviceType || loading}
-              className="w-full sm:flex-1"
-            >
-              {loading ? 'Creating Booking...' : 'Send Booking Request'}
-            </Button>
+            {servicesData.length > 0 && (
+              <Button 
+                onClick={handleBooking} 
+                disabled={!serviceType || loading || 
+                  (serviceType !== 'dog_walking' && serviceType !== 'drop_in_visits' && (!startDate || !endDate)) ||
+                  (serviceType === 'dog_walking' && (!startDate || !startTime || !endTime))}
+                className="w-full sm:flex-1"
+              >
+                {loading ? 'Creating Booking...' : 'Send Booking Request'}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
