@@ -201,8 +201,8 @@ export default function BookingAccordion({
       if (realService.daily_rate || realService.overnight_rate) {
         if (!startDate || !endDate) return 0;
         const rate = realService.daily_rate || realService.overnight_rate;
-        const days = Math.max(1, differenceInDays(endDate, startDate));
-        const totalDays = days === 0 ? 1 : days;
+        // Add 1 because we need to count both start and end dates (e.g., Oct 19-20 = 2 days)
+        const totalDays = Math.max(1, differenceInDays(endDate, startDate) + 1);
         return totalDays * rate;
       }
     }
