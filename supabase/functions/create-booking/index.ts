@@ -179,29 +179,28 @@ serve(async (req) => {
       }
       expectedAmount = Number(sitterService.daily_rate) * numDays * numPets;
     } else if (dbServiceType === 'dog_walking') {
-      // Dog walking: session-based pricing
-      // Price = hourly_rate × session_duration × num_pets × num_days
+      // Dog walking: hourly pricing based on time duration
+      // Price = hourly_rate × duration_in_hours × num_pets
       if (!sitterService.hourly_rate) {
         throw new Error("Sitter has not set up hourly rates for dog walking");
       }
       
-      const dogWalkingConfig = bookingData.dogWalkingConfig;
-      if (!dogWalkingConfig || !dogWalkingConfig.sessionDuration || !dogWalkingConfig.selectedDates) {
-        throw new Error("Dog walking configuration is missing");
+      if (!bookingData.startTime || !bookingData.endTime) {
+        throw new Error("Start time and end time are required for dog walking");
       }
       
-      const sessionDuration = Number(dogWalkingConfig.sessionDuration);
-      const numberOfDays = dogWalkingConfig.selectedDates.length;
+      // Calculate duration from start and end time
+      const [startHour, startMin] = bookingData.startTime.split(':').map(Number);
+      const [endHour, endMin] = bookingData.endTime.split(':').map(Number);
+      const startMinutes = startHour * 60 + startMin;
+      const endMinutes = endHour * 60 + endMin;
+      const durationHours = (endMinutes - startMinutes) / 60;
       
-      // Validate session duration (0.5, 1, or 2 hours)
-      if (![0.5, 1, 2].includes(sessionDuration)) {
-        throw new Error("Invalid session duration. Must be 0.5, 1, or 2 hours");
+      if (durationHours <= 0) {
+        throw new Error("End time must be after start time");
       }
       
-      // Calculate: price_per_session × number_of_days
-      // where price_per_session = hourly_rate × session_duration × num_pets
-      const pricePerSession = Number(sitterService.hourly_rate) * sessionDuration * numPets;
-      expectedAmount = pricePerSession * numberOfDays;
+      expectedAmount = Number(sitterService.hourly_rate) * durationHours * numPets;
     } else if (dbServiceType === 'drop_in_visits') {
       // Drop-in visits: flat rate PER VISIT (not per pet)
       if (!sitterService.hourly_rate) {
