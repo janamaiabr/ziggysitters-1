@@ -103,11 +103,18 @@ const handler = async (req: Request): Promise<Response> => {
     });
     results.push({ email: "Booking Cancellation", success: !cancellationResult.error, error: cancellationResult.error });
 
-    // 7. Verification Request
+    // 7. Verification Request - Get a real user ID
     console.log("Sending verification request email...");
+    const { data: testUser } = await supabase
+      .from('profiles')
+      .select('user_id')
+      .eq('role', 'pet_sitter')
+      .limit(1)
+      .single();
+    
     const verificationRequestResult = await supabase.functions.invoke("send-verification-request-email", {
       body: {
-        user_id: "00000000-0000-0000-0000-000000000000",
+        user_id: testUser?.user_id || "00000000-0000-0000-0000-000000000000",
         documents_uploaded: true
       }
     });
@@ -136,11 +143,18 @@ const handler = async (req: Request): Promise<Response> => {
     });
     results.push({ email: "Verification Rejected", success: !verificationRejectedResult.error, error: verificationRejectedResult.error });
 
-    // 10. Daily Report Reminder
+    // 10. Daily Report Reminder - Get a real booking ID
     console.log("Sending daily report reminder...");
+    const { data: testBooking } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('requires_daily_reports', true)
+      .limit(1)
+      .single();
+    
     const dailyReportReminderResult = await supabase.functions.invoke("send-daily-report-reminder", {
       body: {
-        bookingId: "00000000-0000-0000-0000-000000000000"
+        bookingId: testBooking?.id || "00000000-0000-0000-0000-000000000000"
       }
     });
     results.push({ email: "Daily Report Reminder", success: !dailyReportReminderResult.error, error: dailyReportReminderResult.error });
@@ -149,13 +163,14 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending penalty notification...");
     const penaltyResult = await supabase.functions.invoke("send-penalty-notification", {
       body: {
+        booking_id: "TEST123",
         owner_email: testEmail,
         owner_name: "Test Owner",
         sitter_name: "Test Sitter",
-        booking_id: "TEST123",
-        refund_amount: 50,
-        penalty_reason: "Missed daily report for 2 days",
-        service_dates: "Dec 1-5, 2025"
+        penalty_amount: 50,
+        reports_completed: 2,
+        reports_required: 5,
+        booking_reference: "BK-TEST123"
       }
     });
     results.push({ email: "Penalty Notification", success: !penaltyResult.error, error: penaltyResult.error });
