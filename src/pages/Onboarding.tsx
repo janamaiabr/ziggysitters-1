@@ -73,17 +73,20 @@ export default function Onboarding() {
     localStorage.setItem('onboarding_step', step.toString());
   }, [step]);
 
-  // Handle Stripe return parameters - redirect to profile page
+  // Handle Stripe return parameters - show success message
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const stripeSuccess = params.get('stripe_success');
-    const stripeRefresh = params.get('stripe_refresh');
     
-    if (stripeSuccess === 'true' || stripeRefresh === 'true') {
-      // User returned from Stripe setup - redirect to profile page
-      navigate(`/profile?tab=verification&stripe_success=${stripeSuccess}&stripe_refresh=${stripeRefresh}`);
+    if (stripeSuccess === 'true') {
+      toast({
+        title: "Stripe connected!",
+        description: "Your payment setup is complete. You can now finish onboarding.",
+      });
+      // Clean up URL
+      window.history.replaceState({}, '', '/onboarding');
     }
-  }, [navigate]);
+  }, [toast]);
 
   useEffect(() => {
     if (!user) {
