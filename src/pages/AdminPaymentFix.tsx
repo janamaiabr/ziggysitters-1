@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
 export default function AdminPaymentFix() {
+  const navigate = useNavigate();
   const [bookingId, setBookingId] = useState("6f8d76f8-fbee-444e-90bb-3c3398379e31");
   const [isVerifying, setIsVerifying] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -27,13 +29,15 @@ export default function AdminPaymentFix() {
       if (data?.success) {
         toast({
           title: 'Payment Verified!',
-          description: 'The booking has been updated to confirmed status. Refreshing...',
+          description: 'The booking has been updated to confirmed status.',
         });
         
-        // Force page reload to update all cached data
+        setResult(data);
+        
+        // Navigate to bookings page after 1 second
         setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+          navigate('/bookings');
+        }, 1000);
       } else {
         toast({
           title: 'Payment Not Found',
@@ -73,15 +77,15 @@ export default function AdminPaymentFix() {
 
       toast({
         title: 'Booking Confirmed',
-        description: 'The booking has been manually marked as confirmed. Refreshing...',
+        description: 'The booking has been manually marked as confirmed.',
       });
 
       setResult({ success: true, manually_confirmed: true, message: 'Booking forced to confirmed status' });
       
-      // Force page reload to update all cached data
+      // Navigate to bookings page after 1 second
       setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+        navigate('/bookings');
+      }, 1000);
     } catch (error: any) {
       console.error('Error:', error);
       toast({
