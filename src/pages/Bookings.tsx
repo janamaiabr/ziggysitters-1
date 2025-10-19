@@ -36,45 +36,13 @@ export default function Bookings() {
         setSearchParams({});
       }
 
-      // Set up real-time subscription for booking updates
-      const channel = supabase
-        .channel('bookings-changes')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'bookings',
-            filter: `owner_id=eq.${profile.id}`
-          },
-          (payload) => {
-            console.log('Booking change detected (owner):', payload);
-            fetchBookings();
-          }
-        )
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'bookings',
-            filter: `sitter_id=eq.${profile.id}`
-          },
-          (payload) => {
-            console.log('Booking change detected (sitter):', payload);
-            fetchBookings();
-          }
-        )
-        .subscribe();
-
-      // Also poll every 5 seconds as a fallback
+      // Poll every 3 seconds to keep bookings up to date
       const pollInterval = setInterval(() => {
         fetchBookings();
-      }, 5000);
+      }, 3000);
 
-      // Cleanup subscription and polling on unmount
+      // Cleanup polling on unmount
       return () => {
-        supabase.removeChannel(channel);
         clearInterval(pollInterval);
       };
     }
