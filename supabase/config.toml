@@ -48,3 +48,6 @@ verify_jwt = false
 [functions.send-auth-email]
 verify_jwt = false
 
+[functions.admin-force-confirm-booking]
+verify_jwt = true
+
