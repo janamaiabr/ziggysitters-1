@@ -42,6 +42,7 @@ export default function Profile() {
     onboarding_completed: boolean;
   } | null>(null);
   const [checkingStripe, setCheckingStripe] = useState(false);
+  const [connectingStripe, setConnectingStripe] = useState(false);
 
   // Handle URL tab parameter on mount
   useEffect(() => {
@@ -583,6 +584,7 @@ export default function Profile() {
   };
 
   const handleStripeConnect = async () => {
+    setConnectingStripe(true);
     try {
       console.log('Initiating Stripe Connect onboarding...');
       const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
@@ -603,6 +605,10 @@ export default function Profile() {
       if (data?.url) {
         console.log('Opening Stripe Connect URL:', data.url);
         window.open(data.url, '_blank');
+        toast({
+          title: "Redirecting to Stripe",
+          description: "A new tab has opened. Please complete your setup there.",
+        });
       } else {
         throw new Error('No URL returned from Stripe Connect');
       }
@@ -613,6 +619,8 @@ export default function Profile() {
         description: error?.message || error?.error || "Failed to connect to Stripe. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setConnectingStripe(false);
     }
   };
 
@@ -1574,8 +1582,16 @@ export default function Profile() {
                         variant="outline"
                         size="sm"
                         onClick={handleStripeConnect}
+                        disabled={connectingStripe}
                       >
-                        Submit Documents
+                        {connectingStripe ? (
+                          <>
+                            <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            Connecting...
+                          </>
+                        ) : (
+                          'Submit Documents'
+                        )}
                       </Button>
                     </div>
                   ) : (
@@ -1583,9 +1599,19 @@ export default function Profile() {
                       <Button
                         onClick={handleStripeConnect}
                         className="w-full md:w-auto"
+                        disabled={connectingStripe}
                       >
-                        <DollarSign className="w-4 h-4 mr-2" />
-                        Connect Bank Account
+                        {connectingStripe ? (
+                          <>
+                            <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Connecting to Stripe...
+                          </>
+                        ) : (
+                          <>
+                            <DollarSign className="w-4 h-4 mr-2" />
+                            Connect Bank Account
+                          </>
+                        )}
                       </Button>
                       <p className="text-xs text-muted-foreground mt-2">
                         You must connect a bank account before you can accept bookings
