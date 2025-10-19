@@ -909,6 +909,22 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   </>
                 ) : (
                   <>
+                    {/* Detailed session breakdown */}
+                    <div className="space-y-2">
+                      <div className="font-medium text-sm">Sessions:</div>
+                      {walkVisitSessions.map((session, index) => (
+                        <div key={session.id} className="flex justify-between text-sm text-muted-foreground pl-4">
+                          <span>
+                            {format(session.date, "MMM d")} at {session.startTime} 
+                            {serviceType === 'dog_walking' && ` (${session.hours}h)`}
+                          </span>
+                          {serviceType === 'dog_walking' && (
+                            <span>${(session.hours * (servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0) * selectedPetIds.length).toFixed(2)}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    
                     <div className="flex justify-between">
                       <span>Total Sessions</span>
                       <span>{walkVisitSessions.length} {walkVisitSessions.length === 1 ? 'session' : 'sessions'}</span>
