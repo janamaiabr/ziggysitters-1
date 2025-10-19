@@ -160,6 +160,86 @@ const handler = async (req: Request): Promise<Response> => {
     });
     results.push({ email: "Penalty Notification", success: !penaltyResult.error, error: penaltyResult.error });
 
+    // 12. Admin Booking Notification
+    console.log("Sending admin booking notification...");
+    const adminNotificationResult = await supabase.functions.invoke("send-admin-booking-notification", {
+      body: {
+        booking_id: "00000000-0000-0000-0000-000000000000"
+      }
+    });
+    results.push({ email: "Admin Booking Notification", success: !adminNotificationResult.error, error: adminNotificationResult.error });
+
+    // 13. Booking Decline Notification
+    console.log("Sending booking decline notification...");
+    const declineResult = await supabase.functions.invoke("send-booking-decline-notification", {
+      body: {
+        owner_email: testEmail,
+        owner_name: "Test Owner",
+        sitter_name: "Test Sitter",
+        service_type: "pet_sitting_owners_home",
+        start_date: "2025-12-01",
+        end_date: "2025-12-05"
+      }
+    });
+    results.push({ email: "Booking Decline Notification", success: !declineResult.error, error: declineResult.error });
+
+    // 14. Booking Notification (No Stripe)
+    console.log("Sending booking notification (no Stripe)...");
+    const noStripeResult = await supabase.functions.invoke("send-booking-notification-no-stripe", {
+      body: {
+        booking_id: "test-no-stripe",
+        sitter_email: testEmail,
+        sitter_name: "Test Sitter",
+        owner_name: "Test Owner",
+        service_type: "pet_sitting_sitters_home",
+        start_date: "2025-12-01",
+        end_date: "2025-12-05",
+        booking_reference: "BK-NOSTRIPE",
+        total_amount: 250
+      }
+    });
+    results.push({ email: "Booking Notification (No Stripe)", success: !noStripeResult.error, error: noStripeResult.error });
+
+    // 15. Daily Report Email
+    console.log("Sending daily report email...");
+    const dailyReportEmailResult = await supabase.functions.invoke("send-daily-report-email", {
+      body: {
+        ownerEmail: testEmail,
+        ownerName: "Test Owner",
+        sitterName: "Test Sitter",
+        reportDate: "2025-12-01",
+        petNames: ["Fluffy", "Max"],
+        mood: "Happy and playful",
+        foodConsumption: "Ate all meals",
+        exerciseDuration: 60,
+        medicationGiven: true,
+        generalNotes: "Had a great day at the park!",
+        photoUrls: []
+      }
+    });
+    results.push({ email: "Daily Report Email", success: !dailyReportEmailResult.error, error: dailyReportEmailResult.error });
+
+    // 16. Go Live Notification
+    console.log("Sending go live notification...");
+    const goLiveResult = await supabase.functions.invoke("send-go-live-notification", {
+      body: {
+        sitter_email: testEmail,
+        sitter_name: "Test Sitter"
+      }
+    });
+    results.push({ email: "Go Live Notification", success: !goLiveResult.error, error: goLiveResult.error });
+
+    // 17. Onboarding Reminder
+    console.log("Sending onboarding reminder...");
+    const onboardingReminderResult = await supabase.functions.invoke("send-onboarding-reminder", {
+      body: {
+        user_email: testEmail,
+        user_name: "Test User",
+        onboarding_status: "incomplete"
+      }
+    });
+    results.push({ email: "Onboarding Reminder", success: !onboardingReminderResult.error, error: onboardingReminderResult.error });
+
     console.log("All email tests completed:", results);
 
     return new Response(
