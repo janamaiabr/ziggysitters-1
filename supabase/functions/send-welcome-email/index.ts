@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send notification to admin about new user
     try {
       await resend.emails.send({
-        from: "ZiggySitters <notifications@ziggysitters.com>",
+        from: "ZiggySitters <onboarding@ziggysitters.com>",
         to: ["admin@ziggysitters.com"],
         subject: `New User Registered - ${role === 'pet_sitter' ? 'Pet Sitter' : 'Pet Owner'}`,
         html: `

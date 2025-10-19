@@ -59,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
     const pendingReports = booking.daily_reports_required - booking.daily_reports_completed;
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <reminders@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [sitterEmail],
       subject: `📝 Reminder: Daily report for ${ownerName}'s pets`,
       html: `

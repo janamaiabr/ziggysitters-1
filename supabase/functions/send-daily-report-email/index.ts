@@ -187,7 +187,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <reports@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [booking.owner.email],
       subject: `Daily Report for ${petNames} - ${new Date(reportDate).toLocaleDateString()}`,
       html: emailHtml,

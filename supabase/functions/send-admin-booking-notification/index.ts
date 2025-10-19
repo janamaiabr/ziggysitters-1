@@ -41,7 +41,7 @@ serve(async (req) => {
     const serviceTypeFormatted = service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     const emailResponse = await resend.emails.send({
-      from: "Ziggy Sitters <notifications@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: ["admin@ziggysitters.com"],
       subject: `New Booking Created - ${booking_reference}`,
       html: `

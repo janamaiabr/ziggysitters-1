@@ -52,7 +52,7 @@ serve(async (req) => {
     const cancelledByTitle = cancelled_by_type === 'owner' ? 'Pet Owner' : 'Pet Sitter';
 
     const emailResponse = await resend.emails.send({
-      from: "Ziggy Sitters <notifications@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [recipient_email],
       subject: `Booking Cancelled - ${booking_reference}`,
       html: `

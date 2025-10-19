@@ -160,7 +160,6 @@ export default function SitterProfile() {
         // Transform services data
         const serviceNames = servicesData?.map(service => {
           switch (service.service_type) {
-            case 'dog_walking': return 'Dog Walking';
             case 'drop_in_visits': return 'Drop-in Visits';
             case 'pet_sitting_owners_home': return 'Pet Sitting (Your Home)';
             case 'pet_sitting_sitters_home': return 'Pet Sitting (Sitter\'s Home)';

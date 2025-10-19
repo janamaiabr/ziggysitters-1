@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface Service {
-  service_type: 'dog_walking' | 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
+  service_type: 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
   rate: number;
   description: string;
   what_included: string;

@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format, eachDayOfInterval, parseISO } from 'date-fns';
 
 interface Service {
-  service_type: 'dog_walking' | 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
+  service_type: 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
   hourly_rate?: number;
   daily_rate?: number;
   overnight_rate?: number;

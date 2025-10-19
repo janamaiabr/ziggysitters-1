@@ -23,7 +23,7 @@ serve(async (req) => {
     console.log("[TEST-SITTER-EMAIL] Sending test email to:", testEmail);
 
     const emailResponse = await resend.emails.send({
-      from: "Ziggy Sitters <notifications@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [testEmail],
       subject: "Test Email - Ziggy Sitters Notification System",
       html: `
