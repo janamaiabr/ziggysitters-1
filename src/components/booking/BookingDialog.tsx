@@ -21,8 +21,11 @@ import { metaPixel } from '@/lib/metaPixel';
 interface WalkVisitSession {
   id: string;
   date: Date;
-  startTime: string;
-  endTime: string;
+}
+
+interface DogWalkingConfig {
+  sessionDuration: number; // in hours: 0.5, 1, 2
+  selectedDates: Date[];
 }
 
 interface BookingDialogProps {
@@ -78,9 +81,15 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   
-  // For dog walking and drop-in visits - multiple sessions
+  // For dog walking - session-based booking
+  const [dogWalkingConfig, setDogWalkingConfig] = useState<DogWalkingConfig>({
+    sessionDuration: 1, // default 1 hour
+    selectedDates: []
+  });
+  
+  // For drop-in visits - multiple sessions
   const [walkVisitSessions, setWalkVisitSessions] = useState<WalkVisitSession[]>([
-    { id: '1', date: new Date(), startTime: '09:00', endTime: '10:00' }
+    { id: '1', date: new Date() }
   ]);
   
   const { user } = useAuth();
@@ -99,23 +108,34 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       if (initialDates.serviceType) {
         setServiceType(initialDates.serviceType);
         
-        // For dog walking/drop-in visits, create sessions from date range
-        if ((initialDates.serviceType === 'dog_walking' || initialDates.serviceType === 'drop_in_visits') && 
-            initialDates.checkIn && initialDates.checkOut) {
+        // For dog walking, populate selected dates from date range
+        if (initialDates.serviceType === 'dog_walking' && initialDates.checkIn && initialDates.checkOut) {
+          const start = new Date(initialDates.checkIn);
+          const end = new Date(initialDates.checkOut);
+          const dates: Date[] = [];
+          
+          let currentDate = new Date(start);
+          while (currentDate <= end) {
+            dates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+          
+          setDogWalkingConfig(prev => ({ ...prev, selectedDates: dates }));
+        }
+        
+        // For drop-in visits, create sessions from date range
+        if (initialDates.serviceType === 'drop_in_visits' && initialDates.checkIn && initialDates.checkOut) {
           const start = new Date(initialDates.checkIn);
           const end = new Date(initialDates.checkOut);
           const sessions: WalkVisitSession[] = [];
           
-          // Create one session per day in the range
           let currentDate = new Date(start);
           let sessionId = 1;
           
           while (currentDate <= end) {
             sessions.push({
               id: sessionId.toString(),
-              date: new Date(currentDate),
-              startTime: '09:00',
-              endTime: '10:00'
+              date: new Date(currentDate)
             });
             currentDate.setDate(currentDate.getDate() + 1);
             sessionId++;
@@ -238,27 +258,16 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     } else if (serviceType === 'dog_walking') {
       const hourlyRate = service.hourly_rate;
       
-      if (!hourlyRate) {
+      if (!hourlyRate || dogWalkingConfig.selectedDates.length === 0) {
         return 0;
       }
       
-      // Calculate total hours from all walk sessions based on time difference
-      // CRITICAL: Hourly rate is PER PET for dog walking
-      const totalHours = walkVisitSessions.reduce((sum, session) => {
-        // Parse start and end times to calculate duration
-        const [startHour, startMin] = session.startTime.split(':').map(Number);
-        const [endHour, endMin] = session.endTime.split(':').map(Number);
-        
-        const startMinutes = startHour * 60 + startMin;
-        const endMinutes = endHour * 60 + endMin;
-        
-        // Calculate duration in hours (can be fractional)
-        const durationHours = (endMinutes - startMinutes) / 60;
-        
-        return sum + Math.max(0, durationHours); // Ensure non-negative
-      }, 0);
+      // Calculate: price per session × number of days
+      // Session price = hourly_rate × session_duration × number_of_pets
+      const pricePerSession = hourlyRate * dogWalkingConfig.sessionDuration * petCount;
+      const numberOfDays = dogWalkingConfig.selectedDates.length;
       
-      return totalHours * hourlyRate * petCount;
+      return pricePerSession * numberOfDays;
       
     } else if (serviceType === 'drop_in_visits') {
       const visitRate = service.hourly_rate; // Using hourly_rate field for visit rate
@@ -302,34 +311,24 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
     
-    // For dog walking/drop-in, validate sessions
-    if ((serviceType === 'drop_in_visits' || serviceType === 'dog_walking')) {
-      if (walkVisitSessions.length === 0) {
+    // For dog walking, validate dates selected
+    if (serviceType === 'dog_walking') {
+      if (dogWalkingConfig.selectedDates.length === 0) {
         toast({
           title: 'Missing Information',
-          description: 'Please add at least one walk/visit session.',
+          description: 'Please select at least one date for dog walking.',
           variant: 'destructive'
         });
         return;
       }
-      
-      // Validate each session has required fields
-      const invalidSession = walkVisitSessions.find(s => {
-        if (!s.date || !s.startTime || !s.endTime) return true;
-        
-        // Validate end time is after start time
-        const [startHour, startMin] = s.startTime.split(':').map(Number);
-        const [endHour, endMin] = s.endTime.split(':').map(Number);
-        const startMinutes = startHour * 60 + startMin;
-        const endMinutes = endHour * 60 + endMin;
-        
-        return endMinutes <= startMinutes;
-      });
-      
-      if (invalidSession) {
+    }
+    
+    // For drop-in visits, validate sessions
+    if (serviceType === 'drop_in_visits') {
+      if (walkVisitSessions.length === 0) {
         toast({
-          title: 'Invalid Session',
-          description: 'Please ensure all sessions have a valid date, start time, and end time (end must be after start).',
+          title: 'Missing Information',
+          description: 'Please add at least one visit session.',
           variant: 'destructive'
         });
         return;
@@ -395,18 +394,22 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
         bookingData.startDate = format(startDate!, 'yyyy-MM-dd');
         bookingData.endDate = format(endDate!, 'yyyy-MM-dd');
-      } else if (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') {
-        // For walks/visits, use the first session date as start/end
-        // and store all sessions in metadata
+      } else if (serviceType === 'dog_walking') {
+        // For dog walking, use session-based config
+        const sortedDates = [...dogWalkingConfig.selectedDates].sort((a, b) => a.getTime() - b.getTime());
+        bookingData.startDate = format(sortedDates[0], 'yyyy-MM-dd');
+        bookingData.endDate = format(sortedDates[sortedDates.length - 1], 'yyyy-MM-dd');
+        bookingData.dogWalkingConfig = {
+          sessionDuration: dogWalkingConfig.sessionDuration,
+          selectedDates: dogWalkingConfig.selectedDates.map(d => format(d, 'yyyy-MM-dd'))
+        };
+      } else if (serviceType === 'drop_in_visits') {
+        // For visits, store all visit sessions
         const sortedSessions = [...walkVisitSessions].sort((a, b) => a.date.getTime() - b.date.getTime());
         bookingData.startDate = format(sortedSessions[0].date, 'yyyy-MM-dd');
         bookingData.endDate = format(sortedSessions[sortedSessions.length - 1].date, 'yyyy-MM-dd');
-        bookingData.startTime = sortedSessions[0].startTime;
-        // Store all walk/visit sessions
         bookingData.walkVisitSessions = walkVisitSessions.map(s => ({
-          date: format(s.date, 'yyyy-MM-dd'),
-          startTime: s.startTime,
-          endTime: s.endTime
+          date: format(s.date, 'yyyy-MM-dd')
         }));
       }
 
@@ -453,7 +456,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     setRequiresDailyReports(false);
     setAgreedToTerms(false);
     setSelectedPetIds([]);
-    setWalkVisitSessions([{ id: '1', date: new Date(), startTime: '09:00', endTime: '10:00' }]);
+    setDogWalkingConfig({ sessionDuration: 1, selectedDates: [] });
+    setWalkVisitSessions([{ id: '1', date: new Date() }]);
   };
 
   const handleClose = () => {
@@ -655,13 +659,81 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             </div>
           )}
 
-          {/* Walk/Visit Sessions - Only for dog walking and drop-in visits */}
-          {serviceType && (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
+          {/* Dog Walking Configuration */}
+          {serviceType === 'dog_walking' && (
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <label className="text-sm font-medium">Session Duration *</label>
+                <Select 
+                  value={dogWalkingConfig.sessionDuration.toString()} 
+                  onValueChange={(value) => setDogWalkingConfig(prev => ({ ...prev, sessionDuration: parseFloat(value) }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0.5">30 minutes</SelectItem>
+                    <SelectItem value="1">1 hour</SelectItem>
+                    <SelectItem value="2">2 hours</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium">Select Walking Dates *</label>
+                <Calendar
+                  mode="multiple"
+                  selected={dogWalkingConfig.selectedDates}
+                  onSelect={(dates) => setDogWalkingConfig(prev => ({ ...prev, selectedDates: dates || [] }))}
+                  disabled={(date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return date < today;
+                  }}
+                  className="rounded-md border"
+                />
+                {dogWalkingConfig.selectedDates.length > 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    {dogWalkingConfig.selectedDates.length} {dogWalkingConfig.selectedDates.length === 1 ? 'day' : 'days'} selected
+                  </p>
+                )}
+              </div>
+
+              {dogWalkingConfig.selectedDates.length > 0 && selectedPetIds.length > 0 && (
+                <Card className="p-4 bg-muted/50">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Session duration:</span>
+                      <span className="font-medium">{dogWalkingConfig.sessionDuration === 0.5 ? '30 min' : `${dogWalkingConfig.sessionDuration} hour${dogWalkingConfig.sessionDuration > 1 ? 's' : ''}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Number of pets:</span>
+                      <span className="font-medium">{selectedPetIds.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Number of days:</span>
+                      <span className="font-medium">{dogWalkingConfig.selectedDates.length}</span>
+                    </div>
+                    <Separator className="my-2" />
+                    <div className="flex justify-between text-base font-semibold">
+                      <span>Price per session:</span>
+                      <span>${(servicesData.find(s => s.service_type === 'dog_walking')?.hourly_rate || 0) * dogWalkingConfig.sessionDuration * selectedPetIds.length}</span>
+                    </div>
+                    <div className="flex justify-between text-base font-semibold text-primary">
+                      <span>Total for {dogWalkingConfig.selectedDates.length} days:</span>
+                      <span>${calculateTotal()}</span>
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* Drop-in Visit Sessions */}
+          {serviceType === 'drop_in_visits' && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">
-                  {serviceType === 'dog_walking' ? 'Dog Walking Sessions' : 'Drop-in Visit Sessions'} *
-                </label>
+                <label className="text-sm font-medium">Drop-in Visit Sessions *</label>
                 <Button
                   type="button"
                   size="sm"
@@ -671,9 +743,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                       ...walkVisitSessions,
                       {
                         id: Date.now().toString(),
-                        date: new Date(),
-                        startTime: '09:00',
-                        endTime: '10:00'
+                        date: new Date()
                       }
                     ]);
                   }}
@@ -702,111 +772,49 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                         )}
                       </div>
                       
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="space-y-2">
-                          <label className="text-xs text-muted-foreground">Date</label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="w-full justify-start text-left font-normal"
-                              >
-                                <CalendarIcon className="mr-2 h-3 w-3" />
-                                {format(session.date, "MMM d")}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={session.date}
-                                onSelect={(date) => {
-                                  if (date) {
-                                    setWalkVisitSessions(
-                                      walkVisitSessions.map(s =>
-                                        s.id === session.id ? { ...s, date } : s
-                                      )
-                                    );
-                                  }
-                                }}
-                                disabled={(date) => {
-                                  const today = new Date();
-                                  today.setHours(0, 0, 0, 0);
-                                  return date < today;
-                                }}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label className="text-xs text-muted-foreground">Start Time</label>
-                          <Input
-                            type="time"
-                            value={session.startTime}
-                            onChange={(e) => {
-                              setWalkVisitSessions(
-                                walkVisitSessions.map(s =>
-                                  s.id === session.id ? { ...s, startTime: e.target.value } : s
-                                )
-                              );
-                            }}
-                            className="text-sm"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label className="text-xs text-muted-foreground">End Time</label>
-                          <Input
-                            type="time"
-                            value={session.endTime}
-                            onChange={(e) => {
-                              setWalkVisitSessions(
-                                walkVisitSessions.map(s =>
-                                  s.id === session.id ? { ...s, endTime: e.target.value } : s
-                                )
-                              );
-                            }}
-                            className="text-sm"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <label className="text-xs text-muted-foreground">Date</label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start text-left font-normal"
+                            >
+                              <CalendarIcon className="mr-2 h-3 w-3" />
+                              {format(session.date, "PPP")}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={session.date}
+                              onSelect={(date) => {
+                                if (date) {
+                                  setWalkVisitSessions(
+                                    walkVisitSessions.map(s =>
+                                      s.id === session.id ? { ...s, date } : s
+                                    )
+                                  );
+                                }
+                              }}
+                              disabled={(date) => {
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                return date < today;
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
-                      
-                      {/* Show calculated duration */}
-                      {(() => {
-                        const [startHour, startMin] = session.startTime.split(':').map(Number);
-                        const [endHour, endMin] = session.endTime.split(':').map(Number);
-                        const startMinutes = startHour * 60 + startMin;
-                        const endMinutes = endHour * 60 + endMin;
-                        const durationMinutes = endMinutes - startMinutes;
-                        const hours = Math.floor(durationMinutes / 60);
-                        const minutes = durationMinutes % 60;
-                        
-                        if (durationMinutes > 0) {
-                          return (
-                            <p className="text-xs text-muted-foreground mt-2">
-                              Duration: {hours > 0 && `${hours}h`} {minutes > 0 && `${minutes}min`}
-                            </p>
-                          );
-                        } else if (durationMinutes < 0) {
-                          return (
-                            <p className="text-xs text-red-600 mt-2">
-                              ⚠️ End time must be after start time
-                            </p>
-                          );
-                        }
-                        return null;
-                      })()}
                     </div>
                   </Card>
                 ))}
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Each {serviceType === 'dog_walking' ? 'walk' : 'visit'} is charged at $
-                {servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}
-                {serviceType === 'dog_walking' ? '/hour/pet' : '/visit'}
+                Each visit is charged at ${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/visit
               </p>
             </div>
           )}
@@ -978,64 +986,45 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                       <span>${servicesData.find(s => s.service_type === serviceType)?.daily_rate || 0}/day/pet</span>
                     </div>
                   </>
+                ) : serviceType === 'dog_walking' ? (
+                  <>
+                    {/* Dog walking summary */}
+                    <div className="flex justify-between">
+                      <span>Session Duration</span>
+                      <span>{dogWalkingConfig.sessionDuration === 0.5 ? '30 min' : `${dogWalkingConfig.sessionDuration} hour${dogWalkingConfig.sessionDuration > 1 ? 's' : ''}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Number of Days</span>
+                      <span>{dogWalkingConfig.selectedDates.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Pets</span>
+                      <span>{selectedPetIds.length}</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Rate</span>
+                      <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/hour/pet</span>
+                    </div>
+                  </>
                 ) : (
                   <>
-                    {/* Detailed session breakdown */}
+                    {/* Drop-in visits summary */}
                     <div className="space-y-2">
-                      <div className="font-medium text-sm">Sessions:</div>
-                      {walkVisitSessions.map((session, index) => {
-                        // Calculate duration for this session
-                        const [startHour, startMin] = session.startTime.split(':').map(Number);
-                        const [endHour, endMin] = session.endTime.split(':').map(Number);
-                        const startMinutes = startHour * 60 + startMin;
-                        const endMinutes = endHour * 60 + endMin;
-                        const durationHours = (endMinutes - startMinutes) / 60;
-                        
-                        return (
-                          <div key={session.id} className="flex justify-between text-sm text-muted-foreground pl-4">
-                            <span>
-                              {format(session.date, "MMM d")} • {session.startTime} - {session.endTime}
-                              {serviceType === 'dog_walking' && durationHours > 0 && (
-                                <span className="ml-1">({durationHours}h)</span>
-                              )}
-                            </span>
-                            {serviceType === 'dog_walking' && durationHours > 0 && (
-                              <span>${(durationHours * (servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0) * selectedPetIds.length).toFixed(2)}</span>
-                            )}
-                          </div>
-                        );
-                      })}
+                      <div className="font-medium text-sm">Visits:</div>
+                      {walkVisitSessions.map((session) => (
+                        <div key={session.id} className="flex justify-between text-sm text-muted-foreground pl-4">
+                          <span>{format(session.date, "MMM d, yyyy")}</span>
+                        </div>
+                      ))}
                     </div>
-                    
                     <div className="flex justify-between">
-                      <span>Total Sessions</span>
-                      <span>{walkVisitSessions.length} {walkVisitSessions.length === 1 ? 'session' : 'sessions'}</span>
+                      <span>Total Visits</span>
+                      <span>{walkVisitSessions.length}</span>
                     </div>
-                    {serviceType === 'dog_walking' && (
-                      <>
-                        <div className="flex justify-between">
-                          <span>Total Hours</span>
-                          <span>
-                            {walkVisitSessions.reduce((sum, s) => {
-                              const [startHour, startMin] = s.startTime.split(':').map(Number);
-                              const [endHour, endMin] = s.endTime.split(':').map(Number);
-                              const duration = ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / 60;
-                              return sum + Math.max(0, duration);
-                            }, 0).toFixed(1)} hours
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                          <span>Rate</span>
-                          <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/hour/pet</span>
-                        </div>
-                      </>
-                    )}
-                    {serviceType === 'drop_in_visits' && (
-                      <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>Rate</span>
-                        <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/visit</span>
-                      </div>
-                    )}
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Rate</span>
+                      <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/visit</span>
+                    </div>
                   </>
                 )}
 
