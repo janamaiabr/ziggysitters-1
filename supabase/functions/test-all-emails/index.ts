@@ -179,7 +179,15 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending admin booking notification...");
     const adminNotificationResult = await supabase.functions.invoke("send-admin-booking-notification", {
       body: {
-        booking_id: "00000000-0000-0000-0000-000000000000"
+        booking_id: "00000000-0000-0000-0000-000000000000",
+        owner_name: "Test Owner",
+        owner_email: testEmail,
+        sitter_name: "Test Sitter",
+        service_type: "pet_sitting_owners_home",
+        start_date: "2025-12-01",
+        end_date: "2025-12-05",
+        booking_reference: "BK-TEST123",
+        total_amount: 250.00
       }
     });
     results.push({ email: "Admin Booking Notification", success: !adminNotificationResult.error, error: adminNotificationResult.error });
@@ -215,21 +223,26 @@ const handler = async (req: Request): Promise<Response> => {
     });
     results.push({ email: "Booking Notification (No Stripe)", success: !noStripeResult.error, error: noStripeResult.error });
 
-    // 15. Daily Report Email
+    // 15. Daily Report Email - Use valid booking ID
     console.log("Sending daily report email...");
     const dailyReportEmailResult = await supabase.functions.invoke("send-daily-report-email", {
       body: {
-        ownerEmail: testEmail,
-        ownerName: "Test Owner",
-        sitterName: "Test Sitter",
+        bookingId: testBooking?.id || "00000000-0000-0000-0000-000000000000",
         reportDate: "2025-12-01",
-        petNames: ["Fluffy", "Max"],
-        mood: "Happy and playful",
-        foodConsumption: "Ate all meals",
-        exerciseDuration: 60,
-        medicationGiven: true,
-        generalNotes: "Had a great day at the park!",
-        photoUrls: []
+        reportData: {
+          photo_urls: [],
+          exercise_duration: 60,
+          exercise_notes: "Great walk in the park",
+          medication_given: true,
+          medication_notes: "Morning medication given as scheduled",
+          sleep_quality: "good",
+          sleep_notes: "Slept through the night",
+          time_alone_hours: 2,
+          food_consumption: "all",
+          food_notes: "Ate all meals enthusiastically",
+          general_notes: "Had a great day at the park! Very playful and happy.",
+          mood: "happy"
+        }
       }
     });
     results.push({ email: "Daily Report Email", success: !dailyReportEmailResult.error, error: dailyReportEmailResult.error });
@@ -238,8 +251,9 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending go live notification...");
     const goLiveResult = await supabase.functions.invoke("send-go-live-notification", {
       body: {
-        sitter_email: testEmail,
-        sitter_name: "Test Sitter"
+        email: testEmail,
+        firstName: "Test",
+        lastName: "Sitter"
       }
     });
     results.push({ email: "Go Live Notification", success: !goLiveResult.error, error: goLiveResult.error });
