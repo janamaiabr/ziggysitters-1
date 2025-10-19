@@ -67,9 +67,15 @@ export default function Bookings() {
         )
         .subscribe();
 
-      // Cleanup subscription on unmount
+      // Also poll every 5 seconds as a fallback
+      const pollInterval = setInterval(() => {
+        fetchBookings();
+      }, 5000);
+
+      // Cleanup subscription and polling on unmount
       return () => {
         supabase.removeChannel(channel);
+        clearInterval(pollInterval);
       };
     }
   }, [profile, searchParams]);
@@ -92,8 +98,10 @@ export default function Bookings() {
           title: "Payment Successful!",
           description: "Your booking has been confirmed.",
         });
-        // Refresh bookings to show updated status
-        fetchBookings();
+        // Force immediate refresh
+        setTimeout(() => fetchBookings(), 500);
+        setTimeout(() => fetchBookings(), 1500);
+        setTimeout(() => fetchBookings(), 3000);
       } else {
         toast({
           title: "Payment Verification Failed",

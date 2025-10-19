@@ -27,8 +27,13 @@ export default function AdminPaymentFix() {
       if (data?.success) {
         toast({
           title: 'Payment Verified!',
-          description: 'The booking has been updated to confirmed status.',
+          description: 'The booking has been updated to confirmed status. Refreshing...',
         });
+        
+        // Force page reload to update all cached data
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } else {
         toast({
           title: 'Payment Not Found',
@@ -68,10 +73,15 @@ export default function AdminPaymentFix() {
 
       toast({
         title: 'Booking Confirmed',
-        description: 'The booking has been manually marked as confirmed.',
+        description: 'The booking has been manually marked as confirmed. Refreshing...',
       });
 
       setResult({ success: true, manually_confirmed: true, message: 'Booking forced to confirmed status' });
+      
+      // Force page reload to update all cached data
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error: any) {
       console.error('Error:', error);
       toast({
