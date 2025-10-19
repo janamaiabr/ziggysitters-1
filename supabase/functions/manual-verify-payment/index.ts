@@ -59,7 +59,7 @@ serve(async (req) => {
       limit: 10,
     });
 
-    console.log('[MANUAL-VERIFY] Found payment intents:', paymentIntents.data.length);
+    console.log('[MANUAL-VERIFY] Found payment intents by booking_id:', paymentIntents.data.length);
 
     // Also search by customer email
     let customerPayments: Stripe.PaymentIntent[] = [];
@@ -79,8 +79,29 @@ serve(async (req) => {
       }
     }
 
+    // Search by booking reference in metadata as well
+    let bookingRefPayments: Stripe.PaymentIntent[] = [];
+    try {
+      const refPaymentIntents = await stripe.paymentIntents.search({
+        query: `metadata['booking_reference']:'${booking.booking_reference}'`,
+        limit: 10,
+      });
+      bookingRefPayments = refPaymentIntents.data;
+      console.log('[MANUAL-VERIFY] Found payment intents by booking_reference:', bookingRefPayments.data.length);
+    } catch (e) {
+      console.log('[MANUAL-VERIFY] Could not search by booking_reference:', e.message);
+    }
+
     // Find a successful payment for this amount
-    const allPayments = [...paymentIntents.data, ...customerPayments];
+    const allPayments = [...paymentIntents.data, ...customerPayments, ...bookingRefPayments];
+    console.log('[MANUAL-VERIFY] Total payments to check:', allPayments.length);
+    console.log('[MANUAL-VERIFY] Looking for amount:', booking.total_amount, 'NZD (', Math.round(booking.total_amount * 100), 'cents)');
+    
+    // Log all payment amounts for debugging
+    allPayments.forEach((pi, idx) => {
+      console.log(`[MANUAL-VERIFY] Payment ${idx + 1}: status=${pi.status}, amount=${pi.amount} cents, id=${pi.id}`);
+    });
+
     const successfulPayment = allPayments.find(pi => 
       pi.status === 'succeeded' && 
       pi.amount === Math.round(booking.total_amount * 100) // Stripe uses cents
