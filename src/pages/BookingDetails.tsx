@@ -165,23 +165,40 @@ export default function BookingDetails() {
 
       if (rpcError) throw rpcError;
 
-      await supabase.functions.invoke('send-booking-acceptance-email', {
+      console.log('Sending booking acceptance email to:', booking.owner.email);
+      
+      const { data: emailData, error: emailError } = await supabase.functions.invoke('send-booking-acceptance-email', {
         body: {
-          bookingId: booking.id,
-          ownerEmail: booking.owner.email,
-          ownerName: `${booking.owner.first_name} ${booking.owner.last_name}`,
-          sitterName: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-          bookingReference: booking.booking_reference,
+          owner_email: booking.owner.email,
+          owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+          sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date,
+          booking_reference: booking.booking_reference,
+          total_amount: booking.total_amount,
         },
       });
 
-      toast({
-        title: 'Booking Accepted',
-        description: 'The pet owner has been notified and will complete payment.',
-      });
+      if (emailError) {
+        console.error('Email sending error:', emailError);
+        // Don't fail the whole operation if email fails
+        toast({
+          title: 'Booking Accepted',
+          description: 'Booking accepted but email notification may not have been sent.',
+          variant: 'default',
+        });
+      } else {
+        console.log('Email sent successfully:', emailData);
+        toast({
+          title: 'Booking Accepted',
+          description: 'The pet owner has been notified and will complete payment.',
+        });
+      }
 
       fetchBookingDetails();
     } catch (error: any) {
+      console.error('Accept booking error:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to accept booking',
