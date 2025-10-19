@@ -214,6 +214,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         return 0;
       }
       
+      console.log('🔥 NEW DOG WALKING CALCULATION V2 🔥');
+      
       // Calculate duration in hours from start and end time
       const [startHour, startMin] = startTime.split(':').map(Number);
       const [endHour, endMin] = endTime.split(':').map(Number);
@@ -235,6 +237,15 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       if (repeatAcrossDays && startDate && endDate) {
         daysBooked = Math.max(1, differenceInDays(endDate, startDate));
       }
+      
+      console.log('Dog Walking Calc:', {
+        durationHours,
+        daysBooked,
+        repeatAcrossDays,
+        hourlyRate,
+        petCount,
+        total: durationHours * hourlyRate * daysBooked * petCount
+      });
       
       // Hourly pricing: hourly_rate × duration_in_hours × days_booked × num_pets
       return durationHours * hourlyRate * daysBooked * petCount;
