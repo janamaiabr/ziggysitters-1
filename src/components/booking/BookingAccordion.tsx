@@ -71,12 +71,13 @@ export default function BookingAccordion({
     initialCheckOut ? new Date(initialCheckOut) : undefined
   );
   const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
+  const [endTime, setEndTime] = useState('10:00');
   const [serviceType, setServiceType] = useState(initialServiceType || '');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [requiresDailyReports, setRequiresDailyReports] = useState(true);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [repeatAcrossDays, setRepeatAcrossDays] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -105,49 +106,43 @@ export default function BookingAccordion({
   };
 
   const calculateTotal = () => {
-    if (!startDate || !endDate || !serviceType) return 0;
-    
     // Try to find the service in real data first
     const realService = servicesData.find(s => s.service_type === serviceType);
-    console.log('Calculating total - service:', realService, 'serviceType:', serviceType);
+    
+    console.log('🔥 ACCORDION CALCULATE TOTAL V2 🔥', { serviceType, realService });
     
     if (realService) {
-      // Check if this service is billed hourly or daily based on which rate is set
-      if (realService.hourly_rate) {
-        // Hourly billing - need time inputs
-        if (startTime && endTime) {
-          const startDateTime = new Date(startDate);
-          startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
-          
-          const endDateTime = new Date(endDate);
-          endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
-          
-          console.log('Hourly calc - start:', startDateTime, 'end:', endDateTime);
-          const hours = Math.max(1, differenceInHours(endDateTime, startDateTime));
-          console.log('Hours:', hours, 'Rate:', realService.hourly_rate);
-          return hours * realService.hourly_rate;
+      // DOG WALKING - Hourly with optional repeat
+      if (serviceType === 'dog_walking' && realService.hourly_rate) {
+        if (!startTime || !endTime) return 0;
+        
+        const [startHour, startMin] = startTime.split(':').map(Number);
+        const [endHour, endMin] = endTime.split(':').map(Number);
+        let startMinutes = startHour * 60 + startMin;
+        let endMinutes = endHour * 60 + endMin;
+        
+        // Handle crossing midnight
+        if (endMinutes <= startMinutes) {
+          endMinutes += 24 * 60;
         }
-        // Default to 1 hour if no times specified
-        console.log('No times specified, using 1 hour * rate:', realService.hourly_rate);
-        return realService.hourly_rate;
-      } else if (realService.daily_rate || realService.overnight_rate) {
-        // Daily/overnight billing
-        const rate = realService.daily_rate || realService.overnight_rate;
-        const days = Math.max(1, differenceInDays(endDate, startDate));
-        // For overnight stays, same day to next day = 1 night
-        const totalDays = days === 0 ? 1 : days;
-        console.log('Daily calc - days:', totalDays, 'rate:', rate);
-        return totalDays * rate;
+        
+        let durationHours = (endMinutes - startMinutes) / 60;
+        durationHours = Math.max(0.5, Math.round(durationHours * 2) / 2);
+        
+        // Calculate days booked
+        let daysBooked = 1;
+        if (repeatAcrossDays && startDate && endDate) {
+          daysBooked = Math.max(1, differenceInDays(endDate, startDate));
+        }
+        
+        const total = durationHours * realService.hourly_rate * daysBooked;
+        console.log('Dog walking calc:', { durationHours, daysBooked, repeatAcrossDays, total });
+        return total;
       }
-    }
-    
-    // Fallback to hardcoded rates if no real service data
-    const rate = serviceRates[serviceType as keyof typeof serviceRates];
-    if (!rate) return 0;
-
-    if (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') {
-      // Hourly services
-      if (startTime && endTime) {
+      
+      // OTHER HOURLY SERVICES (drop-in visits)
+      if (realService.hourly_rate && startTime && endTime) {
+        if (!startDate || !endDate) return 0;
         const startDateTime = new Date(startDate);
         startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
         
@@ -155,14 +150,17 @@ export default function BookingAccordion({
         endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
         
         const hours = Math.max(1, differenceInHours(endDateTime, startDateTime));
-        return hours * rate;
+        return hours * realService.hourly_rate;
       }
-      return rate;
-    } else if (serviceType === 'pet_sitting_owners_home' || serviceType === 'pet_sitting_sitters_home') {
-      // Daily services
-      const days = Math.max(1, differenceInDays(endDate, startDate));
-      const totalDays = days === 0 ? 1 : days;
-      return totalDays * rate;
+      
+      // DAILY/OVERNIGHT SERVICES (pet sitting)
+      if (realService.daily_rate || realService.overnight_rate) {
+        if (!startDate || !endDate) return 0;
+        const rate = realService.daily_rate || realService.overnight_rate;
+        const days = Math.max(1, differenceInDays(endDate, startDate));
+        const totalDays = days === 0 ? 1 : days;
+        return totalDays * rate;
+      }
     }
     
     return 0;
@@ -277,11 +275,12 @@ export default function BookingAccordion({
     setStartDate(undefined);
     setEndDate(undefined);
     setStartTime('09:00');
-    setEndTime('17:00');
+    setEndTime('10:00');
     setServiceType('');
     setSpecialInstructions('');
     setRequiresDailyReports(true);
     setAgreedToTerms(false);
+    setRepeatAcrossDays(false);
   };
 
   const total = calculateTotal();
@@ -384,52 +383,83 @@ export default function BookingAccordion({
               </div>
 
               {/* Date Selection */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">Start Date *</label>
-                  <div className="relative">
-                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
-                    <Input
-                      type="date"
-                      value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
-                      onChange={(e) => {
-                        const date = e.target.value ? new Date(e.target.value) : undefined;
-                        handleDateSelect(date, 'start');
-                      }}
-                      className="pl-10 h-12 text-base"
-                      style={{ WebkitAppearance: 'none' }}
-                      min={format(new Date(), 'yyyy-MM-dd')}
-                    />
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium">Start Date *</label>
+                    <div className="relative">
+                      <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      <Input
+                        type="date"
+                        value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
+                        onChange={(e) => {
+                          const date = e.target.value ? new Date(e.target.value) : undefined;
+                          handleDateSelect(date, 'start');
+                        }}
+                        className="pl-10 h-12 text-base"
+                        style={{ WebkitAppearance: 'none' }}
+                        min={format(new Date(), 'yyyy-MM-dd')}
+                      />
+                    </div>
+                    {startDate && (
+                      <p className="text-sm text-primary font-medium">
+                        Selected: {format(startDate, 'MMM dd, yyyy')}
+                      </p>
+                    )}
                   </div>
-                  {startDate && (
-                    <p className="text-sm text-primary font-medium">
-                      Selected: {format(startDate, 'MMM dd, yyyy')}
-                    </p>
+
+                  {/* Only show end date for pet sitting OR if dog walking repeat is enabled */}
+                  {(serviceType !== 'dog_walking' || repeatAcrossDays) && (
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">End Date *</label>
+                      <div className="relative">
+                        <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+                        <Input
+                          type="date"
+                          value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
+                          onChange={(e) => {
+                            const date = e.target.value ? new Date(e.target.value) : undefined;
+                            handleDateSelect(date, 'end');
+                          }}
+                          className="pl-10 h-12 text-base"
+                          style={{ WebkitAppearance: 'none' }}
+                          min={startDate ? format(startDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')}
+                        />
+                      </div>
+                      {endDate && (
+                        <p className="text-sm text-primary font-medium">
+                          Selected: {format(endDate, 'MMM dd, yyyy')}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">End Date *</label>
-                  <div className="relative">
-                    <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
-                    <Input
-                      type="date"
-                      value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
+                {/* Repeat toggle - Only for dog walking */}
+                {serviceType === 'dog_walking' && (
+                  <div className="flex items-start space-x-3 p-3 border rounded-lg bg-muted/30">
+                    <input
+                      type="checkbox"
+                      id="repeat-days"
+                      checked={repeatAcrossDays}
                       onChange={(e) => {
-                        const date = e.target.value ? new Date(e.target.value) : undefined;
-                        handleDateSelect(date, 'end');
+                        setRepeatAcrossDays(e.target.checked);
+                        if (!e.target.checked) {
+                          setEndDate(undefined);
+                        }
                       }}
-                      className="pl-10 h-12 text-base"
-                      style={{ WebkitAppearance: 'none' }}
-                      min={startDate ? format(startDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')}
+                      className="mt-1 h-4 w-4"
                     />
+                    <div className="flex-1">
+                      <label htmlFor="repeat-days" className="text-sm font-medium cursor-pointer">
+                        Repeat this session across multiple days
+                      </label>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Enable this to book the same walking session for multiple days
+                      </p>
+                    </div>
                   </div>
-                  {endDate && (
-                    <p className="text-sm text-primary font-medium">
-                      Selected: {format(endDate, 'MMM dd, yyyy')}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* Time Selection - Only for hourly services */}
