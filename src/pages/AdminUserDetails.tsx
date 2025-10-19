@@ -180,13 +180,18 @@ export default function AdminUserDetails() {
 
   const fetchSitterServices = async (profileId: string) => {
     try {
+      console.log('Fetching services for sitter:', profileId);
       const { data, error } = await supabase
         .from('sitter_services')
         .select('*')
         .eq('sitter_id', profileId);
 
+      console.log('Services data:', data, 'Error:', error);
+      
       if (!error && data) {
         setServices(data);
+      } else if (error) {
+        console.error('Supabase error fetching services:', error);
       }
     } catch (error) {
       console.error('Error fetching services:', error);
@@ -568,12 +573,28 @@ export default function AdminUserDetails() {
                             <span className="text-muted-foreground">Experience: </span>
                             <span className="font-medium">{service.experience_years} years</span>
                           </div>
+                          {service.accepted_pet_species && service.accepted_pet_species.length > 0 && (
+                            <div className="col-span-2">
+                              <span className="text-muted-foreground">Accepts: </span>
+                              <span className="font-medium">{service.accepted_pet_species.join(', ')}</span>
+                            </div>
+                          )}
+                          {service.accepted_pet_sizes && service.accepted_pet_sizes.length > 0 && (
+                            <div className="col-span-2">
+                              <span className="text-muted-foreground">Pet Sizes: </span>
+                              <span className="font-medium">{service.accepted_pet_sizes.join(', ')}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">No services configured</p>
+                  <div className="text-center py-8">
+                    <FileText className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+                    <p className="text-muted-foreground">No services configured yet</p>
+                    <p className="text-sm text-muted-foreground mt-1">Sitter needs to complete onboarding</p>
+                  </div>
                 )}
               </CardContent>
             </Card>

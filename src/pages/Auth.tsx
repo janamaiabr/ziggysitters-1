@@ -26,8 +26,6 @@ export default function Auth() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    firstName: '',
-    lastName: '',
   });
 
   const defaultTab = searchParams.get('tab') || 'signin';
@@ -90,9 +88,7 @@ export default function Auth() {
       // Trim all values before sending to API
       const { error } = await signUp(
         formData.email.trim(), 
-        formData.password.trim(), 
-        formData.firstName.trim(), 
-        formData.lastName.trim()
+        formData.password.trim()
       );
       
       if (error) {
@@ -115,7 +111,7 @@ export default function Auth() {
           await supabase.functions.invoke('send-welcome-email', {
             body: {
               email: formData.email,
-              firstName: formData.firstName,
+              firstName: 'New User',
               role: 'pet_owner' // Default role, will be updated during onboarding
             }
           });
@@ -148,8 +144,7 @@ export default function Auth() {
     e.preventDefault();
     
     // Validate inputs are not empty or spaces-only
-    if (!formData.firstName.trim() || !formData.lastName.trim() || 
-        !formData.email.trim() || !formData.password.trim()) {
+    if (!formData.email.trim() || !formData.password.trim()) {
       toast({
         title: "Invalid Input",
         description: "Please fill in all fields with valid information.",
@@ -302,36 +297,6 @@ export default function Auth() {
               
               <TabsContent value="signup" className="space-y-4">
                 <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-firstName">First Name</Label>
-                      <Input
-                        id="signup-firstName"
-                        name="firstName"
-                        type="text"
-                        placeholder="First name"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        required
-                        pattern=".*\S+.*"
-                        title="First name cannot be empty or contain only spaces"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-lastName">Last Name</Label>
-                      <Input
-                        id="signup-lastName"
-                        name="lastName"
-                        type="text"
-                        placeholder="Last name"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        required
-                        pattern=".*\S+.*"
-                        title="Last name cannot be empty or contain only spaces"
-                      />
-                    </div>
-                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
