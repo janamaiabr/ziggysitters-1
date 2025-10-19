@@ -928,7 +928,6 @@ export type Database = {
       service_type:
         | "pet_sitting_owners_home"
         | "pet_sitting_sitters_home"
-        | "dog_walking"
         | "drop_in_visits"
       user_role: "pet_owner" | "pet_sitter" | "admin"
       verification_status: "pending" | "verified" | "rejected"
@@ -1082,7 +1081,6 @@ export const Constants = {
       service_type: [
         "pet_sitting_owners_home",
         "pet_sitting_sitters_home",
-        "dog_walking",
         "drop_in_visits",
       ],
       user_role: ["pet_owner", "pet_sitter", "admin"],
