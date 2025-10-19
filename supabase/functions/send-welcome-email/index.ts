@@ -28,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
       : 'As a pet owner, you can now add your pets, search for trusted sitters, and book services.';
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@resend.dev>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [email],
       subject: "Welcome to ZiggySitters! 🐾",
       html: `

@@ -25,7 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending Police Vet reminder to:", user_email);
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@resend.dev>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [user_email],
       subject: "Reminder: Complete Your Police Vetting Check",
       html: `
