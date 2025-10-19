@@ -64,30 +64,33 @@ export default function AdminPaymentFix() {
     }
 
     setIsVerifying(true);
+    setResult(null);
+    
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ 
-          status: 'confirmed',
-          payment_status: 'paid'
-        })
-        .eq('id', bookingId);
+      const { data, error } = await supabase.functions.invoke('admin-force-confirm-booking', {
+        body: { booking_id: bookingId }
+      });
 
       if (error) throw error;
 
-      toast({
-        title: 'Booking Confirmed',
-        description: 'The booking has been manually marked as confirmed.',
-      });
+      if (data?.success) {
+        toast({
+          title: 'Booking Confirmed',
+          description: 'The booking has been manually marked as confirmed.',
+        });
 
-      setResult({ success: true, manually_confirmed: true, message: 'Booking forced to confirmed status' });
-      
-      // Navigate to bookings page after 1 second
-      setTimeout(() => {
-        navigate('/bookings');
-      }, 1000);
+        setResult(data);
+        
+        // Navigate to bookings page after 1 second
+        setTimeout(() => {
+          navigate('/bookings');
+        }, 1000);
+      } else {
+        throw new Error(data?.error || 'Failed to confirm booking');
+      }
     } catch (error: any) {
       console.error('Error:', error);
+      setResult({ error: error.message });
       toast({
         title: 'Error',
         description: error.message || 'Failed to update booking',
