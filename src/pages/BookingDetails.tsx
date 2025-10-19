@@ -262,7 +262,38 @@ export default function BookingDetails() {
   }
 
   const isSitter = profile?.id === booking.sitter.id;
+  const isOwner = profile?.id === booking.owner.id;
   const canAccept = isSitter && booking.status === 'pending';
+  const needsPayment = isOwner && booking.status === 'awaiting_payment';
+
+  const handleProceedToPayment = async () => {
+    if (!booking) return;
+    
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment-after-acceptance', {
+        body: { bookingId: booking.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast({
+          title: 'Redirecting to Payment',
+          description: 'Please complete your payment in the new window.',
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Payment Error',
+        description: error.message || 'Failed to initiate payment',
+        variant: 'destructive',
+      });
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -287,6 +318,38 @@ export default function BookingDetails() {
         </div>
         <p className="text-lg text-muted-foreground">Reference: {booking.booking_reference}</p>
       </div>
+
+      {/* Sitter Accepted - Payment Required Banner */}
+      {needsPayment && (
+        <Card className="mb-8 border-2 border-green-500 bg-green-50">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="h-8 w-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-green-900 mb-2">
+                  🎉 Great News! Your Sitter Has Accepted
+                </h3>
+                <p className="text-green-800 mb-4">
+                  <span className="font-semibold">
+                    {booking.sitter.first_name} {booking.sitter.last_name}
+                  </span> has accepted your booking request. 
+                  Please complete your payment to confirm the booking.
+                </p>
+                <Button 
+                  size="lg"
+                  onClick={handleProceedToPayment}
+                  disabled={actionLoading}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {actionLoading ? 'Processing...' : 'Proceed to Payment'}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
