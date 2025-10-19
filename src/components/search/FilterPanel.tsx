@@ -27,7 +27,6 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
   // Dynamic price range based on selected services
   const getServicePriceRanges = () => {
     const serviceRanges: { [key: string]: [number, number] } = {
-      'Dog Walking': [15, 35],
       'Pet Sitting (Your Home)': [25, 60], 
       'Pet Sitting (Sitter\'s Home)': [20, 50],
       'Drop-in Visits': [12, 30]
@@ -47,7 +46,6 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
   const [minServicePrice, maxServicePrice] = getServicePriceRanges();
 
   const services = [
-    'Dog Walking',
     'Pet Sitting (Your Home)',
     'Pet Sitting (Sitter\'s Home)',
     'Drop-in Visits'

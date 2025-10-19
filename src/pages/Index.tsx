@@ -28,7 +28,6 @@ const Index = () => {
     { name: 'Pet Sitting (Sitter\'s Home)', icon: '🏠', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them', value: 'pet_sitting_sitters_home' },
     { name: 'Pet Sitting (Your Home)', icon: '🏡', description: 'Sitter comes to your home - request daily reports when booking', value: 'pet_sitting_owners_home' },
     { name: 'Drop-in Visits', icon: '⏰', description: 'Quick visits with optional photo documentation', value: 'drop_in_visits' },
-    { name: 'Dog Walking', icon: '🚶‍♂️', description: 'Professional walks - add daily reports for extra peace of mind', value: 'dog_walking' },
   ];
 
   // Real data from database

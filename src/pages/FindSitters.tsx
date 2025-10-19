@@ -77,12 +77,11 @@ export default function FindSitters() {
           const sitterServices = (servicesData || []).filter(s => s.sitter_id === sitter.id);
           const serviceNames = sitterServices.map(s => {
             // Map database service types to display names
-            const serviceMap: { [key: string]: string } = {
-              'dog_walking': 'Dog Walking',
-              'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
-              'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
-              'drop_in_visits': 'Drop-in Visits'
-            };
+          const serviceMap: { [key: string]: string } = {
+            'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
+            'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
+            'drop_in_visits': 'Drop-in Visits'
+          };
             return serviceMap[s.service_type] || s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
           });
           
@@ -149,7 +148,6 @@ export default function FindSitters() {
     // Filter by service type
     if (serviceType) {
       const serviceMap: { [key: string]: string } = {
-        'dog_walking': 'Dog Walking',
         'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
         'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
         'drop_in_visits': 'Drop-in Visits'
@@ -326,7 +324,6 @@ export default function FindSitters() {
                           <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
                           <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
                           <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
-                          <SelectItem value="dog_walking">Dog Walking</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
