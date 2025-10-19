@@ -165,6 +165,10 @@ export default function BookingDetails() {
 
       if (rpcError) throw rpcError;
 
+      if (!booking.owner) {
+        throw new Error('Owner information not available');
+      }
+
       console.log('Sending booking acceptance email to:', booking.owner.email);
       
       const { data: emailData, error: emailError } = await supabase.functions.invoke('send-booking-acceptance-email', {
@@ -221,15 +225,17 @@ export default function BookingDetails() {
 
       if (error) throw error;
 
-      await supabase.functions.invoke('send-booking-cancellation', {
-        body: {
-          bookingId: booking.id,
-          recipientEmail: booking.owner.email,
-          recipientName: `${booking.owner.first_name} ${booking.owner.last_name}`,
-          bookingReference: booking.booking_reference,
-          cancellationReason: 'Declined by sitter',
-        },
-      });
+      if (booking.owner) {
+        await supabase.functions.invoke('send-booking-cancellation', {
+          body: {
+            bookingId: booking.id,
+            recipientEmail: booking.owner.email,
+            recipientName: `${booking.owner.first_name} ${booking.owner.last_name}`,
+            bookingReference: booking.booking_reference,
+            cancellationReason: 'Declined by sitter',
+          },
+        });
+      }
 
       toast({
         title: 'Booking Declined',
@@ -278,8 +284,8 @@ export default function BookingDetails() {
     );
   }
 
-  const isSitter = profile?.id === booking.sitter.id;
-  const isOwner = profile?.id === booking.owner.id;
+  const isSitter = profile?.id === booking.sitter?.id;
+  const isOwner = profile?.id === booking.owner?.id;
   const canAccept = isSitter && booking.status === 'pending';
   const needsPayment = isOwner && booking.status === 'awaiting_payment';
 
@@ -423,13 +429,15 @@ export default function BookingDetails() {
 
               <Separator />
 
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Service Address</p>
-                <p className="font-semibold flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  {booking.owner.address}, {booking.owner.suburb}, {booking.owner.city}
-                </p>
-              </div>
+              {booking.owner && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Service Address</p>
+                  <p className="font-semibold flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    {booking.owner.address}, {booking.owner.suburb}, {booking.owner.city}
+                  </p>
+                </div>
+              )}
 
               {booking.special_instructions && (
                 <>
@@ -626,40 +634,46 @@ export default function BookingDetails() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={isSitter ? booking.owner.avatar_url : booking.sitter.avatar_url} />
-                  <AvatarFallback>
-                    {isSitter 
-                      ? `${booking.owner.first_name[0]}${booking.owner.last_name[0]}`
-                      : `${booking.sitter.first_name[0]}${booking.sitter.last_name[0]}`
-                    }
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold">
-                    {isSitter 
-                      ? `${booking.owner.first_name} ${booking.owner.last_name}`
-                      : `${booking.sitter.first_name} ${booking.sitter.last_name}`
-                    }
-                  </p>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span>{isSitter ? booking.owner.email : booking.sitter.email}</span>
-                </div>
-                {(isSitter ? booking.owner.phone : booking.sitter.phone) && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span>{isSitter ? booking.owner.phone : booking.sitter.phone}</span>
+              {(isSitter && booking.owner) || (isOwner && booking.sitter) ? (
+                <>
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={isSitter ? booking.owner?.avatar_url : booking.sitter?.avatar_url} />
+                      <AvatarFallback>
+                        {isSitter && booking.owner
+                          ? `${booking.owner.first_name[0]}${booking.owner.last_name[0]}`
+                          : booking.sitter ? `${booking.sitter.first_name[0]}${booking.sitter.last_name[0]}` : 'NA'
+                        }
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold">
+                        {isSitter && booking.owner
+                          ? `${booking.owner.first_name} ${booking.owner.last_name}`
+                          : booking.sitter ? `${booking.sitter.first_name} ${booking.sitter.last_name}` : 'N/A'
+                        }
+                      </p>
+                    </div>
                   </div>
-                )}
-              </div>
+
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span>{isSitter ? booking.owner?.email : booking.sitter?.email}</span>
+                    </div>
+                    {(isSitter ? booking.owner?.phone : booking.sitter?.phone) && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <span>{isSitter ? booking.owner?.phone : booking.sitter?.phone}</span>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">Contact information not available</p>
+              )}
             </CardContent>
           </Card>
 
