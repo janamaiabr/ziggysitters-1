@@ -174,22 +174,53 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const calculateTotal = () => {
     if (!startDate || !endDate || !serviceType) return 0;
     
-    const rate = getServiceRate(serviceType);
-    console.log('Calculating total - rate:', rate, 'serviceType:', serviceType);
-    if (!rate) return 0;
+    const service = servicesData.find(s => s.service_type === serviceType);
+    if (!service) return 0;
+    
+    console.log('Calculating total - service:', service, 'serviceType:', serviceType);
 
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
-      // For overnight/day stays, calculate number of days
-      const days = differenceInDays(endDate, startDate);
-      // If same day or 1 day difference, count as 1 day minimum
-      const totalDays = days === 0 ? 1 : days;
-      return totalDays * rate;
+      // CRITICAL FIX: For overnight/multi-day pet sitting, MUST use overnight_rate or daily_rate
+      // Never use hourly_rate for multi-day bookings
+      const overnightRate = service.overnight_rate || service.daily_rate;
+      
+      if (!overnightRate) {
+        console.error('ERROR: No overnight or daily rate set for pet sitting service');
+        toast({
+          title: "Pricing Error",
+          description: "This sitter hasn't set up overnight rates yet. Please contact them or choose a different sitter.",
+          variant: "destructive"
+        });
+        return 0;
+      }
+      
+      // Calculate nights (not days) for overnight stays
+      // Oct 22 to Oct 24 = 2 nights (night of 22nd, night of 23rd)
+      const nights = differenceInDays(endDate, startDate);
+      const totalNights = Math.max(1, nights); // Minimum 1 night
+      
+      console.log('Pet sitting calculation:', totalNights, 'nights *', overnightRate, '=', totalNights * overnightRate);
+      return totalNights * overnightRate;
+      
     } else if (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') {
-      // For hourly services, calculate based on time
+      // For hourly services (drop-in, dog walking), use hourly_rate
+      const hourlyRate = service.hourly_rate;
+      
+      if (!hourlyRate) {
+        console.error('ERROR: No hourly rate set for service');
+        toast({
+          title: "Pricing Error", 
+          description: "This sitter hasn't set up hourly rates yet. Please contact them or choose a different sitter.",
+          variant: "destructive"
+        });
+        return 0;
+      }
+      
+      // For same-day hourly services, calculate based on time duration
       const startDateTime = new Date(startDate);
       startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
       
-      const endDateTime = new Date(endDate);
+      const endDateTime = new Date(startDate); // FIXED: Should be same day for hourly services
       endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
       
       console.log('Start DateTime:', startDateTime);
@@ -200,8 +231,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       
       // Minimum 1 hour charge for hourly services
       const totalHours = Math.max(1, hours);
-      const total = totalHours * rate;
-      console.log('Total calculation:', totalHours, 'hours *', rate, '=', total);
+      const total = totalHours * hourlyRate;
+      console.log('Total calculation:', totalHours, 'hours *', hourlyRate, '=', total);
       return total;
     }
     return 0;
