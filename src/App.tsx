@@ -40,6 +40,7 @@ import OnboardingPendingApproval from "./pages/OnboardingPendingApproval";
 import CreateAdmin from "./pages/CreateAdmin";
 import FAQ from "./pages/FAQ";
 import Error500 from "./pages/Error500";
+import PricingModelTests from "./components/testing/PricingModelTests";
 
 const queryClient = new QueryClient();
 
@@ -187,6 +188,7 @@ function AppContent() {
             <Route path="/cookies" element={<PrivacyPolicy />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/500" element={<Error500 />} />
+            <Route path="/test-pricing" element={<PricingModelTests />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
