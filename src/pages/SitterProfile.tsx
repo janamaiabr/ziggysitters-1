@@ -153,10 +153,9 @@ export default function SitterProfile() {
         const serviceNames = servicesData?.map(service => {
           switch (service.service_type) {
             case 'dog_walking': return 'Dog Walking';
-            case 'daycare': return 'Pet Sitting';
-            case 'overnight_boarding': return 'Overnight Care';
-            case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
-            case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
+            case 'drop_in_visits': return 'Drop-in Visits';
+            case 'pet_sitting_owners_home': return 'Pet Sitting (Your Home)';
+            case 'pet_sitting_sitters_home': return 'Pet Sitting (Sitter\'s Home)';
             default: return 'Pet Care';
           }
         }) || ['Pet Sitting', 'Drop-in Visits'];

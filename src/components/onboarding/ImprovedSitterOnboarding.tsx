@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format, eachDayOfInterval, parseISO } from 'date-fns';
 
 interface Service {
-  service_type: 'dog_walking' | 'daycare' | 'overnight_boarding' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
+  service_type: 'dog_walking' | 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
   hourly_rate?: number;
   daily_rate?: number;
   overnight_rate?: number;
@@ -33,11 +33,10 @@ const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit', 'horse'];
 const petSizes = ['small', 'medium', 'large', 'extra_large'];
 
 const serviceTypes = [
-  { key: 'dog_walking', label: 'Dog Walking', rate_types: ['hourly_rate'], suggestedHourly: 20, suggestedDaily: null, suggestedOvernight: null },
-  { key: 'daycare', label: 'Pet Daycare', rate_types: ['daily_rate'], suggestedHourly: null, suggestedDaily: 45, suggestedOvernight: null },
-  { key: 'overnight_boarding', label: 'Overnight Boarding', rate_types: ['overnight_rate'], suggestedHourly: null, suggestedDaily: null, suggestedOvernight: 60 },
-  { key: 'pet_sitting_owners_home', label: 'Pet Sitting (Owner\'s Home)', rate_types: ['hourly_rate', 'daily_rate'], suggestedHourly: 20, suggestedDaily: 45, suggestedOvernight: null },
-  { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (Sitter\'s Home)', rate_types: ['hourly_rate', 'daily_rate'], suggestedHourly: 20, suggestedDaily: 45, suggestedOvernight: null }
+  { key: 'pet_sitting_owners_home', label: 'Pet Sitting (Your Home)', rate_types: ['daily_rate'], suggestedDaily: 50, unit: '/day/pet' },
+  { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (Sitter\'s Home)', rate_types: ['daily_rate'], suggestedDaily: 60, unit: '/day/pet' },
+  { key: 'dog_walking', label: 'Dog Walking', rate_types: ['hourly_rate'], suggestedHourly: 25, unit: '/hour/pet' },
+  { key: 'drop_in_visits', label: 'Drop-in Visits', rate_types: ['hourly_rate'], suggestedHourly: 30, unit: '/visit' }
 ];
 
 export default function ImprovedSitterOnboarding({ profileId, userId, onComplete, overallStep, onStepChange }: ImprovedSitterOnboardingProps) {

@@ -187,31 +187,51 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const calculateTotal = () => {
     const service = servicesData.find(s => s.service_type === serviceType);
     if (!service) return 0;
+    
+    // Number of pets selected
+    const petCount = selectedPetIds.length;
+    if (petCount === 0) return 0;
 
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
       if (!startDate || !endDate) return 0;
       
-      const overnightRate = service.overnight_rate || service.daily_rate;
+      const dailyRate = service.daily_rate;
       
-      if (!overnightRate) {
+      if (!dailyRate) {
         return 0;
       }
       
-      const nights = differenceInDays(endDate, startDate);
-      const totalNights = Math.max(1, nights);
+      // Calculate days (not nights) for pet sitting
+      const days = differenceInDays(endDate, startDate);
+      const totalDays = Math.max(1, days);
       
-      return totalNights * overnightRate;
+      // CRITICAL: Daily rate is PER PET
+      return totalDays * dailyRate * petCount;
       
-    } else if (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') {
+    } else if (serviceType === 'dog_walking') {
       const hourlyRate = service.hourly_rate;
       
       if (!hourlyRate) {
         return 0;
       }
       
-      // Calculate total cost from all walk/visit sessions
+      // Calculate total hours from all walk sessions
+      // CRITICAL: Hourly rate is PER PET for dog walking
       const totalHours = walkVisitSessions.reduce((sum, session) => sum + session.hours, 0);
-      return totalHours * hourlyRate;
+      return totalHours * hourlyRate * petCount;
+      
+    } else if (serviceType === 'drop_in_visits') {
+      const visitRate = service.hourly_rate; // Using hourly_rate field for visit rate
+      
+      if (!visitRate) {
+        return 0;
+      }
+      
+      // Drop-in visits charged per visit (flat rate, not per hour)
+      // Number of visits = number of sessions
+      const numberOfVisits = walkVisitSessions.length;
+      // Visits are NOT per pet - it's a flat rate per visit
+      return numberOfVisits * visitRate;
     }
     return 0;
   };
@@ -470,32 +490,42 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
               </SelectTrigger>
               <SelectContent>
                 {servicesData.map((service) => {
-                  const rate = service.hourly_rate || service.daily_rate || service.overnight_rate || 0;
-                  const rateType = service.hourly_rate ? '/hour' : '/day';
+                  let rate = 0;
+                  let rateLabel = '';
                   let serviceName = '';
                   
                   switch (service.service_type) {
                     case 'pet_sitting_sitters_home':
                       serviceName = "Pet Sitting (Sitter's Home)";
+                      rate = service.daily_rate || 0;
+                      rateLabel = '/day/pet';
                       break;
                     case 'pet_sitting_owners_home':
                       serviceName = "Pet Sitting (Your Home)";
+                      rate = service.daily_rate || 0;
+                      rateLabel = '/day/pet';
                       break;
                     case 'drop_in_visits':
                       serviceName = "Drop-in Visits";
+                      rate = service.hourly_rate || 0;
+                      rateLabel = '/visit';
                       break;
                     case 'dog_walking':
                       serviceName = "Dog Walking";
+                      rate = service.hourly_rate || 0;
+                      rateLabel = '/hour/pet';
                       break;
                     default:
                       serviceName = service.service_type;
+                      rate = service.daily_rate || service.hourly_rate || 0;
+                      rateLabel = '/day';
                   }
                   
                   return (
                     <SelectItem key={service.id} value={service.service_type}>
                       <div className="flex justify-between w-full items-center">
                         <span>{serviceName}</span>
-                        <span className="text-sm text-muted-foreground ml-4">${rate.toFixed(2)}{rateType}</span>
+                        <span className="text-sm text-muted-foreground ml-4">${rate.toFixed(2)}{rateLabel}</span>
                       </div>
                     </SelectItem>
                   );
@@ -703,7 +733,9 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Each {serviceType === 'dog_walking' ? 'walk' : 'visit'} is charged at ${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/hour
+                Each {serviceType === 'dog_walking' ? 'walk' : 'visit'} is charged at $
+                {servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}
+                {serviceType === 'dog_walking' ? '/hour/pet' : '/visit'}
               </p>
             </div>
           )}
@@ -857,25 +889,49 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   <span>{serviceLabels[serviceType as keyof typeof serviceLabels]}</span>
                 </div>
                 
-                {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') ? (
-                  <div className="flex justify-between">
-                    <span>Duration</span>
-                    <span>
-                      {startDate && endDate ? (differenceInDays(endDate, startDate) || 1) : 1} nights
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex justify-between">
-                    <span>Total Sessions</span>
-                    <span>{walkVisitSessions.length} {walkVisitSessions.length === 1 ? 'session' : 'sessions'}</span>
-                  </div>
-                )}
+                <div className="flex justify-between">
+                  <span>Number of Pets</span>
+                  <span>{selectedPetIds.length}</span>
+                </div>
                 
-                {(serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
-                  <div className="flex justify-between">
-                    <span>Total Hours</span>
-                    <span>{walkVisitSessions.reduce((sum, s) => sum + s.hours, 0)} hours</span>
-                  </div>
+                {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') ? (
+                  <>
+                    <div className="flex justify-between">
+                      <span>Duration</span>
+                      <span>
+                        {startDate && endDate ? (differenceInDays(endDate, startDate) || 1) : 1} days
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Rate</span>
+                      <span>${servicesData.find(s => s.service_type === serviceType)?.daily_rate || 0}/day/pet</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between">
+                      <span>Total Sessions</span>
+                      <span>{walkVisitSessions.length} {walkVisitSessions.length === 1 ? 'session' : 'sessions'}</span>
+                    </div>
+                    {serviceType === 'dog_walking' && (
+                      <>
+                        <div className="flex justify-between">
+                          <span>Total Hours</span>
+                          <span>{walkVisitSessions.reduce((sum, s) => sum + s.hours, 0)} hours</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Rate</span>
+                          <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/hour/pet</span>
+                        </div>
+                      </>
+                    )}
+                    {serviceType === 'drop_in_visits' && (
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Rate</span>
+                        <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/visit</span>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 <div className="flex justify-between text-sm">
