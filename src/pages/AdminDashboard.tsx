@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 
@@ -217,9 +217,15 @@ export default function AdminDashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-gray-600">Manage pet sitter applications and verifications</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600">Manage pet sitter applications and verifications</p>
+        </div>
+        <Button variant="outline" onClick={() => navigate('/admin/go-live')}>
+          <Rocket className="w-4 h-4 mr-2" />
+          Go-Live Checklist
+        </Button>
       </div>
 
       <Tabs defaultValue="all-users" className="space-y-6">

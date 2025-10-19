@@ -38,6 +38,7 @@ import Onboarding from "./pages/Onboarding";
 import OnboardingComplete from "./pages/OnboardingComplete";
 import OnboardingPendingApproval from "./pages/OnboardingPendingApproval";
 import CreateAdmin from "./pages/CreateAdmin";
+import AdminGoLive from "./pages/AdminGoLive";
 import FAQ from "./pages/FAQ";
 import Error500 from "./pages/Error500";
 import ComprehensiveTestSuite from "./components/testing/ComprehensiveTestSuite";
@@ -172,6 +173,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <AdminUserDetails />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/go-live" 
+              element={
+                <ProtectedRoute>
+                  <AdminGoLive />
                 </ProtectedRoute>
               } 
             />
