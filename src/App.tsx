@@ -42,6 +42,7 @@ import AdminGoLive from "./pages/AdminGoLive";
 import FAQ from "./pages/FAQ";
 import Error500 from "./pages/Error500";
 import ComprehensiveTestSuite from "./components/testing/ComprehensiveTestSuite";
+import PaymentTests from "./pages/PaymentTests";
 
 const queryClient = new QueryClient();
 
@@ -198,6 +199,7 @@ function AppContent() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/500" element={<Error500 />} />
             <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
+            <Route path="/test-payment" element={<PaymentTests />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
