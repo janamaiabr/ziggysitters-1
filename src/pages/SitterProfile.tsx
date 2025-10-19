@@ -531,10 +531,6 @@ export default function SitterProfile() {
                   <span className="text-sm">Profile Verified</span>
                   <Badge variant="secondary">✓</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">References</span>
-                  <Badge variant="secondary">✓</Badge>
-                </div>
               </CardContent>
             </Card>
           </div>
