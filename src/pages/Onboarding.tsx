@@ -73,20 +73,42 @@ export default function Onboarding() {
     localStorage.setItem('onboarding_step', step.toString());
   }, [step]);
 
-  // Handle Stripe return parameters - show success message
+  // Handle Stripe return parameters - auto-complete onboarding if all requirements met
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const stripeSuccess = params.get('stripe_success');
     
-    if (stripeSuccess === 'true') {
-      toast({
-        title: "Stripe connected!",
-        description: "Your payment setup is complete. You can now finish onboarding.",
-      });
-      // Clean up URL
+    if (stripeSuccess === 'true' && profile && data.role === 'pet_sitter') {
+      console.log('Stripe return detected for sitter - checking completion requirements');
+      
+      // Clean up URL immediately
       window.history.replaceState({}, '', '/onboarding');
+      
+      // Check if all sitter requirements are met
+      const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address && profile.suburb;
+      const hasDocuments = profile.id_document_url && profile.blue_card_document_url;
+      const hasStripeSetup = profile.stripe_onboarding_completed;
+      
+      console.log('Sitter completion check:', {
+        hasBasicInfo,
+        hasDocuments,
+        hasStripeSetup,
+        profile
+      });
+      
+      if (hasBasicInfo && hasDocuments && hasStripeSetup && !profile.onboarding_completed) {
+        // All requirements met - auto-complete onboarding
+        console.log('Auto-completing onboarding after Stripe setup');
+        handleSitterOnboardingComplete();
+      } else {
+        // Show success message and let them continue
+        toast({
+          title: "Stripe connected!",
+          description: "Your payment setup is complete. You can now finish onboarding.",
+        });
+      }
     }
-  }, [toast]);
+  }, [toast, profile, data.role]);
 
   useEffect(() => {
     if (!user) {

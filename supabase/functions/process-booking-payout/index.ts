@@ -151,7 +151,23 @@ serve(async (req) => {
           }
         });
 
-        logStep("Penalty notification email sent");
+        logStep("Penalty notification email sent to owner");
+
+        // Send notification email to sitter about penalty deduction
+        await supabaseClient.functions.invoke('send-sitter-penalty-notification', {
+          body: {
+            booking_id: booking_id,
+            sitter_email: booking.sitter.email,
+            sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+            owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+            penalty_amount: penaltyAmount,
+            reports_completed: booking.daily_reports_completed,
+            reports_required: booking.daily_reports_required,
+            booking_reference: booking.booking_reference,
+          }
+        });
+
+        logStep("Penalty notification email sent to sitter");
 
       } catch (refundError) {
         logStep("ERROR creating refund", { error: refundError.message });
