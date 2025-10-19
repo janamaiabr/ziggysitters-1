@@ -49,6 +49,41 @@ export default function AdminPaymentFix() {
     }
   };
 
+  const handleForceConfirm = async () => {
+    if (!confirm('This will mark the booking as confirmed WITHOUT verifying payment in Stripe. Only use this for old test bookings. Continue?')) {
+      return;
+    }
+
+    setIsVerifying(true);
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ 
+          status: 'confirmed',
+          payment_status: 'paid'
+        })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Booking Confirmed',
+        description: 'The booking has been manually marked as confirmed.',
+      });
+
+      setResult({ success: true, manually_confirmed: true, message: 'Booking forced to confirmed status' });
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update booking',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
@@ -65,20 +100,31 @@ export default function AdminPaymentFix() {
             />
           </div>
 
-          <Button
-            onClick={handleManualVerify}
-            disabled={isVerifying || !bookingId}
-            className="w-full"
-          >
-            {isVerifying ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Searching Stripe...
-              </>
-            ) : (
-              'Verify Payment in Stripe'
-            )}
-          </Button>
+          <div className="space-y-2">
+            <Button
+              onClick={handleManualVerify}
+              disabled={isVerifying || !bookingId}
+              className="w-full"
+            >
+              {isVerifying ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Searching Stripe...
+                </>
+              ) : (
+                'Verify Payment in Stripe'
+              )}
+            </Button>
+
+            <Button
+              onClick={handleForceConfirm}
+              disabled={isVerifying || !bookingId}
+              variant="destructive"
+              className="w-full"
+            >
+              Force Confirm (Skip Stripe Check)
+            </Button>
+          </div>
 
           {result && (
             <div className="mt-4 p-4 bg-muted rounded-lg">
@@ -89,14 +135,26 @@ export default function AdminPaymentFix() {
             </div>
           )}
 
-          <div className="text-sm text-muted-foreground">
-            <p className="font-semibold mb-2">How this works:</p>
-            <ol className="list-decimal list-inside space-y-1">
-              <li>Searches Stripe for payments matching this booking</li>
-              <li>Looks for successful payments for the booking amount ($25.00)</li>
-              <li>If found, updates the booking to 'confirmed' status</li>
-              <li>Creates a transaction record for accounting</li>
-            </ol>
+          <div className="text-sm text-muted-foreground space-y-4">
+            <div>
+              <p className="font-semibold mb-2">Verify Payment in Stripe:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Searches Stripe for payments matching this booking</li>
+                <li>Looks for successful payments for the booking amount</li>
+                <li>If found, updates the booking to 'confirmed' status</li>
+                <li>Creates a transaction record for accounting</li>
+              </ol>
+            </div>
+            
+            <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
+              <p className="font-semibold text-yellow-600 mb-1">⚠️ About Old Test Bookings:</p>
+              <p className="text-xs">Bookings created before 2025-10-19 don't have the correct metadata in Stripe, so "Verify Payment" will find 0 payments. For these, use "Force Confirm" to manually mark as paid.</p>
+            </div>
+
+            <div className="p-3 bg-green-500/10 border border-green-500/20 rounded">
+              <p className="font-semibold text-green-600 mb-1">✅ Automatic Flow Fixed:</p>
+              <p className="text-xs">All NEW bookings from 2025-10-19 onwards will automatically verify on payment completion.</p>
+            </div>
           </div>
         </CardContent>
       </Card>
