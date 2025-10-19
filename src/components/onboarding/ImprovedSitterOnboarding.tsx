@@ -69,6 +69,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   
   // Step 5: Payment setup flag
   const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleSpecies = (species: string) => {
     setAcceptedSpecies(prev => 
@@ -258,6 +259,8 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     e?.preventDefault();
     e?.stopPropagation();
     
+    setIsLoading(true);
+    
     try {
       const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
       
@@ -267,29 +270,15 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       }
       
       if (data?.url) {
-        console.log('Opening Stripe URL in new tab:', data.url);
-        // Open in new tab so user can complete Stripe setup
-        const newWindow = window.open(data.url, '_blank', 'noopener,noreferrer');
-        
-        if (!newWindow) {
-          toast({
-            title: "Pop-up blocked",
-            description: "Please allow pop-ups for this site and try again.",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        toast({
-          title: "Stripe setup opened",
-          description: "Complete your payment setup in the new tab, then return here to verify and complete onboarding.",
-          duration: 10000,
-        });
+        console.log('Redirecting to Stripe URL:', data.url);
+        // Redirect in same tab to avoid popup blockers
+        window.location.href = data.url;
       } else {
         throw new Error('No URL returned from Stripe');
       }
     } catch (error: any) {
       console.error('Error in handleInitiatePaymentSetup:', error);
+      setIsLoading(false);
       toast({
         title: "Connection failed",
         description: error?.message || "Failed to connect to Stripe.",
