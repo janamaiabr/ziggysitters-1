@@ -79,8 +79,8 @@ const handler = async (req: Request): Promise<Response> => {
         service_type: "pet_sitting_owners_home",
         start_date: "2025-12-01",
         end_date: "2025-12-05",
-        pet_names: ["Fluffy", "Max"],
-        total_amount: 250
+        booking_reference: "BK-TEST123",
+        total_amount: 250.00
       }
     });
     results.push({ email: "Booking Acceptance", success: !bookingAcceptanceResult.error, error: bookingAcceptanceResult.error });
