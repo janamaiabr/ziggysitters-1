@@ -67,7 +67,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
+  const [endTime, setEndTime] = useState('10:00');
   const [serviceType, setServiceType] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [requiresDailyReports, setRequiresDailyReports] = useState(false);
@@ -75,6 +75,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [loading, setLoading] = useState(false);
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
+  const [repeatAcrossDays, setRepeatAcrossDays] = useState(false);
   
   // For dog walking and drop-in visits - multiple sessions
   const [walkVisitSessions, setWalkVisitSessions] = useState<WalkVisitSession[]>([
@@ -216,12 +217,27 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       // Calculate duration in hours from start and end time
       const [startHour, startMin] = startTime.split(':').map(Number);
       const [endHour, endMin] = endTime.split(':').map(Number);
-      const startMinutes = startHour * 60 + startMin;
-      const endMinutes = endHour * 60 + endMin;
-      const durationHours = (endMinutes - startMinutes) / 60;
+      let startMinutes = startHour * 60 + startMin;
+      let endMinutes = endHour * 60 + endMin;
       
-      // Hourly pricing: hourly_rate × duration_in_hours × num_pets
-      return Math.max(0, durationHours) * hourlyRate * petCount;
+      // Handle crossing midnight
+      if (endMinutes <= startMinutes) {
+        endMinutes += 24 * 60; // Add 24 hours
+      }
+      
+      let durationHours = (endMinutes - startMinutes) / 60;
+      
+      // Round to 0.5h increments, minimum 0.5h
+      durationHours = Math.max(0.5, Math.round(durationHours * 2) / 2);
+      
+      // Calculate days booked
+      let daysBooked = 1;
+      if (repeatAcrossDays && startDate && endDate) {
+        daysBooked = Math.max(1, differenceInDays(endDate, startDate));
+      }
+      
+      // Hourly pricing: hourly_rate × duration_in_hours × days_booked × num_pets
+      return durationHours * hourlyRate * daysBooked * petCount;
       
     } else if (serviceType === 'drop_in_visits') {
       const visitRate = service.hourly_rate; // Using hourly_rate field for visit rate
@@ -275,21 +291,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
     
-    // Validate end time is after start time for dog walking
-    if (serviceType === 'dog_walking') {
-      const [startHour, startMin] = startTime.split(':').map(Number);
-      const [endHour, endMin] = endTime.split(':').map(Number);
-      const startMinutes = startHour * 60 + startMin;
-      const endMinutes = endHour * 60 + endMin;
-      
-      if (endMinutes <= startMinutes) {
-        toast({
-          title: 'Invalid Time Range',
-          description: 'End time must be after start time.',
-          variant: 'destructive'
-        });
-        return;
-      }
+    // For dog walking with repeat, validate date range
+    if (serviceType === 'dog_walking' && repeatAcrossDays && (!startDate || !endDate)) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please select start and end dates for repeating sessions.',
+        variant: 'destructive'
+      });
+      return;
     }
     
     // For drop-in visits, validate sessions
@@ -364,9 +373,9 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         bookingData.startDate = format(startDate!, 'yyyy-MM-dd');
         bookingData.endDate = format(endDate!, 'yyyy-MM-dd');
       } else if (serviceType === 'dog_walking') {
-        // For dog walking, use start date only (hourly service)
+        // For dog walking
         bookingData.startDate = format(startDate!, 'yyyy-MM-dd');
-        bookingData.endDate = format(startDate!, 'yyyy-MM-dd'); // Same day
+        bookingData.endDate = repeatAcrossDays && endDate ? format(endDate!, 'yyyy-MM-dd') : format(startDate!, 'yyyy-MM-dd');
         bookingData.startTime = startTime;
         bookingData.endTime = endTime;
       } else if (serviceType === 'drop_in_visits') {
@@ -416,7 +425,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     setStartDateOpen(false);
     setEndDateOpen(false);
     setStartTime('09:00');
-    setEndTime('17:00');
+    setEndTime('10:00');
+    setRepeatAcrossDays(false);
     setServiceType('');
     setSpecialInstructions('');
     setRequiresDailyReports(false);
@@ -572,74 +582,103 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           {servicesData.length > 0 && serviceType && (
             <>
 
-          {/* Date Selection - For pet sitting and dog walking (start date only) */}
+          {/* Date Selection - For pet sitting and dog walking */}
           {serviceType && (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home' || serviceType === 'dog_walking') && (
-            <div className={cn("grid gap-4", serviceType === 'dog_walking' ? "grid-cols-1" : "grid-cols-2")}>
-              <div className="space-y-3">
-                <label className="text-sm font-medium">{serviceType === 'dog_walking' ? 'Date' : 'Start Date'} *</label>
-                <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !startDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {startDate ? format(startDate, "PPP") : "Select start date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={startDate}
-                      onSelect={(date) => handleDateSelect(date, 'start')}
-                      disabled={(date) => {
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        return date < today;
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              {/* End Date - Only for pet sitting (not for dog walking) */}
-              {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (
+            <div className="space-y-4">
+              <div className={cn("grid gap-4", serviceType === 'dog_walking' ? "grid-cols-1" : "grid-cols-2")}>
                 <div className="space-y-3">
-                  <label className="text-sm font-medium">End Date *</label>
-                  <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                  <label className="text-sm font-medium">{serviceType === 'dog_walking' ? 'Start Date' : 'Start Date'} *</label>
+                  <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         type="button"
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal",
-                          !endDate && "text-muted-foreground"
+                          !startDate && "text-muted-foreground"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {endDate ? format(endDate, "PPP") : "Select end date"}
+                        {startDate ? format(startDate, "PPP") : "Select start date"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={endDate}
-                        onSelect={(date) => handleDateSelect(date, 'end')}
+                        selected={startDate}
+                        onSelect={(date) => handleDateSelect(date, 'start')}
                         disabled={(date) => {
-                          if (!startDate) return true;
-                          const minDate = new Date(startDate);
-                          minDate.setHours(0, 0, 0, 0);
-                          return date < minDate;
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          return date < today;
                         }}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
+                </div>
+
+                {/* End Date - For pet sitting (always) and dog walking (only if repeat is enabled) */}
+                {((serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') || 
+                  (serviceType === 'dog_walking' && repeatAcrossDays)) && (
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium">End Date *</label>
+                    <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !endDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {endDate ? format(endDate, "PPP") : "Select end date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={endDate}
+                          onSelect={(date) => handleDateSelect(date, 'end')}
+                          disabled={(date) => {
+                            if (!startDate) return true;
+                            const minDate = new Date(startDate);
+                            minDate.setHours(0, 0, 0, 0);
+                            return date < minDate;
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                )}
+              </div>
+
+              {/* Repeat across days toggle - Only for dog walking */}
+              {serviceType === 'dog_walking' && (
+                <div className="flex items-start space-x-3 p-3 border rounded-lg bg-muted/30">
+                  <input
+                    type="checkbox"
+                    id="repeat-days"
+                    checked={repeatAcrossDays}
+                    onChange={(e) => {
+                      setRepeatAcrossDays(e.target.checked);
+                      if (!e.target.checked) {
+                        setEndDate(undefined);
+                      }
+                    }}
+                    className="mt-1 h-4 w-4"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="repeat-days" className="text-sm font-medium cursor-pointer">
+                      Repeat this session across multiple days
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enable this to book the same walking session for multiple days
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -671,30 +710,25 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           {serviceType === 'dog_walking' && startTime && endTime && (() => {
             const [startHour, startMin] = startTime.split(':').map(Number);
             const [endHour, endMin] = endTime.split(':').map(Number);
-            const startMinutes = startHour * 60 + startMin;
-            const endMinutes = endHour * 60 + endMin;
-            const durationMinutes = endMinutes - startMinutes;
-            const hours = Math.floor(durationMinutes / 60);
-            const minutes = durationMinutes % 60;
+            let startMinutes = startHour * 60 + startMin;
+            let endMinutes = endHour * 60 + endMin;
             
-            if (durationMinutes > 0) {
-              return (
-                <Card className="p-3 bg-muted/50">
-                  <p className="text-sm text-muted-foreground">
-                    Duration: <span className="font-semibold text-foreground">{hours > 0 && `${hours}h`} {minutes > 0 && `${minutes}min`}</span>
-                  </p>
-                </Card>
-              );
-            } else if (durationMinutes < 0) {
-              return (
-                <Card className="p-3 bg-red-50 border-red-200">
-                  <p className="text-sm text-red-600">
-                    ⚠️ End time must be after start time
-                  </p>
-                </Card>
-              );
+            // Handle crossing midnight
+            if (endMinutes <= startMinutes) {
+              endMinutes += 24 * 60;
             }
-            return null;
+            
+            const durationMinutes = endMinutes - startMinutes;
+            const durationHours = Math.max(0.5, Math.round((durationMinutes / 60) * 2) / 2);
+            
+            return (
+              <Card className="p-3 bg-muted/50">
+                <p className="text-sm text-muted-foreground">
+                  Session length: <span className="font-semibold text-foreground">{durationHours} {durationHours === 1 ? 'hour' : 'hours'}</span>
+                  {durationMinutes > 24 * 60 && <span className="text-orange-600 ml-2">(crosses midnight)</span>}
+                </p>
+              </Card>
+            );
           })()}
 
           {/* Drop-in Visit Sessions */}
@@ -960,25 +994,42 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                     {(() => {
                       const [startHour, startMin] = startTime.split(':').map(Number);
                       const [endHour, endMin] = endTime.split(':').map(Number);
-                      const durationHours = ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / 60;
+                      let startMinutes = startHour * 60 + startMin;
+                      let endMinutes = endHour * 60 + endMin;
+                      
+                      // Handle crossing midnight
+                      if (endMinutes <= startMinutes) {
+                        endMinutes += 24 * 60;
+                      }
+                      
+                      const durationHours = Math.max(0.5, Math.round(((endMinutes - startMinutes) / 60) * 2) / 2);
+                      const daysBooked = repeatAcrossDays && startDate && endDate ? Math.max(1, differenceInDays(endDate, startDate)) : 1;
+                      const rate = servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0;
+                      const subtotal = rate * durationHours * daysBooked * selectedPetIds.length;
                       
                       return (
                         <>
-                          <div className="flex justify-between">
-                            <span>Time</span>
-                            <span>{startTime} - {endTime}</span>
+                          <div className="flex justify-between text-sm">
+                            <span>Session length</span>
+                            <span className="font-medium">{durationHours} {durationHours === 1 ? 'hour' : 'hours'}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Duration</span>
-                            <span>{durationHours} hour{durationHours !== 1 ? 's' : ''}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Pets</span>
-                            <span>{selectedPetIds.length}</span>
+                          {repeatAcrossDays && (
+                            <div className="flex justify-between text-sm">
+                              <span>Days booked</span>
+                              <span className="font-medium">{daysBooked}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between text-sm">
+                            <span>Number of Pets</span>
+                            <span className="font-medium">{selectedPetIds.length}</span>
                           </div>
                           <div className="flex justify-between text-sm text-muted-foreground">
                             <span>Rate</span>
-                            <span>${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/hour/pet</span>
+                            <span>${rate.toFixed(2)}/hour</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Subtotal</span>
+                            <span className="font-medium">${subtotal.toFixed(2)}</span>
                           </div>
                         </>
                       );
@@ -1031,20 +1082,21 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   <span>${platformFeeGST.toFixed(2)}</span>
                 </div>
                 
-                <div className="flex justify-between">
-                  <span>Platform Fee (inc GST)</span>
+                <div className="flex justify-between text-sm">
+                  <span>Platform fee (10%)</span>
                   <span>${platformFeeIncGST.toFixed(2)}</span>
+                </div>
+                
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Sitter receives (90%)</span>
+                  <span>${(serviceCostExGST * 0.9).toFixed(2)}</span>
                 </div>
                 
                 <Separator />
                 
                 <div className="flex justify-between font-semibold text-lg">
-                  <span>Total (inc GST)</span>
+                  <span>Total</span>
                   <span>${grandTotal.toFixed(2)}</span>
-                </div>
-                
-                <div className="text-xs text-muted-foreground text-right">
-                  Total GST: ${(gstAmount + platformFeeGST).toFixed(2)}
                 </div>
               </CardContent>
             </Card>
