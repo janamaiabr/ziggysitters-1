@@ -267,9 +267,9 @@ serve(async (req) => {
     
     logStep("Availability check passed - no conflicts found");
     
-    // ============= CRITICAL VALIDATION: Payment State - Stripe Account Status =============
+    // ============= Get sitter profile for notifications =============
     
-    // Get sitter's profile to check Stripe status
+    // Get sitter's profile
     const { data: sitterProfile, error: sitterProfileError } = await supabaseClient
       .from('profiles')
       .select('id, first_name, last_name, email, stripe_account_id, stripe_account_enabled, stripe_onboarding_completed')
@@ -280,12 +280,9 @@ serve(async (req) => {
       throw new Error('Sitter profile not found');
     }
     
-    // Check if sitter has completed Stripe onboarding
-    if (!sitterProfile.stripe_account_id || !sitterProfile.stripe_account_enabled) {
-      throw new Error('This sitter has not completed payment setup. Please choose another sitter.');
-    }
-    
-    logStep("Sitter Stripe status validated", { 
+    const hasStripeSetup = sitterProfile.stripe_account_id && sitterProfile.stripe_account_enabled;
+    logStep("Sitter Stripe status checked", { 
+      hasStripeSetup,
       accountId: sitterProfile.stripe_account_id,
       enabled: sitterProfile.stripe_account_enabled 
     });
@@ -325,9 +322,13 @@ serve(async (req) => {
     }
     logStep("Booking created - payment will occur after sitter acceptance", { bookingId: booking.id, reference: booking.booking_reference });
 
-    // Send booking notification email to sitter
+    // Send booking notification email to sitter - different email based on Stripe status
     try {
-      await supabaseClient.functions.invoke('send-booking-notification', {
+      const notificationFunction = hasStripeSetup 
+        ? 'send-booking-notification' 
+        : 'send-booking-notification-no-stripe';
+      
+      await supabaseClient.functions.invoke(notificationFunction, {
         body: {
           booking_id: booking.id,
           sitter_email: sitterProfile.email,
@@ -340,7 +341,7 @@ serve(async (req) => {
           total_amount: bookingData.totalAmount
         }
       });
-      logStep("Booking notification email sent to sitter");
+      logStep(`Booking notification email sent to sitter (${notificationFunction})`);
     } catch (emailError) {
       logStep("Failed to send booking notification email", { error: emailError.message });
       // Don't fail the booking if email fails
