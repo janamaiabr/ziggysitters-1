@@ -22,7 +22,7 @@ interface WalkVisitSession {
   id: string;
   date: Date;
   startTime: string;
-  hours: number;
+  endTime: string;
 }
 
 interface BookingDialogProps {
@@ -80,7 +80,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   
   // For dog walking and drop-in visits - multiple sessions
   const [walkVisitSessions, setWalkVisitSessions] = useState<WalkVisitSession[]>([
-    { id: '1', date: new Date(), startTime: '09:00', hours: 1 }
+    { id: '1', date: new Date(), startTime: '09:00', endTime: '10:00' }
   ]);
   
   const { user } = useAuth();
@@ -215,9 +215,22 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         return 0;
       }
       
-      // Calculate total hours from all walk sessions
+      // Calculate total hours from all walk sessions based on time difference
       // CRITICAL: Hourly rate is PER PET for dog walking
-      const totalHours = walkVisitSessions.reduce((sum, session) => sum + session.hours, 0);
+      const totalHours = walkVisitSessions.reduce((sum, session) => {
+        // Parse start and end times to calculate duration
+        const [startHour, startMin] = session.startTime.split(':').map(Number);
+        const [endHour, endMin] = session.endTime.split(':').map(Number);
+        
+        const startMinutes = startHour * 60 + startMin;
+        const endMinutes = endHour * 60 + endMin;
+        
+        // Calculate duration in hours (can be fractional)
+        const durationHours = (endMinutes - startMinutes) / 60;
+        
+        return sum + Math.max(0, durationHours); // Ensure non-negative
+      }, 0);
+      
       return totalHours * hourlyRate * petCount;
       
     } else if (serviceType === 'drop_in_visits') {
@@ -274,11 +287,22 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       }
       
       // Validate each session has required fields
-      const invalidSession = walkVisitSessions.find(s => !s.date || !s.startTime || s.hours < 1);
+      const invalidSession = walkVisitSessions.find(s => {
+        if (!s.date || !s.startTime || !s.endTime) return true;
+        
+        // Validate end time is after start time
+        const [startHour, startMin] = s.startTime.split(':').map(Number);
+        const [endHour, endMin] = s.endTime.split(':').map(Number);
+        const startMinutes = startHour * 60 + startMin;
+        const endMinutes = endHour * 60 + endMin;
+        
+        return endMinutes <= startMinutes;
+      });
+      
       if (invalidSession) {
         toast({
           title: 'Invalid Session',
-          description: 'Please complete all walk/visit details (date, time, and hours).',
+          description: 'Please ensure all sessions have a valid date, start time, and end time (end must be after start).',
           variant: 'destructive'
         });
         return;
@@ -355,7 +379,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         bookingData.walkVisitSessions = walkVisitSessions.map(s => ({
           date: format(s.date, 'yyyy-MM-dd'),
           startTime: s.startTime,
-          hours: s.hours
+          endTime: s.endTime
         }));
       }
 
@@ -402,7 +426,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     setRequiresDailyReports(false);
     setAgreedToTerms(false);
     setSelectedPetIds([]);
-    setWalkVisitSessions([{ id: '1', date: new Date(), startTime: '09:00', hours: 1 }]);
+    setWalkVisitSessions([{ id: '1', date: new Date(), startTime: '09:00', endTime: '10:00' }]);
   };
 
   const handleClose = () => {
@@ -622,7 +646,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                         id: Date.now().toString(),
                         date: new Date(),
                         startTime: '09:00',
-                        hours: 1
+                        endTime: '10:00'
                       }
                     ]);
                   }}
@@ -690,7 +714,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                         </div>
                         
                         <div className="space-y-2">
-                          <label className="text-xs text-muted-foreground">Time</label>
+                          <label className="text-xs text-muted-foreground">Start Time</label>
                           <Input
                             type="time"
                             value={session.startTime}
@@ -706,27 +730,47 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                         </div>
                         
                         <div className="space-y-2">
-                          <label className="text-xs text-muted-foreground">Hours</label>
+                          <label className="text-xs text-muted-foreground">End Time</label>
                           <Input
-                            type="number"
-                            min="1"
-                            max="8"
-                            step="0.5"
-                            value={session.hours}
+                            type="time"
+                            value={session.endTime}
                             onChange={(e) => {
-                              const hours = parseFloat(e.target.value);
-                              if (hours >= 1 && hours <= 8) {
-                                setWalkVisitSessions(
-                                  walkVisitSessions.map(s =>
-                                    s.id === session.id ? { ...s, hours } : s
-                                  )
-                                );
-                              }
+                              setWalkVisitSessions(
+                                walkVisitSessions.map(s =>
+                                  s.id === session.id ? { ...s, endTime: e.target.value } : s
+                                )
+                              );
                             }}
                             className="text-sm"
                           />
                         </div>
                       </div>
+                      
+                      {/* Show calculated duration */}
+                      {(() => {
+                        const [startHour, startMin] = session.startTime.split(':').map(Number);
+                        const [endHour, endMin] = session.endTime.split(':').map(Number);
+                        const startMinutes = startHour * 60 + startMin;
+                        const endMinutes = endHour * 60 + endMin;
+                        const durationMinutes = endMinutes - startMinutes;
+                        const hours = Math.floor(durationMinutes / 60);
+                        const minutes = durationMinutes % 60;
+                        
+                        if (durationMinutes > 0) {
+                          return (
+                            <p className="text-xs text-muted-foreground mt-2">
+                              Duration: {hours > 0 && `${hours}h`} {minutes > 0 && `${minutes}min`}
+                            </p>
+                          );
+                        } else if (durationMinutes < 0) {
+                          return (
+                            <p className="text-xs text-red-600 mt-2">
+                              ⚠️ End time must be after start time
+                            </p>
+                          );
+                        }
+                        return null;
+                      })()}
                     </div>
                   </Card>
                 ))}
@@ -912,17 +956,28 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                     {/* Detailed session breakdown */}
                     <div className="space-y-2">
                       <div className="font-medium text-sm">Sessions:</div>
-                      {walkVisitSessions.map((session, index) => (
-                        <div key={session.id} className="flex justify-between text-sm text-muted-foreground pl-4">
-                          <span>
-                            {format(session.date, "MMM d")} at {session.startTime} 
-                            {serviceType === 'dog_walking' && ` (${session.hours}h)`}
-                          </span>
-                          {serviceType === 'dog_walking' && (
-                            <span>${(session.hours * (servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0) * selectedPetIds.length).toFixed(2)}</span>
-                          )}
-                        </div>
-                      ))}
+                      {walkVisitSessions.map((session, index) => {
+                        // Calculate duration for this session
+                        const [startHour, startMin] = session.startTime.split(':').map(Number);
+                        const [endHour, endMin] = session.endTime.split(':').map(Number);
+                        const startMinutes = startHour * 60 + startMin;
+                        const endMinutes = endHour * 60 + endMin;
+                        const durationHours = (endMinutes - startMinutes) / 60;
+                        
+                        return (
+                          <div key={session.id} className="flex justify-between text-sm text-muted-foreground pl-4">
+                            <span>
+                              {format(session.date, "MMM d")} • {session.startTime} - {session.endTime}
+                              {serviceType === 'dog_walking' && durationHours > 0 && (
+                                <span className="ml-1">({durationHours}h)</span>
+                              )}
+                            </span>
+                            {serviceType === 'dog_walking' && durationHours > 0 && (
+                              <span>${(durationHours * (servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0) * selectedPetIds.length).toFixed(2)}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                     
                     <div className="flex justify-between">
@@ -933,7 +988,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                       <>
                         <div className="flex justify-between">
                           <span>Total Hours</span>
-                          <span>{walkVisitSessions.reduce((sum, s) => sum + s.hours, 0)} hours</span>
+                          <span>
+                            {walkVisitSessions.reduce((sum, s) => {
+                              const [startHour, startMin] = s.startTime.split(':').map(Number);
+                              const [endHour, endMin] = s.endTime.split(':').map(Number);
+                              const duration = ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / 60;
+                              return sum + Math.max(0, duration);
+                            }, 0).toFixed(1)} hours
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm text-muted-foreground">
                           <span>Rate</span>
