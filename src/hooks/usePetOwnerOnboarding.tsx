@@ -123,6 +123,8 @@ export function usePetOwnerOnboarding() {
         return { success: false, error: 'All pets must have a name' };
       }
 
+      console.log('🐾 SAVING PETS - Owner ID:', ownerId, 'Pet Count:', pets.length);
+
       for (const pet of pets) {
         const petData = {
           owner_id: ownerId,
@@ -146,16 +148,19 @@ export function usePetOwnerOnboarding() {
           emergency_contact_phone: pet.emergency_contact_phone
         };
 
+        console.log('🐾 Inserting pet:', petData);
+
         const { error } = await supabase
           .from('pets')
           .insert(petData);
 
         if (error) {
-          console.error('Pet insert error:', error);
+          console.error('❌ Pet insert error:', error);
           throw error;
         }
       }
 
+      console.log('✅ All pets saved successfully!');
       toast({
         title: "Pets saved successfully!",
         description: "Your pet information has been saved.",
@@ -163,7 +168,7 @@ export function usePetOwnerOnboarding() {
       
       return { success: true };
     } catch (error: any) {
-      console.error('Save pets error:', error);
+      console.error('❌ Save pets error:', error);
       toast({
         title: "Failed to save pets",
         description: error.message,
