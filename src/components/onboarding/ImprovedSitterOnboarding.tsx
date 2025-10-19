@@ -35,7 +35,7 @@ const petSizes = ['small', 'medium', 'large', 'extra_large'];
 const serviceTypes = [
   { key: 'pet_sitting_owners_home', label: 'Pet Sitting (Your Home)', rate_types: ['daily_rate'], suggestedDaily: 50, unit: '/day/pet' },
   { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (Sitter\'s Home)', rate_types: ['daily_rate'], suggestedDaily: 60, unit: '/day/pet' },
-  { key: 'dog_walking', label: 'Dog Walking', rate_types: ['hourly_rate'], suggestedHourly: 25, unit: '/hour/pet' },
+  /* DOG_WALKING */ // { key: 'dog_walking', label: 'Dog Walking', rate_types: ['hourly_rate'], suggestedHourly: 25, unit: '/hour/pet' }, /* END_DOG_WALKING */
   { key: 'drop_in_visits', label: 'Drop-in Visits', rate_types: ['hourly_rate'], suggestedHourly: 30, unit: '/visit' }
 ];
 

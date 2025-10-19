@@ -87,7 +87,7 @@ serve(async (req) => {
         limit: 10,
       });
       bookingRefPayments = refPaymentIntents.data;
-      console.log('[MANUAL-VERIFY] Found payment intents by booking_reference:', bookingRefPayments.data.length);
+      console.log('[MANUAL-VERIFY] Found payment intents by booking_reference:', bookingRefPayments.length);
     } catch (e) {
       console.log('[MANUAL-VERIFY] Could not search by booking_reference:', e.message);
     }

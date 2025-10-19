@@ -27,7 +27,7 @@ const petSpecies = ['dog', 'cat', 'bird', 'reptile', 'rabbit', 'horse'];
 const petSizes = ['small', 'medium', 'large', 'extra_large'];
 
 const serviceTypes = [
-  { key: 'dog_walking', label: 'Dog Walking', rate_type: 'hourly' },
+  /* DOG_WALKING */ // { key: 'dog_walking', label: 'Dog Walking', rate_type: 'hourly' }, /* END_DOG_WALKING */
   { key: 'pet_sitting_owners_home', label: 'Pet Sitting (Your Home)', rate_type: 'daily' },
   { key: 'pet_sitting_sitters_home', label: 'Pet Sitting (Sitter\'s Home)', rate_type: 'daily' },
   { key: 'drop_in_visits', label: 'Drop-in Visits', rate_type: 'hourly' }
