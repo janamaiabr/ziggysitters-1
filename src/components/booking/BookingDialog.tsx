@@ -98,6 +98,33 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       }
       if (initialDates.serviceType) {
         setServiceType(initialDates.serviceType);
+        
+        // For dog walking/drop-in visits, create sessions from date range
+        if ((initialDates.serviceType === 'dog_walking' || initialDates.serviceType === 'drop_in_visits') && 
+            initialDates.checkIn && initialDates.checkOut) {
+          const start = new Date(initialDates.checkIn);
+          const end = new Date(initialDates.checkOut);
+          const sessions: WalkVisitSession[] = [];
+          
+          // Create one session per day in the range
+          let currentDate = new Date(start);
+          let sessionId = 1;
+          
+          while (currentDate <= end) {
+            sessions.push({
+              id: sessionId.toString(),
+              date: new Date(currentDate),
+              startTime: '09:00',
+              endTime: '10:00'
+            });
+            currentDate.setDate(currentDate.getDate() + 1);
+            sessionId++;
+          }
+          
+          if (sessions.length > 0) {
+            setWalkVisitSessions(sessions);
+          }
+        }
       }
     }
   }, [initialDates]);
