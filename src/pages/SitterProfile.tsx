@@ -325,8 +325,8 @@ export default function SitterProfile() {
               </Alert>
             )}
             
-            {/* Show alert if sitter hasn't completed payment setup */}
-            {!sitterStripeEnabled && profile?.role !== 'pet_sitter' && (
+            {/* Show alert if sitter hasn't completed payment setup - only for pet owners */}
+            {profile?.role === 'pet_owner' && !sitterStripeEnabled && (
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
@@ -336,7 +336,7 @@ export default function SitterProfile() {
             )}
             
             {/* Booking Form - Only show if user is pet owner and sitter has Stripe enabled */}
-            {profile?.role !== 'pet_sitter' && sitterStripeEnabled && (
+            {profile?.role === 'pet_owner' && sitterStripeEnabled && (
               <div id="booking-section">
                 <BookingAccordion
                   sitter={{
