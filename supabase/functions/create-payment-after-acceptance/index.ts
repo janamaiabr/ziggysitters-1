@@ -31,10 +31,10 @@ serve(async (req) => {
 
     logStep('User authenticated', { userId: user.id, email: user.email });
 
-    const { booking_id } = await req.json();
-    if (!booking_id) throw new Error("Booking ID is required");
+    const { bookingId } = await req.json();
+    if (!bookingId) throw new Error("Booking ID is required");
 
-    logStep('Looking for booking', { bookingId: booking_id });
+    logStep('Looking for booking', { bookingId });
 
     // Get booking details with sitter Stripe account
     const { data: booking, error: bookingError } = await supabaseClient
@@ -52,7 +52,7 @@ serve(async (req) => {
         owner:profiles!owner_id(user_id, email, first_name, last_name, phone),
         sitter:profiles!sitter_id(stripe_account_id, stripe_account_enabled, first_name, last_name)
       `)
-      .eq('id', booking_id)
+      .eq('id', bookingId)
       .maybeSingle();
 
     if (bookingError) {
@@ -61,7 +61,7 @@ serve(async (req) => {
     }
     
     if (!booking) {
-      logStep('Booking not found', { bookingId: booking_id });
+      logStep('Booking not found', { bookingId });
       throw new Error("Booking not found");
     }
 
@@ -141,7 +141,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${encodeURIComponent(booking.booking_reference)}`,
       cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
       metadata: {
-        booking_id: booking_id,
+        booking_id: bookingId,
         service_type: booking.service_type,
       },
     });
@@ -152,7 +152,7 @@ serve(async (req) => {
     const { error: updateError } = await supabaseClient
       .from('bookings')
       .update({ stripe_checkout_session_id: session.id })
-      .eq('id', booking_id);
+      .eq('id', bookingId);
 
     if (updateError) {
       logStep('Failed to update booking with session ID', { error: updateError });
