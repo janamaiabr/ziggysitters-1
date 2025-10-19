@@ -35,6 +35,42 @@ export default function Bookings() {
         // Clean up URL params
         setSearchParams({});
       }
+
+      // Set up real-time subscription for booking updates
+      const channel = supabase
+        .channel('bookings-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'bookings',
+            filter: `owner_id=eq.${profile.id}`
+          },
+          (payload) => {
+            console.log('Booking change detected (owner):', payload);
+            fetchBookings();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'bookings',
+            filter: `sitter_id=eq.${profile.id}`
+          },
+          (payload) => {
+            console.log('Booking change detected (sitter):', payload);
+            fetchBookings();
+          }
+        )
+        .subscribe();
+
+      // Cleanup subscription on unmount
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [profile, searchParams]);
 

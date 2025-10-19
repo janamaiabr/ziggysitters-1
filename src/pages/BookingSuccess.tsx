@@ -117,7 +117,8 @@ const BookingSuccess = () => {
   }, [sessionId, bookingId, bookingRef]);
 
   const handleViewBookings = () => {
-    navigate('/bookings');
+    // Add a timestamp to force a hard navigation and refresh
+    navigate('/bookings?refresh=' + Date.now());
   };
 
   if (isVerifying) {
