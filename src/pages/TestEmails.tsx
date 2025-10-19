@@ -14,19 +14,24 @@ export default function TestEmails() {
     setResults(null);
     
     try {
+      console.log('Invoking test-all-emails function...');
       const { data, error } = await supabase.functions.invoke('test-all-emails');
+      
+      console.log('Function response:', { data, error });
       
       if (error) {
         console.error('Error testing emails:', error);
-        toast.error('Failed to send test emails');
+        toast.error(`Failed to send test emails: ${error.message}`);
+        setResults({ error: error.message, results: [] });
         return;
       }
       
       setResults(data);
       toast.success('Test emails sent! Check janamaia@gmail.com');
     } catch (error: any) {
-      console.error('Error:', error);
-      toast.error(error.message);
+      console.error('Caught error:', error);
+      toast.error(`Error: ${error.message || 'Unknown error'}`);
+      setResults({ error: error.message || 'Unknown error', results: [] });
     } finally {
       setLoading(false);
     }
