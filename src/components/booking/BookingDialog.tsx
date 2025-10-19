@@ -14,9 +14,16 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
-import { CalendarIcon, Clock, DollarSign, MapPin, User, Shield } from 'lucide-react';
+import { CalendarIcon, Clock, DollarSign, MapPin, User, Shield, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { metaPixel } from '@/lib/metaPixel';
+
+interface WalkVisitSession {
+  id: string;
+  date: Date;
+  startTime: string;
+  hours: number;
+}
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -65,11 +72,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [endTime, setEndTime] = useState('17:00');
   const [serviceType, setServiceType] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
-  const [requiresDailyReports, setRequiresDailyReports] = useState(false); // Default to false - pet owners opt-in
+  const [requiresDailyReports, setRequiresDailyReports] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
+  
+  // For dog walking and drop-in visits - multiple sessions
+  const [walkVisitSessions, setWalkVisitSessions] = useState<WalkVisitSession[]>([
+    { id: '1', date: new Date(), startTime: '09:00', hours: 1 }
+  ]);
+  
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -172,68 +185,33 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   };
 
   const calculateTotal = () => {
-    if (!startDate || !endDate || !serviceType) return 0;
-    
     const service = servicesData.find(s => s.service_type === serviceType);
     if (!service) return 0;
-    
-    console.log('Calculating total - service:', service, 'serviceType:', serviceType);
 
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
-      // CRITICAL FIX: For overnight/multi-day pet sitting, MUST use overnight_rate or daily_rate
-      // Never use hourly_rate for multi-day bookings
+      if (!startDate || !endDate) return 0;
+      
       const overnightRate = service.overnight_rate || service.daily_rate;
       
       if (!overnightRate) {
-        console.error('ERROR: No overnight or daily rate set for pet sitting service');
-        toast({
-          title: "Pricing Error",
-          description: "This sitter hasn't set up overnight rates yet. Please contact them or choose a different sitter.",
-          variant: "destructive"
-        });
         return 0;
       }
       
-      // Calculate nights (not days) for overnight stays
-      // Oct 22 to Oct 24 = 2 nights (night of 22nd, night of 23rd)
       const nights = differenceInDays(endDate, startDate);
-      const totalNights = Math.max(1, nights); // Minimum 1 night
+      const totalNights = Math.max(1, nights);
       
-      console.log('Pet sitting calculation:', totalNights, 'nights *', overnightRate, '=', totalNights * overnightRate);
       return totalNights * overnightRate;
       
     } else if (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') {
-      // For hourly services (drop-in, dog walking), use hourly_rate
       const hourlyRate = service.hourly_rate;
       
       if (!hourlyRate) {
-        console.error('ERROR: No hourly rate set for service');
-        toast({
-          title: "Pricing Error", 
-          description: "This sitter hasn't set up hourly rates yet. Please contact them or choose a different sitter.",
-          variant: "destructive"
-        });
         return 0;
       }
       
-      // For same-day hourly services, calculate based on time duration
-      const startDateTime = new Date(startDate);
-      startDateTime.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]));
-      
-      const endDateTime = new Date(startDate); // FIXED: Should be same day for hourly services
-      endDateTime.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]));
-      
-      console.log('Start DateTime:', startDateTime);
-      console.log('End DateTime:', endDateTime);
-      
-      const hours = differenceInHours(endDateTime, startDateTime);
-      console.log('Hours calculated:', hours);
-      
-      // Minimum 1 hour charge for hourly services
-      const totalHours = Math.max(1, hours);
-      const total = totalHours * hourlyRate;
-      console.log('Total calculation:', totalHours, 'hours *', hourlyRate, '=', total);
-      return total;
+      // Calculate total cost from all walk/visit sessions
+      const totalHours = walkVisitSessions.reduce((sum, session) => sum + session.hours, 0);
+      return totalHours * hourlyRate;
     }
     return 0;
   };
@@ -244,14 +222,47 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
 
-    // Validate required fields
-    if (!startDate || !endDate || !serviceType) {
+    // Validate required fields based on service type
+    if (!serviceType) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all required fields.',
+        description: 'Please select a service type.',
         variant: 'destructive'
       });
       return;
+    }
+    
+    // For pet sitting, require date range
+    if ((serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (!startDate || !endDate)) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please select start and end dates.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    // For dog walking/drop-in, validate sessions
+    if ((serviceType === 'drop_in_visits' || serviceType === 'dog_walking')) {
+      if (walkVisitSessions.length === 0) {
+        toast({
+          title: 'Missing Information',
+          description: 'Please add at least one walk/visit session.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      // Validate each session has required fields
+      const invalidSession = walkVisitSessions.find(s => !s.date || !s.startTime || s.hours < 1);
+      if (invalidSession) {
+        toast({
+          title: 'Invalid Session',
+          description: 'Please complete all walk/visit details (date, time, and hours).',
+          variant: 'destructive'
+        });
+        return;
+      }
     }
 
     // Require pet selection - pet owners MUST have pets registered
@@ -300,18 +311,33 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       // Only allow daily reports for overnight pet sitting services
       const allowsDailyReports = serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home';
       
-      const bookingData = {
+      let bookingData: any = {
         sitterId: sitter.id.toString(),
         serviceType,
-        startDate: format(startDate, 'yyyy-MM-dd'),
-        endDate: format(endDate, 'yyyy-MM-dd'),
-        startTime: (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') ? startTime : undefined,
-        endTime: (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') ? endTime : undefined,
         petIds: selectedPetIds,
         specialInstructions,
         totalAmount: total,
         requiresDailyReports: allowsDailyReports ? requiresDailyReports : false
       };
+      
+      // Add date fields based on service type
+      if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
+        bookingData.startDate = format(startDate!, 'yyyy-MM-dd');
+        bookingData.endDate = format(endDate!, 'yyyy-MM-dd');
+      } else if (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') {
+        // For walks/visits, use the first session date as start/end
+        // and store all sessions in metadata
+        const sortedSessions = [...walkVisitSessions].sort((a, b) => a.date.getTime() - b.date.getTime());
+        bookingData.startDate = format(sortedSessions[0].date, 'yyyy-MM-dd');
+        bookingData.endDate = format(sortedSessions[sortedSessions.length - 1].date, 'yyyy-MM-dd');
+        bookingData.startTime = sortedSessions[0].startTime;
+        // Store all walk/visit sessions
+        bookingData.walkVisitSessions = walkVisitSessions.map(s => ({
+          date: format(s.date, 'yyyy-MM-dd'),
+          startTime: s.startTime,
+          hours: s.hours
+        }));
+      }
 
       console.log('Sending booking data:', bookingData);
 
@@ -353,9 +379,10 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     setEndTime('17:00');
     setServiceType('');
     setSpecialInstructions('');
-    setRequiresDailyReports(false); // Reset to false - pet owners must opt-in each time
+    setRequiresDailyReports(false);
     setAgreedToTerms(false);
     setSelectedPetIds([]);
+    setWalkVisitSessions([{ id: '1', date: new Date(), startTime: '09:00', hours: 1 }]);
   };
 
   const handleClose = () => {
@@ -477,107 +504,209 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             </Select>
           </div>
 
-          {/* Date Selection */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Start Date *</label>
-              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !startDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? (
-                      (() => {
-                        try {
-                          return format(startDate, "PPP");
-                        } catch (error) {
-                          console.error('Date formatting error:', error);
-                          return `Selected: ${startDate.toDateString()}`;
-                        }
-                      })()
-                    ) : "Select start date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent 
-                  className="w-auto p-0" 
-                  align="start"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={(date) => {
-                      console.log('Start date selected:', date);
-                      handleDateSelect(date, 'start');
-                    }}
-                    disabled={(date) => {
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      return date < today;
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+          {/* Date Selection - Only for pet sitting */}
+          {serviceType && (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <label className="text-sm font-medium">Start Date *</label>
+                <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "PPP") : "Select start date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={(date) => handleDateSelect(date, 'start')}
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today;
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
-            <div className="space-y-3">
-              <label className="text-sm font-medium">End Date *</label>
-              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !endDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? (
-                      (() => {
-                        try {
-                          return format(endDate, "PPP");
-                        } catch (error) {
-                          console.error('Date formatting error:', error);
-                          return `Selected: ${endDate.toDateString()}`;
-                        }
-                      })()
-                    ) : "Select end date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent 
-                  className="w-auto p-0" 
-                  align="start"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <Calendar
-                    mode="single"
-                    selected={endDate}
-                    onSelect={(date) => {
-                      console.log('End date selected:', date);
-                      handleDateSelect(date, 'end');
-                    }}
-                    disabled={(date) => {
-                      if (!startDate) return true;
-                      const minDate = new Date(startDate);
-                      minDate.setHours(0, 0, 0, 0);
-                      return date < minDate;
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <div className="space-y-3">
+                <label className="text-sm font-medium">End Date *</label>
+                <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !endDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {endDate ? format(endDate, "PPP") : "Select end date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={(date) => handleDateSelect(date, 'end')}
+                      disabled={(date) => {
+                        if (!startDate) return true;
+                        const minDate = new Date(startDate);
+                        minDate.setHours(0, 0, 0, 0);
+                        return date < minDate;
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Walk/Visit Sessions - Only for dog walking and drop-in visits */}
+          {serviceType && (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">
+                  {serviceType === 'dog_walking' ? 'Dog Walking Sessions' : 'Drop-in Visit Sessions'} *
+                </label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setWalkVisitSessions([
+                      ...walkVisitSessions,
+                      {
+                        id: Date.now().toString(),
+                        date: new Date(),
+                        startTime: '09:00',
+                        hours: 1
+                      }
+                    ]);
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-1" /> Add Session
+                </Button>
+              </div>
+              
+              <div className="space-y-3">
+                {walkVisitSessions.map((session, index) => (
+                  <Card key={session.id} className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Session {index + 1}</span>
+                        {walkVisitSessions.length > 1 && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setWalkVisitSessions(walkVisitSessions.filter(s => s.id !== session.id));
+                            }}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-2">
+                          <label className="text-xs text-muted-foreground">Date</label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="w-full justify-start text-left font-normal"
+                              >
+                                <CalendarIcon className="mr-2 h-3 w-3" />
+                                {format(session.date, "MMM d")}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={session.date}
+                                onSelect={(date) => {
+                                  if (date) {
+                                    setWalkVisitSessions(
+                                      walkVisitSessions.map(s =>
+                                        s.id === session.id ? { ...s, date } : s
+                                      )
+                                    );
+                                  }
+                                }}
+                                disabled={(date) => {
+                                  const today = new Date();
+                                  today.setHours(0, 0, 0, 0);
+                                  return date < today;
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label className="text-xs text-muted-foreground">Time</label>
+                          <Input
+                            type="time"
+                            value={session.startTime}
+                            onChange={(e) => {
+                              setWalkVisitSessions(
+                                walkVisitSessions.map(s =>
+                                  s.id === session.id ? { ...s, startTime: e.target.value } : s
+                                )
+                              );
+                            }}
+                            className="text-sm"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label className="text-xs text-muted-foreground">Hours</label>
+                          <Input
+                            type="number"
+                            min="1"
+                            max="8"
+                            step="0.5"
+                            value={session.hours}
+                            onChange={(e) => {
+                              const hours = parseFloat(e.target.value);
+                              if (hours >= 1 && hours <= 8) {
+                                setWalkVisitSessions(
+                                  walkVisitSessions.map(s =>
+                                    s.id === session.id ? { ...s, hours } : s
+                                  )
+                                );
+                              }
+                            }}
+                            className="text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+              
+              <p className="text-xs text-muted-foreground">
+                Each {serviceType === 'dog_walking' ? 'walk' : 'visit'} is charged at ${servicesData.find(s => s.service_type === serviceType)?.hourly_rate || 0}/hour
+              </p>
+            </div>
+          )}
 
           {/* Pet Selection */}
           {ownerPets.length > 0 && (
@@ -613,78 +742,6 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   <p className="text-sm text-orange-600 mt-2">Please select at least one pet</p>
                 )}
               </Card>
-            </div>
-          )}
-
-          {/* Time Selection - Only for drop-in visits */}
-          {serviceType && (serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <label className="text-sm font-medium">Start Time</label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => {
-                      console.log('Start time changed:', e.target.value);
-                      setStartTime(e.target.value);
-                    }}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-sm font-medium">End Time</label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => {
-                      console.log('End time changed:', e.target.value);
-                      setEndTime(e.target.value);
-                    }}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Pet Selection */}
-          {ownerPets.length > 0 && (
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Select Pets for this Booking</label>
-              <div className="grid grid-cols-2 gap-2">
-                {ownerPets.map((pet) => (
-                  <div
-                    key={pet.id}
-                    onClick={() => {
-                      setSelectedPetIds(prev =>
-                        prev.includes(pet.id)
-                          ? prev.filter(id => id !== pet.id)
-                          : [...prev, pet.id]
-                      );
-                    }}
-                    className={cn(
-                      "p-3 border-2 rounded-lg cursor-pointer transition-colors",
-                      selectedPetIds.includes(pet.id)
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    )}
-                  >
-                    <div className="font-medium">{pet.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {pet.species} • {pet.breed}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {selectedPetIds.length === 0 && (
-                <p className="text-sm text-destructive">Please select at least one pet</p>
-              )}
             </div>
           )}
 
@@ -804,18 +861,20 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   <div className="flex justify-between">
                     <span>Duration</span>
                     <span>
-                      {startDate && endDate ? (differenceInDays(endDate, startDate) || 1) : 1} days
+                      {startDate && endDate ? (differenceInDays(endDate, startDate) || 1) : 1} nights
                     </span>
                   </div>
                 ) : (
                   <div className="flex justify-between">
-                    <span>Duration</span>
-                    <span>
-                      {startDate && endDate ? differenceInHours(
-                        new Date(`${format(endDate, 'yyyy-MM-dd')} ${endTime}`),
-                        new Date(`${format(startDate, 'yyyy-MM-dd')} ${startTime}`)
-                      ) : 0} hours
-                    </span>
+                    <span>Total Sessions</span>
+                    <span>{walkVisitSessions.length} {walkVisitSessions.length === 1 ? 'session' : 'sessions'}</span>
+                  </div>
+                )}
+                
+                {(serviceType === 'drop_in_visits' || serviceType === 'dog_walking') && (
+                  <div className="flex justify-between">
+                    <span>Total Hours</span>
+                    <span>{walkVisitSessions.reduce((sum, s) => sum + s.hours, 0)} hours</span>
                   </div>
                 )}
 
