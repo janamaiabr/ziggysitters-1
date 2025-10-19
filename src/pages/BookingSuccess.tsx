@@ -19,19 +19,24 @@ const BookingSuccess = () => {
 
   useEffect(() => {
     const verifyPayment = async () => {
-      // Need either booking_ref (new) or booking_id (legacy)
-      if (!sessionId || (!bookingRef && !bookingId)) {
-        console.error('Missing session_id or booking reference');
+      if (!sessionId) {
+        console.error('Missing session_id');
         setPaymentStatus('failed');
         setIsVerifying(false);
+        toast({
+          title: "Invalid Payment Link",
+          description: "No payment session found. Please try booking again.",
+          variant: "destructive"
+        });
         return;
       }
 
       try {
-        // If we have booking_ref, we need to look up the booking_id first
+        // Determine booking_id - prioritize URL parameter, then lookup by reference
         let actualBookingId = bookingId;
         
         if (!actualBookingId && bookingRef) {
+          console.log('Looking up booking by reference:', bookingRef);
           const { data: booking, error: lookupError } = await supabase
             .from('bookings')
             .select('id')
@@ -39,14 +44,34 @@ const BookingSuccess = () => {
             .maybeSingle();
           
           if (lookupError || !booking) {
-            console.error('Could not find booking with reference:', bookingRef);
+            console.error('Could not find booking with reference:', bookingRef, lookupError);
             setPaymentStatus('failed');
             setIsVerifying(false);
+            toast({
+              title: "Booking Not Found",
+              description: "Could not find your booking. Please contact support with reference: " + bookingRef,
+              variant: "destructive"
+            });
             return;
           }
           
           actualBookingId = booking.id;
+          console.log('Found booking ID:', actualBookingId);
         }
+
+        if (!actualBookingId) {
+          console.error('No booking_id available');
+          setPaymentStatus('failed');
+          setIsVerifying(false);
+          toast({
+            title: "Booking Error",
+            description: "Could not identify your booking. Please contact support.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        console.log('Verifying payment for booking:', actualBookingId, 'session:', sessionId);
 
         const { data, error } = await supabase.functions.invoke('verify-payment', {
           body: {

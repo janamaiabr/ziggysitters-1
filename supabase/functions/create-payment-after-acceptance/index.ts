@@ -138,7 +138,7 @@ serve(async (req) => {
           destination: booking.sitter.stripe_account_id,
         },
       },
-      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_ref=${encodeURIComponent(booking.booking_reference)}`,
+      success_url: `${req.headers.get("origin")}/booking-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${bookingId}&booking_ref=${encodeURIComponent(booking.booking_reference)}`,
       cancel_url: `${req.headers.get("origin")}/bookings?payment=cancelled`,
       metadata: {
         booking_id: bookingId,
