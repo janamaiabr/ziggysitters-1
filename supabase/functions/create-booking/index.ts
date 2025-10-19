@@ -179,13 +179,25 @@ serve(async (req) => {
       }
       expectedAmount = Number(sitterService.daily_rate) * numDays * numPets;
     } else if (dbServiceType === 'dog_walking') {
-      // Dog walking: hourly_rate PER PET
+      // Dog walking: hourly_rate PER PET, calculated from session time ranges
       if (!sitterService.hourly_rate) {
         throw new Error("Sitter has not set up hourly rates for dog walking");
       }
       // For dog walking, walk sessions are in bookingData.walkVisitSessions
       const walkSessions = bookingData.walkVisitSessions || [];
-      const totalHours = walkSessions.reduce((sum: number, session: any) => sum + (session.hours || 1), 0);
+      const totalHours = walkSessions.reduce((sum: number, session: any) => {
+        // Calculate hours from startTime and endTime
+        if (session.startTime && session.endTime) {
+          const [startHour, startMin] = session.startTime.split(':').map(Number);
+          const [endHour, endMin] = session.endTime.split(':').map(Number);
+          const startMinutes = startHour * 60 + startMin;
+          const endMinutes = endHour * 60 + endMin;
+          const durationHours = (endMinutes - startMinutes) / 60;
+          return sum + Math.max(0, durationHours);
+        }
+        // Fallback to hours field if present (backward compatibility)
+        return sum + (session.hours || 1);
+      }, 0);
       expectedAmount = Number(sitterService.hourly_rate) * totalHours * numPets;
     } else if (dbServiceType === 'drop_in_visits') {
       // Drop-in visits: flat rate PER VISIT (not per pet)
