@@ -116,10 +116,10 @@ const Index = () => {
         structuredData={structuredData}
       />
       <div className="bg-gradient-to-b from-background to-accent/20">
-      {/* Launch Location Notice */}
-      <div className="bg-primary text-primary-foreground py-3 text-center">
-        <p className="text-sm font-medium">
-          🚀 Now Live in Auckland! More cities coming soon.
+      {/* Launch Location Notice - Visible for all users */}
+      <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
+        <p className="text-sm md:text-base font-medium">
+          📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
         </p>
       </div>
       

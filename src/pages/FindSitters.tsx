@@ -279,6 +279,13 @@ export default function FindSitters() {
         }}
       />
       
+      {/* Location Notice Banner */}
+      <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
+        <p className="text-sm md:text-base font-medium">
+          📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
+        </p>
+      </div>
+      
       {/* Hero Section with Search - Hide on mobile when results shown */}
       <section className={`relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>
         <div className="absolute inset-0">
