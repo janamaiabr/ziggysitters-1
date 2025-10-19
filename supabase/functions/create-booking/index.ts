@@ -133,10 +133,8 @@ serve(async (req) => {
     logStep("Pet IDs validated", { petCount: validPets.length });
 
     // Service type mapping from frontend to database enum
-    // UPDATED: Only 4 core services now
+    // ONLY 3 CORE SERVICES (dog walking removed)
     const serviceTypeMapping = {
-      // Direct database service type mappings
-      'dog_walking': 'dog_walking',
       'pet_sitting_owners_home': 'pet_sitting_owners_home',
       'pet_sitting_sitters_home': 'pet_sitting_sitters_home',
       'drop_in_visits': 'drop_in_visits'
@@ -145,10 +143,10 @@ serve(async (req) => {
     // Map frontend service type to database enum
     const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping] || bookingData.serviceType;
     
-    // Validate that the service type exists - ONLY 4 core services
-    const validServiceTypes = ['dog_walking', 'pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits'];
+    // Validate that the service type exists - ONLY 3 CORE SERVICES
+    const validServiceTypes = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits'];
     if (!validServiceTypes.includes(dbServiceType)) {
-      throw new Error(`Invalid service type: ${bookingData.serviceType}`);
+      throw new Error(`Invalid service type: ${bookingData.serviceType}. Only pet sitting and drop-in visits are available.`);
     }
     
     // Get sitter's service pricing to validate amount
@@ -178,37 +176,13 @@ serve(async (req) => {
         throw new Error("Sitter has not set up daily rates for pet sitting");
       }
       expectedAmount = Number(sitterService.daily_rate) * numDays * numPets;
-    } else if (dbServiceType === 'dog_walking') {
-      // Dog walking: hourly pricing based on time duration
-      // Price = hourly_rate × duration_in_hours × num_pets
-      if (!sitterService.hourly_rate) {
-        throw new Error("Sitter has not set up hourly rates for dog walking");
-      }
-      
-      if (!bookingData.startTime || !bookingData.endTime) {
-        throw new Error("Start time and end time are required for dog walking");
-      }
-      
-      // Calculate duration from start and end time
-      const [startHour, startMin] = bookingData.startTime.split(':').map(Number);
-      const [endHour, endMin] = bookingData.endTime.split(':').map(Number);
-      const startMinutes = startHour * 60 + startMin;
-      const endMinutes = endHour * 60 + endMin;
-      const durationHours = (endMinutes - startMinutes) / 60;
-      
-      if (durationHours <= 0) {
-        throw new Error("End time must be after start time");
-      }
-      
-      expectedAmount = Number(sitterService.hourly_rate) * durationHours * numPets;
     } else if (dbServiceType === 'drop_in_visits') {
-      // Drop-in visits: flat rate PER VISIT (not per pet)
+      // Drop-in visits: hourly rate (per visit)
       if (!sitterService.hourly_rate) {
         throw new Error("Sitter has not set up visit rates");
       }
-      const visitSessions = bookingData.walkVisitSessions || [];
-      const numberOfVisits = visitSessions.length || 1;
-      expectedAmount = Number(sitterService.hourly_rate) * numberOfVisits;
+      // For drop-in visits, use hourly rate as the per-visit rate
+      expectedAmount = Number(sitterService.hourly_rate) * numDays;
     }
     
     // Allow 20% variance for rounding and minor adjustments
