@@ -78,9 +78,53 @@ export default function BookingAccordion({
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [repeatAcrossDays, setRepeatAcrossDays] = useState(false);
+  const [ownerPets, setOwnerPets] = useState<any[]>([]);
+  const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Fetch owner's pets when component mounts
+  useEffect(() => {
+    const fetchOwnerPets = async () => {
+      if (!user) return;
+
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id, role')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!profile) return;
+        
+        if (profile.role === 'pet_sitter') {
+          toast({
+            title: "Not Available",
+            description: "Pet sitters cannot book other sitters.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const { data: pets, error } = await supabase
+          .from('pets')
+          .select('id, name, species, breed')
+          .eq('owner_id', profile.id);
+
+        if (error) throw error;
+
+        setOwnerPets(pets || []);
+        if (pets && pets.length > 0) {
+          setSelectedPetIds(pets.map(p => p.id));
+        }
+      } catch (error) {
+        console.error('Error fetching pets:', error);
+      }
+    };
+
+    fetchOwnerPets();
+  }, [user]);
 
   // Debug logging to verify dates are being received
   useEffect(() => {
@@ -217,7 +261,7 @@ export default function BookingAccordion({
         endDate: format(endDate, 'yyyy-MM-dd'),
         startTime: (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') ? startTime : undefined,
         endTime: (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') ? endTime : undefined,
-        petIds: [],
+        petIds: selectedPetIds,
         specialInstructions,
         totalAmount: total,
         requiresDailyReports: allowsDailyReports ? requiresDailyReports : false
@@ -496,6 +540,43 @@ export default function BookingAccordion({
                 </div>
                 );
               })()}
+
+              {/* Pet Selection */}
+              {ownerPets.length > 0 && (
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">Select Pet(s) for this Booking *</label>
+                  <Card className="p-4">
+                    <div className="space-y-3">
+                      {ownerPets.map((pet) => (
+                        <div key={pet.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                          <input
+                            type="checkbox"
+                            id={`pet-${pet.id}`}
+                            checked={selectedPetIds.includes(pet.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedPetIds([...selectedPetIds, pet.id]);
+                              } else {
+                                setSelectedPetIds(selectedPetIds.filter(id => id !== pet.id));
+                              }
+                            }}
+                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                          />
+                          <label htmlFor={`pet-${pet.id}`} className="flex-1 cursor-pointer">
+                            <div className="font-medium">{pet.name}</div>
+                            <div className="text-sm text-muted-foreground capitalize">
+                              {pet.species} {pet.breed ? `• ${pet.breed}` : ''}
+                            </div>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    {selectedPetIds.length === 0 && (
+                      <p className="text-sm text-orange-600 mt-2">Please select at least one pet</p>
+                    )}
+                  </Card>
+                </div>
+              )}
 
               {/* Special Instructions */}
               <div className="space-y-3">
