@@ -43,19 +43,37 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Processing daily report email for booking:", bookingId);
 
-    // Get booking and owner details
+    // Get booking details
     const { data: booking, error: bookingError } = await supabaseClient
       .from('bookings')
-      .select(`
-        *,
-        owner:profiles!bookings_owner_id_fkey(first_name, last_name, email),
-        sitter:profiles!bookings_sitter_id_fkey(first_name, last_name)
-      `)
+      .select('*')
       .eq('id', bookingId)
       .single();
 
     if (bookingError || !booking) {
       throw new Error(`Failed to fetch booking details: ${bookingError?.message}`);
+    }
+
+    // Get owner details
+    const { data: owner, error: ownerError } = await supabaseClient
+      .from('profiles')
+      .select('first_name, last_name, email')
+      .eq('id', booking.owner_id)
+      .single();
+
+    if (ownerError || !owner) {
+      throw new Error(`Failed to fetch owner details: ${ownerError?.message}`);
+    }
+
+    // Get sitter details
+    const { data: sitter, error: sitterError } = await supabaseClient
+      .from('profiles')
+      .select('first_name, last_name')
+      .eq('id', booking.sitter_id)
+      .single();
+
+    if (sitterError || !sitter) {
+      throw new Error(`Failed to fetch sitter details: ${sitterError?.message}`);
     }
 
     // Get pet details using RPC function
@@ -124,8 +142,8 @@ const handler = async (req: Request): Promise<Response> => {
       
       <div style="background: white; padding: 30px; border: 1px solid #e1e1e1; border-top: none; border-radius: 0 0 10px 10px;">
         <div style="margin-bottom: 25px;">
-          <h2 style="color: #667eea; margin-bottom: 10px;">Hello ${booking.owner.first_name}!</h2>
-          <p>Here's how ${petNames} did today with ${booking.sitter.first_name}:</p>
+          <h2 style="color: #667eea; margin-bottom: 10px;">Hello ${owner.first_name}!</h2>
+          <p>Here's how ${petNames} did today with ${sitter.first_name}:</p>
         </div>
 
         ${photoSection ? `
@@ -182,7 +200,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         <div style="border-top: 2px solid #e1e1e1; padding-top: 20px; text-align: center;">
           <p style="color: #666; margin: 0;">
-            This report was submitted by ${booking.sitter.first_name} at ${new Date().toLocaleTimeString()}
+            This report was submitted by ${sitter.first_name} at ${new Date().toLocaleTimeString()}
           </p>
           <p style="color: #667eea; margin: 10px 0 0 0; font-weight: bold;">
             ZiggySitters - Transparent Pet Care You Can Trust
@@ -195,7 +213,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "ZiggySitters <reports@ziggysitters.com>",
-      to: [booking.owner.email],
+      to: [owner.email],
       subject: `Daily Report for ${petNames} - ${new Date(reportDate).toLocaleDateString()}`,
       html: emailHtml,
     });
