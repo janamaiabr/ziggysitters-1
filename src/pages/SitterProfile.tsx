@@ -366,42 +366,38 @@ export default function SitterProfile() {
                   servicesData.map((service) => {
                     const getServiceDisplayName = (type: string) => {
                       switch (type) {
-                        case 'dog_walking': return 'Dog Walking';
-                        case 'daycare': return 'Pet Sitting';
-                        case 'overnight_boarding': return 'Overnight Care';
-                        case 'pet_sitting_owners_home': return 'Pet Sitting in Owner\'s Home';
+                        case 'pet_sitting_owners_home': return 'Pet Sitting in Your Home';
                         case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
+                        case 'drop_in_visits': return 'Drop-in Visits';
                         default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                       }
                     };
 
                     const getServiceDescription = (type: string) => {
                       switch (type) {
-                        case 'dog_walking': return '30-60 minute walks';
-                        case 'daycare': return 'Daily visits & care';
-                        case 'overnight_boarding': return '24-hour boarding care';
                         case 'pet_sitting_owners_home': return 'Pet care in your home';
                         case 'pet_sitting_sitters_home': return 'Pet care in sitter\'s home';
+                        case 'drop_in_visits': return 'Quick visits for feeding & care';
                         default: return 'Professional pet care service';
                       }
                     };
 
                     const getRate = (service: any) => {
-                      if (service.hourly_rate) return `NZ$${service.hourly_rate.toFixed(2)}/hour`;
-                      if (service.daily_rate) return `NZ$${service.daily_rate.toFixed(2)}/day`;
-                      if (service.overnight_rate) return `NZ$${service.overnight_rate.toFixed(2)}/night`;
+                      if (service.hourly_rate) return `NZ$${service.hourly_rate}/hour`;
+                      if (service.daily_rate) return `NZ$${service.daily_rate}/day`;
+                      if (service.overnight_rate) return `NZ$${service.overnight_rate}/night`;
                       return 'Contact for pricing';
                     };
 
                     return (
                       <div key={service.id} className="flex justify-between items-center">
-                        <span>{getServiceDisplayName(service.service_type)}</span>
-                        <div className="text-right">
-                          <div className="font-semibold">{getRate(service)}</div>
+                        <div>
+                          <div className="font-medium">{getServiceDisplayName(service.service_type)}</div>
                           <div className="text-xs text-muted-foreground">
                             {getServiceDescription(service.service_type)}
                           </div>
                         </div>
+                        <div className="text-right font-semibold">{getRate(service)}</div>
                       </div>
                     );
                   })
