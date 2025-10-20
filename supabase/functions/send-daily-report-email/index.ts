@@ -49,8 +49,7 @@ const handler = async (req: Request): Promise<Response> => {
       .select(`
         *,
         owner:profiles!bookings_owner_id_fkey(first_name, last_name, email),
-        sitter:profiles!bookings_sitter_id_fkey(first_name, last_name),
-        pets:get_pet_basic_info_for_booking(booking_id)
+        sitter:profiles!bookings_sitter_id_fkey(first_name, last_name)
       `)
       .eq('id', bookingId)
       .single();
@@ -59,8 +58,16 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error(`Failed to fetch booking details: ${bookingError?.message}`);
     }
 
+    // Get pet details using RPC function
+    const { data: pets, error: petsError } = await supabaseClient
+      .rpc('get_pet_basic_info_for_booking', { booking_id: bookingId });
+
+    if (petsError) {
+      console.error('Error fetching pet details:', petsError);
+    }
+
     // Format pet names
-    const petNames = booking.pets?.map((pet: any) => pet.name).join(', ') || 'your pet(s)';
+    const petNames = pets?.map((pet: any) => pet.name).join(', ') || 'your pet(s)';
 
     // Format mood and sleep quality for display
     const formatMood = (mood: string) => {
