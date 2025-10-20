@@ -383,9 +383,10 @@ export default function SitterProfile() {
                     };
 
                     const getRate = (service: any) => {
-                      if (service.hourly_rate) return `NZ$${service.hourly_rate}/hour`;
-                      if (service.daily_rate) return `NZ$${service.daily_rate}/day`;
-                      if (service.overnight_rate) return `NZ$${service.overnight_rate}/night`;
+                      // Format rates to always show 2 decimal places
+                      if (service.hourly_rate) return `NZ$${Number(service.hourly_rate).toFixed(2)}/hour`;
+                      if (service.daily_rate) return `NZ$${Number(service.daily_rate).toFixed(2)}/day`;
+                      if (service.overnight_rate) return `NZ$${Number(service.overnight_rate).toFixed(2)}/night`;
                       return 'Contact for pricing';
                     };
 

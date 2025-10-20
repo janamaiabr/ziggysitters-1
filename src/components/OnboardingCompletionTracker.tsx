@@ -11,9 +11,9 @@ export function OnboardingCompletionTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    // Only run auto-completion logic when NOT on onboarding pages
-    if (location.pathname.includes('/onboarding')) {
-      console.log('OnboardingCompletionTracker: Skipping - on onboarding page');
+    // Only run auto-completion logic when NOT on onboarding or profile pages
+    if (location.pathname.includes('/onboarding') || location.pathname.includes('/profile')) {
+      console.log('OnboardingCompletionTracker: Skipping - on onboarding or profile page');
       return;
     }
 
@@ -72,8 +72,8 @@ export function OnboardingCompletionTracker() {
 
           const hasServices = services && services.length > 0;
           const hasVerificationDocs = profile.id_document_url || profile.blue_card_document_url;
-          // Only consider Stripe setup complete when account is actually enabled, not just onboarding completed
-          const hasStripeSetup = profile.stripe_account_enabled === true;
+          // Accept Stripe setup as complete if onboarding is done (enabled status may take time)
+          const hasStripeSetup = profile.stripe_onboarding_completed === true;
 
           // Only auto-complete if sitter has ALL requirements
           if (hasServices && hasVerificationDocs && hasStripeSetup) {

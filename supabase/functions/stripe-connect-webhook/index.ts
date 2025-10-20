@@ -45,12 +45,44 @@ serve(async (req) => {
       console.log(`[STRIPE-WEBHOOK] Status - enabled: ${enabled}, onboarding: ${onboardingCompleted}, payout_ready: ${payoutReady}`);
 
       // Update the profile with the new status
+      // If onboarding is completed, also mark profile onboarding as done IF all other requirements are met
+      const updateData: any = {
+        stripe_account_enabled: enabled,
+        stripe_onboarding_completed: onboardingCompleted,
+      };
+      
+      // Check if we should also complete profile onboarding
+      if (onboardingCompleted) {
+        // Fetch the profile to check other requirements
+        const { data: profile } = await supabaseClient
+          .from('profiles')
+          .select('id, first_name, last_name, phone, address, suburb, id_document_url, blue_card_document_url, onboarding_completed')
+          .eq('stripe_account_id', account.id)
+          .single();
+          
+        if (profile && !profile.onboarding_completed) {
+          const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address && profile.suburb;
+          const hasDocuments = profile.id_document_url && profile.blue_card_document_url;
+          
+          // Check if sitter has services
+          const { data: services } = await supabaseClient
+            .from('sitter_services')
+            .select('id')
+            .eq('sitter_id', profile.id)
+            .limit(1);
+          
+          const hasServices = services && services.length > 0;
+          
+          if (hasBasicInfo && hasDocuments && hasServices) {
+            console.log('[STRIPE-WEBHOOK] All requirements met - completing onboarding');
+            updateData.onboarding_completed = true;
+          }
+        }
+      }
+
       const { error: updateError } = await supabaseClient
         .from("profiles")
-        .update({
-          stripe_account_enabled: enabled,
-          stripe_onboarding_completed: onboardingCompleted,
-        })
+        .update(updateData)
         .eq("stripe_account_id", account.id);
 
       if (updateError) {

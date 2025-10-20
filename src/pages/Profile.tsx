@@ -70,12 +70,40 @@ export default function Profile() {
             title: "Stripe Setup Complete!",
             description: "Your bank account connection has been saved. Verifying status...",
           });
-          // Refresh status and profile data
+          // Refresh status and profile data, then check if onboarding can be completed
           setTimeout(async () => {
             await checkStripeStatus();
-            // Refetch profile to get updated Stripe status
             await refetch();
-          }, 2000);
+            
+            // If all requirements met, mark onboarding as complete
+            const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address && profile.suburb;
+            const hasDocuments = profile.id_document_url && profile.blue_card_document_url;
+            
+            // Check if sitter has services configured
+            const { data: services } = await supabase
+              .from('sitter_services')
+              .select('id')
+              .eq('sitter_id', profile.id)
+              .limit(1);
+            
+            const hasServices = services && services.length > 0;
+            
+            if (hasBasicInfo && hasDocuments && hasServices && !profile.onboarding_completed) {
+              console.log('All requirements met after Stripe - completing onboarding');
+              const { error } = await supabase
+                .from('profiles')
+                .update({ onboarding_completed: true })
+                .eq('user_id', user?.id);
+                
+              if (!error) {
+                await refetch();
+                toast({
+                  title: "Onboarding Complete!",
+                  description: "Your sitter profile is now active.",
+                });
+              }
+            }
+          }, 3000);
           // Clean up URL
           window.history.replaceState({}, '', '/profile?tab=payments');
         } else if (urlParams.get('stripe_refresh') === 'true') {

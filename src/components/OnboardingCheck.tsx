@@ -25,7 +25,8 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
       '/reset-password', 
       '/forgot-password',
       '/onboarding-complete',
-      '/onboarding-pending-approval'
+      '/onboarding-pending-approval',
+      '/profile' // CRITICAL: Allow profile page access to handle Stripe returns
     ];
     
     // Check if we're on an excluded path
