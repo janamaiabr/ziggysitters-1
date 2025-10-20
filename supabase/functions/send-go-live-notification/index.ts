@@ -25,7 +25,7 @@ serve(async (req) => {
     console.log(`Sending go-live notification to: ${email}`);
 
     const { data, error } = await resend.emails.send({
-      from: 'ZiggySitters <onboarding@ziggysitters.com>',
+      from: 'ZiggySitters <onboarding@resend.dev>',
       to: [email],
       subject: 'Important: Update Your ZiggySitters Profile Before Launch',
       html: `

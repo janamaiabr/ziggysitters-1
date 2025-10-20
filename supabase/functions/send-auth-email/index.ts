@@ -73,7 +73,7 @@ serve(async (req) => {
         }
 
         const { error } = await resend.emails.send({
-          from: 'ZiggySitters <onboarding@ziggysitters.com>',
+          from: 'ZiggySitters <onboarding@resend.dev>',
           to: [user.new_email || user.email],
           subject: subject,
           html: html,

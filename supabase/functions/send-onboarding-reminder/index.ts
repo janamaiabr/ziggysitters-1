@@ -134,7 +134,7 @@ serve(async (req) => {
         `;
 
         const { data: emailData, error: emailError } = await resend.emails.send({
-          from: "ZiggySitters <onboarding@ziggysitters.com>",
+          from: "ZiggySitters <onboarding@resend.dev>",
           to: [profile.email],
           subject: "Complete Your ZiggySitters Profile 🐾",
           html: emailHtml,

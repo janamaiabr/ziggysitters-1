@@ -39,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending penalty notification to sitter: ${sitter_email}`);
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <bookings@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@resend.dev>",
       to: [sitter_email],
       subject: `Important: Payment Adjustment for Booking ${booking_reference}`,
       html: `

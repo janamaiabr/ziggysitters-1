@@ -55,8 +55,8 @@ const handler = async (req: Request): Promise<Response> => {
     ).join(', ') || 'No services configured';
 
     const adminEmailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@ziggysitters.com>",
-      to: ["janamaia@gmail.com", "admin@ziggysitters.com"],
+      from: "ZiggySitters <onboarding@resend.dev>",
+      to: ["janamaia@gmail.com"],
       subject: "New Sitter Application - Approval Required",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -91,7 +91,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to user
     const userEmailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@resend.dev>",
       to: [user_email],
       subject: "Profile Submitted for Review",
       html: `
