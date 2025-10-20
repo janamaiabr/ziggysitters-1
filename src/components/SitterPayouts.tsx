@@ -1,0 +1,209 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Clock, CheckCircle, DollarSign } from 'lucide-react';
+import { format } from 'date-fns';
+
+type PayoutBooking = {
+  id: string;
+  booking_reference: string;
+  total_amount: number;
+  platform_fee: number;
+  status: string;
+  payment_status: string;
+  start_date: string;
+  end_date: string;
+  penalty_amount: number;
+  owner: {
+    first_name: string;
+    last_name: string;
+  };
+};
+
+interface SitterPayoutsProps {
+  sitterId: string;
+}
+
+export default function SitterPayouts({ sitterId }: SitterPayoutsProps) {
+  const [payouts, setPayouts] = useState<PayoutBooking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPayouts();
+  }, [sitterId]);
+
+  const fetchPayouts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select(`
+          id,
+          booking_reference,
+          total_amount,
+          platform_fee,
+          status,
+          payment_status,
+          start_date,
+          end_date,
+          penalty_amount,
+          owner:owner_id (first_name, last_name)
+        `)
+        .eq('sitter_id', sitterId)
+        .eq('status', 'completed')
+        .in('payment_status', ['paid', 'paid_out'])
+        .order('end_date', { ascending: false });
+
+      if (error) throw error;
+      setPayouts((data as any) || []);
+    } catch (error) {
+      console.error('Error fetching payouts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  const pendingPayouts = payouts.filter(b => b.payment_status === 'paid');
+  const completedPayouts = payouts.filter(b => b.payment_status === 'paid_out');
+
+  const calculateNetPayout = (booking: PayoutBooking) => {
+    return booking.total_amount - booking.platform_fee - (booking.penalty_amount || 0);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <Clock className="h-8 w-8 text-yellow-500" />
+              <div>
+                <p className="text-2xl font-bold">{pendingPayouts.length}</p>
+                <p className="text-sm text-muted-foreground">Pending Payouts</p>
+                <p className="text-xs text-muted-foreground">Processing by admin</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="h-8 w-8 text-green-500" />
+              <div>
+                <p className="text-2xl font-bold">{completedPayouts.length}</p>
+                <p className="text-sm text-muted-foreground">Completed Payouts</p>
+                <p className="text-xs text-muted-foreground">Transferred to your account</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Pending Payouts */}
+      {pendingPayouts.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-semibold">Pending Payouts</h3>
+          {pendingPayouts.map((booking) => (
+            <Card key={booking.id}>
+              <CardContent className="pt-6">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="font-semibold">{booking.booking_reference}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {booking.owner.first_name} {booking.owner.last_name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
+                    </p>
+                  </div>
+                  <Badge variant="secondary">
+                    <Clock className="w-3 h-3 mr-1" />
+                    Pending
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div>
+                    <p className="text-muted-foreground text-xs">Service Fee</p>
+                    <p className="font-semibold">${booking.total_amount.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">Platform Fee</p>
+                    <p className="font-semibold text-red-600">-${booking.platform_fee.toFixed(2)}</p>
+                  </div>
+                  {booking.penalty_amount > 0 && (
+                    <div>
+                      <p className="text-muted-foreground text-xs">Penalty</p>
+                      <p className="font-semibold text-red-600">-${booking.penalty_amount.toFixed(2)}</p>
+                    </div>
+                  )}
+                  <div className={booking.penalty_amount > 0 ? 'col-span-3' : ''}>
+                    <p className="text-muted-foreground text-xs">Your Payout</p>
+                    <p className="font-bold text-green-600 text-lg">
+                      ${calculateNetPayout(booking).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Completed Payouts */}
+      {completedPayouts.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-semibold">Completed Payouts</h3>
+          {completedPayouts.map((booking) => (
+            <Card key={booking.id}>
+              <CardContent className="pt-6">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold">{booking.booking_reference}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {booking.owner.first_name} {booking.owner.last_name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
+                    </p>
+                    <p className="text-sm font-semibold text-green-600 mt-2">
+                      <DollarSign className="w-4 h-4 inline mr-1" />
+                      ${calculateNetPayout(booking).toFixed(2)} paid
+                    </p>
+                  </div>
+                  <Badge>
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Paid Out
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {payouts.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <DollarSign className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No payouts yet</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Complete bookings to start earning
+            </p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}

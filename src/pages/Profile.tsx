@@ -21,6 +21,7 @@ import PetsManagement from '@/components/PetsManagement';
 import SitterDailyReports from '@/components/SitterDailyReports';
 import ClientDailyReports from '@/components/ClientDailyReports';
 import { SitterStatusBadge } from '@/components/onboarding/SitterStatusBadge';
+import SitterPayouts from '@/components/SitterPayouts';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function Profile() {
         // Handle Stripe Connect return URLs
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('stripe_success') === 'true') {
-          setActiveTab('verification');
+          setActiveTab('payments');
           toast({
             title: "Stripe Setup Complete!",
             description: "Your bank account connection has been saved. Verifying status...",
@@ -76,15 +77,15 @@ export default function Profile() {
             await refetch();
           }, 2000);
           // Clean up URL
-          window.history.replaceState({}, '', '/profile?tab=verification');
+          window.history.replaceState({}, '', '/profile?tab=payments');
         } else if (urlParams.get('stripe_refresh') === 'true') {
-          setActiveTab('verification');
+          setActiveTab('payments');
           toast({
             title: "Setup Incomplete",
             description: "Please complete your Stripe setup to receive payments.",
             variant: "destructive",
           });
-          window.history.replaceState({}, '', '/profile?tab=verification');
+          window.history.replaceState({}, '', '/profile?tab=payments');
         }
       }
       if (profile.role === 'pet_owner') {
@@ -906,7 +907,7 @@ export default function Profile() {
 
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-4' : 'grid-cols-6'}`}>
+          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-4' : profile.is_verified ? 'grid-cols-6' : 'grid-cols-7'}`}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             {profile.role === 'pet_owner' && (
               <>
@@ -923,7 +924,12 @@ export default function Profile() {
             )}
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             {profile.role === 'pet_sitter' && (
-              <TabsTrigger value="verification">Verification</TabsTrigger>
+              <>
+                <TabsTrigger value="payments">Payments</TabsTrigger>
+                {!profile.is_verified && (
+                  <TabsTrigger value="verification">Verification</TabsTrigger>
+                )}
+              </>
             )}
           </TabsList>
 
@@ -1411,8 +1417,8 @@ export default function Profile() {
             </Card>
           </TabsContent>
 
-          {/* Verification Tab - Only for sitters */}
-          {profile.role === 'pet_sitter' && (
+          {/* Verification Tab - Only for unverified sitters */}
+          {profile.role === 'pet_sitter' && !profile.is_verified && (
             <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>
@@ -1506,39 +1512,32 @@ export default function Profile() {
                 {/* Verification Status */}
                 <div className="border-t pt-4">
                   <div className="flex items-center gap-3">
-                    {profile.is_verified ? (
-                      <>
-                        <Shield className="w-5 h-5 text-green-500" />
-                        <div>
-                          <h4 className="font-medium text-green-700">Verified Sitter</h4>
-                          <p className="text-sm text-muted-foreground">Your account has been verified</p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-5 h-5 text-yellow-500" />
-                        <div>
-                          <h4 className="font-medium text-yellow-700">Verification Pending</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {profile.verification_documents_uploaded_at 
-                              ? 'Your documents are under assessment'
-                              : 'Upload your documents to start the verification process'
-                            }
-                          </p>
-                        </div>
-                      </>
-                    )}
+                    <AlertCircle className="w-5 h-5 text-yellow-500" />
+                    <div>
+                      <h4 className="font-medium text-yellow-700">Verification Pending</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {profile.verification_documents_uploaded_at 
+                          ? 'Your documents are under assessment'
+                          : 'Upload your documents to start the verification process'
+                        }
+                      </p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+          )}
 
-            {/* Stripe Connect Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Payment Setup</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+          {/* Payments Tab - Only for sitters */}
+          {profile.role === 'pet_sitter' && (
+            <TabsContent value="payments" className="space-y-6">
+              {/* Stripe Connect Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Payment Setup</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
                 <div>
                   <h3 className="font-medium mb-2">Connect Your Bank Account</h3>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -1638,8 +1637,18 @@ export default function Profile() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          </TabsContent>
+              </Card>
+
+              {/* Payouts Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>My Payouts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SitterPayouts sitterId={profile.id} />
+                </CardContent>
+              </Card>
+            </TabsContent>
           )}
 
           {/* Client Daily Reports Tab */}
