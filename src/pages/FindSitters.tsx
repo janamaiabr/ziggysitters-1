@@ -212,7 +212,6 @@ export default function FindSitters() {
 
     if (serviceType) {
       const serviceMap: { [key: string]: string } = {
-        'dog_walking': 'Dog Walking',
         'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
         'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
         'drop_in_visits': 'Drop-in Visits'

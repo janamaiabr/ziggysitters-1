@@ -97,7 +97,7 @@ const Index = () => {
       "addressCountry": "New Zealand"
     },
     "areaServed": "Auckland, New Zealand",
-    "serviceType": ["Pet Sitting", "Dog Walking", "Pet Care", "Daily Reports"],
+    "serviceType": ["Pet Sitting", "Pet Care", "Daily Reports", "Drop-in Visits"],
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.9",
@@ -110,7 +110,7 @@ const Index = () => {
       <SEOHead 
         title="ZiggySitters - Pet Sitters with Optional Daily Photo Updates | Auckland"
         description="Find trusted pet sitters in Auckland who can send daily photo updates when you request them. Choose your level of communication - accountability guaranteed when you do. Book verified pet care today."
-        keywords="pet sitters Auckland, daily pet reports, pet sitting with photos, verified pet care, dog walking Auckland, cat sitting, pet care updates"
+        keywords="pet sitters Auckland, daily pet reports, pet sitting with photos, verified pet care, cat sitting, pet care updates, drop-in visits"
         canonical="/"
         structuredData={structuredData}
       />

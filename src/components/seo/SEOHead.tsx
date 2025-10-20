@@ -13,7 +13,7 @@ interface SEOHeadProps {
 export default function SEOHead({
   title,
   description,
-  keywords = 'pet sitters, pet care, Auckland, daily reports, pet sitting, dog walking, cat sitting',
+  keywords = 'pet sitters, pet care, Auckland, daily reports, pet sitting, pet boarding, cat sitting, drop-in visits',
   canonical,
   ogImage = '/assets/hero-image.jpg',
   ogType = 'website',

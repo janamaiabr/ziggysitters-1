@@ -18,7 +18,7 @@ export default function FAQ() {
         "name": "What services do you offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We offer four main services: Pet Sitting at the Sitter's Home ($30-45/day), Pet Sitting at Your Home ($40-55/day), Drop-in Visits ($20-25/visit), and Dog Walking ($25-30/hour). All prices are in NZD and include GST."
+          "text": "We offer three main services: Pet Sitting at the Sitter's Home ($30-45/day), Pet Sitting at Your Home ($40-55/day), and Drop-in Visits ($20-25/visit). All prices are in NZD and include GST."
         }
       },
       {
@@ -98,10 +98,6 @@ export default function FAQ() {
                     <div>
                       <strong>Drop-in Visits:</strong> $20-25 per visit (NZD, incl. GST)
                       <p className="text-sm text-muted-foreground">Quick check-ins for feeding, bathroom breaks, and companionship.</p>
-                    </div>
-                    <div>
-                      <strong>Dog Walking:</strong> $25-30 per hour (NZD, incl. GST)
-                      <p className="text-sm text-muted-foreground">Professional walks tailored to your dog's exercise needs.</p>
                     </div>
                   </div>
                 </AccordionContent>

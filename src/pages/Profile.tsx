@@ -487,20 +487,6 @@ export default function Profile() {
 
   const allServiceTypes = [
     { 
-      key: 'dog_walking', 
-      label: 'Dog Walking', 
-      description: 'Take dogs for walks around the neighborhood, providing exercise and outdoor time.',
-      rateLabel: 'Per Walk',
-      icon: '🚶'
-    },
-    { 
-      key: 'dog_daycare', 
-      label: 'Daycare', 
-      description: 'Care for pets during the day while owners are at work. Pets stay at your home and receive attention, playtime, and supervision.',
-      rateLabel: 'Per Day',
-      icon: '🏠'
-    },
-    { 
       key: 'pet_sitting_owners_home', 
       label: 'Pet Sitting (Owner\'s Home)', 
       description: 'Stay at the pet owner\'s home to care for their pets in their familiar environment.',
@@ -513,13 +499,6 @@ export default function Profile() {
       description: 'Pets stay at your home where you provide care, attention, and a safe environment.',
       rateLabel: 'Per Day / Per Night',
       icon: '🏘️'
-    },
-    { 
-      key: 'overnight_boarding', 
-      label: 'Overnight Boarding', 
-      description: 'Pets stay overnight at your home with 24/7 care and supervision.',
-      rateLabel: 'Per Night',
-      icon: '🌙'
     },
     { 
       key: 'drop_in_visits', 
@@ -558,13 +537,16 @@ export default function Profile() {
 
   const getRateDisplay = (service: any) => {
     const rates = [];
+    if (service.hourly_rate) {
+      rates.push(`NZ$${Number(service.hourly_rate).toFixed(2)}/hour`);
+    }
     if (service.daily_rate) {
-      rates.push(`$${service.daily_rate}/day`);
+      rates.push(`NZ$${Number(service.daily_rate).toFixed(2)}/day`);
     }
     if (service.overnight_rate) {
-      rates.push(`$${service.overnight_rate}/night`);
+      rates.push(`NZ$${Number(service.overnight_rate).toFixed(2)}/night`);
     }
-    return rates.join(' • ') || 'Rate not set';
+    return rates.join(' • ') || 'Rate not set - Click edit to add pricing!';
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -163,7 +163,7 @@ export default function HowItWorks() {
         "name": "What pet care services does ZiggySitters offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ZiggySitters offers four main pet care services: Pet Sitting at the sitter's home, Pet Sitting at your home, Dog Walking, and Drop-in Visits. All services can include optional daily photo updates and detailed care reports when requested at booking."
+          "text": "ZiggySitters offers three main pet care services: Pet Sitting at the sitter's home, Pet Sitting at your home, and Drop-in Visits. All services can include optional daily photo updates and detailed care reports when requested at booking."
         }
       }
     ]
@@ -174,7 +174,7 @@ export default function HowItWorks() {
       <SEOHead 
         title="How It Works: Book Pet Sitters with Optional Daily Updates | ZiggySitters NZ"
         description="Learn how to book verified pet sitters in New Zealand. Choose to receive daily photo updates when booking - when you do, sitters are held accountable with our unique payment protection system."
-        keywords="how pet sitting works, book pet sitter online, daily pet photo updates, verified pet care NZ, pet sitter accountability, dog walking Auckland, pet boarding New Zealand, overnight pet care, pet care with updates"
+        keywords="how pet sitting works, book pet sitter online, daily pet photo updates, verified pet care NZ, pet sitter accountability, pet boarding New Zealand, pet care with updates, Auckland pet sitters"
         canonical="/how-it-works"
       />
       <script type="application/ld+json">
@@ -335,33 +335,27 @@ export default function HowItWorks() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Pet Care Services in New Zealand</h2>
             <p className="text-lg text-muted-foreground">
-              Comprehensive pet sitting, dog walking, overnight care, and boarding services across Auckland and New Zealand—all with mandatory daily photo updates
+              Comprehensive pet sitting and drop-in visit services across Auckland and New Zealand—all with optional daily photo updates
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               {
-                title: 'Dog Walking',
-                description: 'Daily walks to keep your dog healthy and happy',
-                price: 'From $25/walk',
-                icon: '🐕'
-              },
-              {
-                title: 'Pet Sitting',
-                description: 'In-home care while you\'re away',
+                title: 'Pet Sitting (Sitter\'s Home)',
+                description: 'Your pet stays at sitter\'s home with full care',
                 price: 'From $30/day',
                 icon: '🏠'
               },
               {
-                title: 'Overnight Care',
-                description: '24/7 care with overnight stays',
-                price: 'From $60/night',
-                icon: '🌙'
+                title: 'Pet Sitting (Your Home)',
+                description: 'Sitter stays at your home to care for pets',
+                price: 'From $40/day',
+                icon: '🏡'
               },
               {
                 title: 'Drop-in Visits',
-                description: 'Quick check-ins and feeding',
+                description: 'Quick check-ins for feeding and care',
                 price: 'From $20/visit',
                 icon: '⏰'
               },
@@ -421,7 +415,7 @@ export default function HowItWorks() {
               },
               {
                 question: 'What pet care services does ZiggySitters offer?',
-                answer: 'ZiggySitters offers four main pet care services: Pet Sitting at the sitter\'s home ($66/day), Pet Sitting at your home ($55/day), Dog Walking ($25/hour), and Drop-in Visits ($27.50/hour). All services can include optional daily photo updates and detailed care reports when you request them at booking.'
+                answer: 'ZiggySitters offers three main pet care services: Pet Sitting at the sitter\'s home ($30-45/day), Pet Sitting at your home ($40-55/day), and Drop-in Visits ($20-25/visit). All services can include optional daily photo updates and detailed care reports when you request them at booking.'
               }
             ].map((faq, index) => (
               <Card key={index}>
