@@ -39,7 +39,7 @@ export default function TestDailyReportEmail() {
 
       const { data, error } = await supabase.functions.invoke('send-daily-report-email', {
         body: {
-          bookingId: bookingId,
+          bookingId: bookingId.trim(),
           reportDate: new Date().toISOString(),
           reportData: testReportData
         }
