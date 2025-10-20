@@ -42,7 +42,7 @@ serve(async (req) => {
 
     const emailResponse = await resend.emails.send({
       from: "ZiggySitters <onboarding@ziggysitters.com>",
-      to: ["janamaia@gmail.com"],
+      to: ["admin@ziggysitters.com"],
       subject: `New Booking Created - ${booking_reference}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -89,7 +89,7 @@ serve(async (req) => {
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://ziggysitters.com/admin/dashboard" 
+            <a href="https://ziggysitters.com/admin-dashboard" 
                style="background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; display: inline-block;">
               View in Admin Dashboard
             </a>
