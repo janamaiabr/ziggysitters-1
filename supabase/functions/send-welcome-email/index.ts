@@ -28,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
       : 'As a pet owner, you can now add your pets, search for trusted sitters, and book services.';
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@resend.dev>",
+      from: "ZiggySitters <welcome@ziggysitters.com>",
       to: [email],
       subject: "Welcome to ZiggySitters! 🐾",
       html: `
@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send notification to admin about new user
     try {
       await resend.emails.send({
-        from: "ZiggySitters <onboarding@resend.dev>",
+        from: "ZiggySitters <welcome@ziggysitters.com>",
         to: ["janamaia@gmail.com"],
         subject: `New User Registered - ${role === 'pet_sitter' ? 'Pet Sitter' : 'Pet Owner'}`,
         html: `

@@ -110,7 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@resend.dev>",
+      from: "ZiggySitters <bookings@ziggysitters.com>",
       to: [owner_email],
       subject: `Refund Processed - Booking ${booking_reference}`,
       html: emailHtml,

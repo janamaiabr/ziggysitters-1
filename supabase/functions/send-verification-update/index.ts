@@ -127,7 +127,7 @@ serve(async (req) => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <onboarding@resend.dev>",
+      from: "ZiggySitters <verification@ziggysitters.com>",
       to: [user_email],
       subject: subject,
       html: emailContent,
