@@ -105,12 +105,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     // 7. Verification Request - Get a real user ID
     console.log("Sending verification request email...");
-    const { data: testUser } = await supabase
+    const { data: testUser, error: testUserError } = await supabase
       .from('profiles')
       .select('user_id')
       .eq('role', 'pet_sitter')
       .limit(1)
-      .single();
+      .maybeSingle();
+    
+    if (testUserError) {
+      console.error("Error fetching test user:", testUserError);
+    }
     
     const verificationRequestResult = await supabase.functions.invoke("send-verification-request-email", {
       body: {
@@ -145,12 +149,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     // 10. Daily Report Reminder - Get a real booking ID
     console.log("Sending daily report reminder...");
-    const { data: testBooking } = await supabase
+    const { data: testBooking, error: testBookingError } = await supabase
       .from('bookings')
       .select('id')
       .eq('requires_daily_reports', true)
       .limit(1)
-      .single();
+      .maybeSingle();
+    
+    if (testBookingError) {
+      console.error("Error fetching test booking:", testBookingError);
+    }
     
     const dailyReportReminderResult = await supabase.functions.invoke("send-daily-report-reminder", {
       body: {

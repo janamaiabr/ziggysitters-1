@@ -45,18 +45,22 @@ serve(async (req) => {
       .from('bookings')
       .select('*, owner:profiles!owner_id(*), sitter:profiles!sitter_id(*)')
       .eq('id', booking_id)
-      .single();
+      .maybeSingle();
 
-    if (bookingError) throw bookingError;
+    if (bookingError) throw new Error(`Database error: ${bookingError.message}`);
     if (!booking) throw new Error("Booking not found");
     logStep("Booking fetched", { status: booking.status, paymentIntent: booking.stripe_payment_intent_id });
 
     // Check if user is involved in booking
-    const { data: profile } = await supabaseClient
+    const { data: profile, error: profileError } = await supabaseClient
       .from('profiles')
       .select('id')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
+
+    if (profileError) {
+      throw new Error(`Database error: ${profileError.message}`);
+    }
 
     if (!profile || (profile.id !== booking.owner_id && profile.id !== booking.sitter_id)) {
       throw new Error("Unauthorized - not involved in this booking");

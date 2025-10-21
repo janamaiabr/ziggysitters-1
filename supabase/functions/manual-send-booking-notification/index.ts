@@ -36,9 +36,13 @@ serve(async (req) => {
         sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name)
       `)
       .eq('booking_reference', booking_reference)
-      .single();
+      .maybeSingle();
 
-    if (bookingError || !booking) {
+    if (bookingError) {
+      throw new Error(`Database error: ${bookingError.message}`);
+    }
+    
+    if (!booking) {
       throw new Error(`Booking not found: ${booking_reference}`);
     }
 

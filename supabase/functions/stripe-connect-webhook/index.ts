@@ -54,11 +54,15 @@ serve(async (req) => {
       // Check if we should also complete profile onboarding
       if (onboardingCompleted) {
         // Fetch the profile to check other requirements
-        const { data: profile } = await supabaseClient
+        const { data: profile, error: profileError } = await supabaseClient
           .from('profiles')
           .select('id, first_name, last_name, phone, address, suburb, id_document_url, blue_card_document_url, onboarding_completed')
           .eq('stripe_account_id', account.id)
-          .single();
+          .maybeSingle();
+        
+        if (profileError) {
+          console.error("[STRIPE-WEBHOOK] Error fetching profile:", profileError);
+        }
           
         if (profile && !profile.onboarding_completed) {
           const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address && profile.suburb;

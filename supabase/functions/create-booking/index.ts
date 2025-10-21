@@ -55,9 +55,13 @@ serve(async (req) => {
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
     
-    if (profileError || !profile) {
+    if (profileError) {
+      throw new Error(`Database error fetching profile: ${profileError.message}`);
+    }
+    
+    if (!profile) {
       throw new Error("User profile not found");
     }
     logStep("User profile found", { profileId: profile.id });
@@ -289,10 +293,14 @@ serve(async (req) => {
         daily_reports_completed: 0
       }])
       .select()
-      .single();
+      .maybeSingle();
 
-    if (bookingError || !booking) {
-      throw new Error(`Failed to create booking: ${bookingError?.message}`);
+    if (bookingError) {
+      throw new Error(`Database error creating booking: ${bookingError.message}`);
+    }
+    
+    if (!booking) {
+      throw new Error('Failed to create booking');
     }
     logStep("Booking created - payment will occur after sitter acceptance", { bookingId: booking.id, reference: booking.booking_reference });
 

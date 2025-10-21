@@ -63,11 +63,15 @@ serve(async (req) => {
         .eq('id', booking_id)
         .eq('status', 'awaiting_payment') // Only allow transition from awaiting_payment
         .select()
-        .single();
+        .maybeSingle();
 
       if (updateError) {
         console.error('Error updating booking:', updateError);
         throw new Error(`Failed to update booking: ${updateError.message}`);
+      }
+      
+      if (!booking) {
+        throw new Error('Booking not found or not in awaiting_payment status');
       }
 
       console.log('Booking updated successfully:', booking.id);

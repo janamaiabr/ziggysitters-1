@@ -35,9 +35,13 @@ serve(async (req) => {
       .from('bookings')
       .select('*, owner:profiles!bookings_owner_id_fkey(email)')
       .eq('id', booking_id)
-      .single();
+      .maybeSingle();
 
-    if (bookingError || !booking) {
+    if (bookingError) {
+      throw new Error(`Database error: ${bookingError.message}`);
+    }
+    
+    if (!booking) {
       throw new Error('Booking not found');
     }
 
@@ -120,11 +124,15 @@ serve(async (req) => {
         })
         .eq('id', booking_id)
         .select()
-        .single();
+        .maybeSingle();
 
       if (updateError) {
         console.error('[MANUAL-VERIFY] Error updating booking:', updateError);
         throw new Error(`Failed to update booking: ${updateError.message}`);
+      }
+      
+      if (!updatedBooking) {
+        throw new Error('Booking not found after update');
       }
 
       // Record transaction

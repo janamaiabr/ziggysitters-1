@@ -34,9 +34,13 @@ const handler = async (req: Request): Promise<Response> => {
       .from('profiles')
       .select('id, first_name, last_name, email, bio, suburb, city')
       .eq('user_id', user_id)
-      .single();
+      .maybeSingle();
 
-    if (profileError || !profile) {
+    if (profileError) {
+      throw new Error(`Database error: ${profileError.message}`);
+    }
+    
+    if (!profile) {
       throw new Error('Failed to fetch user profile');
     }
 
