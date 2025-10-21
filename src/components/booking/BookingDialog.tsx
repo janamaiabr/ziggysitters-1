@@ -405,7 +405,16 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         body: bookingData
       });
 
-      if (error) throw error;
+      if (error) {
+        // Extract error message from the response body if available
+        const errorMessage = (data as any)?.error || error.message || 'Failed to create booking';
+        throw new Error(errorMessage);
+      }
+
+      // Check if the response contains an error in the data
+      if (data && (data as any).error) {
+        throw new Error((data as any).error);
+      }
 
       // Booking created successfully - payment will be requested after sitter accepts
       onClose();
