@@ -48,10 +48,14 @@ const handler = async (req: Request): Promise<Response> => {
       .from('bookings')
       .select('*')
       .eq('id', bookingId)
-      .single();
+      .maybeSingle();
 
-    if (bookingError || !booking) {
-      throw new Error(`Failed to fetch booking details: ${bookingError?.message}`);
+    if (bookingError) {
+      throw new Error(`Database error fetching booking: ${bookingError.message}`);
+    }
+
+    if (!booking) {
+      throw new Error(`Booking not found with ID: ${bookingId}`);
     }
 
     // Get owner details
@@ -59,10 +63,14 @@ const handler = async (req: Request): Promise<Response> => {
       .from('profiles')
       .select('first_name, last_name, email')
       .eq('id', booking.owner_id)
-      .single();
+      .maybeSingle();
 
-    if (ownerError || !owner) {
-      throw new Error(`Failed to fetch owner details: ${ownerError?.message}`);
+    if (ownerError) {
+      throw new Error(`Database error fetching owner: ${ownerError.message}`);
+    }
+
+    if (!owner) {
+      throw new Error(`Owner profile not found with ID: ${booking.owner_id}`);
     }
 
     // Get sitter details
@@ -70,10 +78,14 @@ const handler = async (req: Request): Promise<Response> => {
       .from('profiles')
       .select('first_name, last_name')
       .eq('id', booking.sitter_id)
-      .single();
+      .maybeSingle();
 
-    if (sitterError || !sitter) {
-      throw new Error(`Failed to fetch sitter details: ${sitterError?.message}`);
+    if (sitterError) {
+      throw new Error(`Database error fetching sitter: ${sitterError.message}`);
+    }
+
+    if (!sitter) {
+      throw new Error(`Sitter profile not found with ID: ${booking.sitter_id}`);
     }
 
     // Get pet details using RPC function
