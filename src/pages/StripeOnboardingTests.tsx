@@ -1,15 +1,7 @@
-import { useAuth } from '@/hooks/useAuth';
-import { Navigate } from 'react-router-dom';
 import StripeOnboardingTestSuite from '@/components/testing/StripeOnboardingTestSuite';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function StripeOnboardingTests() {
-  const { user } = useAuth();
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container max-w-4xl mx-auto space-y-6">
