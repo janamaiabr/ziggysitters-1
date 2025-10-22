@@ -602,7 +602,17 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   const isStepValid = (step: number) => {
     switch (step) {
       case 1: return true; // Experience is optional
-      case 2: return services.length > 0 && services.every(s => s.hourly_rate || s.daily_rate || s.overnight_rate);
+      case 2: {
+        if (services.length === 0) return false;
+        // Every service must have at least one valid rate (number > 0)
+        return services.every(s => {
+          const hasRate = (typeof s.hourly_rate === 'number' && s.hourly_rate > 0) ||
+                         (typeof s.daily_rate === 'number' && s.daily_rate > 0) ||
+                         (typeof s.overnight_rate === 'number' && s.overnight_rate > 0);
+          console.log(`Validating service ${s.service_type}:`, { hourly: s.hourly_rate, daily: s.daily_rate, overnight: s.overnight_rate, hasRate });
+          return hasRate;
+        });
+      }
       case 3: return true; // Calendar is optional
       case 4: return idDocumentUrl || blueCardUrl;
       case 5: return true; // Payment can be done later
@@ -906,8 +916,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                             min="10"
                             max="200"
                             placeholder="e.g., $20"
-                            value={service.hourly_rate || ''}
-                            onChange={(e) => updateService(service.service_type, 'hourly_rate', parseFloat(e.target.value) || undefined)}
+                            value={service.hourly_rate ?? ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateService(service.service_type, 'hourly_rate', val === '' ? undefined : parseFloat(val));
+                            }}
                           />
                         </div>
                       )}
@@ -919,8 +932,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                             min="30"
                             max="500"
                             placeholder="e.g., $45"
-                            value={service.daily_rate || ''}
-                            onChange={(e) => updateService(service.service_type, 'daily_rate', parseFloat(e.target.value) || undefined)}
+                            value={service.daily_rate ?? ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateService(service.service_type, 'daily_rate', val === '' ? undefined : parseFloat(val));
+                            }}
                           />
                         </div>
                       )}
@@ -932,8 +948,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                             min="40"
                             max="300"
                             placeholder="e.g., $60"
-                            value={service.overnight_rate || ''}
-                            onChange={(e) => updateService(service.service_type, 'overnight_rate', parseFloat(e.target.value) || undefined)}
+                            value={service.overnight_rate ?? ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateService(service.service_type, 'overnight_rate', val === '' ? undefined : parseFloat(val));
+                            }}
                           />
                         </div>
                       )}
