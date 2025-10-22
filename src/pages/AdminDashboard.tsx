@@ -51,22 +51,13 @@ export default function AdminDashboard() {
       navigate('/auth');
       return;
     }
-    checkAdminStatus();
-    fetchPendingSitters();
-    fetchAllUsers();
+    initializeAdminDashboard();
   }, [user]);
 
-  // CRITICAL FIX: Redirect non-admin users
-  useEffect(() => {
-    if (!loading && !isAdmin && user) {
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access this page.",
-        variant: "destructive",
-      });
-      navigate('/');
-    }
-  }, [isAdmin, loading, user, navigate, toast]);
+  const initializeAdminDashboard = async () => {
+    await checkAdminStatus();
+    await Promise.all([fetchPendingSitters(), fetchAllUsers()]);
+  };
 
   const checkAdminStatus = async () => {
     if (!user) return;
@@ -80,10 +71,27 @@ export default function AdminDashboard() {
         .eq('role', 'admin')
         .maybeSingle();
       
-      setIsAdmin(!!data);
+      const adminStatus = !!data;
+      setIsAdmin(adminStatus);
+      
+      // If not admin, show error and redirect
+      if (!adminStatus) {
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to access this page.",
+          variant: "destructive",
+        });
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access this page.",
+        variant: "destructive",
+      });
+      navigate('/');
     }
   };
 
