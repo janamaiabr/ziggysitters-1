@@ -89,7 +89,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(savedData.paymentSetupCompleted || false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Save to localStorage whenever data changes
+  // Save to localStorage AND database whenever data changes
   useEffect(() => {
     const dataToSave = {
       bio,
@@ -108,7 +108,83 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       paymentSetupCompleted
     };
     localStorage.setItem('sitter_onboarding_data', JSON.stringify(dataToSave));
+    
+    // Auto-save to database (debounced)
+    const timeoutId = setTimeout(() => {
+      if (profileId && services.length > 0) {
+        console.log('Auto-saving to database...');
+        handleSaveProgress().catch(err => {
+          console.error('Auto-save failed:', err);
+        });
+      }
+    }, 2000); // Debounce by 2 seconds
+    
+    return () => clearTimeout(timeoutId);
   }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrl, blueCardUrl, paymentSetupCompleted]);
+  
+  // Load existing data from database on mount
+  useEffect(() => {
+    const loadExistingData = async () => {
+      if (!profileId) return;
+      
+      try {
+        console.log('Loading existing sitter data from database...');
+        
+        // Load profile data
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('bio, id_document_url, blue_card_document_url')
+          .eq('id', profileId)
+          .single();
+        
+        if (profileError) throw profileError;
+        
+        if (profileData) {
+          if (profileData.bio) setBio(profileData.bio);
+          if (profileData.id_document_url) setIdDocumentUrl(profileData.id_document_url);
+          if (profileData.blue_card_document_url) setBlueCardUrl(profileData.blue_card_document_url);
+        }
+        
+        // Load services
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('sitter_services')
+          .select('*')
+          .eq('sitter_id', profileId);
+        
+        if (servicesError) throw servicesError;
+        
+        if (servicesData && servicesData.length > 0) {
+          console.log('Loaded', servicesData.length, 'services from database');
+          const loadedServices = servicesData.map(s => ({
+            service_type: s.service_type,
+            hourly_rate: s.hourly_rate || undefined,
+            daily_rate: s.daily_rate || undefined,
+            overnight_rate: s.overnight_rate || undefined,
+            description: s.description || ''
+          }));
+          setServices(loadedServices);
+          
+          // Load common fields from first service
+          if (servicesData[0]) {
+            setExperienceYears(servicesData[0].experience_years || 0);
+            setHasFencedYard(servicesData[0].has_fenced_yard || false);
+            setMaxPets(servicesData[0].max_pets || 1);
+            setAcceptedSpecies(servicesData[0].accepted_pet_species || ['dog']);
+            setAcceptedSizes(servicesData[0].accepted_pet_sizes || ['small', 'medium']);
+            setAllowsPuppies(servicesData[0].allows_puppies ?? true);
+            setAllowsSeniorPets(servicesData[0].allows_senior_pets ?? true);
+          }
+        }
+        
+        console.log('Existing data loaded from database');
+      } catch (error) {
+        console.error('Error loading existing data:', error);
+        // Don't show error to user, just continue with localStorage data
+      }
+    };
+    
+    loadExistingData();
+  }, [profileId]);
 
   // Save step to localStorage whenever it changes
   useEffect(() => {
