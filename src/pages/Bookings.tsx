@@ -153,29 +153,51 @@ export default function Bookings() {
         body: { booking_id: booking.id }
       });
 
-      // Check for error from edge function
-      if (error) {
-        console.error('Payment function error:', error);
-        throw error;
-      }
-
-      // Check for error in response data
+      // Check for error in response data (validation errors like Stripe not configured)
       if (data?.error) {
         console.error('Payment error from response:', data);
         
         // Check if it's a Stripe setup issue with the sitter
-        if (data.error.includes('hasn\'t completed payment setup') || 
-            data.error.includes('Stripe')) {
+        if (data.error_code === 'SITTER_STRIPE_NOT_ENABLED' || 
+            data.error.includes('hasn\'t completed') || 
+            data.error.includes('payment setup')) {
           toast({
-            title: 'Sitter Payment Setup Incomplete',
-            description: data.error + ' The booking may need to be cancelled.',
+            title: 'Sitter Payment Setup Required',
+            description: data.error,
             variant: 'destructive',
-            duration: 10000,
+            duration: 12000,
           });
+          
+          // Refresh bookings to show current status
+          await fetchBookings();
           return;
         }
         
-        throw new Error(data.error);
+        // Other validation errors
+        toast({
+          title: "Cannot Process Payment",
+          description: data.error,
+          variant: "destructive",
+          duration: 10000,
+        });
+        return;
+      }
+
+      // Check for network/server errors
+      if (error) {
+        console.error('Payment function error:', error);
+        // Try to extract error message from error object
+        const errorMessage = error.message || 
+                            (typeof error === 'string' ? error : 
+                            'Failed to connect to payment service. Please try again.');
+        
+        toast({
+          title: "Connection Error",
+          description: errorMessage,
+          variant: "destructive",
+          duration: 7000,
+        });
+        return;
       }
 
       console.log('Payment session created:', data);
@@ -184,7 +206,7 @@ export default function Bookings() {
         window.open(data.url, '_blank');
         toast({
           title: "Payment Window Opened",
-          description: "Complete payment to confirm your booking.",
+          description: "Complete payment in the new tab to confirm your booking.",
         });
       } else {
         throw new Error('No payment URL received from server');
@@ -193,7 +215,7 @@ export default function Bookings() {
       console.error('Error creating payment:', error);
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to initiate payment. Please contact support if this persists.",
+        description: error.message || "An unexpected error occurred. Please try again or contact support.",
         variant: "destructive",
         duration: 7000,
       });

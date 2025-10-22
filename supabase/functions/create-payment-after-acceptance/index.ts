@@ -28,7 +28,12 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       logStep('ERROR: No authorization header');
-      throw new Error("No authorization header provided");
+      return new Response(JSON.stringify({ 
+        error: "Authentication required" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
     
     const token = authHeader.replace("Bearer ", "");
@@ -37,13 +42,23 @@ serve(async (req) => {
     const { data, error: authError } = await supabaseClient.auth.getUser(token);
     if (authError) {
       logStep('ERROR: Auth failed', { error: authError.message });
-      throw new Error(`Authentication failed: ${authError.message}`);
+      return new Response(JSON.stringify({ 
+        error: `Authentication failed: ${authError.message}` 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
     
     const user = data.user;
     if (!user?.email) {
       logStep('ERROR: No user or email found');
-      throw new Error("User not authenticated or email not available");
+      return new Response(JSON.stringify({ 
+        error: "User not authenticated or email not available" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
 
     logStep('User authenticated', { userId: user.id, email: user.email });
@@ -55,7 +70,12 @@ serve(async (req) => {
     const bookingId = body.bookingId || body.booking_id;
     if (!bookingId) {
       logStep('ERROR: No booking ID in request', { body });
-      throw new Error("Booking ID is required (either bookingId or booking_id)");
+      return new Response(JSON.stringify({ 
+        error: "Booking ID is required" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     logStep('Looking for booking', { bookingId });
@@ -76,7 +96,12 @@ serve(async (req) => {
     
     if (!booking) {
       logStep('ERROR: Booking not found', { bookingId });
-      throw new Error(`Booking not found with ID: ${bookingId}`);
+      return new Response(JSON.stringify({ 
+        error: `Booking not found with ID: ${bookingId}` 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
     }
 
     logStep('Booking retrieved', { 
@@ -96,7 +121,12 @@ serve(async (req) => {
 
     if (ownerError || !ownerProfile) {
       logStep('ERROR: Owner profile not found', { error: ownerError?.message, ownerId: booking.owner_id });
-      throw new Error("Owner profile not found");
+      return new Response(JSON.stringify({ 
+        error: "Owner profile not found" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
     }
 
     // Verify user owns this booking
@@ -105,7 +135,12 @@ serve(async (req) => {
         bookingOwnerId: ownerProfile.user_id, 
         requestUserId: user.id 
       });
-      throw new Error("Unauthorized: You can only pay for your own bookings");
+      return new Response(JSON.stringify({ 
+        error: "You can only pay for your own bookings" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
+      });
     }
 
     // Get sitter profile
@@ -118,7 +153,12 @@ serve(async (req) => {
 
     if (sitterError || !sitterProfile) {
       logStep('ERROR: Sitter profile not found', { error: sitterError?.message, sitterId: booking.sitter_id });
-      throw new Error("Sitter profile not found");
+      return new Response(JSON.stringify({ 
+        error: "Sitter profile not found" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
     }
 
     // Verify booking is awaiting payment
@@ -127,10 +167,15 @@ serve(async (req) => {
         currentStatus: booking.status, 
         expectedStatus: 'awaiting_payment' 
       });
-      throw new Error(`Booking is not awaiting payment. Current status: ${booking.status}. Please contact support if this is incorrect.`);
+      return new Response(JSON.stringify({ 
+        error: `Booking is not awaiting payment. Current status: ${booking.status}. Please refresh the page.` 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
-    // Verify sitter has Stripe Connect enabled
+    // Verify sitter has Stripe Connect enabled - THIS IS THE KEY FIX
     if (!sitterProfile.stripe_account_id || !sitterProfile.stripe_account_enabled) {
       const sitterName = `${sitterProfile.first_name} ${sitterProfile.last_name}`;
       logStep('ERROR: Sitter Stripe not configured', { 
@@ -138,7 +183,14 @@ serve(async (req) => {
         hasAccountId: !!sitterProfile.stripe_account_id,
         isEnabled: sitterProfile.stripe_account_enabled
       });
-      throw new Error(`${sitterName} hasn't completed payment setup yet. Please contact them or try again later.`);
+      // Return 400 (Bad Request) so the error message reaches the frontend properly
+      return new Response(JSON.stringify({ 
+        error: `${sitterName} hasn't completed their payment setup yet. The booking cannot be paid until they finish setting up their Stripe account. Please contact ${sitterName} or cancel this booking.`,
+        error_code: 'SITTER_STRIPE_NOT_ENABLED'
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     logStep('Sitter Stripe account verified', { accountId: sitterProfile.stripe_account_id });
