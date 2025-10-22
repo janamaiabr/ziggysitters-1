@@ -1141,7 +1141,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>You receive 100% of your listed rate</span>
+                    <span>You receive 100% of your listed rate (minus deductions if you don't submit daily reports)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
