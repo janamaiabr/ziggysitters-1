@@ -69,10 +69,17 @@ export default function StripeOnboardingTestSuite() {
           };
         }
 
+        console.log('=== Test 2: Checking services ===');
+        console.log('profile.id:', profile.id);
+        console.log('user.id:', user?.id);
+
         const { data: services, error } = await supabase
           .from('sitter_services')
-          .select('id, service_type, is_offered')
+          .select('id, service_type, is_offered, sitter_id')
           .eq('sitter_id', profile.id);
+
+        console.log('Query result - error:', error);
+        console.log('Query result - services:', services);
 
         const hasServices = services && services.length > 0;
         
@@ -80,7 +87,11 @@ export default function StripeOnboardingTestSuite() {
           name: "Sitter Services Configuration",
           passed: hasServices,
           message: hasServices ? `${services.length} service(s) configured` : "No services configured",
-          details: { services: services || [] }
+          details: { 
+            services: services || [],
+            queriedSitterId: profile.id,
+            error: error?.message || null
+          }
         };
       }
     },
@@ -366,17 +377,23 @@ export default function StripeOnboardingTestSuite() {
           };
         }
 
+        console.log('=== Test 12: Checking services persistence ===');
+        console.log('profile.id:', profile.id);
+
         const { data: services, error } = await supabase
           .from('sitter_services')
           .select('*')
           .eq('sitter_id', profile.id);
+
+        console.log('Services query error:', error);
+        console.log('Services query result:', services);
 
         if (error) {
           return {
             name: "Step 2: Services Data Persistence (Sitter)",
             passed: false,
             message: `Database error: ${error.message}`,
-            details: { error }
+            details: { error, profile_id: profile.id }
           };
         }
 
@@ -396,7 +413,8 @@ export default function StripeOnboardingTestSuite() {
             : "No services found in DB",
           details: { 
             serviceCount: services?.length || 0,
-            services: services || []
+            services: services || [],
+            profile_id: profile.id
           }
         };
       }

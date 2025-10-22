@@ -28,6 +28,7 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
       '/onboarding-pending-approval',
       '/profile', // CRITICAL: Allow profile page access to handle Stripe returns
       '/stripe-onboarding-tests',
+      '/manual-service-creator',
       '/test-pricing',
       '/test-payment',
       '/test-payment-flow',
