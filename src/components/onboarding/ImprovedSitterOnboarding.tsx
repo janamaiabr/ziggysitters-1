@@ -447,9 +447,14 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       }
       
       if (data?.url) {
-        console.log('Redirecting to Stripe URL:', data.url);
-        // Redirect in same tab to avoid popup blockers
-        window.location.href = data.url;
+        console.log('Opening Stripe setup in new tab:', data.url);
+        // Open in new tab to keep Ziggysitters page open
+        window.open(data.url, '_blank');
+        toast({
+          title: "Complete Stripe setup",
+          description: "A new tab has opened. Please complete your payment account setup and return here when done.",
+          duration: 10000,
+        });
       } else {
         throw new Error('No URL returned from Stripe');
       }
