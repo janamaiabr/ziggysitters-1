@@ -178,8 +178,21 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
 
   const handleSaveProgress = async () => {
     console.log('=== handleSaveProgress called ===');
-    console.log('Services to save:', services.length);
     console.log('ProfileId:', profileId);
+    console.log('UserId:', userId);
+    console.log('Services to save:', services.length);
+    
+    // CRITICAL VALIDATION: Check profileId exists
+    if (!profileId || profileId === '') {
+      const error = new Error('CRITICAL ERROR: profileId is empty! Cannot save services without a valid profileId.');
+      console.error(error);
+      toast({
+        title: "Profile ID Missing",
+        description: "Your profile ID is missing. Please go back to the previous step and try again.",
+        variant: "destructive",
+      });
+      throw error;
+    }
     
     try {
       // Save bio and documents
@@ -201,7 +214,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
 
       // Save services
       if (services.length > 0) {
-        console.log('Saving', services.length, 'services...');
+        console.log('Saving', services.length, 'services for profileId:', profileId);
         for (const service of services) {
           const serviceData = {
             sitter_id: profileId,
@@ -219,22 +232,24 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             overnight_rate: service.overnight_rate
           };
 
-          console.log('Upserting service:', serviceData.service_type);
-          const { error: serviceError } = await supabase
+          console.log('Upserting service:', serviceData.service_type, 'for sitter_id:', serviceData.sitter_id);
+          const { data: upsertedData, error: serviceError } = await supabase
             .from('sitter_services')
             .upsert(serviceData, {
               onConflict: 'sitter_id,service_type'
-            });
+            })
+            .select();
 
           if (serviceError) {
-            console.error('Error saving service:', serviceError);
+            console.error('❌ Error saving service:', serviceError);
+            console.error('Service data that failed:', serviceData);
             throw serviceError;
           }
-          console.log('Service saved:', serviceData.service_type);
+          console.log('✅ Service saved successfully:', serviceData.service_type, 'Data returned:', upsertedData);
         }
-        console.log('All services saved successfully');
+        console.log('✅ All services saved successfully');
       } else {
-        console.log('No services to save');
+        console.log('⚠️ No services to save');
       }
 
       // Save unavailable dates

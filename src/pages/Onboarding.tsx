@@ -252,6 +252,9 @@ export default function Onboarding() {
   const saveBasicProfile = async () => {
     setIsLoading(true);
     try {
+      console.log('=== Saving basic profile ===');
+      console.log('user?.id:', user?.id);
+      
       // Update profile with basic info
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -270,11 +273,22 @@ export default function Onboarding() {
         .select('id')
         .maybeSingle();
 
-      if (profileError || !profileData) throw new Error('Failed to update profile');
+      if (profileError || !profileData) {
+        console.error('Error saving profile:', profileError);
+        throw new Error('Failed to update profile');
+      }
 
+      console.log('✅ Basic profile saved, profile.id:', profileData.id);
       setProfileId(profileData.id);
+      
+      // CRITICAL: Refetch profile context to ensure it's up to date
+      console.log('Refetching profile context...');
+      await refetch();
+      console.log('Profile context refetched');
+      
       setStep(step + 1);
     } catch (error: any) {
+      console.error('❌ Error in saveBasicProfile:', error);
       toast({
         title: "Error saving profile",
         description: error.message,
@@ -580,9 +594,25 @@ export default function Onboarding() {
     }
     
     if (data.role === 'pet_sitter') {
+      console.log('=== Rendering ImprovedSitterOnboarding ===');
+      console.log('profile?.id:', profile?.id);
+      console.log('user?.id:', user?.id);
+      
+      if (!profile?.id) {
+        console.error('ERROR: profile.id is missing! Cannot save services without profileId');
+        return (
+          <div className="p-6 bg-destructive/10 border border-destructive rounded-lg">
+            <p className="text-destructive font-semibold">Error: Profile ID not found</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Please refresh the page and try again. If the problem persists, contact support.
+            </p>
+          </div>
+        );
+      }
+      
       return (
         <ImprovedSitterOnboarding 
-          profileId={profile?.id || ''} 
+          profileId={profile.id} 
           userId={user?.id || ''} 
           onComplete={handleSitterOnboardingComplete}
           overallStep={step}
