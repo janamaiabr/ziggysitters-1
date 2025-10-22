@@ -28,6 +28,14 @@ export default function ManualServiceCreator() {
       return;
     }
 
+    // Set default rates based on service type if not provided
+    let defaultHourly = hourlyRate;
+    let defaultDaily = dailyRate;
+    
+    if (!hourlyRate && serviceType === 'drop_in_visits') defaultHourly = '30';
+    if (!dailyRate && serviceType === 'pet_sitting_owners_home') defaultDaily = '50';
+    if (!dailyRate && serviceType === 'pet_sitting_sitters_home') defaultDaily = '60';
+
     setLoading(true);
     console.log('=== Manual Service Creation ===');
     console.log('profile.id:', profile.id);
@@ -38,7 +46,7 @@ export default function ManualServiceCreator() {
       const serviceData = {
         sitter_id: profile.id,
         service_type: serviceType as any,
-        description: 'Manually created service for testing',
+        description: 'Manually created service for testing - with rates!',
         experience_years: 1,
         has_fenced_yard: false,
         accepted_pet_species: ['dog', 'cat'] as any,
@@ -46,8 +54,8 @@ export default function ManualServiceCreator() {
         allows_senior_pets: true,
         allows_puppies: true,
         max_pets: 2,
-        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
-        daily_rate: dailyRate ? parseFloat(dailyRate) : null,
+        hourly_rate: defaultHourly ? parseFloat(defaultHourly) : null,
+        daily_rate: defaultDaily ? parseFloat(defaultDaily) : null,
         overnight_rate: null
       };
 
@@ -65,7 +73,7 @@ export default function ManualServiceCreator() {
 
       toast({
         title: "Success!",
-        description: `Service created successfully. Data: ${JSON.stringify(data)}`,
+        description: `Service created with rates! Check console for details.`,
       });
 
       // Verify it was saved

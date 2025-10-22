@@ -89,7 +89,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(savedData.paymentSetupCompleted || false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Save to localStorage AND database whenever data changes
+  // Save to localStorage whenever data changes
   useEffect(() => {
     const dataToSave = {
       bio,
@@ -108,18 +108,14 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       paymentSetupCompleted
     };
     localStorage.setItem('sitter_onboarding_data', JSON.stringify(dataToSave));
-    
-    // Auto-save to database (debounced)
-    const timeoutId = setTimeout(() => {
-      if (profileId && services.length > 0) {
-        console.log('Auto-saving to database...');
-        handleSaveProgress().catch(err => {
-          console.error('Auto-save failed:', err);
-        });
-      }
-    }, 2000); // Debounce by 2 seconds
-    
-    return () => clearTimeout(timeoutId);
+    console.log('Saved to localStorage. Services count:', services.length);
+    if (services.length > 0) {
+      console.log('Service rates:', services.map(s => ({ 
+        type: s.service_type, 
+        hourly: s.hourly_rate, 
+        daily: s.daily_rate 
+      })));
+    }
   }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrl, blueCardUrl, paymentSetupCompleted]);
   
   // Load existing data from database on mount
@@ -155,14 +151,27 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         
         if (servicesData && servicesData.length > 0) {
           console.log('Loaded', servicesData.length, 'services from database');
+          console.log('Services data:', JSON.stringify(servicesData.map(s => ({ 
+            type: s.service_type, 
+            hourly: s.hourly_rate, 
+            daily: s.daily_rate 
+          }))));
+          
           const loadedServices = servicesData.map(s => ({
             service_type: s.service_type,
-            hourly_rate: s.hourly_rate || undefined,
-            daily_rate: s.daily_rate || undefined,
-            overnight_rate: s.overnight_rate || undefined,
+            // Preserve numeric values including 0, only use undefined for null
+            hourly_rate: s.hourly_rate !== null ? s.hourly_rate : undefined,
+            daily_rate: s.daily_rate !== null ? s.daily_rate : undefined,
+            overnight_rate: s.overnight_rate !== null ? s.overnight_rate : undefined,
             description: s.description || ''
           }));
           setServices(loadedServices);
+          
+          console.log('Loaded services state:', JSON.stringify(loadedServices.map(s => ({ 
+            type: s.service_type, 
+            hourly: s.hourly_rate, 
+            daily: s.daily_rate 
+          }))));
           
           // Load common fields from first service
           if (servicesData[0]) {
