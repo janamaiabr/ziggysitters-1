@@ -19,14 +19,20 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    // Exclude password reset flow and onboarding completion pages from redirects
+    // Exclude password reset flow, onboarding completion pages, and test pages from redirects
     const excludedPaths = [
       '/onboarding', 
       '/reset-password', 
       '/forgot-password',
       '/onboarding-complete',
       '/onboarding-pending-approval',
-      '/profile' // CRITICAL: Allow profile page access to handle Stripe returns
+      '/profile', // CRITICAL: Allow profile page access to handle Stripe returns
+      '/stripe-onboarding-tests',
+      '/test-pricing',
+      '/test-payment',
+      '/test-payment-flow',
+      '/test-emails',
+      '/test-daily-report-email'
     ];
     
     // Check if we're on an excluded path
