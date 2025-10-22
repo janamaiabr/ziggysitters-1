@@ -41,35 +41,79 @@ const serviceTypes = [
 
 export default function ImprovedSitterOnboarding({ profileId, userId, onComplete, overallStep, onStepChange }: ImprovedSitterOnboardingProps) {
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(() => {
+    const saved = localStorage.getItem('sitter_onboarding_step');
+    return saved ? parseInt(saved) : 1;
+  });
   const totalSteps = 5; // Experience, Services, Calendar, Verification, Payment Setup
   
+  // Load saved data from localStorage
+  const loadSavedData = () => {
+    const saved = localStorage.getItem('sitter_onboarding_data');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved sitter onboarding data', e);
+      }
+    }
+    return {};
+  };
+
+  const savedData = loadSavedData();
+  
   // Step 1: Experience
-  const [bio, setBio] = useState('');
-  const [experienceYears, setExperienceYears] = useState(0);
-  const [portfolioPhotos, setPortfolioPhotos] = useState<string[]>([]);
+  const [bio, setBio] = useState(savedData.bio || '');
+  const [experienceYears, setExperienceYears] = useState(savedData.experienceYears || 0);
+  const [portfolioPhotos, setPortfolioPhotos] = useState<string[]>(savedData.portfolioPhotos || []);
   
   // Step 2: Services & Pricing
-  const [services, setServices] = useState<Service[]>([]);
-  const [hasFencedYard, setHasFencedYard] = useState(false);
-  const [maxPets, setMaxPets] = useState(1);
-  const [acceptedSpecies, setAcceptedSpecies] = useState<string[]>(['dog']);
-  const [acceptedSizes, setAcceptedSizes] = useState<string[]>(['small', 'medium']);
-  const [allowsPuppies, setAllowsPuppies] = useState(true);
-  const [allowsSeniorPets, setAllowsSeniorPets] = useState(true);
+  const [services, setServices] = useState<Service[]>(savedData.services || []);
+  const [hasFencedYard, setHasFencedYard] = useState(savedData.hasFencedYard || false);
+  const [maxPets, setMaxPets] = useState(savedData.maxPets || 1);
+  const [acceptedSpecies, setAcceptedSpecies] = useState<string[]>(savedData.acceptedSpecies || ['dog']);
+  const [acceptedSizes, setAcceptedSizes] = useState<string[]>(savedData.acceptedSizes || ['small', 'medium']);
+  const [allowsPuppies, setAllowsPuppies] = useState(savedData.allowsPuppies ?? true);
+  const [allowsSeniorPets, setAllowsSeniorPets] = useState(savedData.allowsSeniorPets ?? true);
   
   // Step 3: Calendar/Availability
-  const [unavailableDates, setUnavailableDates] = useState<{startDate: string, endDate: string}[]>([]);
+  const [unavailableDates, setUnavailableDates] = useState<{startDate: string, endDate: string}[]>(savedData.unavailableDates || []);
   const [newUnavailableStart, setNewUnavailableStart] = useState('');
   const [newUnavailableEnd, setNewUnavailableEnd] = useState('');
   
   // Step 4: Verification docs
-  const [idDocumentUrl, setIdDocumentUrl] = useState<string>('');
-  const [blueCardUrl, setBlueCardUrl] = useState<string>('');
+  const [idDocumentUrl, setIdDocumentUrl] = useState<string>(savedData.idDocumentUrl || '');
+  const [blueCardUrl, setBlueCardUrl] = useState<string>(savedData.blueCardUrl || '');
   
   // Step 5: Payment setup flag
-  const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(false);
+  const [paymentSetupCompleted, setPaymentSetupCompleted] = useState(savedData.paymentSetupCompleted || false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Save to localStorage whenever data changes
+  useEffect(() => {
+    const dataToSave = {
+      bio,
+      experienceYears,
+      portfolioPhotos,
+      services,
+      hasFencedYard,
+      maxPets,
+      acceptedSpecies,
+      acceptedSizes,
+      allowsPuppies,
+      allowsSeniorPets,
+      unavailableDates,
+      idDocumentUrl,
+      blueCardUrl,
+      paymentSetupCompleted
+    };
+    localStorage.setItem('sitter_onboarding_data', JSON.stringify(dataToSave));
+  }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrl, blueCardUrl, paymentSetupCompleted]);
+
+  // Save step to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('sitter_onboarding_step', currentStep.toString());
+  }, [currentStep]);
 
   const toggleSpecies = (species: string) => {
     setAcceptedSpecies(prev => 
@@ -446,6 +490,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       }
 
       console.log('Calling onComplete with profileId:', profileId);
+      
+      // Clear localStorage after successful completion
+      localStorage.removeItem('sitter_onboarding_data');
+      localStorage.removeItem('sitter_onboarding_step');
+      
       // Call onComplete which will mark onboarding as complete
       onComplete(profileId);
     } catch (error: any) {

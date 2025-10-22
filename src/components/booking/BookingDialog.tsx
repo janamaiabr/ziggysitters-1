@@ -889,46 +889,6 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             />
           </div>
 
-          {/* Agreement Download - Only for pet sitting in owner's home */}
-          {serviceType === 'pet_sitting_owners_home' && (
-            <Card className="border-2 border-blue-200 bg-blue-50/50">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-blue-600" />
-                  Recommended: House & Pet Sitting Agreement
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  We strongly recommend completing a short agreement between you and the sitter to confirm terms, responsibilities, and care instructions.
-                </p>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = '/templates/House_Pet_Sitting_Agreement_NZ_Template.docx';
-                      link.download = 'House_Pet_Sitting_Agreement_NZ_Template.docx';
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                      toast({
-                        title: "Template Downloaded",
-                        description: "Please print, complete, and sign this agreement with your sitter for your records.",
-                      });
-                    }}
-                  >
-                    📄 Download Agreement Template
-                  </Button>
-                  <p className="text-xs text-muted-foreground italic">
-                    Print and complete this form with your sitter outside of the platform. Keep it for your records.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
 
           {/* Daily Reports Option - Only for overnight pet sitting services */}
           {(serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') && (

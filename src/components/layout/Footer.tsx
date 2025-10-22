@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8">
           {/* Company Info */}
           <div className="space-y-3 md:space-y-4 col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center">
@@ -63,6 +63,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/faq" className="text-gray-300 hover:text-white transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
                 <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
                   Terms of Service
                 </Link>
@@ -75,8 +80,24 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact & Social */}
+          {/* Resources */}
           <div>
+            <h3 className="font-semibold mb-3 md:mb-4 text-base">Resources</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a 
+                  href="/templates/House_Pet_Sitting_Agreement_NZ_Template.docx"
+                  download
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Pet Sitting Agreement Template
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact & Social */}
+          <div className="md:col-span-1">
             <h3 className="font-semibold mb-3 md:mb-4 text-base">Get in Touch</h3>
             <div className="space-y-3 text-sm">
               <div className="flex items-center space-x-2 text-gray-300">
