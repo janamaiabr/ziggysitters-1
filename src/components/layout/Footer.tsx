@@ -85,13 +85,19 @@ export default function Footer() {
             <h3 className="font-semibold mb-3 md:mb-4 text-base">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a 
-                  href="/templates/House_Pet_Sitting_Agreement_NZ_Template.docx"
-                  download
-                  className="text-gray-300 hover:text-white transition-colors"
+                <button
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = '/templates/House_Pet_Sitting_Agreement_NZ_Template.docx';
+                    link.download = 'House_Pet_Sitting_Agreement_NZ_Template.docx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  className="text-gray-300 hover:text-white transition-colors text-left"
                 >
                   Pet Sitting Agreement Template
-                </a>
+                </button>
               </li>
             </ul>
           </div>
