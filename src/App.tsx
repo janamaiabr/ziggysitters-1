@@ -44,7 +44,9 @@ import Error500 from "./pages/Error500";
 import ComprehensiveTestSuite from "./components/testing/ComprehensiveTestSuite";
 import PaymentTests from "./pages/PaymentTests";
 import AdminPaymentFix from "./pages/AdminPaymentFix";
+import AdminFixBrokenBookings from "./pages/AdminFixBrokenBookings";
 import PaymentFlowTestsPage from "./pages/PaymentFlowTests";
+import PaymentFlowComprehensiveTestPage from "./pages/PaymentFlowComprehensiveTest";
 import TestEmails from "./pages/TestEmails";
 import TestDailyReportEmail from "./pages/TestDailyReportEmail";
 import StripeOnboardingTests from "./pages/StripeOnboardingTests";
@@ -207,8 +209,10 @@ function AppContent() {
             <Route path="/500" element={<Error500 />} />
             <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
             <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
+            <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
             <Route path="/test-payment" element={<PaymentTests />} />
             <Route path="/test-payment-flow" element={<PaymentFlowTestsPage />} />
+            <Route path="/test-payment-comprehensive" element={<PaymentFlowComprehensiveTestPage />} />
             <Route path="/test-terms-acceptance" element={<TermsAcceptanceTestPage />} />
             <Route path="/test-emails" element={<TestEmails />} />
             <Route path="/test-daily-report-email" element={<TestDailyReportEmail />} />

@@ -157,13 +157,50 @@ export default function BookingDetails() {
   const handleAcceptBooking = async () => {
     if (!booking) return;
     
+    // Check Stripe setup before accepting
+    if (profile?.role === 'pet_sitter') {
+      const { data: sitterProfile } = await supabase
+        .from('profiles')
+        .select('stripe_account_id, stripe_account_enabled')
+        .eq('id', profile.id)
+        .single();
+
+      if (!sitterProfile?.stripe_account_id || !sitterProfile?.stripe_account_enabled) {
+        toast({
+          title: 'Stripe Setup Required',
+          description: 'You must complete your Stripe Connect setup before accepting bookings. Please go to Profile > Payments.',
+          variant: 'destructive',
+          duration: 7000,
+        });
+        navigate('/profile?tab=payments');
+        return;
+      }
+    }
+    
     setActionLoading(true);
     try {
-      const { error: rpcError } = await supabase.rpc('accept_booking', {
+      const { data: result, error: rpcError } = await supabase.rpc('accept_booking', {
         booking_id: booking.id
       });
 
+      // Handle new JSON response format
       if (rpcError) throw rpcError;
+      
+      const response = result as { success: boolean; error?: string; error_code?: string };
+      
+      if (!response.success) {
+        if (response.error_code === 'STRIPE_NOT_CONNECTED' || response.error_code === 'STRIPE_NOT_ENABLED') {
+          toast({
+            title: 'Stripe Setup Required',
+            description: response.error,
+            variant: 'destructive',
+            duration: 7000,
+          });
+          navigate('/profile?tab=payments');
+          return;
+        }
+        throw new Error(response.error || 'Failed to accept booking');
+      }
 
       if (!booking.owner) {
         throw new Error('Owner information not available');
@@ -298,7 +335,30 @@ export default function BookingDetails() {
         body: { bookingId: booking.id }
       });
 
-      if (error) throw error;
+      // Handle edge function errors
+      if (error) {
+        console.error('Payment function error:', error);
+        throw error;
+      }
+
+      // Check for errors in the response
+      if (data?.error) {
+        console.error('Payment error from response:', data);
+        
+        // Check if it's a Stripe setup issue
+        if (data.error.includes('hasn\'t completed payment setup') || 
+            data.error.includes('Stripe')) {
+          toast({
+            title: 'Sitter Payment Setup Incomplete',
+            description: data.error,
+            variant: 'destructive',
+            duration: 10000,
+          });
+          return;
+        }
+        
+        throw new Error(data.error);
+      }
 
       if (data?.url) {
         window.open(data.url, '_blank');
@@ -306,12 +366,16 @@ export default function BookingDetails() {
           title: 'Redirecting to Payment',
           description: 'Please complete your payment in the new window.',
         });
+      } else {
+        throw new Error('No payment URL received from server');
       }
     } catch (error: any) {
+      console.error('Payment error:', error);
       toast({
         title: 'Payment Error',
-        description: error.message || 'Failed to initiate payment',
+        description: error.message || 'Failed to initiate payment. Please contact support if this persists.',
         variant: 'destructive',
+        duration: 7000,
       });
     } finally {
       setActionLoading(false);

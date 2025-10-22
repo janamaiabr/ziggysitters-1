@@ -156,12 +156,25 @@ export default function Bookings() {
       // Check for error from edge function
       if (error) {
         console.error('Payment function error:', error);
-        throw new Error(error.message || 'Failed to create payment session');
+        throw error;
       }
 
       // Check for error in response data
       if (data?.error) {
-        console.error('Payment error from response:', data.error);
+        console.error('Payment error from response:', data);
+        
+        // Check if it's a Stripe setup issue with the sitter
+        if (data.error.includes('hasn\'t completed payment setup') || 
+            data.error.includes('Stripe')) {
+          toast({
+            title: 'Sitter Payment Setup Incomplete',
+            description: data.error + ' The booking may need to be cancelled.',
+            variant: 'destructive',
+            duration: 10000,
+          });
+          return;
+        }
+        
         throw new Error(data.error);
       }
 
@@ -174,14 +187,15 @@ export default function Bookings() {
           description: "Complete payment to confirm your booking.",
         });
       } else {
-        throw new Error('No payment URL received');
+        throw new Error('No payment URL received from server');
       }
     } catch (error: any) {
       console.error('Error creating payment:', error);
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to initiate payment. Please try again.",
-        variant: "destructive"
+        description: error.message || "Failed to initiate payment. Please contact support if this persists.",
+        variant: "destructive",
+        duration: 7000,
       });
     } finally {
       setLoading(false);
@@ -244,12 +258,48 @@ export default function Bookings() {
   };
 
   const handleAcceptBooking = async (bookingId: string) => {
+    // Check Stripe setup before accepting
+    if (profile?.role === 'pet_sitter') {
+      const { data: sitterProfile } = await supabase
+        .from('profiles')
+        .select('stripe_account_id, stripe_account_enabled')
+        .eq('id', profile.id)
+        .single();
+
+      if (!sitterProfile?.stripe_account_id || !sitterProfile?.stripe_account_enabled) {
+        toast({
+          title: 'Stripe Setup Required',
+          description: 'You must complete your Stripe Connect setup before accepting bookings. Please go to Profile > Payments.',
+          variant: 'destructive',
+          duration: 7000,
+        });
+        navigate('/profile?tab=payments');
+        return;
+      }
+    }
+
     try {
-      const { error } = await supabase.rpc('accept_booking', { 
+      const { data: result, error } = await supabase.rpc('accept_booking', { 
         booking_id: bookingId 
       });
 
       if (error) throw error;
+      
+      const response = result as { success: boolean; error?: string; error_code?: string };
+      
+      if (!response.success) {
+        if (response.error_code === 'STRIPE_NOT_CONNECTED' || response.error_code === 'STRIPE_NOT_ENABLED') {
+          toast({
+            title: 'Stripe Setup Required',
+            description: response.error,
+            variant: 'destructive',
+            duration: 7000,
+          });
+          navigate('/profile?tab=payments');
+          return;
+        }
+        throw new Error(response.error || 'Failed to accept booking');
+      }
 
       // Send acceptance notification to owner
       const acceptedBooking = bookings.find(b => b.id === bookingId);
@@ -492,6 +542,33 @@ export default function Bookings() {
           <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
           <p className="text-muted-foreground">Manage your pet care bookings</p>
         </div>
+
+        {/* Stripe Setup Warning for Sitters */}
+        {profile?.role === 'pet_sitter' && (!profile?.stripe_account_id || !profile?.stripe_account_enabled) && (
+          <Card className="mb-6 border-orange-200 bg-orange-50 dark:bg-orange-950/20">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <div className="text-3xl">⚠️</div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">
+                    Complete Your Payment Setup Required
+                  </h3>
+                  <p className="text-sm text-orange-800 dark:text-orange-200 mb-4">
+                    You cannot accept bookings until you complete your Stripe Connect setup. 
+                    This ensures you can receive payments for your services.
+                  </p>
+                  <Button 
+                    onClick={() => navigate('/profile?tab=payments')}
+                    variant="default"
+                    size="sm"
+                  >
+                    Complete Setup Now
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-2 mb-8">

@@ -839,7 +839,7 @@ export type Database = {
     Functions: {
       accept_booking: {
         Args: { booking_id: string }
-        Returns: undefined
+        Returns: Json
       }
       can_access_pet_basic_info: {
         Args: { pet_id: string }

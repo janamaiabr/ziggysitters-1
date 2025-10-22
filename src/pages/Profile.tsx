@@ -636,12 +636,48 @@ export default function Profile() {
   };
 
   const handleAcceptBooking = async (bookingId: string) => {
+    // Check Stripe setup before accepting
+    if (profile?.role === 'pet_sitter') {
+      const { data: sitterProfile } = await supabase
+        .from('profiles')
+        .select('stripe_account_id, stripe_account_enabled')
+        .eq('id', profile.id)
+        .single();
+
+      if (!sitterProfile?.stripe_account_id || !sitterProfile?.stripe_account_enabled) {
+        toast({
+          title: 'Stripe Setup Required',
+          description: 'You must complete your Stripe Connect setup before accepting bookings. Complete setup in the Payments tab below.',
+          variant: 'destructive',
+          duration: 7000,
+        });
+        setActiveTab('payments');
+        return;
+      }
+    }
+
     try {
-      const { error } = await supabase.rpc('accept_booking', { 
+      const { data: result, error } = await supabase.rpc('accept_booking', { 
         booking_id: bookingId 
       });
 
       if (error) throw error;
+      
+      const response = result as { success: boolean; error?: string; error_code?: string };
+      
+      if (!response.success) {
+        if (response.error_code === 'STRIPE_NOT_CONNECTED' || response.error_code === 'STRIPE_NOT_ENABLED') {
+          toast({
+            title: 'Stripe Setup Required',
+            description: response.error,
+            variant: 'destructive',
+            duration: 7000,
+          });
+          setActiveTab('payments');
+          return;
+        }
+        throw new Error(response.error || 'Failed to accept booking');
+      }
 
       // Send acceptance notification to owner
       const acceptedBooking = recentBookings.find(b => b.id === bookingId);
