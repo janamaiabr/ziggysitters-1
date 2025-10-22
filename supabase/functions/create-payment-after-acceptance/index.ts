@@ -176,17 +176,36 @@ serve(async (req) => {
     }
 
     // Verify sitter has Stripe Connect enabled - THIS IS THE KEY FIX
+    logStep('Checking Sitter Stripe Status', {
+      sitterId: booking.sitter_id,
+      sitterName: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
+      stripe_account_id: sitterProfile.stripe_account_id,
+      stripe_account_enabled: sitterProfile.stripe_account_enabled,
+      hasAccountId: !!sitterProfile.stripe_account_id,
+      isEnabled: sitterProfile.stripe_account_enabled === true
+    });
+
     if (!sitterProfile.stripe_account_id || !sitterProfile.stripe_account_enabled) {
       const sitterName = `${sitterProfile.first_name} ${sitterProfile.last_name}`;
       logStep('ERROR: Sitter Stripe not configured', { 
         sitterId: booking.sitter_id,
+        sitterName,
+        stripe_account_id: sitterProfile.stripe_account_id,
+        stripe_account_id_length: sitterProfile.stripe_account_id?.length || 0,
+        stripe_account_enabled: sitterProfile.stripe_account_enabled,
+        stripe_account_enabled_type: typeof sitterProfile.stripe_account_enabled,
         hasAccountId: !!sitterProfile.stripe_account_id,
         isEnabled: sitterProfile.stripe_account_enabled
       });
       // Return 400 (Bad Request) so the error message reaches the frontend properly
       return new Response(JSON.stringify({ 
         error: `${sitterName} hasn't completed their payment setup yet. The booking cannot be paid until they finish setting up their Stripe account. Please contact ${sitterName} or cancel this booking.`,
-        error_code: 'SITTER_STRIPE_NOT_ENABLED'
+        error_code: 'SITTER_STRIPE_NOT_ENABLED',
+        debug: {
+          has_account_id: !!sitterProfile.stripe_account_id,
+          account_enabled: sitterProfile.stripe_account_enabled,
+          account_enabled_type: typeof sitterProfile.stripe_account_enabled
+        }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
