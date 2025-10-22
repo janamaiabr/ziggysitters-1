@@ -235,11 +235,21 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   };
 
   const updateService = (serviceType: string, field: keyof Service, value: any) => {
-    setServices(prev => prev.map(service =>
-      service.service_type === serviceType
-        ? { ...service, [field]: value }
-        : service
-    ));
+    console.log(`🔧 updateService called: ${serviceType}, field: ${field}, value:`, value, typeof value);
+    setServices(prev => {
+      const updated = prev.map(service =>
+        service.service_type === serviceType
+          ? { ...service, [field]: value }
+          : service
+      );
+      console.log(`📝 Services after update:`, JSON.stringify(updated.map(s => ({ 
+        type: s.service_type, 
+        hourly: s.hourly_rate, 
+        daily: s.daily_rate,
+        overnight: s.overnight_rate 
+      }))));
+      return updated;
+    });
   };
 
   const handleFileUpload = async (files: FileList | null, type: 'portfolio' | 'id' | 'blue_card') => {
@@ -312,6 +322,12 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     console.log('ProfileId:', profileId);
     console.log('UserId:', userId);
     console.log('Services to save:', services.length);
+    console.log('📊 Services state before save:', JSON.stringify(services.map(s => ({ 
+      type: s.service_type, 
+      hourly: s.hourly_rate, 
+      daily: s.daily_rate,
+      overnight: s.overnight_rate 
+    }))));
     
     // CRITICAL VALIDATION: Check profileId exists
     if (!profileId || profileId === '') {
@@ -363,7 +379,13 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             overnight_rate: service.overnight_rate
           };
 
-          console.log('Upserting service:', serviceData.service_type, 'for sitter_id:', serviceData.sitter_id);
+          console.log('💾 About to upsert service:', serviceData.service_type);
+          console.log('💾 Service data being sent:', JSON.stringify({
+            service_type: serviceData.service_type,
+            hourly_rate: serviceData.hourly_rate,
+            daily_rate: serviceData.daily_rate,
+            overnight_rate: serviceData.overnight_rate
+          }));
           const { data: upsertedData, error: serviceError } = await supabase
             .from('sitter_services')
             .upsert(serviceData, {
