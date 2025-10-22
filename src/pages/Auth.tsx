@@ -106,6 +106,21 @@ export default function Auth() {
           });
         }
       } else {
+        // Get the newly created user session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // Save terms acceptance to database to prevent duplicate popups in onboarding
+        if (session?.user?.id) {
+          try {
+            await supabase
+              .from('profiles')
+              .update({ terms_accepted: true })
+              .eq('user_id', session.user.id);
+          } catch (error) {
+            console.error('Error saving terms acceptance:', error);
+          }
+        }
+        
         // Send welcome email
         try {
           await supabase.functions.invoke('send-welcome-email', {

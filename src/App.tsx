@@ -49,6 +49,7 @@ import TestEmails from "./pages/TestEmails";
 import TestDailyReportEmail from "./pages/TestDailyReportEmail";
 import StripeOnboardingTests from "./pages/StripeOnboardingTests";
 import ManualServiceCreator from "./pages/ManualServiceCreator";
+import TermsAcceptanceTestPage from "./pages/TermsAcceptanceTest";
 
 const queryClient = new QueryClient();
 
@@ -208,6 +209,7 @@ function AppContent() {
             <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
             <Route path="/test-payment" element={<PaymentTests />} />
             <Route path="/test-payment-flow" element={<PaymentFlowTestsPage />} />
+            <Route path="/test-terms-acceptance" element={<TermsAcceptanceTestPage />} />
             <Route path="/test-emails" element={<TestEmails />} />
             <Route path="/test-daily-report-email" element={<TestDailyReportEmail />} />
             <Route path="/stripe-onboarding-tests" element={<StripeOnboardingTests />} />
