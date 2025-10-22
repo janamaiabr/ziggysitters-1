@@ -41,6 +41,8 @@ export default function Profile() {
     connected: boolean;
     enabled: boolean;
     onboarding_completed: boolean;
+    payout_ready?: boolean;
+    requirements_due?: string[];
   } | null>(null);
   const [checkingStripe, setCheckingStripe] = useState(false);
   const [connectingStripe, setConnectingStripe] = useState(false);
@@ -131,6 +133,13 @@ export default function Profile() {
       });
     }
   }, [profile]);
+
+  // Check Stripe status when payments tab is opened
+  useEffect(() => {
+    if (activeTab === 'payments' && profile?.role === 'pet_sitter') {
+      checkStripeStatus();
+    }
+  }, [activeTab, profile?.role]);
 
   const fetchBookings = async () => {
     if (!profile) return;
@@ -1614,31 +1623,61 @@ export default function Profile() {
                       </Button>
                     </div>
                   ) : stripeStatus?.connected && !stripeStatus?.enabled ? (
-                    <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <AlertCircle className="w-5 h-5 text-yellow-500" />
-                      <div className="flex-1">
-                        <p className="font-medium text-yellow-700">Additional Verification Required</p>
-                        <p className="text-sm text-yellow-600">
-                          Stripe requires additional verification documents to enable payments.
-                          {stripeStatus.onboarding_completed && " Click below to submit the required documents."}
-                        </p>
+                    stripeStatus.onboarding_completed ? (
+                      // Documents submitted, waiting for Stripe review
+                      <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <AlertCircle className="w-5 h-5 text-blue-500" />
+                        <div className="flex-1">
+                          <p className="font-medium text-blue-700">Documents Submitted - Under Review</p>
+                          <p className="text-sm text-blue-600">
+                            Stripe is reviewing your documents. This typically takes 1-2 business days. 
+                            You cannot accept bookings until verification is complete.
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={checkStripeStatus}
+                          disabled={checkingStripe}
+                        >
+                          {checkingStripe ? (
+                            <>
+                              <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              Checking...
+                            </>
+                          ) : (
+                            'Check Status'
+                          )}
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleStripeConnect}
-                        disabled={connectingStripe}
-                      >
-                        {connectingStripe ? (
-                          <>
-                            <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                            Connecting...
-                          </>
-                        ) : (
-                          'Submit Documents'
-                        )}
-                      </Button>
-                    </div>
+                    ) : (
+                      // Onboarding not completed - needs to submit documents
+                      <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <AlertCircle className="w-5 h-5 text-yellow-500" />
+                        <div className="flex-1">
+                          <p className="font-medium text-yellow-700">Additional Verification Required</p>
+                          <p className="text-sm text-yellow-600">
+                            Stripe requires additional verification documents to enable payments. 
+                            Click below to complete the verification process.
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleStripeConnect}
+                          disabled={connectingStripe}
+                        >
+                          {connectingStripe ? (
+                            <>
+                              <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              Connecting...
+                            </>
+                          ) : (
+                            'Submit Documents'
+                          )}
+                        </Button>
+                      </div>
+                    )
                   ) : (
                     <div>
                       <Button
