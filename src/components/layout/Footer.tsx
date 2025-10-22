@@ -86,15 +86,25 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <button
-                  onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/templates/House_Pet_Sitting_Agreement_NZ_Template.docx';
-                    link.download = 'House_Pet_Sitting_Agreement_NZ_Template.docx';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/templates/House_Pet_Sitting_Agreement_NZ_Template.docx');
+                      if (!response.ok) throw new Error('Failed to download template');
+                      const blob = await response.blob();
+                      const url = window.URL.createObjectURL(blob);
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = 'House_Pet_Sitting_Agreement_NZ_Template.docx';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                      console.error('Download error:', error);
+                      alert('Failed to download template. Please contact support.');
+                    }
                   }}
-                  className="text-gray-300 hover:text-white transition-colors text-left"
+                  className="text-gray-300 hover:text-white transition-colors text-left underline cursor-pointer"
                 >
                   Pet Sitting Agreement Template
                 </button>
