@@ -153,49 +153,62 @@ export default function Bookings() {
         body: { booking_id: booking.id }
       });
 
-      // Check for error in response data (validation errors like Stripe not configured)
-      if (data?.error) {
-        console.error('Payment error from response:', data);
+      // Check for network/server errors first
+      if (error) {
+        console.error('Payment function error:', error);
         
-        // Check if it's a Stripe setup issue with the sitter
-        if (data.error_code === 'SITTER_STRIPE_NOT_ENABLED' || 
-            data.error.includes('hasn\'t completed') || 
-            data.error.includes('payment setup')) {
+        // Try to parse the error as JSON (our 400 errors return JSON)
+        let errorData = null;
+        try {
+          // The error might be a FunctionsHttpError with a context property
+          if (error.context && typeof error.context === 'object') {
+            errorData = error.context;
+          }
+          // Or it might have the error data directly
+          else if (typeof error === 'object' && error.error) {
+            errorData = error;
+          }
+        } catch (e) {
+          console.error('Failed to parse error:', e);
+        }
+        
+        // Check if it's a Stripe setup issue
+        if (errorData?.error_code === 'SITTER_STRIPE_NOT_ENABLED' || 
+            errorData?.error?.includes('hasn\'t completed') ||
+            errorData?.error?.includes('payment setup')) {
           toast({
             title: 'Sitter Payment Setup Required',
-            description: data.error,
+            description: errorData.error,
             variant: 'destructive',
             duration: 12000,
           });
-          
-          // Refresh bookings to show current status
           await fetchBookings();
           return;
         }
         
-        // Other validation errors
+        // Use error data if available, otherwise generic message
+        const errorMessage = errorData?.error || 
+                            error.message || 
+                            (typeof error === 'string' ? error : 
+                            'Failed to connect to payment service. Please try again.');
+        
+        toast({
+          title: "Payment Error",
+          description: errorMessage,
+          variant: "destructive",
+          duration: 7000,
+        });
+        return;
+      }
+
+      // Check for error in response data (shouldn't happen with new error handling)
+      if (data?.error) {
+        console.error('Payment error from response:', data);
         toast({
           title: "Cannot Process Payment",
           description: data.error,
           variant: "destructive",
           duration: 10000,
-        });
-        return;
-      }
-
-      // Check for network/server errors
-      if (error) {
-        console.error('Payment function error:', error);
-        // Try to extract error message from error object
-        const errorMessage = error.message || 
-                            (typeof error === 'string' ? error : 
-                            'Failed to connect to payment service. Please try again.');
-        
-        toast({
-          title: "Connection Error",
-          description: errorMessage,
-          variant: "destructive",
-          duration: 7000,
         });
         return;
       }

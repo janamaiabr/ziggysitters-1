@@ -338,7 +338,37 @@ export default function BookingDetails() {
       // Handle edge function errors
       if (error) {
         console.error('Payment function error:', error);
-        throw error;
+        
+        // Try to parse the error as JSON (our 400 errors return JSON)
+        let errorData = null;
+        try {
+          // The error might be a FunctionsHttpError with a context property
+          if (error.context && typeof error.context === 'object') {
+            errorData = error.context;
+          }
+          // Or it might have the error data directly
+          else if (typeof error === 'object' && error.error) {
+            errorData = error;
+          }
+        } catch (e) {
+          console.error('Failed to parse error:', e);
+        }
+        
+        // Check if it's a Stripe setup issue
+        if (errorData?.error_code === 'SITTER_STRIPE_NOT_ENABLED' || 
+            errorData?.error?.includes('hasn\'t completed') ||
+            errorData?.error?.includes('payment setup')) {
+          toast({
+            title: 'Sitter Payment Setup Incomplete',
+            description: errorData.error,
+            variant: 'destructive',
+            duration: 12000,
+          });
+          return;
+        }
+        
+        // Use the parsed error message if available
+        throw new Error(errorData?.error || error.message || 'Payment failed');
       }
 
       // Check for errors in the response
