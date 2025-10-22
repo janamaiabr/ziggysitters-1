@@ -118,7 +118,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     }
   }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrl, blueCardUrl, paymentSetupCompleted]);
   
-  // Load existing data from database on mount
+  // Load existing data from database on mount (only if not already in state)
   useEffect(() => {
     const loadExistingData = async () => {
       if (!profileId) return;
@@ -126,7 +126,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       try {
         console.log('Loading existing sitter data from database...');
         
-        // Load profile data
+        // Load profile data - only set if current state is empty
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('bio, id_document_url, blue_card_document_url')
@@ -136,52 +136,54 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         if (profileError) throw profileError;
         
         if (profileData) {
-          if (profileData.bio) setBio(profileData.bio);
-          if (profileData.id_document_url) setIdDocumentUrl(profileData.id_document_url);
-          if (profileData.blue_card_document_url) setBlueCardUrl(profileData.blue_card_document_url);
+          if (profileData.bio && !bio) setBio(profileData.bio);
+          if (profileData.id_document_url && !idDocumentUrl) setIdDocumentUrl(profileData.id_document_url);
+          if (profileData.blue_card_document_url && !blueCardUrl) setBlueCardUrl(profileData.blue_card_document_url);
         }
         
-        // Load services
-        const { data: servicesData, error: servicesError } = await supabase
-          .from('sitter_services')
-          .select('*')
-          .eq('sitter_id', profileId);
-        
-        if (servicesError) throw servicesError;
-        
-        if (servicesData && servicesData.length > 0) {
-          console.log('Loaded', servicesData.length, 'services from database');
-          console.log('Services data:', JSON.stringify(servicesData.map(s => ({ 
-            type: s.service_type, 
-            hourly: s.hourly_rate, 
-            daily: s.daily_rate 
-          }))));
+        // Load services - only if current services array is empty
+        if (services.length === 0) {
+          const { data: servicesData, error: servicesError } = await supabase
+            .from('sitter_services')
+            .select('*')
+            .eq('sitter_id', profileId);
           
-          const loadedServices = servicesData.map(s => ({
-            service_type: s.service_type,
-            // Preserve numeric values including 0, only use undefined for null
-            hourly_rate: s.hourly_rate !== null ? s.hourly_rate : undefined,
-            daily_rate: s.daily_rate !== null ? s.daily_rate : undefined,
-            overnight_rate: s.overnight_rate !== null ? s.overnight_rate : undefined,
-            description: s.description || ''
-          }));
-          setServices(loadedServices);
+          if (servicesError) throw servicesError;
           
-          console.log('Loaded services state:', JSON.stringify(loadedServices.map(s => ({ 
-            type: s.service_type, 
-            hourly: s.hourly_rate, 
-            daily: s.daily_rate 
-          }))));
-          
-          // Load common fields from first service
-          if (servicesData[0]) {
-            setExperienceYears(servicesData[0].experience_years || 0);
-            setHasFencedYard(servicesData[0].has_fenced_yard || false);
-            setMaxPets(servicesData[0].max_pets || 1);
-            setAcceptedSpecies(servicesData[0].accepted_pet_species || ['dog']);
-            setAcceptedSizes(servicesData[0].accepted_pet_sizes || ['small', 'medium']);
-            setAllowsPuppies(servicesData[0].allows_puppies ?? true);
-            setAllowsSeniorPets(servicesData[0].allows_senior_pets ?? true);
+          if (servicesData && servicesData.length > 0) {
+            console.log('Loaded', servicesData.length, 'services from database');
+            console.log('Services data:', JSON.stringify(servicesData.map(s => ({ 
+              type: s.service_type, 
+              hourly: s.hourly_rate, 
+              daily: s.daily_rate 
+            }))));
+            
+            const loadedServices = servicesData.map(s => ({
+              service_type: s.service_type,
+              // Preserve numeric values including 0, only use undefined for null
+              hourly_rate: s.hourly_rate !== null ? s.hourly_rate : undefined,
+              daily_rate: s.daily_rate !== null ? s.daily_rate : undefined,
+              overnight_rate: s.overnight_rate !== null ? s.overnight_rate : undefined,
+              description: s.description || ''
+            }));
+            setServices(loadedServices);
+            
+            console.log('Loaded services state:', JSON.stringify(loadedServices.map(s => ({ 
+              type: s.service_type, 
+              hourly: s.hourly_rate, 
+              daily: s.daily_rate 
+            }))));
+            
+            // Load common fields from first service
+            if (servicesData[0]) {
+              setExperienceYears(servicesData[0].experience_years || 0);
+              setHasFencedYard(servicesData[0].has_fenced_yard || false);
+              setMaxPets(servicesData[0].max_pets || 1);
+              setAcceptedSpecies(servicesData[0].accepted_pet_species || ['dog']);
+              setAcceptedSizes(servicesData[0].accepted_pet_sizes || ['small', 'medium']);
+              setAllowsPuppies(servicesData[0].allows_puppies ?? true);
+              setAllowsSeniorPets(servicesData[0].allows_senior_pets ?? true);
+            }
           }
         }
         
@@ -193,7 +195,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     };
     
     loadExistingData();
-  }, [profileId]);
+  }, [profileId]); // Only depend on profileId, not on the state values
 
   // Save step to localStorage whenever it changes
   useEffect(() => {
@@ -710,9 +712,14 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
               <Textarea
                 placeholder="Tell pet owners about yourself, your experience with pets, and why you love caring for animals..."
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                onChange={(e) => {
+                  console.log('Bio onChange triggered, new value length:', e.target.value.length);
+                  setBio(e.target.value);
+                }}
                 rows={5}
                 className="min-h-[120px]"
+                disabled={false}
+                readOnly={false}
               />
               <p className="text-xs text-muted-foreground">Share your experience, what makes you special, and why pet owners should choose you!</p>
             </div>
