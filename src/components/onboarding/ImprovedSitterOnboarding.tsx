@@ -177,9 +177,13 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   };
 
   const handleSaveProgress = async () => {
+    console.log('=== handleSaveProgress called ===');
+    console.log('Services to save:', services.length);
+    console.log('ProfileId:', profileId);
+    
     try {
       // Save bio and documents
-      await supabase
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
           bio,
@@ -189,8 +193,15 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         })
         .eq('user_id', userId);
 
+      if (profileError) {
+        console.error('Error saving profile:', profileError);
+        throw profileError;
+      }
+      console.log('Profile updated successfully');
+
       // Save services
       if (services.length > 0) {
+        console.log('Saving', services.length, 'services...');
         for (const service of services) {
           const serviceData = {
             sitter_id: profileId,
@@ -208,16 +219,27 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             overnight_rate: service.overnight_rate
           };
 
-          await supabase
+          console.log('Upserting service:', serviceData.service_type);
+          const { error: serviceError } = await supabase
             .from('sitter_services')
             .upsert(serviceData, {
               onConflict: 'sitter_id,service_type'
             });
+
+          if (serviceError) {
+            console.error('Error saving service:', serviceError);
+            throw serviceError;
+          }
+          console.log('Service saved:', serviceData.service_type);
         }
+        console.log('All services saved successfully');
+      } else {
+        console.log('No services to save');
       }
 
       // Save unavailable dates
       if (unavailableDates.length > 0) {
+        console.log('Saving unavailable dates...');
         const allDates: string[] = [];
         unavailableDates.forEach(range => {
           const start = parseISO(range.startDate);
@@ -235,23 +257,32 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           is_available: false
         }));
 
-        await supabase
+        const { error: availabilityError } = await supabase
           .from('sitter_availability')
           .upsert(availabilityData, {
             onConflict: 'sitter_id,date'
           });
+
+        if (availabilityError) {
+          console.error('Error saving availability:', availabilityError);
+          throw availabilityError;
+        }
+        console.log('Availability saved successfully');
       }
 
+      console.log('=== handleSaveProgress completed successfully ===');
       toast({
         title: "Progress saved",
         description: "Your profile information has been saved.",
       });
     } catch (error: any) {
+      console.error('=== Error in handleSaveProgress ===', error);
       toast({
         title: "Error saving progress",
         description: error.message,
         variant: "destructive",
       });
+      throw error; // Re-throw to let caller handle it
     }
   };
 
@@ -326,7 +357,8 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   };
 
   const handleCompleteOnboarding = async () => {
-    console.log('handleCompleteOnboarding called');
+    console.log('=== handleCompleteOnboarding called ===');
+    console.log('Services in state:', services.length);
     
     // Validate all required fields
     if (services.length === 0) {
@@ -365,8 +397,24 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     }
 
     try {
-      console.log('Saving progress before completion...');
+      console.log('=== FINAL SAVE: Saving all progress before completion ===');
       await handleSaveProgress();
+      console.log('=== FINAL SAVE COMPLETED ===');
+
+      // Verify services were actually saved
+      const { data: savedServices, error: verifyError } = await supabase
+        .from('sitter_services')
+        .select('id')
+        .eq('sitter_id', profileId);
+
+      if (verifyError) {
+        console.error('Error verifying saved services:', verifyError);
+      } else {
+        console.log('Verified services in DB:', savedServices?.length || 0);
+        if (!savedServices || savedServices.length === 0) {
+          throw new Error('Services were not saved. Please try again.');
+        }
+      }
 
       // Send verification email
       console.log('Sending verification request email...');
@@ -386,7 +434,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       // Call onComplete which will mark onboarding as complete
       onComplete(profileId);
     } catch (error: any) {
-      console.error('Error in handleCompleteOnboarding:', error);
+      console.error('=== Error in handleCompleteOnboarding ===', error);
       toast({
         title: "Error completing onboarding",
         description: error?.message || "Please try again.",
@@ -406,7 +454,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     }
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (!isStepValid(currentStep) && currentStep !== 1 && currentStep !== 3 && currentStep !== 5) {
       toast({
         title: "Required fields missing",
@@ -416,14 +464,22 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       return;
     }
     
-    // Auto-save on next
+    // Auto-save on next (CRITICAL: Must await to ensure save completes!)
     if (currentStep < totalSteps) {
-      handleSaveProgress();
-      const newStep = currentStep + 1;
-      setCurrentStep(newStep);
-      // Notify parent of step change if callback provided
-      if (onStepChange && overallStep) {
-        onStepChange(overallStep + 1);
+      try {
+        console.log('Saving progress before moving to next step...');
+        await handleSaveProgress();
+        console.log('Progress saved, moving to next step');
+        const newStep = currentStep + 1;
+        setCurrentStep(newStep);
+        // Notify parent of step change if callback provided
+        if (onStepChange && overallStep) {
+          onStepChange(overallStep + 1);
+        }
+      } catch (error) {
+        console.error('Failed to save progress, not advancing step');
+        // Don't advance if save fails
+        return;
       }
     }
   };
