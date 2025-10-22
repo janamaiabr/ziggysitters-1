@@ -110,6 +110,25 @@ export default function Onboarding() {
       if (initialLoadComplete) return; // Prevent multiple loads
       
       try {
+        // Check if terms were just accepted in this session (during signup)
+        const termsJustAccepted = sessionStorage.getItem('terms_just_accepted') === 'true';
+        
+        if (termsJustAccepted) {
+          console.log('Terms were just accepted during signup - skipping terms popup');
+          sessionStorage.removeItem('terms_just_accepted'); // Clean up
+          setTermsChecked(true);
+          setShowTerms(false);
+          
+          // Make sure we're not at step 0
+          if (step === 0) {
+            setStep(1);
+            localStorage.setItem('onboarding_step', '1');
+          }
+          
+          setInitialLoadComplete(true);
+          return;
+        }
+        
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('*')

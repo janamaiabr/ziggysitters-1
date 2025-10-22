@@ -20,7 +20,7 @@ export default function TermsAcceptanceTestPage() {
 
       <TermsAcceptanceTest />
 
-      <div className="mt-8 p-6 bg-muted/50 rounded-lg max-w-3xl mx-auto">
+        <div className="mt-8 p-6 bg-muted/50 rounded-lg max-w-3xl mx-auto">
         <h3 className="font-semibold mb-3">How to Test Manually:</h3>
         <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
           <li>Sign out if currently logged in</li>
@@ -28,15 +28,23 @@ export default function TermsAcceptanceTestPage() {
           <li>Enter email and password, click "Create Account"</li>
           <li>Terms popup should appear - accept it</li>
           <li>After signup completes, you'll be redirected to /welcome or /onboarding</li>
-          <li>Terms popup should NOT appear again in onboarding</li>
-          <li>If terms popup appears twice (in auth and onboarding), the bug exists</li>
+          <li><strong>Terms popup should NOT appear again</strong> (this was the bug)</li>
+          <li>If you manually go to /onboarding later, terms should still not appear</li>
         </ol>
+
+        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-800">
+            <strong>Fix Applied:</strong> Using sessionStorage flag to track terms acceptance during signup,
+            plus 500ms delay before database update to ensure profile exists. This prevents the race condition
+            that caused duplicate terms popups.
+          </p>
+        </div>
 
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
-            <strong>Fix Applied:</strong> When user accepts terms during signup, the system now saves 
-            terms_accepted=true to the database. This prevents the terms popup from appearing again 
-            during onboarding.
+            <strong>Technical Details:</strong> The issue was that Auth.tsx accepted terms and saved to DB,
+            but Onboarding.tsx loaded before the DB update completed. Now sessionStorage immediately flags
+            that terms were accepted, preventing the duplicate popup.
           </p>
         </div>
       </div>

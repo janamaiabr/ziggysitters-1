@@ -112,12 +112,18 @@ export default function Auth() {
         // Save terms acceptance to database to prevent duplicate popups in onboarding
         if (session?.user?.id) {
           try {
+            // Wait a bit for the profile to be created by the trigger
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
             await supabase
               .from('profiles')
               .update({ terms_accepted: true })
               .eq('user_id', session.user.id);
+            
+            console.log('Terms acceptance saved to database');
           } catch (error) {
             console.error('Error saving terms acceptance:', error);
+            // Don't fail signup if this fails - the session flag will prevent double popup
           }
         }
         
@@ -176,6 +182,8 @@ export default function Auth() {
   const handleTermsAccept = async () => {
     setShowTerms(false);
     if (pendingAuthAction) {
+      // Set a session flag that terms were just accepted
+      sessionStorage.setItem('terms_just_accepted', 'true');
       await pendingAuthAction();
       setPendingAuthAction(null);
     }
