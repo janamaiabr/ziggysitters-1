@@ -306,6 +306,512 @@ export default function StripeOnboardingTestSuite() {
           }
         };
       }
+    },
+    // NEW TESTS: Data Persistence & Loop Prevention
+    {
+      id: 11,
+      name: "Step 1: Basic Profile Data Persistence",
+      description: "Verify basic profile info is saved and persists in database",
+      test: async () => {
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, phone, address, suburb, city')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Step 1: Basic Profile Data Persistence",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const hasAllBasicData = !!(
+          dbProfile?.first_name && 
+          dbProfile?.last_name && 
+          dbProfile?.phone && 
+          dbProfile?.address && 
+          dbProfile?.suburb
+        );
+
+        return {
+          name: "Step 1: Basic Profile Data Persistence",
+          passed: hasAllBasicData,
+          message: hasAllBasicData 
+            ? "All basic profile data saved in DB" 
+            : "Missing basic profile data in DB",
+          details: {
+            first_name: dbProfile?.first_name || 'MISSING',
+            last_name: dbProfile?.last_name || 'MISSING',
+            phone: dbProfile?.phone || 'MISSING',
+            address: dbProfile?.address || 'MISSING',
+            suburb: dbProfile?.suburb || 'MISSING',
+            city: dbProfile?.city || 'MISSING'
+          }
+        };
+      }
+    },
+    {
+      id: 12,
+      name: "Step 2: Services Data Persistence (Sitter)",
+      description: "Verify sitter services are saved and retrievable",
+      test: async () => {
+        if (profile?.role !== 'pet_sitter') {
+          return {
+            name: "Step 2: Services Data Persistence (Sitter)",
+            passed: true,
+            message: "Not a sitter - test skipped"
+          };
+        }
+
+        const { data: services, error } = await supabase
+          .from('sitter_services')
+          .select('*')
+          .eq('sitter_id', profile.id);
+
+        if (error) {
+          return {
+            name: "Step 2: Services Data Persistence (Sitter)",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const hasServices = services && services.length > 0;
+        const allServicesValid = services?.every(s => 
+          s.service_type && 
+          (s.hourly_rate || s.daily_rate || s.overnight_rate) &&
+          s.accepted_pet_species?.length > 0 &&
+          s.accepted_pet_sizes?.length > 0
+        );
+
+        return {
+          name: "Step 2: Services Data Persistence (Sitter)",
+          passed: hasServices && allServicesValid,
+          message: hasServices 
+            ? (allServicesValid ? `${services.length} valid service(s) in DB` : "Services exist but incomplete")
+            : "No services found in DB",
+          details: { 
+            serviceCount: services?.length || 0,
+            services: services || []
+          }
+        };
+      }
+    },
+    {
+      id: 13,
+      name: "Step 3: Pet Data Persistence (Owner)",
+      description: "Verify pet owner's pets are saved in database",
+      test: async () => {
+        if (profile?.role !== 'pet_owner') {
+          return {
+            name: "Step 3: Pet Data Persistence (Owner)",
+            passed: true,
+            message: "Not a pet owner - test skipped"
+          };
+        }
+
+        const { data: pets, error } = await supabase
+          .from('pets')
+          .select('*')
+          .eq('owner_id', profile.id);
+
+        if (error) {
+          return {
+            name: "Step 3: Pet Data Persistence (Owner)",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const hasPets = pets && pets.length > 0;
+        const allPetsValid = pets?.every(p => 
+          p.name && 
+          p.species
+        );
+
+        return {
+          name: "Step 3: Pet Data Persistence (Owner)",
+          passed: hasPets && allPetsValid,
+          message: hasPets 
+            ? (allPetsValid ? `${pets.length} valid pet(s) in DB` : "Pets exist but incomplete")
+            : "No pets found in DB",
+          details: { 
+            petCount: pets?.length || 0,
+            pets: pets || []
+          }
+        };
+      }
+    },
+    {
+      id: 14,
+      name: "Step 4: Verification Documents Persistence",
+      description: "Verify document URLs are saved and accessible",
+      test: async () => {
+        if (profile?.role !== 'pet_sitter') {
+          return {
+            name: "Step 4: Verification Documents Persistence",
+            passed: true,
+            message: "Not a sitter - test skipped"
+          };
+        }
+
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('id_document_url, blue_card_document_url, verification_documents_uploaded_at')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Step 4: Verification Documents Persistence",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const hasDocuments = !!(dbProfile?.id_document_url || dbProfile?.blue_card_document_url);
+        const hasTimestamp = !!dbProfile?.verification_documents_uploaded_at;
+
+        return {
+          name: "Step 4: Verification Documents Persistence",
+          passed: hasDocuments,
+          message: hasDocuments 
+            ? `Documents saved (timestamp: ${hasTimestamp})` 
+            : "No documents found in DB",
+          details: {
+            id_document_url: dbProfile?.id_document_url || 'MISSING',
+            blue_card_document_url: dbProfile?.blue_card_document_url || 'MISSING',
+            verification_documents_uploaded_at: dbProfile?.verification_documents_uploaded_at || 'MISSING'
+          }
+        };
+      }
+    },
+    {
+      id: 15,
+      name: "Step 5: Stripe Account Link Persistence",
+      description: "Verify Stripe account ID is saved and linked to profile",
+      test: async () => {
+        if (profile?.role !== 'pet_sitter') {
+          return {
+            name: "Step 5: Stripe Account Link Persistence",
+            passed: true,
+            message: "Not a sitter - test skipped"
+          };
+        }
+
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('stripe_account_id, stripe_onboarding_completed, stripe_account_enabled')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Step 5: Stripe Account Link Persistence",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const hasStripeLink = !!dbProfile?.stripe_account_id;
+
+        return {
+          name: "Step 5: Stripe Account Link Persistence",
+          passed: hasStripeLink,
+          message: hasStripeLink 
+            ? `Stripe account linked: ${dbProfile.stripe_account_id}` 
+            : "No Stripe account linked",
+          details: {
+            stripe_account_id: dbProfile?.stripe_account_id || 'MISSING',
+            stripe_onboarding_completed: dbProfile?.stripe_onboarding_completed || false,
+            stripe_account_enabled: dbProfile?.stripe_account_enabled || false
+          }
+        };
+      }
+    },
+    {
+      id: 16,
+      name: "Loop Prevention: Onboarding Flag Consistency",
+      description: "Verify onboarding_completed flag prevents redirect loops",
+      test: async () => {
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('onboarding_completed')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Loop Prevention: Onboarding Flag Consistency",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const dbValue = dbProfile?.onboarding_completed;
+        const contextValue = profile?.onboarding_completed;
+        const matches = dbValue === contextValue;
+
+        return {
+          name: "Loop Prevention: Onboarding Flag Consistency",
+          passed: matches,
+          message: matches 
+            ? `Flags match: ${dbValue}` 
+            : `MISMATCH! DB: ${dbValue}, Context: ${contextValue}`,
+          details: {
+            database_value: dbValue,
+            context_value: contextValue,
+            matches,
+            risk: !matches ? "HIGH - Could cause redirect loops" : "LOW"
+          }
+        };
+      }
+    },
+    {
+      id: 17,
+      name: "Loop Prevention: Terms Acceptance Check",
+      description: "Verify terms_accepted flag prevents re-prompting",
+      test: async () => {
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('terms_accepted')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Loop Prevention: Terms Acceptance Check",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const termsAccepted = dbProfile?.terms_accepted === true;
+        const localStorageCheck = localStorage.getItem('onboarding_step');
+        const isAtTermsStep = localStorageCheck === '0';
+
+        return {
+          name: "Loop Prevention: Terms Acceptance Check",
+          passed: termsAccepted && !isAtTermsStep,
+          message: termsAccepted 
+            ? (isAtTermsStep ? "Terms accepted but still at step 0" : "Terms accepted correctly")
+            : "Terms not accepted - will be prompted",
+          details: {
+            terms_accepted: termsAccepted,
+            localStorage_step: localStorageCheck,
+            at_terms_step: isAtTermsStep,
+            risk: (termsAccepted && isAtTermsStep) ? "MEDIUM - May re-prompt terms" : "LOW"
+          }
+        };
+      }
+    },
+    {
+      id: 18,
+      name: "Loop Prevention: Profile Completion Requirements",
+      description: "Check all requirements for profile completion are properly evaluated",
+      test: async () => {
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Loop Prevention: Profile Completion Requirements",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const hasBasicInfo = !!(
+          dbProfile?.first_name && 
+          dbProfile?.last_name && 
+          dbProfile?.phone && 
+          dbProfile?.address && 
+          dbProfile?.suburb
+        );
+
+        let roleSpecificRequirementsMet = true;
+        let roleSpecificDetails = {};
+
+        if (dbProfile?.role === 'pet_sitter') {
+          // Check sitter-specific requirements
+          const { data: services } = await supabase
+            .from('sitter_services')
+            .select('id')
+            .eq('sitter_id', dbProfile.id)
+            .limit(1);
+
+          const hasServices = services && services.length > 0;
+          const hasDocuments = !!(dbProfile.id_document_url || dbProfile.blue_card_document_url);
+          const hasStripe = !!(dbProfile.stripe_account_id && dbProfile.stripe_onboarding_completed);
+
+          roleSpecificRequirementsMet = hasServices && hasDocuments && hasStripe;
+          roleSpecificDetails = {
+            hasServices,
+            hasDocuments,
+            hasStripe
+          };
+        } else if (dbProfile?.role === 'pet_owner') {
+          // Pet owners just need basic info
+          roleSpecificRequirementsMet = true;
+          roleSpecificDetails = {
+            note: "Pet owners only need basic info"
+          };
+        }
+
+        const allRequirementsMet = hasBasicInfo && roleSpecificRequirementsMet;
+        const onboardingMarkedComplete = dbProfile?.onboarding_completed === true;
+
+        return {
+          name: "Loop Prevention: Profile Completion Requirements",
+          passed: allRequirementsMet === onboardingMarkedComplete,
+          message: allRequirementsMet === onboardingMarkedComplete
+            ? "Requirements and flag match correctly"
+            : `MISMATCH! Requirements met: ${allRequirementsMet}, Flag: ${onboardingMarkedComplete}`,
+          details: {
+            hasBasicInfo,
+            roleSpecificRequirementsMet,
+            roleSpecificDetails,
+            allRequirementsMet,
+            onboardingMarkedComplete,
+            matches: allRequirementsMet === onboardingMarkedComplete,
+            risk: allRequirementsMet !== onboardingMarkedComplete ? "HIGH - Could cause loops" : "LOW"
+          }
+        };
+      }
+    },
+    {
+      id: 19,
+      name: "Race Condition: Context vs Database Freshness",
+      description: "Check if context state is fresh and matches database",
+      test: async () => {
+        const contextUpdatedAt = profile?.updated_at;
+        
+        const { data: dbProfile, error } = await supabase
+          .from('profiles')
+          .select('updated_at, onboarding_completed, stripe_onboarding_completed')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (error) {
+          return {
+            name: "Race Condition: Context vs Database Freshness",
+            passed: false,
+            message: `Database error: ${error.message}`,
+            details: { error }
+          };
+        }
+
+        const dbUpdatedAt = dbProfile?.updated_at;
+        const isFresh = contextUpdatedAt === dbUpdatedAt;
+        
+        // Also check critical fields
+        const onboardingMatches = profile?.onboarding_completed === dbProfile?.onboarding_completed;
+        const stripeMatches = profile?.stripe_onboarding_completed === dbProfile?.stripe_onboarding_completed;
+
+        const allMatch = isFresh && onboardingMatches && stripeMatches;
+
+        return {
+          name: "Race Condition: Context vs Database Freshness",
+          passed: allMatch,
+          message: allMatch
+            ? "Context is fresh and matches DB"
+            : "Context may be stale - refetch needed",
+          details: {
+            context_updated_at: contextUpdatedAt,
+            db_updated_at: dbUpdatedAt,
+            timestamps_match: isFresh,
+            onboarding_completed_matches: onboardingMatches,
+            stripe_onboarding_matches: stripeMatches,
+            context_onboarding: profile?.onboarding_completed,
+            db_onboarding: dbProfile?.onboarding_completed,
+            risk: !allMatch ? "HIGH - Stale context can cause loops" : "LOW"
+          }
+        };
+      }
+    },
+    {
+      id: 20,
+      name: "Race Condition: Stripe Webhook Sync",
+      description: "Verify Stripe webhook has updated profile flags correctly",
+      test: async () => {
+        if (profile?.role !== 'pet_sitter') {
+          return {
+            name: "Race Condition: Stripe Webhook Sync",
+            passed: true,
+            message: "Not a sitter - test skipped"
+          };
+        }
+
+        if (!profile?.stripe_account_id) {
+          return {
+            name: "Race Condition: Stripe Webhook Sync",
+            passed: true,
+            message: "No Stripe account - test skipped"
+          };
+        }
+
+        // Check local DB state
+        const { data: dbProfile, error: dbError } = await supabase
+          .from('profiles')
+          .select('stripe_account_id, stripe_onboarding_completed, stripe_account_enabled')
+          .eq('user_id', user?.id)
+          .maybeSingle();
+
+        if (dbError) {
+          return {
+            name: "Race Condition: Stripe Webhook Sync",
+            passed: false,
+            message: `Database error: ${dbError.message}`,
+            details: { error: dbError }
+          };
+        }
+
+        // Check actual Stripe status via API
+        const { data: stripeData, error: stripeError } = await supabase.functions.invoke('stripe-connect-account-status');
+        
+        if (stripeError) {
+          return {
+            name: "Race Condition: Stripe Webhook Sync",
+            passed: false,
+            message: `Stripe API error: ${stripeError.message}`,
+            details: { error: stripeError }
+          };
+        }
+
+        const dbSaysComplete = dbProfile?.stripe_onboarding_completed === true;
+        const stripeSaysComplete = stripeData?.onboarding_completed === true;
+        const inSync = dbSaysComplete === stripeSaysComplete;
+
+        return {
+          name: "Race Condition: Stripe Webhook Sync",
+          passed: inSync,
+          message: inSync
+            ? "DB and Stripe are in sync"
+            : `OUT OF SYNC! DB: ${dbSaysComplete}, Stripe: ${stripeSaysComplete}`,
+          details: {
+            db_stripe_account_id: dbProfile?.stripe_account_id,
+            db_onboarding_completed: dbSaysComplete,
+            db_account_enabled: dbProfile?.stripe_account_enabled,
+            stripe_onboarding_completed: stripeSaysComplete,
+            stripe_enabled: stripeData?.enabled,
+            in_sync: inSync,
+            risk: !inSync ? "HIGH - Webhook may not have fired or failed" : "LOW"
+          }
+        };
+      }
     }
   ];
 

@@ -174,8 +174,9 @@ setNeedsOnboarding(needsOnboardingValue);
 **File**: `src/components/testing/StripeOnboardingTestSuite.tsx`  
 **Access**: `/stripe-onboarding-tests`
 
-### 10 Test Cases Implemented:
+### 20 Comprehensive Test Cases Implemented:
 
+#### Tests 1-10: Core Onboarding Validation
 1. **Profile Data Integrity**: Verifies all required fields present
 2. **Sitter Services Configuration**: Checks if services configured
 3. **Stripe Account Status**: Verifies Stripe account exists in DB
@@ -187,10 +188,28 @@ setNeedsOnboarding(needsOnboardingValue);
 9. **Profile Context State**: Checks if context is up-to-date
 10. **Stripe Return URL Handling**: Validates URL parameter handling
 
+#### Tests 11-15: Data Persistence Verification
+11. **Step 1: Basic Profile Data Persistence**: Verifies first_name, last_name, phone, address, suburb saved in DB
+12. **Step 2: Services Data Persistence (Sitter)**: Confirms sitter_services records exist with valid rates and preferences
+13. **Step 3: Pet Data Persistence (Owner)**: Verifies pets table has owner's pet records
+14. **Step 4: Verification Documents Persistence**: Checks ID and police vet documents saved with timestamps
+15. **Step 5: Stripe Account Link Persistence**: Confirms stripe_account_id and flags saved correctly
+
+#### Tests 16-18: Loop Prevention Checks
+16. **Loop Prevention: Onboarding Flag Consistency**: Detects DB vs Context mismatches that cause loops
+17. **Loop Prevention: Terms Acceptance Check**: Prevents re-prompting of accepted terms
+18. **Loop Prevention: Profile Completion Requirements**: Validates all requirements vs completion flag consistency
+
+#### Tests 19-20: Race Condition Detection
+19. **Race Condition: Context vs Database Freshness**: Identifies stale context state
+20. **Race Condition: Stripe Webhook Sync**: Verifies webhook has properly updated profile flags
+
 ### Test Features:
-- ✅ Detailed diagnostics for each test
-- ✅ Shows exact state mismatches
-- ✅ Identifies missing data
+- ✅ Detailed diagnostics for each test with risk levels
+- ✅ Shows exact state mismatches between DB and context
+- ✅ Identifies missing or incomplete data at each step
+- ✅ Detects potential infinite loop conditions
+- ✅ Highlights race condition risks
 - ✅ Provides force complete/reset buttons
 - ✅ JSON details for debugging
 
