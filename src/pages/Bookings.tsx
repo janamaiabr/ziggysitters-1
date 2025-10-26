@@ -337,6 +337,39 @@ export default function Bookings() {
           navigate('/profile?tab=payments');
           return;
         }
+
+        if (response.error_code === 'STRIPE_UNDER_REVIEW') {
+          const goToStripe = async () => {
+            try {
+              const { data, error } = await supabase.functions.invoke('stripe-connect-login-link');
+              if (error) throw error;
+              if (data?.url) {
+                window.open(data.url, '_blank');
+              }
+            } catch (err) {
+              console.error('Error getting Stripe link:', err);
+            }
+          };
+
+          toast({
+            title: "Account Under Review",
+            description: response.error,
+            variant: "destructive",
+            duration: 10000,
+            action: (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={goToStripe}
+                className="whitespace-nowrap"
+              >
+                Go to Stripe
+              </Button>
+            ),
+          });
+          return;
+        }
+        
         throw new Error(response.error || 'Failed to accept booking');
       }
 
