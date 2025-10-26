@@ -292,28 +292,32 @@ export default function Bookings() {
     }
   };
 
+  const [acceptingBookingId, setAcceptingBookingId] = useState<string | null>(null);
+
   const handleAcceptBooking = async (bookingId: string) => {
-    // Check Stripe setup before accepting
-    if (profile?.role === 'pet_sitter') {
-      const { data: sitterProfile } = await supabase
-        .from('profiles')
-        .select('stripe_account_id, stripe_account_enabled')
-        .eq('id', profile.id)
-        .single();
-
-      if (!sitterProfile?.stripe_account_id || !sitterProfile?.stripe_account_enabled) {
-        toast({
-          title: 'Stripe Setup Required',
-          description: 'You must complete your Stripe Connect setup before accepting bookings. Please go to Profile > Payments.',
-          variant: 'destructive',
-          duration: 7000,
-        });
-        navigate('/profile?tab=payments');
-        return;
-      }
-    }
-
+    setAcceptingBookingId(bookingId);
+    
     try {
+      // Check Stripe setup before accepting
+      if (profile?.role === 'pet_sitter') {
+        const { data: sitterProfile } = await supabase
+          .from('profiles')
+          .select('stripe_account_id, stripe_account_enabled')
+          .eq('id', profile.id)
+          .single();
+
+        if (!sitterProfile?.stripe_account_id || !sitterProfile?.stripe_account_enabled) {
+          toast({
+            title: 'Stripe Setup Required',
+            description: 'You must complete your Stripe Connect setup before accepting bookings. Please go to Profile > Payments.',
+            variant: 'destructive',
+            duration: 7000,
+          });
+          navigate('/profile?tab=payments');
+          return;
+        }
+      }
+
       const { data: result, error } = await supabase.rpc('accept_booking', { 
         booking_id: bookingId 
       });
@@ -365,6 +369,8 @@ export default function Bookings() {
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setAcceptingBookingId(null);
     }
   };
 
@@ -744,14 +750,23 @@ export default function Bookings() {
                               <Button 
                                 size="sm" 
                                 onClick={() => handleAcceptBooking(booking.id)}
+                                disabled={acceptingBookingId === booking.id}
                                 className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none sm:min-w-[100px]"
                               >
-                                Accept
+                                {acceptingBookingId === booking.id ? (
+                                  <>
+                                    <span className="animate-spin mr-2">⏳</span>
+                                    Processing...
+                                  </>
+                                ) : (
+                                  'Accept'
+                                )}
                               </Button>
                               <Button 
                                 variant="destructive" 
                                 size="sm" 
                                 onClick={() => handleDeclineBooking(booking)}
+                                disabled={acceptingBookingId === booking.id}
                                 className="flex-1 sm:flex-none sm:min-w-[100px]"
                               >
                                 Decline
