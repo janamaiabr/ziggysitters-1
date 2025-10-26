@@ -837,14 +837,8 @@ export type Database = {
       }
     }
     Functions: {
-      accept_booking: {
-        Args: { booking_id: string }
-        Returns: Json
-      }
-      can_access_pet_basic_info: {
-        Args: { pet_id: string }
-        Returns: boolean
-      }
+      accept_booking: { Args: { booking_id: string }; Returns: Json }
+      can_access_pet_basic_info: { Args: { pet_id: string }; Returns: boolean }
       can_access_pet_sensitive_data: {
         Args: { pet_id: string }
         Returns: boolean
@@ -853,10 +847,7 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
-      cleanup_stale_payments: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_stale_payments: { Args: never; Returns: undefined }
       get_pet_basic_info_for_booking: {
         Args: { booking_id: string }
         Returns: {
@@ -886,10 +877,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
       update_booking_status: {
         Args: {
           booking_id: string
