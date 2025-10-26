@@ -1634,21 +1634,45 @@ export default function Profile() {
                             You cannot accept bookings until verification is complete.
                           </p>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={checkStripeStatus}
-                          disabled={checkingStripe}
-                        >
-                          {checkingStripe ? (
-                            <>
-                              <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                              Checking...
-                            </>
-                          ) : (
-                            'Check Status'
-                          )}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                const { data, error } = await supabase.functions.invoke('stripe-connect-login-link');
+                                if (error) throw error;
+                                if (data?.url) {
+                                  window.open(data.url, '_blank');
+                                }
+                              } catch (err) {
+                                console.error('Error getting Stripe link:', err);
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to open Stripe dashboard. Please try again.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
+                            Go to Stripe
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={checkStripeStatus}
+                            disabled={checkingStripe}
+                          >
+                            {checkingStripe ? (
+                              <>
+                                <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                Checking...
+                              </>
+                            ) : (
+                              'Check Status'
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     ) : (
                       // Onboarding not completed - needs to submit documents
@@ -1661,21 +1685,45 @@ export default function Profile() {
                             Click below to complete the verification process.
                           </p>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleStripeConnect}
-                          disabled={connectingStripe}
-                        >
-                          {connectingStripe ? (
-                            <>
-                              <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                              Connecting...
-                            </>
-                          ) : (
-                            'Submit Documents'
-                          )}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                const { data, error } = await supabase.functions.invoke('stripe-connect-login-link');
+                                if (error) throw error;
+                                if (data?.url) {
+                                  window.open(data.url, '_blank');
+                                }
+                              } catch (err) {
+                                console.error('Error getting Stripe link:', err);
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to open Stripe dashboard. Please try again.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
+                            Go to Stripe
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleStripeConnect}
+                            disabled={connectingStripe}
+                          >
+                            {connectingStripe ? (
+                              <>
+                                <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                Connecting...
+                              </>
+                            ) : (
+                              'Submit Documents'
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     )
                   ) : (
