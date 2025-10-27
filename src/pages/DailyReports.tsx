@@ -9,9 +9,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Calendar as CalendarIcon, FileText, Camera, TrendingUp, 
-  AlertCircle, CheckCircle, Info
+  AlertCircle, CheckCircle, Info, Clock, Utensils, Dumbbell
 } from 'lucide-react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isWithinInterval } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import DailyReportForm from '@/components/daily-reports/DailyReportForm';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -27,19 +27,7 @@ interface Booking {
   owner_id: string;
   sitter_id: string;
   pet_ids: string[];
-  owner?: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    avatar_url: string | null;
-  };
-  sitter?: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    avatar_url: string | null;
-  };
-  pets?: Array<{ id: string; name: string }>;
+  requires_daily_reports: boolean;
 }
 
 interface DailyReport {
@@ -60,20 +48,34 @@ interface DailyReport {
   time_alone_hours?: number;
 }
 
+interface Profile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
+}
+
+interface Pet {
+  id: string;
+  name: string;
+}
+
 export default function DailyReports() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [reports, setReports] = useState<DailyReport[]>([]);
+  const [profiles, setProfiles] = useState<Map<string, Profile>>(new Map());
+  const [pets, setPets] = useState<Map<string, Pet>>(new Map());
   const [selectedReport, setSelectedReport] = useState<DailyReport | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showReportForm, setShowReportForm] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
 
   const isSitter = profile?.role === 'pet_sitter';
-  const isOwner = profile?.role === 'pet_owner';
 
   useEffect(() => {
     if (profile?.id) {
@@ -87,66 +89,35 @@ export default function DailyReports() {
     try {
       setLoading(true);
       
-      // Fetch bookings based on role
-      const bookingsQuery = supabase
+      // Fetch bookings
+      let bookingsQuery = supabase
         .from('bookings')
-        .select(`
-          id,
-          start_date,
-          end_date,
-          status,
-          booking_reference,
-          daily_reports_required,
-          daily_reports_completed,
-          requires_daily_reports,
-          owner_id,
-          sitter_id,
-          pet_ids
-        `)
+        .select('*')
         .eq('requires_daily_reports', true)
         .in('status', ['confirmed', 'in_progress', 'completed']);
 
       if (isSitter) {
-        bookingsQuery.eq('sitter_id', profile.id);
-      } else if (isOwner) {
-        bookingsQuery.eq('owner_id', profile.id);
+        bookingsQuery = bookingsQuery.eq('sitter_id', profile.id);
+      } else {
+        bookingsQuery = bookingsQuery.eq('owner_id', profile.id);
       }
 
       const { data: bookingsData, error: bookingsError } = await bookingsQuery;
       if (bookingsError) throw bookingsError;
 
-      // Fetch related profiles and pets
-      const bookingsWithDetails = await Promise.all(
-        (bookingsData || []).map(async (booking) => {
-          const [ownerRes, sitterRes, petsRes] = await Promise.all([
-            supabase.from('profiles').select('id, first_name, last_name, avatar_url').eq('id', booking.owner_id).maybeSingle(),
-            supabase.from('profiles').select('id, first_name, last_name, avatar_url').eq('id', booking.sitter_id).maybeSingle(),
-            supabase.from('pets').select('id, name').in('id', booking.pet_ids || [])
-          ]);
-
-          return {
-            ...booking,
-            owner: ownerRes.data || undefined,
-            sitter: sitterRes.data || undefined,
-            pets: petsRes.data || []
-          };
-        })
-      );
-
-      setBookings(bookingsWithDetails);
+      setBookings(bookingsData || []);
 
       // Fetch all reports
-      const reportsQuery = supabase
-        .from('daily_reports')
-        .select('*');
-
+      let reportsQuery = supabase.from('daily_reports').select('*');
+      
       if (isSitter) {
-        reportsQuery.eq('sitter_id', profile.id);
-      } else if (isOwner) {
-        // For owners, get reports from their bookings
-        const bookingIds = bookingsWithDetails.map(b => b.id);
+        reportsQuery = reportsQuery.eq('sitter_id', profile.id);
+      } else {
+        const bookingIds = (bookingsData || []).map(b => b.id);
         if (bookingIds.length > 0) {
-          reportsQuery.in('booking_id', bookingIds);
+          reportsQuery = reportsQuery.in('booking_id', bookingIds);
+        } else {
+          reportsQuery = reportsQuery.eq('booking_id', 'none'); // No bookings
         }
       }
 
@@ -154,6 +125,45 @@ export default function DailyReports() {
       if (reportsError) throw reportsError;
 
       setReports(reportsData || []);
+
+      // Fetch all unique profiles
+      const uniqueProfileIds = new Set<string>();
+      (bookingsData || []).forEach(booking => {
+        uniqueProfileIds.add(booking.owner_id);
+        uniqueProfileIds.add(booking.sitter_id);
+      });
+
+      if (uniqueProfileIds.size > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, avatar_url')
+          .in('id', Array.from(uniqueProfileIds));
+
+        if (profilesData) {
+          const profilesMap = new Map<string, Profile>();
+          profilesData.forEach(p => profilesMap.set(p.id, p));
+          setProfiles(profilesMap);
+        }
+      }
+
+      // Fetch all unique pets
+      const uniquePetIds = new Set<string>();
+      (bookingsData || []).forEach(booking => {
+        booking.pet_ids?.forEach(id => uniquePetIds.add(id));
+      });
+
+      if (uniquePetIds.size > 0) {
+        const { data: petsData } = await supabase
+          .from('pets')
+          .select('id, name')
+          .in('id', Array.from(uniquePetIds));
+
+        if (petsData) {
+          const petsMap = new Map<string, Pet>();
+          petsData.forEach(p => petsMap.set(p.id, p));
+          setPets(petsMap);
+        }
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -170,24 +180,24 @@ export default function DailyReports() {
     const totalRequired = bookings.reduce((sum, b) => sum + (b.daily_reports_required || 0), 0);
     const totalCompleted = reports.length;
     const completionRate = totalRequired > 0 ? Math.round((totalCompleted / totalRequired) * 100) : 0;
-    const thisMonth = reports.filter(r => 
-      new Date(r.report_date).getMonth() === new Date().getMonth() &&
-      new Date(r.report_date).getFullYear() === new Date().getFullYear()
-    ).length;
+    const thisMonth = reports.filter(r => {
+      const reportDate = new Date(r.report_date);
+      const now = new Date();
+      return reportDate.getMonth() === now.getMonth() && reportDate.getFullYear() === now.getFullYear();
+    }).length;
     const bookingsWithReducedPay = bookings.filter(b => 
-      b.daily_reports_completed < b.daily_reports_required && b.status === 'completed'
+      b.status === 'completed' && 
+      b.daily_reports_completed < b.daily_reports_required
     ).length;
 
     return { totalRequired, totalCompleted, completionRate, thisMonth, bookingsWithReducedPay };
   };
 
   const getDayBookings = (date: Date) => {
-    const dateStr = format(date, 'yyyy-MM-dd');
     return bookings.filter(booking => {
       const start = new Date(booking.start_date);
       const end = new Date(booking.end_date);
-      const checkDate = new Date(dateStr);
-      return checkDate >= start && checkDate <= end;
+      return isWithinInterval(date, { start, end });
     });
   };
 
@@ -201,9 +211,7 @@ export default function DailyReports() {
     if (dayBookings.length === 0) return 'none';
     
     const dayReports = getDayReports(date);
-    const reportsNeeded = dayBookings.length;
-    
-    return dayReports.length >= reportsNeeded ? 'completed' : 'pending';
+    return dayReports.length >= dayBookings.length ? 'completed' : 'pending';
   };
 
   const renderCalendar = () => {
@@ -211,14 +219,13 @@ export default function DailyReports() {
     const monthEnd = endOfMonth(currentMonth);
     const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
     
-    // Calculate padding days for the start of month
     const startDayOfWeek = monthStart.getDay();
     const paddingDays = Array(startDayOfWeek).fill(null);
 
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold">
             {format(currentMonth, 'MMMM yyyy')}
           </h3>
           <div className="flex gap-2">
@@ -227,12 +234,16 @@ export default function DailyReports() {
               size="sm"
               onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
             >
-              Previous
+              ← Prev
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentMonth(new Date())}
+              onClick={() => {
+                const today = new Date();
+                setCurrentMonth(today);
+                setSelectedDate(today);
+              }}
             >
               Today
             </Button>
@@ -241,32 +252,29 @@ export default function DailyReports() {
               size="sm"
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
             >
-              Next
+              Next →
             </Button>
           </div>
         </div>
 
-        {/* Calendar Grid */}
         <div className="border rounded-lg overflow-hidden">
-          {/* Days of week header */}
-          <div className="grid grid-cols-7 bg-muted">
+          <div className="grid grid-cols-7 bg-muted/50">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="p-2 text-center text-sm font-medium">
+              <div key={day} className="p-3 text-center text-sm font-semibold">
                 {day}
               </div>
             ))}
           </div>
 
-          {/* Calendar days */}
-          <div className="grid grid-cols-7 gap-px bg-border">
+          <div className="grid grid-cols-7">
             {[...paddingDays, ...daysInMonth].map((day, index) => {
               if (!day) {
-                return <div key={`padding-${index}`} className="bg-muted/30 min-h-20" />;
+                return <div key={`padding-${index}`} className="bg-muted/20 min-h-24 border-r border-b" />;
               }
 
               const status = getDayStatus(day);
               const isToday = isSameDay(day, new Date());
-              const isSelected = selectedDate && isSameDay(day, selectedDate);
+              const isSelected = isSameDay(day, selectedDate);
               const dayBookings = getDayBookings(day);
               const dayReports = getDayReports(day);
 
@@ -275,29 +283,30 @@ export default function DailyReports() {
                   key={day.toISOString()}
                   onClick={() => setSelectedDate(day)}
                   className={`
-                    relative min-h-20 p-2 bg-background hover:bg-muted/50 transition-colors
-                    ${isSelected ? 'ring-2 ring-primary ring-inset' : ''}
-                    ${isToday ? 'font-bold' : ''}
+                    relative min-h-24 p-2 border-r border-b transition-all
+                    ${isSelected ? 'bg-primary/10 ring-2 ring-primary ring-inset' : 'bg-background hover:bg-muted/30'}
+                    ${status === 'completed' ? 'bg-green-50/50' : ''}
+                    ${status === 'pending' ? 'bg-red-50/50' : ''}
                   `}
                 >
-                  <div className="flex flex-col items-start h-full">
-                    <span className={`text-sm ${isToday ? 'text-primary' : ''}`}>
+                  <div className="flex flex-col h-full">
+                    <span className={`
+                      text-sm font-medium mb-1
+                      ${isToday ? 'text-primary font-bold' : ''}
+                      ${status === 'none' ? 'text-muted-foreground' : ''}
+                    `}>
                       {format(day, 'd')}
                     </span>
                     
-                    {status !== 'none' && (
-                      <div className="mt-1 w-full">
-                        {status === 'completed' ? (
-                          <div className="w-2 h-2 rounded-full bg-green-500 mx-auto" />
-                        ) : (
-                          <div className="w-2 h-2 rounded-full bg-red-500 mx-auto" />
-                        )}
-                      </div>
-                    )}
-
                     {dayBookings.length > 0 && (
-                      <div className="mt-auto text-xs text-muted-foreground">
-                        {dayReports.length}/{dayBookings.length}
+                      <div className="flex-1 flex flex-col items-center justify-center gap-1">
+                        <div className={`
+                          w-3 h-3 rounded-full
+                          ${status === 'completed' ? 'bg-green-500' : 'bg-red-500'}
+                        `} />
+                        <span className="text-xs text-muted-foreground">
+                          {dayReports.length}/{dayBookings.length}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -307,19 +316,18 @@ export default function DailyReports() {
           </div>
         </div>
 
-        {/* Legend */}
         <div className="flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span>Report submitted</span>
+            <span className="text-muted-foreground">Report submitted</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500" />
-            <span>Report due</span>
+            <span className="text-muted-foreground">Report due</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-gray-300" />
-            <span>No bookings</span>
+            <span className="text-muted-foreground">No bookings</span>
           </div>
         </div>
       </div>
@@ -327,18 +335,16 @@ export default function DailyReports() {
   };
 
   const renderSelectedDayDetails = () => {
-    if (!selectedDate) return null;
-
     const dayBookings = getDayBookings(selectedDate);
     const dayReports = getDayReports(selectedDate);
-    const dateStr = format(selectedDate, 'yyyy-MM-dd');
 
     if (dayBookings.length === 0) {
       return (
         <Card>
-          <CardContent className="py-12 text-center">
-            <CalendarIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <p className="text-muted-foreground">No bookings on this date</p>
+          <CardContent className="py-16 text-center">
+            <CalendarIcon className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
+            <p className="text-lg font-medium text-muted-foreground mb-1">No bookings on this date</p>
+            <p className="text-sm text-muted-foreground">Select a date with bookings to view details</p>
           </CardContent>
         </Card>
       );
@@ -347,92 +353,131 @@ export default function DailyReports() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">
+          <CardTitle className="flex items-center gap-2">
+            <CalendarIcon className="h-5 w-5" />
             {format(selectedDate, 'EEEE, MMMM d, yyyy')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {dayBookings.map(booking => {
             const bookingReport = dayReports.find(r => r.booking_id === booking.id);
-            const otherPerson = isSitter ? booking.owner : booking.sitter;
+            const otherPersonId = isSitter ? booking.owner_id : booking.sitter_id;
+            const otherPerson = profiles.get(otherPersonId);
+            const bookingPets = booking.pet_ids?.map(id => pets.get(id)).filter(Boolean) || [];
 
             return (
-              <div key={booking.id} className="border rounded-lg p-4 space-y-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
+              <div key={booking.id} className="border-2 rounded-lg p-4 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1">
+                    <Avatar className="h-12 w-12 border-2">
                       <AvatarImage src={otherPerson?.avatar_url || ''} />
-                      <AvatarFallback>
-                        {otherPerson?.first_name?.[0]}{otherPerson?.last_name?.[0]}
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                        {otherPerson?.first_name?.[0] || '?'}{otherPerson?.last_name?.[0] || ''}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="font-medium">
-                        {otherPerson?.first_name} {otherPerson?.last_name}
+                    <div className="flex-1">
+                      <p className="font-semibold text-lg">
+                        {otherPerson?.first_name || 'Loading'} {otherPerson?.last_name || '...'}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Pets: {booking.pets?.map(p => p.name).join(', ') || 'N/A'}
+                        {isSitter ? 'Pet Owner' : 'Pet Sitter'}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-medium mt-1">
+                        🐾 {bookingPets.map(p => p?.name).join(', ') || 'Loading pets...'}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
                         Booking #{booking.booking_reference}
                       </p>
                     </div>
                   </div>
                   
                   {bookingReport ? (
-                    <Badge className="bg-green-50 text-green-700 border-green-200">
+                    <Badge className="bg-green-500 hover:bg-green-600 text-white border-0">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       Submitted
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                    <Badge variant="destructive">
                       <AlertCircle className="h-3 w-3 mr-1" />
                       Due
                     </Badge>
                   )}
                 </div>
 
-                {bookingReport && (
-                  <div className="border-t pt-3 space-y-2">
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Mood:</span>{' '}
-                        <span className="capitalize">{bookingReport.mood.replace('_', ' ')}</span>
+                {bookingReport ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3 p-3 bg-muted/30 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className="text-2xl">{bookingReport.mood === 'very_happy' ? '😄' : bookingReport.mood === 'happy' ? '😊' : bookingReport.mood === 'calm' ? '😌' : bookingReport.mood === 'anxious' ? '😰' : '😢'}</div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Mood</p>
+                          <p className="text-sm font-medium capitalize">{bookingReport.mood.replace('_', ' ')}</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Food:</span>{' '}
-                        <span className="capitalize">{bookingReport.food_consumption}</span>
+                      <div className="flex items-center gap-2">
+                        <Utensils className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Food</p>
+                          <p className="text-sm font-medium capitalize">{bookingReport.food_consumption}</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Exercise:</span>{' '}
-                        {bookingReport.exercise_duration} mins
+                      <div className="flex items-center gap-2">
+                        <Dumbbell className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Exercise</p>
+                          <p className="text-sm font-medium">{bookingReport.exercise_duration} mins</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Photos:</span>{' '}
-                        {bookingReport.photo_urls?.length || 0}
+                      <div className="flex items-center gap-2">
+                        <Camera className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Photos</p>
+                          <p className="text-sm font-medium">{bookingReport.photo_urls?.length || 0} uploaded</p>
+                        </div>
                       </div>
                     </div>
                     
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => setSelectedReport(bookingReport)}
-                    >
-                      View Full Report
-                    </Button>
-                  </div>
-                )}
+                    {bookingReport.general_notes && (
+                      <div className="p-3 bg-background border rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">Notes:</p>
+                        <p className="text-sm">{bookingReport.general_notes}</p>
+                      </div>
+                    )}
 
-                {!bookingReport && isSitter && (
-                  <Button
-                    className="w-full"
-                    onClick={() => {
-                      setShowReportForm(true);
-                    }}
-                  >
-                    Submit Report
-                  </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => setSelectedReport(bookingReport)}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        View Full Report
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    {isSitter ? (
+                      <Button
+                        className="w-full"
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setShowReportForm(true);
+                        }}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Submit Report
+                      </Button>
+                    ) : (
+                      <Alert>
+                        <Clock className="h-4 w-4" />
+                        <AlertDescription className="text-sm">
+                          Waiting for sitter to submit daily report. Reports must be submitted by 9 PM.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
                 )}
               </div>
             );
@@ -446,75 +491,86 @@ export default function DailyReports() {
     if (!selectedReport) return null;
 
     const booking = bookings.find(b => b.id === selectedReport.booking_id);
-    const otherPerson = isSitter ? booking?.owner : booking?.sitter;
+    const otherPersonId = booking ? (isSitter ? booking.owner_id : booking.sitter_id) : null;
+    const otherPerson = otherPersonId ? profiles.get(otherPersonId) : null;
 
     return (
       <Dialog open={!!selectedReport} onOpenChange={() => setSelectedReport(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              Daily Report - {format(new Date(selectedReport.report_date), 'MMMM d, yyyy')}
+            <DialogTitle className="text-2xl">
+              Daily Report - {format(new Date(selectedReport.report_date), 'EEEE, MMMM d, yyyy')}
             </DialogTitle>
             <p className="text-sm text-muted-foreground">
-              Submitted {format(new Date(selectedReport.submitted_at), 'h:mm a')} • 
-              {otherPerson && ` ${isSitter ? 'Owner' : 'Sitter'}: ${otherPerson.first_name} ${otherPerson.last_name}`}
+              Submitted at {format(new Date(selectedReport.submitted_at), 'h:mm a')}
+              {otherPerson && ` • ${isSitter ? 'Owner' : 'Sitter'}: ${otherPerson.first_name} ${otherPerson.last_name}`}
             </p>
           </DialogHeader>
 
           <div className="space-y-6">
-            {/* Photos */}
             {selectedReport.photo_urls && selectedReport.photo_urls.length > 0 && (
               <div>
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Camera className="w-4 h-4" />
+                <h3 className="font-semibold mb-3 flex items-center gap-2 text-lg">
+                  <Camera className="w-5 h-5" />
                   Photos ({selectedReport.photo_urls.length})
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {selectedReport.photo_urls.map((url, index) => (
-                    <img
-                      key={index}
-                      src={url}
-                      alt={`Report photo ${index + 1}`}
-                      className="rounded-lg object-cover aspect-square cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => window.open(url, '_blank')}
-                    />
+                    <div key={index} className="relative group">
+                      <img
+                        src={url}
+                        alt={`Report photo ${index + 1}`}
+                        className="rounded-lg object-cover aspect-square w-full cursor-pointer hover:opacity-90 transition-opacity border-2"
+                        onClick={() => window.open(url, '_blank')}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Details Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <DetailItem label="Mood" value={selectedReport.mood.replace('_', ' ')} />
-                <DetailItem label="Food Consumption" value={selectedReport.food_consumption} />
-                <DetailItem label="Exercise Duration" value={`${selectedReport.exercise_duration} minutes`} />
-                {selectedReport.exercise_notes && (
-                  <DetailItem label="Exercise Notes" value={selectedReport.exercise_notes} />
-                )}
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Activity & Mood</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <DetailItem label="Mood" value={selectedReport.mood.replace('_', ' ')} />
+                  <DetailItem label="Food Consumption" value={selectedReport.food_consumption} />
+                  <DetailItem label="Exercise Duration" value={`${selectedReport.exercise_duration} minutes`} />
+                  {selectedReport.exercise_notes && (
+                    <DetailItem label="Exercise Notes" value={selectedReport.exercise_notes} />
+                  )}
+                </CardContent>
+              </Card>
 
-              <div className="space-y-3">
-                <DetailItem label="Sleep Quality" value={selectedReport.sleep_quality || 'Not specified'} />
-                {selectedReport.sleep_notes && (
-                  <DetailItem label="Sleep Notes" value={selectedReport.sleep_notes} />
-                )}
-                <DetailItem label="Time Alone" value={`${selectedReport.time_alone_hours || 0} hours`} />
-                <DetailItem label="Medication Given" value={selectedReport.medication_given ? 'Yes' : 'No'} />
-                {selectedReport.medication_notes && (
-                  <DetailItem label="Medication Notes" value={selectedReport.medication_notes} />
-                )}
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Rest & Care</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <DetailItem label="Sleep Quality" value={selectedReport.sleep_quality || 'Not specified'} />
+                  {selectedReport.sleep_notes && (
+                    <DetailItem label="Sleep Notes" value={selectedReport.sleep_notes} />
+                  )}
+                  <DetailItem label="Time Alone" value={`${selectedReport.time_alone_hours || 0} hours`} />
+                  <DetailItem label="Medication Given" value={selectedReport.medication_given ? 'Yes' : 'No'} />
+                  {selectedReport.medication_notes && (
+                    <DetailItem label="Medication Notes" value={selectedReport.medication_notes} />
+                  )}
+                </CardContent>
+              </Card>
             </div>
 
-            {/* General Notes */}
             {selectedReport.general_notes && (
-              <div>
-                <h4 className="font-medium mb-2">General Notes</h4>
-                <div className="bg-muted p-4 rounded-lg">
-                  <p className="text-sm">{selectedReport.general_notes}</p>
-                </div>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">General Notes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm leading-relaxed">{selectedReport.general_notes}</p>
+                </CardContent>
+              </Card>
             )}
           </div>
         </DialogContent>
@@ -527,10 +583,10 @@ export default function DailyReports() {
   if (loading) {
     return (
       <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center py-12">
+        <div className="flex items-center justify-center py-24">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Loading daily reports...</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-4"></div>
+            <p className="text-lg text-muted-foreground">Loading daily reports...</p>
           </div>
         </div>
       </div>
@@ -539,177 +595,202 @@ export default function DailyReports() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <FileText className="h-8 w-8" />
+        <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
+          <FileText className="h-10 w-10 text-primary" />
           Daily Reports Dashboard
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-lg">
           {isSitter 
-            ? "Manage daily pet reports for bookings that request them. Stay on top of your reporting to ensure full payment."
-            : "View daily updates from your pet sitter. Reports include photos, feeding info, exercise details, and more."
+            ? "Manage daily pet reports for bookings. Submit reports by 9 PM to ensure full payment."
+            : "View daily updates from your pet sitter with photos, feeding info, exercise details, and more."
           }
         </p>
       </div>
 
-      {/* How It Works */}
-      <Alert>
-        <Info className="h-4 w-4" />
+      <Alert className="border-l-4 border-l-primary">
+        <Info className="h-5 w-5 text-primary" />
         <AlertDescription>
-          <div className="font-semibold mb-2">How Daily Reports Work</div>
-          <ul className="space-y-1 text-sm">
+          <div className="font-semibold mb-2 text-base">How Daily Reports Work</div>
+          <ul className="space-y-1.5 text-sm">
             {isSitter ? (
               <>
-                <li>✅ <strong>You only provide reports</strong> when specifically requested by the pet owner</li>
-                <li>✅ <strong>Short visits (e.g., 1-hour walks)</strong> typically don't require reports unless requested</li>
-                <li>⚠️ <strong>When reports are requested,</strong> you must submit them daily by 9 PM to receive full payment</li>
-                <li>📸 <strong>Requirements:</strong> At least one photo + comprehensive details required</li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
+                  <span><strong>Only when requested:</strong> You only provide reports when specifically requested by the pet owner</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
+                  <span><strong>Short visits:</strong> 1-hour walks typically don't require reports unless requested</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 mt-0.5 text-orange-600 flex-shrink-0" />
+                  <span><strong>When required:</strong> Submit daily by 9 PM to receive full payment (15% deduction if missed)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Camera className="h-4 w-4 mt-0.5 text-blue-600 flex-shrink-0" />
+                  <span><strong>Requirements:</strong> At least one photo + comprehensive details</span>
+                </li>
               </>
             ) : (
               <>
-                <li>✅ <strong>Pet owners choose</strong> whether to request daily reports when booking</li>
-                <li>✅ <strong>Your choice:</strong> Reports are optional - choose them only if you want daily updates</li>
-                <li>✅ <strong>Guaranteed delivery:</strong> When you request reports, sitters must deliver them or face payment reduction</li>
-                <li>📸 <strong>What you'll see:</strong> Photos, feeding info, exercise details, mood, and sitter's notes</li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
+                  <span><strong>Your choice:</strong> Request daily reports when booking - they're optional</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
+                  <span><strong>Guaranteed:</strong> When requested, sitters must deliver or face payment reduction</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Camera className="h-4 w-4 mt-0.5 text-blue-600 flex-shrink-0" />
+                  <span><strong>What you get:</strong> Daily photos, feeding info, exercise details, mood, and sitter's notes</span>
+                </li>
               </>
             )}
           </ul>
         </AlertDescription>
       </Alert>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="border-2">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
               Completion Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{stats.completionRate}%</span>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-bold">{stats.completionRate}%</span>
               {stats.completionRate >= 80 ? (
-                <Badge className="bg-green-500">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Good
-                </Badge>
+                <Badge className="mb-1 bg-green-500 hover:bg-green-600">Excellent</Badge>
               ) : (
-                <Badge variant="destructive">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  Needs Improvement
-                </Badge>
+                <Badge variant="destructive" className="mb-1">Needs Work</Badge>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <FileText className="h-4 w-4" />
               Reports Submitted
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{stats.totalCompleted}</span>
-              <span className="text-sm text-muted-foreground">of {stats.totalRequired} required</span>
+            <div className="space-y-1">
+              <span className="text-4xl font-bold">{stats.totalCompleted}</span>
+              <p className="text-sm text-muted-foreground">of {stats.totalRequired} required</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4" />
               This Month
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{stats.thisMonth}</span>
-              <span className="text-sm text-muted-foreground">reports submitted</span>
+            <div className="space-y-1">
+              <span className="text-4xl font-bold">{stats.thisMonth}</span>
+              <p className="text-sm text-muted-foreground">reports submitted</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <AlertCircle className="h-4 w-4" />
               Payment Impact
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{stats.bookingsWithReducedPay}</span>
-              <span className="text-sm text-muted-foreground">bookings with reduced pay</span>
+            <div className="space-y-1">
+              <span className="text-4xl font-bold text-red-600">{stats.bookingsWithReducedPay}</span>
+              <p className="text-sm text-muted-foreground">with reduced pay</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Payment Policy */}
       {isSitter && (
         <Alert className="border-l-4 border-l-orange-500 bg-orange-50/50">
-          <AlertCircle className="h-4 w-4 text-orange-600" />
+          <AlertCircle className="h-5 w-5 text-orange-600" />
           <AlertDescription>
-            <div className="font-semibold text-orange-900 mb-2">Daily Report Payment Policy (When Requested)</div>
-            <div className="text-sm text-orange-800 space-y-1">
-              <p>✅ <strong>100% Payment:</strong> Submit daily reports for ALL required days</p>
-              <p>⚠️ <strong>15% Deduction:</strong> Miss even one daily report</p>
-              <p>⏰ <strong>Deadline:</strong> Reports must be submitted by 9 PM each day</p>
-              <p>📸 <strong>Requirements:</strong> At least one photo + comprehensive details required</p>
+            <div className="font-semibold text-orange-900 mb-2">⚠️ Payment Policy (When Reports Are Requested)</div>
+            <div className="text-sm text-orange-800 space-y-1.5">
+              <p className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <span><strong>100% Payment:</strong> Submit reports for ALL required days</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <span><strong>15% Deduction:</strong> Miss even one report</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <span><strong>Deadline:</strong> 9 PM daily</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <span><strong>Requirements:</strong> Minimum 1 photo + detailed notes</span>
+              </p>
             </div>
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Calendar and Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5" />
-                Daily Reports Calendar
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {renderCalendar()}
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="lg:col-span-2 border-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <CalendarIcon className="h-6 w-6 text-primary" />
+              Daily Reports Calendar
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {renderCalendar()}
+          </CardContent>
+        </Card>
 
-        <div>
+        <div className="space-y-6">
           {renderSelectedDayDetails()}
         </div>
       </div>
 
-      {/* Report Form Dialog */}
-      {isSitter && selectedDate && showReportForm && (
+      {isSitter && showReportForm && selectedBooking && (
         <Dialog open={showReportForm} onOpenChange={setShowReportForm}>
           <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Submit Daily Report</DialogTitle>
             </DialogHeader>
             <DailyReportForm
-              bookingId={getDayBookings(selectedDate)[0]?.id || ''}
+              bookingId={selectedBooking.id}
               sitterId={profile?.id || ''}
               reportDate={format(selectedDate, 'yyyy-MM-dd')}
               onSubmit={() => {
                 setShowReportForm(false);
+                setSelectedBooking(null);
                 fetchData();
                 toast({
                   title: "Report submitted!",
                   description: "The pet owner has been notified via email.",
                 });
               }}
-              onCancel={() => setShowReportForm(false)}
+              onCancel={() => {
+                setShowReportForm(false);
+                setSelectedBooking(null);
+              }}
             />
           </DialogContent>
         </Dialog>
       )}
 
-      {/* Report Details Dialog */}
       {renderReportDetails()}
     </div>
   );
@@ -719,7 +800,7 @@ function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <h4 className="text-sm font-medium text-muted-foreground mb-1">{label}</h4>
-      <p className="capitalize">{value}</p>
+      <p className="capitalize text-sm">{value}</p>
     </div>
   );
 }
