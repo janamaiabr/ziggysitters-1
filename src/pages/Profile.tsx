@@ -1638,24 +1638,17 @@ export default function Profile() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={async () => {
-                              try {
-                                const { data, error } = await supabase.functions.invoke('stripe-connect-login-link');
-                                if (error) throw error;
-                                if (data?.url) {
-                                  window.open(data.url, '_blank');
-                                }
-                              } catch (err) {
-                                console.error('Error getting Stripe link:', err);
-                                toast({
-                                  title: "Error",
-                                  description: "Failed to open Stripe dashboard. Please try again.",
-                                  variant: "destructive",
-                                });
-                              }
-                            }}
+                            onClick={handleStripeConnect}
+                            disabled={connectingStripe}
                           >
-                            Go to Stripe
+                            {connectingStripe ? (
+                              <>
+                                <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                Opening...
+                              </>
+                            ) : (
+                              'View Stripe Dashboard'
+                            )}
                           </Button>
                           <Button
                             variant="outline"
@@ -1689,24 +1682,17 @@ export default function Profile() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={async () => {
-                              try {
-                                const { data, error } = await supabase.functions.invoke('stripe-connect-login-link');
-                                if (error) throw error;
-                                if (data?.url) {
-                                  window.open(data.url, '_blank');
-                                }
-                              } catch (err) {
-                                console.error('Error getting Stripe link:', err);
-                                toast({
-                                  title: "Error",
-                                  description: "Failed to open Stripe dashboard. Please try again.",
-                                  variant: "destructive",
-                                });
-                              }
-                            }}
+                            onClick={handleStripeConnect}
+                            disabled={connectingStripe}
                           >
-                            Go to Stripe
+                            {connectingStripe ? (
+                              <>
+                                <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                Opening...
+                              </>
+                            ) : (
+                              'Complete Verification'
+                            )}
                           </Button>
                           <Button
                             variant="outline"
