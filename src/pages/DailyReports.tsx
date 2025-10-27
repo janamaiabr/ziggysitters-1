@@ -9,12 +9,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Calendar as CalendarIcon, FileText, Camera, TrendingUp, 
-  AlertCircle, CheckCircle, Info, Clock, Utensils, Dumbbell
+  AlertCircle, CheckCircle, Info, Utensils, Dumbbell, ChevronLeft, ChevronRight, Home, Moon
 } from 'lucide-react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isWithinInterval } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import DailyReportForm from '@/components/daily-reports/DailyReportForm';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface Booking {
   id: string;
@@ -46,6 +45,7 @@ interface DailyReport {
   medication_notes?: string;
   sleep_notes?: string;
   time_alone_hours?: number;
+  food_notes?: string;
 }
 
 interface Profile {
@@ -68,11 +68,11 @@ export default function DailyReports() {
   const [reports, setReports] = useState<DailyReport[]>([]);
   const [profiles, setProfiles] = useState<Map<string, Profile>>(new Map());
   const [pets, setPets] = useState<Map<string, Pet>>(new Map());
-  const [selectedReport, setSelectedReport] = useState<DailyReport | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [viewingReport, setViewingReport] = useState<DailyReport | null>(null);
   const [loading, setLoading] = useState(true);
 
   const isSitter = profile?.role === 'pet_sitter';
@@ -89,7 +89,6 @@ export default function DailyReports() {
     try {
       setLoading(true);
       
-      // Fetch bookings
       let bookingsQuery = supabase
         .from('bookings')
         .select('*')
@@ -107,7 +106,6 @@ export default function DailyReports() {
 
       setBookings(bookingsData || []);
 
-      // Fetch all reports
       let reportsQuery = supabase.from('daily_reports').select('*');
       
       if (isSitter) {
@@ -117,7 +115,7 @@ export default function DailyReports() {
         if (bookingIds.length > 0) {
           reportsQuery = reportsQuery.in('booking_id', bookingIds);
         } else {
-          reportsQuery = reportsQuery.eq('booking_id', 'none'); // No bookings
+          reportsQuery = reportsQuery.eq('booking_id', 'none');
         }
       }
 
@@ -126,7 +124,6 @@ export default function DailyReports() {
 
       setReports(reportsData || []);
 
-      // Fetch all unique profiles
       const uniqueProfileIds = new Set<string>();
       (bookingsData || []).forEach(booking => {
         uniqueProfileIds.add(booking.owner_id);
@@ -146,7 +143,6 @@ export default function DailyReports() {
         }
       }
 
-      // Fetch all unique pets
       const uniquePetIds = new Set<string>();
       (bookingsData || []).forEach(booking => {
         booking.pet_ids?.forEach(id => uniquePetIds.add(id));
@@ -214,593 +210,479 @@ export default function DailyReports() {
     return dayReports.length >= dayBookings.length ? 'completed' : 'pending';
   };
 
-  const renderCalendar = () => {
-    const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(currentMonth);
-    const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
-    
-    const startDayOfWeek = monthStart.getDay();
-    const paddingDays = Array(startDayOfWeek).fill(null);
-
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold">
-            {format(currentMonth, 'MMMM yyyy')}
-          </h3>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-            >
-              ← Prev
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const today = new Date();
-                setCurrentMonth(today);
-                setSelectedDate(today);
-              }}
-            >
-              Today
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-            >
-              Next →
-            </Button>
-          </div>
-        </div>
-
-        <div className="border rounded-lg overflow-hidden">
-          <div className="grid grid-cols-7 bg-muted/50">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="p-3 text-center text-sm font-semibold">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7">
-            {[...paddingDays, ...daysInMonth].map((day, index) => {
-              if (!day) {
-                return <div key={`padding-${index}`} className="bg-muted/20 min-h-24 border-r border-b" />;
-              }
-
-              const status = getDayStatus(day);
-              const isToday = isSameDay(day, new Date());
-              const isSelected = isSameDay(day, selectedDate);
-              const dayBookings = getDayBookings(day);
-              const dayReports = getDayReports(day);
-
-              return (
-                <button
-                  key={day.toISOString()}
-                  onClick={() => setSelectedDate(day)}
-                  className={`
-                    relative min-h-24 p-2 border-r border-b transition-all
-                    ${isSelected ? 'bg-primary/10 ring-2 ring-primary ring-inset' : 'bg-background hover:bg-muted/30'}
-                    ${status === 'completed' ? 'bg-green-50/50' : ''}
-                    ${status === 'pending' ? 'bg-red-50/50' : ''}
-                  `}
-                >
-                  <div className="flex flex-col h-full">
-                    <span className={`
-                      text-sm font-medium mb-1
-                      ${isToday ? 'text-primary font-bold' : ''}
-                      ${status === 'none' ? 'text-muted-foreground' : ''}
-                    `}>
-                      {format(day, 'd')}
-                    </span>
-                    
-                    {dayBookings.length > 0 && (
-                      <div className="flex-1 flex flex-col items-center justify-center gap-1">
-                        <div className={`
-                          w-5 h-5 rounded-full shadow-md
-                          ${status === 'completed' ? 'bg-green-500' : 'bg-red-500'}
-                        `} />
-                        <span className="text-xs font-medium text-foreground">
-                          {dayReports.length}/{dayBookings.length}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-green-500 shadow-md" />
-            <span className="text-muted-foreground">Report submitted</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-red-500 shadow-md" />
-            <span className="text-muted-foreground">Report due</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-gray-300 shadow-md" />
-            <span className="text-muted-foreground">No bookings</span>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderSelectedDayDetails = () => {
-    const dayBookings = getDayBookings(selectedDate);
-    const dayReports = getDayReports(selectedDate);
-
-    if (dayBookings.length === 0) {
-      return (
-        <Card>
-          <CardContent className="py-16 text-center">
-            <CalendarIcon className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
-            <p className="text-lg font-medium text-muted-foreground mb-1">No bookings on this date</p>
-            <p className="text-sm text-muted-foreground">Select a date with bookings to view details</p>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5" />
-            {format(selectedDate, 'EEEE, MMMM d, yyyy')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {dayBookings.map(booking => {
-            const bookingReport = dayReports.find(r => r.booking_id === booking.id);
-            const otherPersonId = isSitter ? booking.owner_id : booking.sitter_id;
-            const otherPerson = profiles.get(otherPersonId);
-            const bookingPets = booking.pet_ids?.map(id => pets.get(id)).filter(Boolean) || [];
-
-            return (
-              <div key={booking.id} className="border-2 rounded-lg p-4 space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3 flex-1">
-                    <Avatar className="h-12 w-12 border-2">
-                      <AvatarImage src={otherPerson?.avatar_url || ''} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {otherPerson?.first_name?.[0] || '?'}{otherPerson?.last_name?.[0] || ''}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <p className="font-semibold text-lg">
-                        {otherPerson?.first_name || 'Loading'} {otherPerson?.last_name || '...'}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {isSitter ? 'Pet Owner' : 'Pet Sitter'}
-                      </p>
-                      <p className="text-sm font-medium mt-1">
-                        🐾 {bookingPets.map(p => p?.name).join(', ') || 'Loading pets...'}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Booking #{booking.booking_reference}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {bookingReport ? (
-                    <Badge className="bg-green-500 hover:bg-green-600 text-white border-0">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Submitted
-                    </Badge>
-                  ) : (
-                    <Badge variant="destructive">
-                      <AlertCircle className="h-3 w-3 mr-1" />
-                      Due
-                    </Badge>
-                  )}
-                </div>
-
-                {bookingReport ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-3 p-3 bg-muted/30 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <div className="text-2xl">{bookingReport.mood === 'very_happy' ? '😄' : bookingReport.mood === 'happy' ? '😊' : bookingReport.mood === 'calm' ? '😌' : bookingReport.mood === 'anxious' ? '😰' : '😢'}</div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Mood</p>
-                          <p className="text-sm font-medium capitalize">{bookingReport.mood.replace('_', ' ')}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Utensils className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Food</p>
-                          <p className="text-sm font-medium capitalize">{bookingReport.food_consumption}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Dumbbell className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Exercise</p>
-                          <p className="text-sm font-medium">{bookingReport.exercise_duration} mins</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Camera className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Photos</p>
-                          <p className="text-sm font-medium">{bookingReport.photo_urls?.length || 0} uploaded</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {bookingReport.general_notes && (
-                      <div className="p-3 bg-background border rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Notes:</p>
-                        <p className="text-sm">{bookingReport.general_notes}</p>
-                      </div>
-                    )}
-
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => setSelectedReport(bookingReport)}
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        View Full Report
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    {isSitter ? (
-                      <Button
-                        className="w-full"
-                        onClick={() => {
-                          setSelectedBooking(booking);
-                          setShowReportForm(true);
-                        }}
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        Submit Report
-                      </Button>
-                    ) : (
-                      <Alert>
-                        <Clock className="h-4 w-4" />
-                        <AlertDescription className="text-sm">
-                          Waiting for sitter to submit daily report. Reports must be submitted by 9 PM.
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const renderReportDetails = () => {
-    if (!selectedReport) return null;
-
-    const booking = bookings.find(b => b.id === selectedReport.booking_id);
-    const otherPersonId = booking ? (isSitter ? booking.owner_id : booking.sitter_id) : null;
-    const otherPerson = otherPersonId ? profiles.get(otherPersonId) : null;
-
-    return (
-      <Dialog open={!!selectedReport} onOpenChange={() => setSelectedReport(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              Daily Report - {format(new Date(selectedReport.report_date), 'EEEE, MMMM d, yyyy')}
-            </DialogTitle>
-            <p className="text-sm text-muted-foreground">
-              Submitted at {format(new Date(selectedReport.submitted_at), 'h:mm a')}
-              {otherPerson && ` • ${isSitter ? 'Owner' : 'Sitter'}: ${otherPerson.first_name} ${otherPerson.last_name}`}
-            </p>
-          </DialogHeader>
-
-          <div className="space-y-6">
-            {selectedReport.photo_urls && selectedReport.photo_urls.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-3 flex items-center gap-2 text-lg">
-                  <Camera className="w-5 h-5" />
-                  Photos ({selectedReport.photo_urls.length})
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {selectedReport.photo_urls.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url}
-                        alt={`Report photo ${index + 1}`}
-                        className="rounded-lg object-cover aspect-square w-full cursor-pointer hover:opacity-90 transition-opacity border-2"
-                        onClick={() => window.open(url, '_blank')}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Activity & Mood</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <DetailItem label="Mood" value={selectedReport.mood.replace('_', ' ')} />
-                  <DetailItem label="Food Consumption" value={selectedReport.food_consumption} />
-                  <DetailItem label="Exercise Duration" value={`${selectedReport.exercise_duration} minutes`} />
-                  {selectedReport.exercise_notes && (
-                    <DetailItem label="Exercise Notes" value={selectedReport.exercise_notes} />
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Rest & Care</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <DetailItem label="Sleep Quality" value={selectedReport.sleep_quality || 'Not specified'} />
-                  {selectedReport.sleep_notes && (
-                    <DetailItem label="Sleep Notes" value={selectedReport.sleep_notes} />
-                  )}
-                  <DetailItem label="Time Alone" value={`${selectedReport.time_alone_hours || 0} hours`} />
-                  <DetailItem label="Medication Given" value={selectedReport.medication_given ? 'Yes' : 'No'} />
-                  {selectedReport.medication_notes && (
-                    <DetailItem label="Medication Notes" value={selectedReport.medication_notes} />
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {selectedReport.general_notes && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">General Notes</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm leading-relaxed">{selectedReport.general_notes}</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  };
-
   const stats = getStatistics();
+  const dayBookings = getDayBookings(selectedDate);
+  const dayReports = getDayReports(selectedDate);
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center py-24">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-4"></div>
-            <p className="text-lg text-muted-foreground">Loading daily reports...</p>
-          </div>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 p-4 md:p-8 flex items-center justify-center">
+        <div className="text-2xl font-semibold text-primary">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-          <FileText className="h-10 w-10 text-primary" />
-          Daily Reports Dashboard
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          {isSitter 
-            ? "Manage daily pet reports for bookings. Submit reports by 9 PM to ensure full payment."
-            : "View daily updates from your pet sitter with photos, feeding info, exercise details, and more."
-          }
-        </p>
-      </div>
-
-      <Alert className="border-l-4 border-l-primary">
-        <Info className="h-5 w-5 text-primary" />
-        <AlertDescription>
-          <div className="font-semibold mb-2 text-base">How Daily Reports Work</div>
-          <ul className="space-y-1.5 text-sm">
-            {isSitter ? (
-              <>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
-                  <span><strong>Only when requested:</strong> You only provide reports when specifically requested by the pet owner</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
-                  <span><strong>Short visits:</strong> 1-hour walks typically don't require reports unless requested</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertCircle className="h-4 w-4 mt-0.5 text-orange-600 flex-shrink-0" />
-                  <span><strong>When required:</strong> Submit daily by 9 PM to receive full payment (15% deduction if missed)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Camera className="h-4 w-4 mt-0.5 text-blue-600 flex-shrink-0" />
-                  <span><strong>Requirements:</strong> At least one photo + comprehensive details</span>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
-                  <span><strong>Your choice:</strong> Request daily reports when booking - they're optional</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
-                  <span><strong>Guaranteed:</strong> When requested, sitters must deliver or face payment reduction</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Camera className="h-4 w-4 mt-0.5 text-blue-600 flex-shrink-0" />
-                  <span><strong>What you get:</strong> Daily photos, feeding info, exercise details, mood, and sitter's notes</span>
-                </li>
-              </>
-            )}
-          </ul>
-        </AlertDescription>
-      </Alert>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Completion Rate
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-end gap-2">
-              <span className="text-4xl font-bold">{stats.completionRate}%</span>
-              {stats.completionRate >= 80 ? (
-                <Badge className="mb-1 bg-green-500 hover:bg-green-600">Excellent</Badge>
-              ) : (
-                <Badge variant="destructive" className="mb-1">Needs Work</Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Reports Submitted
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-1">
-              <span className="text-4xl font-bold">{stats.totalCompleted}</span>
-              <p className="text-sm text-muted-foreground">of {stats.totalRequired} required</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4" />
-              This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-1">
-              <span className="text-4xl font-bold">{stats.thisMonth}</span>
-              <p className="text-sm text-muted-foreground">reports submitted</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
-              Payment Impact
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-1">
-              <span className="text-4xl font-bold text-red-600">{stats.bookingsWithReducedPay}</span>
-              <p className="text-sm text-muted-foreground">with reduced pay</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {isSitter && (
-        <Alert className="border-l-4 border-l-orange-500 bg-orange-50/50">
-          <AlertCircle className="h-5 w-5 text-orange-600" />
-          <AlertDescription>
-            <div className="font-semibold text-orange-900 mb-2">⚠️ Payment Policy (When Reports Are Requested)</div>
-            <div className="text-sm text-orange-800 space-y-1.5">
-              <p className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span><strong>100% Payment:</strong> Submit reports for ALL required days</span>
-              </p>
-              <p className="flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span><strong>15% Deduction:</strong> Miss even one report</span>
-              </p>
-              <p className="flex items-start gap-2">
-                <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span><strong>Deadline:</strong> 9 PM daily</span>
-              </p>
-              <p className="flex items-start gap-2">
-                <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span><strong>Requirements:</strong> Minimum 1 photo + detailed notes</span>
-              </p>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <CalendarIcon className="h-6 w-6 text-primary" />
-              Daily Reports Calendar
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {renderCalendar()}
-          </CardContent>
-        </Card>
-
-        <div className="space-y-6">
-          {renderSelectedDayDetails()}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 pb-20">
+      {/* Header with gradient */}
+      <div className="bg-gradient-to-r from-[hsl(207,89%,51%)] to-[hsl(182,85%,39%)] text-white py-8 md:py-12 px-4 shadow-lg">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex items-center gap-3 mb-4">
+            <Camera className="h-10 w-10 md:h-12 md:w-12" />
+            <h1 className="text-3xl md:text-5xl font-bold">Daily Reports</h1>
+          </div>
+          <p className="text-lg md:text-2xl text-white/90 font-medium">
+            {isSitter ? 'Submit your daily pet care reports' : 'View your pet\'s daily care reports'}
+          </p>
         </div>
       </div>
 
-      {isSitter && showReportForm && selectedBooking && (
-        <Dialog open={showReportForm} onOpenChange={setShowReportForm}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Submit Daily Report</DialogTitle>
-            </DialogHeader>
-            <DailyReportForm
-              bookingId={selectedBooking.id}
-              sitterId={profile?.id || ''}
-              reportDate={format(selectedDate, 'yyyy-MM-dd')}
-              onSubmit={() => {
-                setShowReportForm(false);
-                setSelectedBooking(null);
-                fetchData();
-                toast({
-                  title: "Report submitted!",
-                  description: "The pet owner has been notified via email.",
-                });
-              }}
-              onCancel={() => {
-                setShowReportForm(false);
-                setSelectedBooking(null);
-              }}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
+      <div className="container mx-auto max-w-6xl px-4 py-6 md:py-10">
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <Card className="bg-white shadow-lg border-2 border-blue-200">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <TrendingUp className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+                <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">{stats.completionRate}%</div>
+                <div className="text-base md:text-lg font-semibold text-gray-700">Completion Rate</div>
+              </div>
+            </CardContent>
+          </Card>
 
-      {renderReportDetails()}
-    </div>
-  );
-}
+          <Card className="bg-white shadow-lg border-2 border-cyan-200">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <FileText className="h-8 w-8 mx-auto mb-3 text-cyan-600" />
+                <div className="text-4xl md:text-5xl font-bold text-cyan-600 mb-2">{stats.totalCompleted}</div>
+                <div className="text-base md:text-lg font-semibold text-gray-700">Reports Submitted</div>
+                <div className="text-sm text-gray-500">of {stats.totalRequired} required</div>
+              </div>
+            </CardContent>
+          </Card>
 
-function DetailItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <h4 className="text-sm font-medium text-muted-foreground mb-1">{label}</h4>
-      <p className="capitalize text-sm">{value}</p>
+          <Card className="bg-white shadow-lg border-2 border-green-200">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <CalendarIcon className="h-8 w-8 mx-auto mb-3 text-green-600" />
+                <div className="text-4xl md:text-5xl font-bold text-green-600 mb-2">{stats.thisMonth}</div>
+                <div className="text-base md:text-lg font-semibold text-gray-700">This Month</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {isSitter && (
+            <Card className="bg-white shadow-lg border-2 border-orange-200">
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <AlertCircle className="h-8 w-8 mx-auto mb-3 text-orange-600" />
+                  <div className="text-4xl md:text-5xl font-bold text-orange-600 mb-2">{stats.bookingsWithReducedPay}</div>
+                  <div className="text-base md:text-lg font-semibold text-gray-700">Reduced Pay</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Information Alert */}
+        {isSitter && (
+          <Alert className="mb-8 border-2 border-orange-300 bg-orange-50">
+            <Info className="h-6 w-6 text-orange-600" />
+            <AlertDescription className="text-lg text-gray-800 ml-2">
+              <strong>Important:</strong> When pet owners request daily reports, you must submit them or face a 15% payment reduction.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Calendar */}
+        <Card className="mb-8 shadow-2xl border-4 border-blue-200 bg-white">
+          <CardHeader className="bg-gradient-to-r from-blue-100 to-cyan-100 border-b-2 border-blue-200">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+              <CalendarIcon className="h-8 w-8 text-blue-600" />
+              Calendar
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 md:p-8">
+            {/* Month Navigation */}
+            <div className="flex items-center justify-between mb-6">
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                className="text-lg font-semibold border-2 border-blue-300 hover:bg-blue-50"
+              >
+                <ChevronLeft className="h-6 w-6 mr-2" />
+                Previous
+              </Button>
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-800">
+                {format(currentMonth, 'MMMM yyyy')}
+              </h3>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                className="text-lg font-semibold border-2 border-blue-300 hover:bg-blue-50"
+              >
+                Next
+                <ChevronRight className="h-6 w-6 ml-2" />
+              </Button>
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="grid grid-cols-7 gap-2 md:gap-3">
+              {/* Day Headers */}
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                <div key={day} className="text-center p-3 font-bold text-lg text-gray-700 bg-blue-50 rounded-lg">
+                  {day}
+                </div>
+              ))}
+
+              {/* Calendar Days */}
+              {eachDayOfInterval({
+                start: startOfWeek(startOfMonth(currentMonth)),
+                end: endOfWeek(endOfMonth(currentMonth))
+              }).map((day) => {
+                const status = getDayStatus(day);
+                const isToday = isSameDay(day, new Date());
+                const isSelected = isSameDay(day, selectedDate);
+                const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+                const bookingsOnDay = getDayBookings(day);
+                const reportsOnDay = getDayReports(day);
+
+                return (
+                  <button
+                    key={day.toISOString()}
+                    onClick={() => setSelectedDate(day)}
+                    disabled={!isCurrentMonth}
+                    className={`
+                      relative min-h-20 md:min-h-28 p-2 rounded-xl transition-all text-center flex flex-col items-center justify-center gap-2
+                      ${!isCurrentMonth ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : ''}
+                      ${isSelected ? 'ring-4 ring-blue-500 shadow-xl scale-105' : ''}
+                      ${status === 'completed' && isCurrentMonth ? 'bg-green-100 hover:bg-green-200' : ''}
+                      ${status === 'pending' && isCurrentMonth ? 'bg-red-100 hover:bg-red-200' : ''}
+                      ${status === 'none' && isCurrentMonth ? 'bg-white hover:bg-gray-50' : ''}
+                      ${isToday ? 'border-4 border-blue-600 font-bold' : 'border-2 border-gray-200'}
+                    `}
+                  >
+                    <span className={`text-xl md:text-2xl font-bold ${isToday ? 'text-blue-600' : ''}`}>
+                      {format(day, 'd')}
+                    </span>
+                    
+                    {bookingsOnDay.length > 0 && isCurrentMonth && (
+                      <>
+                        <div className={`
+                          w-6 h-6 md:w-8 md:h-8 rounded-full shadow-lg
+                          ${status === 'completed' ? 'bg-green-500' : 'bg-red-500'}
+                        `} />
+                        <span className="text-sm md:text-base font-bold text-gray-700">
+                          {reportsOnDay.length}/{bookingsOnDay.length}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap justify-center gap-6 mt-8 p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-green-500 shadow-md" />
+                <span className="text-lg font-semibold text-gray-700">Report Submitted</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-red-500 shadow-md" />
+                <span className="text-lg font-semibold text-gray-700">Report Due</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Selected Date Details */}
+        <Card className="shadow-2xl border-4 border-cyan-200 bg-white">
+          <CardHeader className="bg-gradient-to-r from-cyan-100 to-blue-100 border-b-2 border-cyan-200">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800">
+              {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 md:p-8">
+            {dayBookings.length === 0 ? (
+              <div className="text-center py-12">
+                <CalendarIcon className="h-20 w-20 mx-auto mb-4 text-gray-300" />
+                <p className="text-2xl font-semibold text-gray-500 mb-2">No bookings on this date</p>
+                <p className="text-lg text-gray-400">Select a date with bookings to view details</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {dayBookings.map(booking => {
+                  const bookingReport = dayReports.find(r => r.booking_id === booking.id);
+                  const otherPersonId = isSitter ? booking.owner_id : booking.sitter_id;
+                  const otherPerson = profiles.get(otherPersonId);
+                  const bookingPets = booking.pet_ids?.map(id => pets.get(id)).filter(Boolean) || [];
+
+                  return (
+                    <div key={booking.id} className="border-4 border-blue-200 rounded-2xl p-6 bg-gradient-to-r from-blue-50 to-cyan-50">
+                      {/* Booking Header */}
+                      <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-blue-200">
+                        <div className="flex items-center gap-4">
+                          <Avatar className="h-16 w-16 md:h-20 md:w-20 border-4 border-blue-300">
+                            <AvatarImage src={otherPerson?.avatar_url || ''} />
+                            <AvatarFallback className="bg-blue-200 text-blue-700 text-2xl font-bold">
+                              {otherPerson?.first_name?.[0] || '?'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-2xl font-bold text-gray-800">
+                              {otherPerson?.first_name || 'Loading'} {otherPerson?.last_name || '...'}
+                            </p>
+                            <p className="text-lg text-gray-600">
+                              {isSitter ? 'Pet Owner' : 'Pet Sitter'}
+                            </p>
+                            <p className="text-xl font-semibold mt-1 text-blue-600">
+                              🐾 {bookingPets.map(p => p?.name).join(', ') || 'Loading pets...'}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {bookingReport ? (
+                          <Badge className="bg-green-500 hover:bg-green-600 text-white border-0 px-6 py-3 text-lg">
+                            <CheckCircle className="h-5 w-5 mr-2" />
+                            Submitted
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive" className="px-6 py-3 text-lg">
+                            <AlertCircle className="h-5 w-5 mr-2" />
+                            Due
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Report Content or Submit Button */}
+                      {bookingReport ? (
+                        <div className="space-y-4">
+                          {/* View Full Report Button */}
+                          {viewingReport?.id === bookingReport.id ? (
+                            <div className="space-y-6 border-t-2 border-blue-200 pt-6">
+                              {/* Full Report View */}
+                              <Button
+                                variant="outline"
+                                size="lg"
+                                onClick={() => setViewingReport(null)}
+                                className="w-full text-lg font-semibold border-2"
+                              >
+                                Hide Full Report
+                              </Button>
+
+                              {/* Photos */}
+                              {bookingReport.photo_urls && bookingReport.photo_urls.length > 0 && (
+                                <div className="space-y-3">
+                                  <h4 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                    <Camera className="h-6 w-6 text-blue-600" />
+                                    Photos ({bookingReport.photo_urls.length})
+                                  </h4>
+                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    {bookingReport.photo_urls.map((url, idx) => (
+                                      <img
+                                        key={idx}
+                                        src={url}
+                                        alt={`Photo ${idx + 1}`}
+                                        className="w-full h-48 object-cover rounded-xl border-4 border-blue-200 shadow-lg"
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Detailed Stats Grid */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <div className="text-4xl">{bookingReport.mood === 'very_happy' ? '😄' : bookingReport.mood === 'happy' ? '😊' : bookingReport.mood === 'calm' ? '😌' : bookingReport.mood === 'anxious' ? '😰' : '😢'}</div>
+                                    <div>
+                                      <p className="text-sm text-gray-600 font-semibold">Mood</p>
+                                      <p className="text-xl font-bold capitalize text-gray-800">{bookingReport.mood?.replace('_', ' ')}</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <Utensils className="h-8 w-8 text-blue-600" />
+                                    <div>
+                                      <p className="text-sm text-gray-600 font-semibold">Food Consumption</p>
+                                      <p className="text-xl font-bold capitalize text-gray-800">{bookingReport.food_consumption}</p>
+                                    </div>
+                                  </div>
+                                  {bookingReport.food_notes && (
+                                    <p className="text-sm text-gray-600 mt-2">{bookingReport.food_notes}</p>
+                                  )}
+                                </div>
+
+                                <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <Dumbbell className="h-8 w-8 text-blue-600" />
+                                    <div>
+                                      <p className="text-sm text-gray-600 font-semibold">Exercise</p>
+                                      <p className="text-xl font-bold text-gray-800">{bookingReport.exercise_duration} minutes</p>
+                                    </div>
+                                  </div>
+                                  {bookingReport.exercise_notes && (
+                                    <p className="text-sm text-gray-600 mt-2">{bookingReport.exercise_notes}</p>
+                                  )}
+                                </div>
+
+                                {bookingReport.sleep_quality && (
+                                  <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <Moon className="h-8 w-8 text-blue-600" />
+                                      <div>
+                                        <p className="text-sm text-gray-600 font-semibold">Sleep Quality</p>
+                                        <p className="text-xl font-bold capitalize text-gray-800">{bookingReport.sleep_quality}</p>
+                                      </div>
+                                    </div>
+                                    {bookingReport.sleep_notes && (
+                                      <p className="text-sm text-gray-600 mt-2">{bookingReport.sleep_notes}</p>
+                                    )}
+                                  </div>
+                                )}
+
+                                {bookingReport.time_alone_hours !== undefined && bookingReport.time_alone_hours !== null && (
+                                  <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <Home className="h-8 w-8 text-blue-600" />
+                                      <div>
+                                        <p className="text-sm text-gray-600 font-semibold">Time Alone</p>
+                                        <p className="text-xl font-bold text-gray-800">{bookingReport.time_alone_hours} hours</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {bookingReport.medication_given && (
+                                  <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md col-span-2">
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <CheckCircle className="h-8 w-8 text-green-600" />
+                                      <div>
+                                        <p className="text-sm text-gray-600 font-semibold">Medication</p>
+                                        <p className="text-xl font-bold text-gray-800">Given</p>
+                                      </div>
+                                    </div>
+                                    {bookingReport.medication_notes && (
+                                      <p className="text-sm text-gray-600 mt-2">{bookingReport.medication_notes}</p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* General Notes */}
+                              {bookingReport.general_notes && (
+                                <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
+                                  <h4 className="text-xl font-bold text-gray-800 mb-3">General Notes</h4>
+                                  <p className="text-lg text-gray-700 leading-relaxed">{bookingReport.general_notes}</p>
+                                </div>
+                              )}
+
+                              {/* Submission Time */}
+                              <div className="text-sm text-gray-500 text-center">
+                                Submitted: {format(new Date(bookingReport.submitted_at), 'PPpp')}
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <Button
+                                size="lg"
+                                onClick={() => setViewingReport(bookingReport)}
+                                className="w-full text-xl font-semibold py-6 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                              >
+                                <FileText className="h-6 w-6 mr-3" />
+                                View Full Report
+                              </Button>
+                              
+                              {/* Quick Summary */}
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                  <div className="text-3xl mb-1">{bookingReport.mood === 'very_happy' ? '😄' : bookingReport.mood === 'happy' ? '😊' : '😌'}</div>
+                                  <p className="text-sm font-semibold text-gray-600">Mood</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                  <Utensils className="h-8 w-8 mx-auto mb-1 text-blue-600" />
+                                  <p className="text-sm font-semibold text-gray-600 capitalize">{bookingReport.food_consumption}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                  <Dumbbell className="h-8 w-8 mx-auto mb-1 text-blue-600" />
+                                  <p className="text-sm font-semibold text-gray-600">{bookingReport.exercise_duration}m</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                  <Camera className="h-8 w-8 mx-auto mb-1 text-blue-600" />
+                                  <p className="text-sm font-semibold text-gray-600">{bookingReport.photo_urls?.length || 0} photos</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : isSitter ? (
+                        <div className="space-y-4">
+                          {showReportForm && selectedBooking?.id === booking.id ? (
+                            <div className="border-t-4 border-blue-200 pt-6">
+                              <Button
+                                variant="outline"
+                                size="lg"
+                                onClick={() => {
+                                  setShowReportForm(false);
+                                  setSelectedBooking(null);
+                                }}
+                                className="mb-6 text-lg font-semibold border-2"
+                              >
+                                Cancel
+                              </Button>
+                              <DailyReportForm
+                                bookingId={booking.id}
+                                sitterId={booking.sitter_id}
+                                reportDate={format(selectedDate, 'yyyy-MM-dd')}
+                                onSubmit={() => {
+                                  setShowReportForm(false);
+                                  setSelectedBooking(null);
+                                  fetchData();
+                                  toast({
+                                    title: "Report Submitted!",
+                                    description: "Your daily report has been sent to the pet owner.",
+                                  });
+                                }}
+                                onCancel={() => {
+                                  setShowReportForm(false);
+                                  setSelectedBooking(null);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <Button
+                              size="lg"
+                              onClick={() => {
+                                setShowReportForm(true);
+                                setSelectedBooking(booking);
+                              }}
+                              className="w-full text-xl font-semibold py-8 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                            >
+                              <Camera className="h-7 w-7 mr-3" />
+                              Submit Report for Today
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <AlertCircle className="h-16 w-16 mx-auto mb-4 text-orange-500" />
+                          <p className="text-2xl font-semibold text-gray-700">Report not yet submitted</p>
+                          <p className="text-lg text-gray-500 mt-2">The sitter hasn't submitted today's report yet</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
