@@ -284,12 +284,23 @@ export default function DailyReports() {
           )}
         </div>
 
-        {/* Information Alert */}
+        {/* Information Alerts */}
         {isSitter && (
           <Alert className="mb-8 border-2 border-orange-300 bg-orange-50">
             <Info className="h-6 w-6 text-orange-600" />
             <AlertDescription className="text-lg text-gray-800 ml-2">
               <strong>Important:</strong> When pet owners request daily reports, you must submit them or face a 15% payment reduction.
+              <br />
+              <strong>Reporting Schedule:</strong> Submit one report per day during the booking period, anytime within the 24-hour day. The first report should be submitted on the booking start date.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {!isSitter && (
+          <Alert className="mb-8 border-2 border-blue-300 bg-blue-50">
+            <Info className="h-6 w-6 text-blue-600" />
+            <AlertDescription className="text-lg text-gray-800 ml-2">
+              <strong>How Daily Reports Work:</strong> Your sitter will submit one report per day during the booking period. Click anywhere on the report card to view full details including photos and notes.
             </AlertDescription>
           </Alert>
         )}
@@ -384,15 +395,19 @@ export default function DailyReports() {
               })}
             </div>
 
-            {/* Legend */}
-            <div className="flex flex-wrap justify-center gap-6 mt-8 p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-500 shadow-md" />
-                <span className="text-lg font-semibold text-gray-700">Report Submitted</span>
+            {/* Legend - Enhanced Visibility */}
+            <div className="flex flex-wrap justify-center gap-6 mt-8 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200">
+              <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border-2 border-green-300 shadow-md">
+                <div className="w-10 h-10 rounded-full bg-green-500 shadow-lg flex items-center justify-center">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                </div>
+                <span className="text-lg font-bold text-gray-800">Report Submitted</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-red-500 shadow-md" />
-                <span className="text-lg font-semibold text-gray-700">Report Due</span>
+              <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border-2 border-red-300 shadow-md">
+                <div className="w-10 h-10 rounded-full bg-red-500 shadow-lg flex items-center justify-center">
+                  <AlertCircle className="h-6 w-6 text-white" />
+                </div>
+                <span className="text-lg font-bold text-gray-800">Report Due</span>
               </div>
             </div>
           </CardContent>
@@ -588,31 +603,33 @@ export default function DailyReports() {
                               </div>
                             </div>
                           ) : (
-                            <div>
+                            <div 
+                              className="cursor-pointer hover:opacity-90 transition-opacity"
+                              onClick={() => setViewingReport(bookingReport)}
+                            >
                               <Button
                                 size="lg"
-                                onClick={() => setViewingReport(bookingReport)}
-                                className="w-full text-xl font-semibold py-6 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                                className="w-full text-xl font-semibold py-6 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 pointer-events-none"
                               >
                                 <FileText className="h-6 w-6 mr-3" />
                                 View Full Report
                               </Button>
                               
-                              {/* Quick Summary */}
+                              {/* Quick Summary - Now Clickable */}
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center hover:border-blue-400 transition-colors">
                                   <div className="text-3xl mb-1">{bookingReport.mood === 'very_happy' ? '😄' : bookingReport.mood === 'happy' ? '😊' : '😌'}</div>
                                   <p className="text-sm font-semibold text-gray-600">Mood</p>
                                 </div>
-                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center hover:border-blue-400 transition-colors">
                                   <Utensils className="h-8 w-8 mx-auto mb-1 text-blue-600" />
                                   <p className="text-sm font-semibold text-gray-600 capitalize">{bookingReport.food_consumption}</p>
                                 </div>
-                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center hover:border-blue-400 transition-colors">
                                   <Dumbbell className="h-8 w-8 mx-auto mb-1 text-blue-600" />
                                   <p className="text-sm font-semibold text-gray-600">{bookingReport.exercise_duration}m</p>
                                 </div>
-                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center">
+                                <div className="bg-white p-4 rounded-lg border-2 border-blue-200 text-center hover:border-blue-400 transition-colors">
                                   <Camera className="h-8 w-8 mx-auto mb-1 text-blue-600" />
                                   <p className="text-sm font-semibold text-gray-600">{bookingReport.photo_urls?.length || 0} photos</p>
                                 </div>

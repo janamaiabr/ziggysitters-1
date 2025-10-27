@@ -257,6 +257,8 @@ export default function ClientDailyReports() {
             <li>✅ <strong>Your choice:</strong> Reports are optional - choose them only if you want daily updates</li>
             <li>✅ <strong>Guaranteed delivery:</strong> When you request reports, sitters must deliver them or face payment reduction</li>
             <li>✅ <strong>What you'll see:</strong> Photos, feeding info, exercise details, mood, and sitter's notes</li>
+            <li>✅ <strong>Reporting schedule:</strong> Sitters submit one report per day during the booking period (first report on start date)</li>
+            <li>✅ <strong>Easy viewing:</strong> Click anywhere on a report card to view the full details</li>
           </ul>
         </CardContent>
       </Card>
