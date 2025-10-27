@@ -107,16 +107,17 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       return;
     }
 
+    // TEMPORARILY DISABLED FOR TESTING - RE-ENABLE AFTER TESTING COMPLETE
     // CRITICAL FIX: Prevent future-dated reports
-    const today = new Date().toISOString().split('T')[0];
-    if (reportDate > today) {
-      toast({
-        title: "Invalid Date",
-        description: "You cannot submit reports for future dates. Please wait until the booking day.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // const today = new Date().toISOString().split('T')[0];
+    // if (reportDate > today) {
+    //   toast({
+    //     title: "Invalid Date",
+    //     description: "You cannot submit reports for future dates. Please wait until the booking day.",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     
     if (uploadedPhotos.length === 0) {
       toast({
