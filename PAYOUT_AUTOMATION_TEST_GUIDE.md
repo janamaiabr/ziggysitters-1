@@ -59,6 +59,12 @@ Navigate to: **`/test-payout-automation`**
 - ✅ Calculates expected outcomes
 - ✅ Identifies potential issues
 
+### 10. **Critical Verification Tests** (Added for Julia/Jana Issue)
+- ✅ **Email Verification**: Checks all daily reports have `email_sent_at` populated
+- ✅ **Stripe Transfer Verification**: Ensures all payouts have `stripe_transfer_id`
+- ✅ **Penalty Application**: Verifies bookings with incomplete reports have `penalty_applied=true`
+- ✅ **Transaction Metadata**: Validates GST amount, platform earnings, and booking reference are recorded
+
 ## Test Results Interpretation
 
 ### ✅ Passed Tests (Green)
@@ -164,11 +170,14 @@ const { data, error } = await supabase.functions.invoke('auto-process-payouts', 
 
 Before going live, ensure:
 
-- [ ] All 12 tests pass
+- [ ] All 16 tests pass
 - [ ] Cron jobs are scheduled correctly
 - [ ] Sitters have Stripe accounts configured
 - [ ] Daily reports are being tracked accurately
-- [ ] Transaction recording is working
+- [ ] **Daily report emails are being sent** (email_sent_at populated)
+- [ ] **Transaction recording is working with Stripe transfer IDs**
+- [ ] **Penalties are applied to bookings with incomplete reports**
+- [ ] **Transaction metadata includes GST and platform earnings**
 - [ ] Penalty emails are being sent
 - [ ] Refunds are processing correctly
 - [ ] Platform fees are calculated correctly

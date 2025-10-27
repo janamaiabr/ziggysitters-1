@@ -266,6 +266,98 @@ const PayoutAutomationTests = () => {
       }
     });
 
+    // Test 13: Verify daily report emails were sent
+    await runTest("Check daily reports have email_sent_at populated", async () => {
+      const { data: reportsWithoutEmails, error } = await supabase
+        .from('daily_reports')
+        .select('id, report_date, email_sent_at, booking:bookings(booking_reference)')
+        .is('email_sent_at', null)
+        .limit(10);
+
+      if (error) throw error;
+
+      if (reportsWithoutEmails && reportsWithoutEmails.length > 0) {
+        console.log(`⚠️ Found ${reportsWithoutEmails.length} reports without emails sent:`, reportsWithoutEmails);
+        throw new Error(`${reportsWithoutEmails.length} daily reports have not been emailed (email_sent_at is NULL)`);
+      }
+
+      console.log("✓ All daily reports have been emailed to owners");
+    });
+
+    // Test 14: Verify transactions have Stripe transfer IDs
+    await runTest("Check completed payouts have stripe_transfer_id", async () => {
+      const { data: transactionsWithoutTransfers, error } = await supabase
+        .from('transactions')
+        .select('id, booking_id, transaction_type, stripe_transfer_id, amount')
+        .eq('transaction_type', 'payout')
+        .is('stripe_transfer_id', null)
+        .limit(10);
+
+      if (error) throw error;
+
+      if (transactionsWithoutTransfers && transactionsWithoutTransfers.length > 0) {
+        console.log(`⚠️ Found ${transactionsWithoutTransfers.length} payouts without Stripe transfers:`, transactionsWithoutTransfers);
+        throw new Error(`${transactionsWithoutTransfers.length} payout transactions missing stripe_transfer_id`);
+      }
+
+      console.log("✓ All payout transactions have Stripe transfer IDs");
+    });
+
+    // Test 15: Verify penalties applied to bookings with incomplete reports
+    await runTest("Check penalties applied for incomplete reports", async () => {
+      const { data: bookingsNeedingPenalty, error } = await supabase
+        .from('bookings')
+        .select('id, booking_reference, daily_reports_required, daily_reports_completed, penalty_applied, penalty_amount')
+        .eq('requires_daily_reports', true)
+        .eq('status', 'completed')
+        .eq('payment_status', 'paid')
+        .gt('daily_reports_required', 0);
+
+      if (error) throw error;
+
+      const missingPenalties = bookingsNeedingPenalty?.filter(b => 
+        b.daily_reports_completed < b.daily_reports_required && !b.penalty_applied
+      ) || [];
+
+      if (missingPenalties.length > 0) {
+        console.log(`⚠️ Found ${missingPenalties.length} bookings with incomplete reports but no penalty:`, missingPenalties);
+        throw new Error(`${missingPenalties.length} bookings should have penalties but penalty_applied=false`);
+      }
+
+      console.log("✓ All bookings with incomplete reports have penalties correctly applied");
+    });
+
+    // Test 16: Verify transaction metadata includes all required fields
+    await runTest("Check transaction metadata completeness", async () => {
+      const { data: transactions, error } = await supabase
+        .from('transactions')
+        .select('id, transaction_type, metadata, stripe_transfer_id, gst_amount, platform_earnings')
+        .eq('transaction_type', 'payout')
+        .limit(5);
+
+      if (error) throw error;
+
+      if (!transactions || transactions.length === 0) {
+        console.log("⚠️ No payout transactions found to verify metadata");
+        return;
+      }
+
+      const invalidTransactions = transactions.filter(tx => {
+        const metadata = tx.metadata as any;
+        return !tx.gst_amount || 
+          !tx.platform_earnings ||
+          !metadata ||
+          !metadata.booking_reference;
+      });
+
+      if (invalidTransactions.length > 0) {
+        console.log(`⚠️ Found ${invalidTransactions.length} transactions with incomplete metadata:`, invalidTransactions);
+        throw new Error(`${invalidTransactions.length} transactions missing required metadata fields`);
+      }
+
+      console.log("✓ All transactions have complete metadata (GST, platform earnings, booking reference)");
+    });
+
     setIsRunning(false);
     console.log("🧪 All tests completed!");
   };
@@ -302,7 +394,8 @@ const PayoutAutomationTests = () => {
         <CardHeader>
           <CardTitle>Payout Automation Test Suite</CardTitle>
           <CardDescription>
-            Comprehensive tests for the automated booking completion and payout processing system
+            Comprehensive tests for the automated booking completion and payout processing system.
+            Now includes critical verification tests for email sending, Stripe transfers, penalty application, and transaction metadata.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -393,6 +486,13 @@ const PayoutAutomationTests = () => {
               <div>✓ Payout flow simulation</div>
               <div>✓ Sitter Stripe account verification</div>
               <div>✓ Scheduled job configuration</div>
+              <div className="pt-2 border-t border-blue-300">
+                <strong>Critical Verification Tests (Added):</strong>
+              </div>
+              <div>✓ Daily report email sending verification</div>
+              <div>✓ Stripe transfer ID verification in transactions</div>
+              <div>✓ Penalty application to bookings with incomplete reports</div>
+              <div>✓ Transaction metadata completeness (GST, platform earnings)</div>
             </CardContent>
           </Card>
         </CardContent>
