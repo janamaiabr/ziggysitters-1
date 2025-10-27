@@ -53,6 +53,7 @@ import StripeOnboardingTests from "./pages/StripeOnboardingTests";
 import ManualServiceCreator from "./pages/ManualServiceCreator";
 import TermsAcceptanceTestPage from "./pages/TermsAcceptanceTest";
 import SitterServiceTests from "./pages/SitterServiceTests";
+import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 
 const queryClient = new QueryClient();
 
@@ -220,6 +221,7 @@ function AppContent() {
             <Route path="/stripe-onboarding-tests" element={<StripeOnboardingTests />} />
             <Route path="/sitter-service-tests" element={<SitterServiceTests />} />
             <Route path="/manual-service-creator" element={<ManualServiceCreator />} />
+            <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
