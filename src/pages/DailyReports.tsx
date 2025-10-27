@@ -301,10 +301,10 @@ export default function DailyReports() {
                     {dayBookings.length > 0 && (
                       <div className="flex-1 flex flex-col items-center justify-center gap-1">
                         <div className={`
-                          w-3 h-3 rounded-full
+                          w-5 h-5 rounded-full shadow-md
                           ${status === 'completed' ? 'bg-green-500' : 'bg-red-500'}
                         `} />
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs font-medium text-foreground">
                           {dayReports.length}/{dayBookings.length}
                         </span>
                       </div>
@@ -318,15 +318,15 @@ export default function DailyReports() {
 
         <div className="flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <div className="w-5 h-5 rounded-full bg-green-500 shadow-md" />
             <span className="text-muted-foreground">Report submitted</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <div className="w-5 h-5 rounded-full bg-red-500 shadow-md" />
             <span className="text-muted-foreground">Report due</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gray-300" />
+            <div className="w-5 h-5 rounded-full bg-gray-300 shadow-md" />
             <span className="text-muted-foreground">No bookings</span>
           </div>
         </div>
