@@ -21,9 +21,13 @@ const PayoutAutomationTests = () => {
     setResults(prev => prev.map((r, i) => i === index ? { ...r, ...updates } : r));
   };
 
-  const addResult = (result: TestResult) => {
-    setResults(prev => [...prev, result]);
-    return results.length;
+  const addResult = (result: TestResult): number => {
+    let index = 0;
+    setResults(prev => {
+      index = prev.length;
+      return [...prev, result];
+    });
+    return index;
   };
 
   const runTest = async (name: string, testFn: () => Promise<void>): Promise<boolean> => {
