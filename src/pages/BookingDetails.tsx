@@ -13,9 +13,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   ArrowLeft, Calendar, Clock, DollarSign, MapPin, 
   User, Mail, Phone, FileText, AlertCircle, CheckCircle,
-  Home, PawPrint
+  Home, PawPrint, Plus
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, addDays, startOfDay } from 'date-fns';
+import DailyReportForm from '@/components/daily-reports/DailyReportForm';
 
 interface Pet {
   id: string;
@@ -98,6 +99,8 @@ export default function BookingDetails() {
   const { profile } = useProfile();
   const { toast } = useToast();
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [showReportForm, setShowReportForm] = useState(false);
+  const [selectedReportDate, setSelectedReportDate] = useState<Date | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -736,7 +739,7 @@ export default function BookingDetails() {
           </Card>
 
           {/* Daily Reports */}
-          {booking.requires_daily_reports && (
+          {booking.requires_daily_reports && isSitter && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -744,7 +747,7 @@ export default function BookingDetails() {
                   Daily Reports
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Reports Completed</p>
@@ -758,6 +761,65 @@ export default function BookingDetails() {
                     <AlertCircle className="h-8 w-8 text-orange-500" />
                   )}
                 </div>
+
+                {/* TEST MODE: Allow creating reports for any date */}
+                {/* TODO: WHEN GOING LIVE - Restrict to only allow creating ONE report per day for TODAY'S date only */}
+                {(booking.status === 'confirmed' || booking.status === 'in_progress') && !showReportForm && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Create a report for any booking day (TEST MODE)
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.from({ length: booking.daily_reports_required }).map((_, index) => {
+                        const reportDate = addDays(startOfDay(new Date(booking.start_date)), index);
+                        return (
+                          <Button
+                            key={index}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedReportDate(reportDate);
+                              setShowReportForm(true);
+                            }}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Day {index + 1} ({format(reportDate, 'MMM d')})
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Report Form */}
+                {showReportForm && selectedReportDate && (
+                  <div className="border-t pt-4">
+                    <div className="mb-4">
+                      <h4 className="font-semibold">
+                        Report for {format(selectedReportDate, 'MMMM d, yyyy')}
+                      </h4>
+                    </div>
+                    <DailyReportForm
+                      bookingId={booking.id}
+                      sitterId={booking.sitter.id}
+                      reportDate={format(selectedReportDate, 'yyyy-MM-dd')}
+                      onSubmit={() => {
+                        setShowReportForm(false);
+                        setSelectedReportDate(null);
+                        // Refresh booking data
+                        fetchBookingDetails();
+                        toast({
+                          title: "Report Submitted",
+                          description: "Daily report has been created successfully.",
+                        });
+                      }}
+                      onCancel={() => {
+                        setShowReportForm(false);
+                        setSelectedReportDate(null);
+                      }}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
