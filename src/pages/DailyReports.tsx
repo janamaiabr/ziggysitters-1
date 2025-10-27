@@ -225,13 +225,13 @@ export default function DailyReports() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 pb-20">
       {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-[hsl(207,89%,51%)] to-[hsl(182,85%,39%)] text-white py-8 md:py-12 px-4 shadow-lg">
+      <div className="bg-gradient-to-r from-[hsl(207,89%,51%)] to-[hsl(182,85%,39%)] text-white py-6 md:py-8 px-4 shadow-lg">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex items-center gap-3 mb-4">
-            <Camera className="h-10 w-10 md:h-12 md:w-12" />
-            <h1 className="text-3xl md:text-5xl font-bold">Daily Reports</h1>
+          <div className="flex items-center gap-3 mb-2">
+            <Camera className="h-7 w-7 md:h-8 md:w-8" />
+            <h1 className="text-2xl md:text-3xl font-bold">Daily Reports</h1>
           </div>
-          <p className="text-lg md:text-2xl text-white/90 font-medium">
+          <p className="text-base md:text-lg text-white/90 font-medium">
             {isSitter ? 'Submit your daily pet care reports' : 'View your pet\'s daily care reports'}
           </p>
         </div>
@@ -240,44 +240,44 @@ export default function DailyReports() {
       <div className="container mx-auto max-w-6xl px-4 py-6 md:py-10">
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white shadow-lg border-2 border-blue-200">
-            <CardContent className="p-6">
+          <Card className="bg-white shadow-md border border-blue-200">
+            <CardContent className="p-4">
               <div className="text-center">
-                <TrendingUp className="h-8 w-8 mx-auto mb-3 text-blue-600" />
-                <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">{stats.completionRate}%</div>
-                <div className="text-base md:text-lg font-semibold text-gray-700">Completion Rate</div>
+                <TrendingUp className="h-6 w-6 mx-auto mb-2 text-blue-600" />
+                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1">{stats.completionRate}%</div>
+                <div className="text-sm md:text-base font-semibold text-gray-700">Completion Rate</div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-lg border-2 border-cyan-200">
-            <CardContent className="p-6">
+          <Card className="bg-white shadow-md border border-cyan-200">
+            <CardContent className="p-4">
               <div className="text-center">
-                <FileText className="h-8 w-8 mx-auto mb-3 text-cyan-600" />
-                <div className="text-4xl md:text-5xl font-bold text-cyan-600 mb-2">{stats.totalCompleted}</div>
-                <div className="text-base md:text-lg font-semibold text-gray-700">Reports Submitted</div>
-                <div className="text-sm text-gray-500">of {stats.totalRequired} required</div>
+                <FileText className="h-6 w-6 mx-auto mb-2 text-cyan-600" />
+                <div className="text-2xl md:text-3xl font-bold text-cyan-600 mb-1">{stats.totalCompleted}</div>
+                <div className="text-sm md:text-base font-semibold text-gray-700">Reports Submitted</div>
+                <div className="text-xs text-gray-500">of {stats.totalRequired} required</div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-lg border-2 border-green-200">
-            <CardContent className="p-6">
+          <Card className="bg-white shadow-md border border-green-200">
+            <CardContent className="p-4">
               <div className="text-center">
-                <CalendarIcon className="h-8 w-8 mx-auto mb-3 text-green-600" />
-                <div className="text-4xl md:text-5xl font-bold text-green-600 mb-2">{stats.thisMonth}</div>
-                <div className="text-base md:text-lg font-semibold text-gray-700">This Month</div>
+                <CalendarIcon className="h-6 w-6 mx-auto mb-2 text-green-600" />
+                <div className="text-2xl md:text-3xl font-bold text-green-600 mb-1">{stats.thisMonth}</div>
+                <div className="text-sm md:text-base font-semibold text-gray-700">This Month</div>
               </div>
             </CardContent>
           </Card>
 
           {isSitter && (
-            <Card className="bg-white shadow-lg border-2 border-orange-200">
-              <CardContent className="p-6">
+            <Card className="bg-white shadow-md border border-orange-200">
+              <CardContent className="p-4">
                 <div className="text-center">
-                  <AlertCircle className="h-8 w-8 mx-auto mb-3 text-orange-600" />
-                  <div className="text-4xl md:text-5xl font-bold text-orange-600 mb-2">{stats.bookingsWithReducedPay}</div>
-                  <div className="text-base md:text-lg font-semibold text-gray-700">Reduced Pay</div>
+                  <AlertCircle className="h-6 w-6 mx-auto mb-2 text-orange-600" />
+                  <div className="text-2xl md:text-3xl font-bold text-orange-600 mb-1">{stats.bookingsWithReducedPay}</div>
+                  <div className="text-sm md:text-base font-semibold text-gray-700">Reduced Pay</div>
                 </div>
               </CardContent>
             </Card>
@@ -286,9 +286,9 @@ export default function DailyReports() {
 
         {/* Information Alerts */}
         {isSitter && (
-          <Alert className="mb-8 border-2 border-orange-300 bg-orange-50">
-            <Info className="h-6 w-6 text-orange-600" />
-            <AlertDescription className="text-lg text-gray-800 ml-2">
+          <Alert className="mb-6 border border-orange-300 bg-orange-50">
+            <Info className="h-5 w-5 text-orange-600" />
+            <AlertDescription className="text-sm text-gray-800 ml-2">
               <strong>Important:</strong> When pet owners request daily reports, you must submit them or face a 15% payment reduction.
               <br />
               <strong>Reporting Schedule:</strong> Submit one report per day during the booking period, anytime within the 24-hour day. The first report should be submitted on the booking start date.
@@ -297,53 +297,53 @@ export default function DailyReports() {
         )}
         
         {!isSitter && (
-          <Alert className="mb-8 border-2 border-blue-300 bg-blue-50">
-            <Info className="h-6 w-6 text-blue-600" />
-            <AlertDescription className="text-lg text-gray-800 ml-2">
+          <Alert className="mb-6 border border-blue-300 bg-blue-50">
+            <Info className="h-5 w-5 text-blue-600" />
+            <AlertDescription className="text-sm text-gray-800 ml-2">
               <strong>How Daily Reports Work:</strong> Your sitter will submit one report per day during the booking period. Click anywhere on the report card to view full details including photos and notes.
             </AlertDescription>
           </Alert>
         )}
 
         {/* Calendar */}
-        <Card className="mb-8 shadow-2xl border-4 border-blue-200 bg-white">
-          <CardHeader className="bg-gradient-to-r from-blue-100 to-cyan-100 border-b-2 border-blue-200">
-            <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-              <CalendarIcon className="h-8 w-8 text-blue-600" />
+        <Card className="mb-8 shadow-lg border-2 border-blue-200 bg-white">
+          <CardHeader className="bg-gradient-to-r from-blue-100 to-cyan-100 border-b border-blue-200">
+            <CardTitle className="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <CalendarIcon className="h-6 w-6 text-blue-600" />
               Calendar
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-4 md:p-8">
+          <CardContent className="p-4 md:p-6">
             {/* Month Navigation */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <Button
-                size="lg"
+                size="default"
                 variant="outline"
                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                className="text-lg font-semibold border-2 border-blue-300 hover:bg-blue-50"
+                className="font-semibold border border-blue-300 hover:bg-blue-50"
               >
-                <ChevronLeft className="h-6 w-6 mr-2" />
+                <ChevronLeft className="h-5 w-5 mr-1" />
                 Previous
               </Button>
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-800">
+              <h3 className="text-xl md:text-2xl font-bold text-gray-800">
                 {format(currentMonth, 'MMMM yyyy')}
               </h3>
               <Button
-                size="lg"
+                size="default"
                 variant="outline"
                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                className="text-lg font-semibold border-2 border-blue-300 hover:bg-blue-50"
+                className="font-semibold border border-blue-300 hover:bg-blue-50"
               >
                 Next
-                <ChevronRight className="h-6 w-6 ml-2" />
+                <ChevronRight className="h-5 w-5 ml-1" />
               </Button>
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-2 md:gap-3">
+            <div className="grid grid-cols-7 gap-2">
               {/* Day Headers */}
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center p-3 font-bold text-lg text-gray-700 bg-blue-50 rounded-lg">
+                <div key={day} className="text-center p-2 font-bold text-sm text-gray-700 bg-blue-50 rounded-lg">
                   {day}
                 </div>
               ))}
@@ -366,26 +366,26 @@ export default function DailyReports() {
                     onClick={() => setSelectedDate(day)}
                     disabled={!isCurrentMonth}
                     className={`
-                      relative min-h-20 md:min-h-28 p-2 rounded-xl transition-all text-center flex flex-col items-center justify-center gap-2
+                      relative min-h-16 md:min-h-20 p-2 rounded-lg transition-all text-center flex flex-col items-center justify-center gap-1
                       ${!isCurrentMonth ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : ''}
-                      ${isSelected ? 'ring-4 ring-blue-500 shadow-xl scale-105' : ''}
+                      ${isSelected ? 'ring-2 ring-blue-500 shadow-lg scale-105' : ''}
                       ${status === 'completed' && isCurrentMonth ? 'bg-green-100 hover:bg-green-200' : ''}
                       ${status === 'pending' && isCurrentMonth ? 'bg-red-100 hover:bg-red-200' : ''}
                       ${status === 'none' && isCurrentMonth ? 'bg-white hover:bg-gray-50' : ''}
-                      ${isToday ? 'border-4 border-blue-600 font-bold' : 'border-2 border-gray-200'}
+                      ${isToday ? 'border-2 border-blue-600 font-bold' : 'border border-gray-200'}
                     `}
                   >
-                    <span className={`text-xl md:text-2xl font-bold ${isToday ? 'text-blue-600' : ''}`}>
+                    <span className={`text-lg md:text-xl font-bold ${isToday ? 'text-blue-600' : ''}`}>
                       {format(day, 'd')}
                     </span>
                     
                     {bookingsOnDay.length > 0 && isCurrentMonth && (
                       <>
                         <div className={`
-                          w-6 h-6 md:w-8 md:h-8 rounded-full shadow-lg
+                          w-5 h-5 md:w-6 md:h-6 rounded-full shadow-md
                           ${status === 'completed' ? 'bg-green-500' : 'bg-red-500'}
                         `} />
-                        <span className="text-sm md:text-base font-bold text-gray-700">
+                        <span className="text-xs md:text-sm font-bold text-gray-700">
                           {reportsOnDay.length}/{bookingsOnDay.length}
                         </span>
                       </>
@@ -395,32 +395,32 @@ export default function DailyReports() {
               })}
             </div>
 
-            {/* Legend - Enhanced Visibility */}
-            <div className="flex flex-wrap justify-center gap-6 mt-8 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200">
-              <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border-2 border-green-300 shadow-md">
-                <div className="w-10 h-10 rounded-full bg-green-500 shadow-lg flex items-center justify-center">
-                  <CheckCircle className="h-6 w-6 text-white" />
+            {/* Legend */}
+            <div className="flex flex-wrap justify-center gap-4 mt-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-green-300 shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                  <CheckCircle className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-lg font-bold text-gray-800">Report Submitted</span>
+                <span className="text-sm font-bold text-gray-800">Report Submitted</span>
               </div>
-              <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border-2 border-red-300 shadow-md">
-                <div className="w-10 h-10 rounded-full bg-red-500 shadow-lg flex items-center justify-center">
-                  <AlertCircle className="h-6 w-6 text-white" />
+              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-red-300 shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+                  <AlertCircle className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-lg font-bold text-gray-800">Report Due</span>
+                <span className="text-sm font-bold text-gray-800">Report Due</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Selected Date Details */}
-        <Card className="shadow-2xl border-4 border-cyan-200 bg-white">
-          <CardHeader className="bg-gradient-to-r from-cyan-100 to-blue-100 border-b-2 border-cyan-200">
-            <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800">
+        <Card className="shadow-lg border-2 border-cyan-200 bg-white">
+          <CardHeader className="bg-gradient-to-r from-cyan-100 to-blue-100 border-b border-cyan-200">
+            <CardTitle className="text-lg md:text-xl font-bold text-gray-800">
               {format(selectedDate, 'EEEE, MMMM d, yyyy')}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-4 md:p-8">
+          <CardContent className="p-4 md:p-6">
             {dayBookings.length === 0 ? (
               <div className="text-center py-12">
                 <CalendarIcon className="h-20 w-20 mx-auto mb-4 text-gray-300" />
