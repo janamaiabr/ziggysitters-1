@@ -101,6 +101,7 @@ export default function BookingDetails() {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedReportDate, setSelectedReportDate] = useState<Date | null>(null);
+  const [dailyReports, setDailyReports] = useState<any[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -144,6 +145,19 @@ export default function BookingDetails() {
 
         if (petsError) throw petsError;
         setPets(petsData || []);
+      }
+
+      // Fetch daily reports for this booking
+      if (isSitter && bookingData?.requires_daily_reports) {
+        const { data: reportsData, error: reportsError } = await supabase
+          .from('daily_reports')
+          .select('*')
+          .eq('booking_id', id)
+          .order('report_date', { ascending: true });
+
+        if (!reportsError && reportsData) {
+          setDailyReports(reportsData);
+        }
       }
     } catch (error) {
       console.error('Error fetching booking:', error);
@@ -818,6 +832,47 @@ export default function BookingDetails() {
                         setSelectedReportDate(null);
                       }}
                     />
+                  </div>
+                )}
+
+                {/* Submitted Reports */}
+                {dailyReports.length > 0 && (
+                  <div className="border-t pt-4 space-y-3">
+                    <h4 className="font-semibold">Submitted Reports</h4>
+                    {dailyReports.map((report) => (
+                      <div key={report.id} className="border rounded-lg p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium">
+                            {format(new Date(report.report_date), 'MMMM d, yyyy')}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Submitted {format(new Date(report.submitted_at), 'MMM d, h:mm a')}
+                          </p>
+                        </div>
+                        {report.mood && (
+                          <p className="text-sm"><span className="font-medium">Mood:</span> {report.mood}</p>
+                        )}
+                        {report.food_consumption && (
+                          <p className="text-sm"><span className="font-medium">Food:</span> {report.food_consumption}</p>
+                        )}
+                        {report.exercise_duration && (
+                          <p className="text-sm"><span className="font-medium">Exercise:</span> {report.exercise_duration} minutes</p>
+                        )}
+                        <p className="text-sm"><span className="font-medium">Notes:</span> {report.general_notes}</p>
+                        {report.photo_urls && report.photo_urls.length > 0 && (
+                          <div className="flex gap-2 flex-wrap">
+                            {report.photo_urls.map((url: string, idx: number) => (
+                              <img 
+                                key={idx} 
+                                src={url} 
+                                alt={`Report photo ${idx + 1}`}
+                                className="h-20 w-20 object-cover rounded"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
