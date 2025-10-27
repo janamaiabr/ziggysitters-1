@@ -13,7 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   ArrowLeft, Calendar, Clock, DollarSign, MapPin, 
   User, Mail, Phone, FileText, AlertCircle, CheckCircle,
-  Home, PawPrint, Plus
+  Home, PawPrint, Plus, Edit2, Trash2, Upload, X
 } from 'lucide-react';
 import { format, addDays, startOfDay } from 'date-fns';
 import DailyReportForm from '@/components/daily-reports/DailyReportForm';
@@ -102,6 +102,8 @@ export default function BookingDetails() {
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedReportDate, setSelectedReportDate] = useState<Date | null>(null);
   const [dailyReports, setDailyReports] = useState<any[]>([]);
+  const [editingReportId, setEditingReportId] = useState<string | null>(null);
+  const [editingPhotos, setEditingPhotos] = useState<string[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -264,6 +266,107 @@ export default function BookingDetails() {
       });
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleDeletePhoto = async (reportId: string, photoUrl: string) => {
+    try {
+      const report = dailyReports.find(r => r.id === reportId);
+      if (!report) return;
+
+      const updatedPhotos = report.photo_urls.filter((url: string) => url !== photoUrl);
+      
+      if (updatedPhotos.length === 0) {
+        toast({
+          title: "Cannot delete",
+          description: "At least one photo is required in the report",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('daily_reports')
+        .update({ photo_urls: updatedPhotos })
+        .eq('id', reportId);
+
+      if (error) throw error;
+
+      // Delete from storage
+      const filePath = photoUrl.split('/').slice(-2).join('/');
+      await supabase.storage.from('pet-photos').remove([filePath]);
+
+      await fetchBookingDetails();
+      toast({
+        title: "Photo deleted",
+        description: "Photo has been removed from the report",
+      });
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      toast({
+        title: "Delete failed",
+        description: "Failed to delete photo",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePhotoUpload = async (reportId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    try {
+      const report = dailyReports.find(r => r.id === reportId);
+      if (!report) return;
+
+      const newPhotoUrls = [...report.photo_urls];
+
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith('image/')) {
+          toast({
+            title: "Invalid file type",
+            description: "Please upload only image files",
+            variant: "destructive",
+          });
+          continue;
+        }
+
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `daily-reports/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('pet-photos')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('pet-photos')
+          .getPublicUrl(filePath);
+
+        newPhotoUrls.push(publicUrl);
+      }
+
+      const { error } = await supabase
+        .from('daily_reports')
+        .update({ photo_urls: newPhotoUrls })
+        .eq('id', reportId);
+
+      if (error) throw error;
+
+      await fetchBookingDetails();
+      toast({
+        title: "Photos uploaded",
+        description: "New photos have been added to the report",
+      });
+    } catch (error) {
+      console.error('Error uploading photos:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photos",
+        variant: "destructive",
+      });
     }
   };
 
@@ -840,14 +943,35 @@ export default function BookingDetails() {
                   <div className="border-t pt-4 space-y-3">
                     <h4 className="font-semibold">Submitted Reports</h4>
                     {dailyReports.map((report) => (
-                      <div key={report.id} className="border rounded-lg p-4 space-y-2">
+                      <div key={report.id} className="border rounded-lg p-4 space-y-3">
                         <div className="flex items-center justify-between">
                           <p className="font-medium">
                             {format(new Date(report.report_date), 'MMMM d, yyyy')}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            Submitted {format(new Date(report.submitted_at), 'MMM d, h:mm a')}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs text-muted-foreground">
+                              Submitted {format(new Date(report.submitted_at), 'MMM d, h:mm a')}
+                            </p>
+                            {editingReportId === report.id ? (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setEditingReportId(null)}
+                              >
+                                <X className="h-4 w-4" />
+                                Done
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setEditingReportId(report.id)}
+                              >
+                                <Edit2 className="h-4 w-4" />
+                                Edit Photos
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         {report.mood && (
                           <p className="text-sm"><span className="font-medium">Mood:</span> {report.mood}</p>
@@ -859,16 +983,57 @@ export default function BookingDetails() {
                           <p className="text-sm"><span className="font-medium">Exercise:</span> {report.exercise_duration} minutes</p>
                         )}
                         <p className="text-sm"><span className="font-medium">Notes:</span> {report.general_notes}</p>
+                        
+                        {/* Photos with edit capability */}
                         {report.photo_urls && report.photo_urls.length > 0 && (
-                          <div className="flex gap-2 flex-wrap">
-                            {report.photo_urls.map((url: string, idx: number) => (
-                              <img 
-                                key={idx} 
-                                src={url} 
-                                alt={`Report photo ${idx + 1}`}
-                                className="h-20 w-20 object-cover rounded"
-                              />
-                            ))}
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-medium">Photos</p>
+                              {editingReportId === report.id && (
+                                <div>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={(e) => handlePhotoUpload(report.id, e)}
+                                    className="hidden"
+                                    id={`photo-upload-${report.id}`}
+                                  />
+                                  <label htmlFor={`photo-upload-${report.id}`}>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline"
+                                      asChild
+                                    >
+                                      <span className="cursor-pointer">
+                                        <Upload className="h-4 w-4 mr-1" />
+                                        Add Photos
+                                      </span>
+                                    </Button>
+                                  </label>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                              {report.photo_urls.map((url: string, idx: number) => (
+                                <div key={idx} className="relative group">
+                                  <img 
+                                    src={url} 
+                                    alt={`Report photo ${idx + 1}`}
+                                    className="h-20 w-20 object-cover rounded"
+                                  />
+                                  {editingReportId === report.id && (
+                                    <button
+                                      onClick={() => handleDeletePhoto(report.id, url)}
+                                      className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
