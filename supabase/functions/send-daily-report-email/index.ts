@@ -99,6 +99,17 @@ const handler = async (req: Request): Promise<Response> => {
     // Format pet names
     const petNames = pets?.map((pet: any) => pet.name).join(', ') || 'your pet(s)';
 
+    // Find the report in database to get the ID for updating
+    const { data: reportRecord } = await supabaseClient
+      .from('daily_reports')
+      .select('id')
+      .eq('booking_id', bookingId)
+      .eq('report_date', reportDate)
+      .eq('sitter_id', booking.sitter_id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     // Format mood and sleep quality for display
     const formatMood = (mood: string) => {
       const moodMap: { [key: string]: string } = {
@@ -231,6 +242,14 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log("Email sent successfully:", emailResponse);
+
+    // Update the report with email_sent_at timestamp
+    if (reportRecord?.id) {
+      await supabaseClient
+        .from('daily_reports')
+        .update({ email_sent_at: new Date().toISOString() })
+        .eq('id', reportRecord.id);
+    }
 
     // Send delivery notification to sitter
     try {

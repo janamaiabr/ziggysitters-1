@@ -140,6 +140,7 @@ export type Database = {
         Row: {
           booking_id: string
           created_at: string
+          email_sent_at: string | null
           exercise_duration: number | null
           exercise_notes: string | null
           food_consumption: string | null
@@ -157,10 +158,13 @@ export type Database = {
           submitted_at: string
           time_alone_hours: number | null
           updated_at: string
+          viewed_at: string | null
+          viewed_by_owner: boolean | null
         }
         Insert: {
           booking_id: string
           created_at?: string
+          email_sent_at?: string | null
           exercise_duration?: number | null
           exercise_notes?: string | null
           food_consumption?: string | null
@@ -178,10 +182,13 @@ export type Database = {
           submitted_at?: string
           time_alone_hours?: number | null
           updated_at?: string
+          viewed_at?: string | null
+          viewed_by_owner?: boolean | null
         }
         Update: {
           booking_id?: string
           created_at?: string
+          email_sent_at?: string | null
           exercise_duration?: number | null
           exercise_notes?: string | null
           food_consumption?: string | null
@@ -199,6 +206,8 @@ export type Database = {
           submitted_at?: string
           time_alone_hours?: number | null
           updated_at?: string
+          viewed_at?: string | null
+          viewed_by_owner?: boolean | null
         }
         Relationships: []
       }
