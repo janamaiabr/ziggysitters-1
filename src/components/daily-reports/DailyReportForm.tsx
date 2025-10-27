@@ -106,6 +106,17 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       });
       return;
     }
+
+    // CRITICAL FIX: Prevent future-dated reports
+    const today = new Date().toISOString().split('T')[0];
+    if (reportDate > today) {
+      toast({
+        title: "Invalid Date",
+        description: "You cannot submit reports for future dates. Please wait until the booking day.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (uploadedPhotos.length === 0) {
       toast({
@@ -145,22 +156,39 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       if (error) throw error;
 
       // Send email notification to pet owner
-      const emailResult = await supabase.functions.invoke('send-daily-report-email', {
-        body: {
-          bookingId,
-          reportDate,
-          reportData: { ...data, photo_urls: uploadedPhotos }
+      try {
+        console.log('📧 Sending daily report email...', { bookingId, reportDate });
+        
+        const emailResult = await supabase.functions.invoke('send-daily-report-email', {
+          body: {
+            bookingId,
+            reportDate,
+            reportData: { ...data, photo_urls: uploadedPhotos }
+          }
+        });
+
+        if (emailResult.error) {
+          console.error('❌ Email sending failed:', emailResult.error);
+          toast({
+            title: "Report submitted but email failed",
+            description: "Your report was saved but we couldn't send the email notification. Please contact support.",
+            variant: "destructive",
+          });
+        } else {
+          console.log('✅ Email sent successfully');
+          toast({
+            title: "Report submitted successfully!",
+            description: "The pet owner has been notified via email. You'll receive a delivery confirmation shortly.",
+          });
         }
-      });
-
-      if (emailResult.error) {
-        console.error('Error sending email notification:', emailResult.error);
+      } catch (emailError) {
+        console.error('❌ Email function error:', emailError);
+        toast({
+          title: "Report submitted but email failed",
+          description: "Your report was saved but we couldn't send the email. Please contact support.",
+          variant: "destructive",
+        });
       }
-
-      toast({
-        title: "Report submitted successfully!",
-        description: "The pet owner has been notified via email. You'll receive a delivery confirmation shortly.",
-      });
 
       onSubmit();
     } catch (error) {
