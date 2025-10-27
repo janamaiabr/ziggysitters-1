@@ -76,7 +76,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Get sitter details
     const { data: sitter, error: sitterError } = await supabaseClient
       .from('profiles')
-      .select('first_name, last_name')
+      .select('first_name, last_name, email')
       .eq('id', booking.sitter_id)
       .maybeSingle();
 
@@ -231,6 +231,23 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log("Email sent successfully:", emailResponse);
+
+    // Send delivery notification to sitter
+    try {
+      await supabaseClient.functions.invoke('send-report-delivery-notification', {
+        body: {
+          sitterEmail: sitter.email,
+          sitterName: sitter.first_name,
+          ownerName: owner.first_name,
+          petNames,
+          reportDate,
+        }
+      });
+      console.log("Delivery notification sent to sitter");
+    } catch (notificationError) {
+      console.error("Error sending delivery notification to sitter:", notificationError);
+      // Don't fail the main request if notification fails
+    }
 
     return new Response(JSON.stringify({ success: true, emailId: emailResponse.data?.id }), {
       status: 200,

@@ -145,7 +145,7 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       if (error) throw error;
 
       // Send email notification to pet owner
-      await supabase.functions.invoke('send-daily-report-email', {
+      const emailResult = await supabase.functions.invoke('send-daily-report-email', {
         body: {
           bookingId,
           reportDate,
@@ -153,9 +153,13 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
         }
       });
 
+      if (emailResult.error) {
+        console.error('Error sending email notification:', emailResult.error);
+      }
+
       toast({
         title: "Report submitted successfully!",
-        description: "The pet owner has been notified via email.",
+        description: "The pet owner has been notified via email. You'll receive a delivery confirmation shortly.",
       });
 
       onSubmit();
@@ -211,7 +215,7 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
                 <Camera className="h-5 w-5" />
                 Pet Photos *
               </FormLabel>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div className="border-2 border-dashed border-primary/30 bg-primary/5 rounded-lg p-8 text-center hover:border-primary/50 hover:bg-primary/10 transition-colors">
                 <input
                   type="file"
                   accept="image/*"
@@ -220,10 +224,12 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
                   className="hidden"
                   id="photo-upload"
                 />
-                <label htmlFor="photo-upload" className="cursor-pointer">
-                  <Upload className="h-10 w-10 mx-auto mb-4 text-gray-400" />
-                  <p className="text-sm text-gray-600">Click to upload photos</p>
-                  <p className="text-xs text-gray-500 mt-1">At least 1 photo required</p>
+                <label htmlFor="photo-upload" className="cursor-pointer block">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
+                    <Camera className="h-10 w-10 text-primary" />
+                  </div>
+                  <p className="text-base font-semibold text-foreground mb-2">Click to upload photos</p>
+                  <p className="text-sm text-muted-foreground">At least 1 photo required</p>
                 </label>
               </div>
               {uploadedPhotos.length > 0 && (
