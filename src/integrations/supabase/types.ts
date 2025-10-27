@@ -847,6 +847,7 @@ export type Database = {
     }
     Functions: {
       accept_booking: { Args: { booking_id: string }; Returns: Json }
+      auto_complete_bookings: { Args: never; Returns: undefined }
       can_access_pet_basic_info: { Args: { pet_id: string }; Returns: boolean }
       can_access_pet_sensitive_data: {
         Args: { pet_id: string }
