@@ -54,7 +54,6 @@ export default function SitterProfile() {
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sitterStripeEnabled, setSitterStripeEnabled] = useState(false);
   
   // Get dates from URL params
   const checkInDate = searchParams.get('checkIn');
@@ -100,12 +99,11 @@ export default function SitterProfile() {
       try {
         console.log('Fetching sitter with ID:', id);
         
-        // Fetch only public-safe fields (RLS will restrict sensitive data for non-booked users)
+        // Fetch from public view (excludes email/phone for security)
         const { data, error } = await supabase
-          .from('profiles')
+          .from('public_sitter_profiles')
           .select('*')
           .eq('id', id)
-          .eq('role', 'pet_sitter')
           .maybeSingle();
 
         console.log('Profile fetch result:', { data, error });
@@ -137,9 +135,6 @@ export default function SitterProfile() {
 
         // Store services data for displaying rates
         setServicesData(servicesData || []);
-        
-        // Check if sitter has Stripe enabled for payments
-        setSitterStripeEnabled(data.stripe_account_enabled || false);
 
         // Fetch portfolio photos from storage
         const { data: portfolioFiles } = await supabase.storage

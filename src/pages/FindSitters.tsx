@@ -41,12 +41,10 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch all verified pet sitters (payment setup check happens on booking)
+        // Fetch all verified pet sitters from public view (excludes email/phone for security)
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, role, stripe_account_enabled')
-          .eq('role', 'pet_sitter')
-          .eq('is_verified', true)  // Only show verified sitters
+          .from('public_sitter_profiles')
+          .select('*')
           .order('rating', { ascending: false });
         
         console.log('Profiles data:', profilesData);
