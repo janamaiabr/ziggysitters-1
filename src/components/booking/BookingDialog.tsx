@@ -83,6 +83,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   ]);
   
   const [bookedDates, setBookedDates] = useState<{ start: Date; end: Date }[]>([]);
+  const [loadingBookedDates, setLoadingBookedDates] = useState(true);
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -106,21 +107,36 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   // Fetch sitter's booked dates
   useEffect(() => {
     const fetchBookedDates = async () => {
-      if (!isOpen || !sitter?.id) return;
+      if (!isOpen || !sitter?.id) {
+        setLoadingBookedDates(false);
+        return;
+      }
 
-      const { data: bookings } = await supabase
+      setLoadingBookedDates(true);
+      console.log('=== Fetching booked dates for sitter:', sitter.id);
+
+      const { data: bookings, error } = await supabase
         .from('bookings')
-        .select('start_date, end_date')
+        .select('start_date, end_date, status')
         .eq('sitter_id', sitter.id.toString())
-        .in('status', ['pending', 'confirmed', 'in_progress']);
+        .in('status', ['pending', 'awaiting_payment', 'confirmed', 'in_progress']);
+
+      if (error) {
+        console.error('Error fetching booked dates:', error);
+        setLoadingBookedDates(false);
+        return;
+      }
 
       if (bookings) {
         const dates = bookings.map(b => ({
           start: new Date(b.start_date),
           end: new Date(b.end_date)
         }));
+        console.log('=== Booked dates loaded:', dates.length, 'bookings');
+        console.log('Booked date ranges:', dates);
         setBookedDates(dates);
       }
+      setLoadingBookedDates(false);
     };
 
     fetchBookedDates();
@@ -174,20 +190,31 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   }, [user, isOpen]);
 
   const isDateBooked = (date: Date) => {
-    return bookedDates.some(booking => {
+    const isBooked = bookedDates.some(booking => {
       const checkDate = new Date(date);
       checkDate.setHours(0, 0, 0, 0);
       const bookingStart = new Date(booking.start);
       bookingStart.setHours(0, 0, 0, 0);
       const bookingEnd = new Date(booking.end);
       bookingEnd.setHours(0, 0, 0, 0);
-      return checkDate >= bookingStart && checkDate <= bookingEnd;
+      const result = checkDate >= bookingStart && checkDate <= bookingEnd;
+      if (result) {
+        console.log(`Date ${checkDate.toDateString()} is booked (conflicts with ${bookingStart.toDateString()} - ${bookingEnd.toDateString()})`);
+      }
+      return result;
     });
+    return isBooked;
   };
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
+    console.log(`=== handleDateSelect called ===`);
+    console.log(`Type: ${type}`);
+    console.log(`Selected date:`, date);
+    console.log(`Total booked dates:`, bookedDates.length);
+    
     // Prevent selecting booked dates
     if (date && isDateBooked(date)) {
+      console.log('❌ Date is booked! Showing error toast');
       toast({
         title: "Date Unavailable",
         description: "This sitter is already booked on this date. Please select a different date.",
@@ -196,9 +223,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
     
-    console.log(`=== handleDateSelect called ===`);
-    console.log(`Type: ${type}`);
-    console.log(`Selected date:`, date);
+    console.log('✓ Date is available');
     console.log(`Date type:`, typeof date);
     console.log(`Is valid date:`, date instanceof Date);
     
@@ -581,6 +606,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        {loadingBookedDates && (
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+              <p className="text-sm text-muted-foreground">Loading availability...</p>
+            </div>
+          </div>
+        )}
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className="flex items-center gap-3">
