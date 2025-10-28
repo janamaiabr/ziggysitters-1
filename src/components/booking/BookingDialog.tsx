@@ -175,23 +175,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
 
   const isDateBooked = (date: Date) => {
     return bookedDates.some(booking => {
-      const checkDate = new Date(date.setHours(0, 0, 0, 0));
-      const bookingStart = new Date(booking.start.setHours(0, 0, 0, 0));
-      const bookingEnd = new Date(booking.end.setHours(0, 0, 0, 0));
+      const checkDate = new Date(date);
+      checkDate.setHours(0, 0, 0, 0);
+      const bookingStart = new Date(booking.start);
+      bookingStart.setHours(0, 0, 0, 0);
+      const bookingEnd = new Date(booking.end);
+      bookingEnd.setHours(0, 0, 0, 0);
       return checkDate >= bookingStart && checkDate <= bookingEnd;
     });
   };
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
-    // Check if selected date is already booked
-    if (date && isDateBooked(date)) {
-      toast({
-        title: "Date Unavailable",
-        description: "This date is already booked. Please choose a different date.",
-        variant: "destructive",
-      });
-      return;
-    }
     console.log(`=== handleDateSelect called ===`);
     console.log(`Type: ${type}`);
     console.log(`Selected date:`, date);
@@ -459,14 +453,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         if (data && typeof data === 'object' && 'error' in data) {
           const serverError = (data as any).error;
           // Convert technical errors to user-friendly messages
-          if (serverError.includes('not available for the selected dates')) {
-            errorMessage = 'Sorry, this sitter is already booked for these dates. Please choose different dates.';
-          } else if (serverError.includes('pricing') || serverError.includes('rate')) {
+          if (typeof serverError === 'string' && serverError.includes('not available for the selected dates')) {
+            errorMessage = 'These dates are no longer available. The sitter has another booking during this time. Please select different dates.';
+          } else if (typeof serverError === 'string' && serverError.includes('pricing') || serverError.includes('rate')) {
             errorMessage = 'There was an issue with the pricing. Please try again or contact support.';
-          } else if (serverError.includes('pet')) {
+          } else if (typeof serverError === 'string' && serverError.includes('pet')) {
             errorMessage = 'There was an issue with your pet selection. Please try again.';
           } else {
-            errorMessage = serverError;
+            errorMessage = typeof serverError === 'string' ? serverError : 'Unable to create booking. Please try again.';
           }
         }
         
@@ -481,12 +475,12 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       // Check if the response contains an error even without the error flag
       if (data && typeof data === 'object' && 'error' in data) {
         const serverError = (data as any).error;
-        let errorMessage = serverError;
-        if (serverError.includes('not available for the selected dates')) {
-          errorMessage = 'Sorry, this sitter is already booked for these dates. Please choose different dates.';
+        let errorMessage = typeof serverError === 'string' ? serverError : 'Unable to create booking. Please try again.';
+        if (typeof serverError === 'string' && serverError.includes('not available for the selected dates')) {
+          errorMessage = 'These dates are no longer available. The sitter has another booking during this time. Please select different dates.';
         }
         toast({
-          title: "Booking Error",
+          title: "Booking Unavailable",
           description: errorMessage,
           variant: "destructive",
         });
