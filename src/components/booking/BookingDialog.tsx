@@ -405,14 +405,25 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         body: bookingData
       });
 
+      // Handle edge function errors properly
       if (error) {
-        // Extract error message from the response body if available
-        const errorMessage = (data as any)?.error || error.message || 'Failed to create booking';
+        console.error('Edge function error:', error);
+        console.error('Response data:', data);
+        
+        // Try to extract the actual error message from various possible locations
+        let errorMessage = 'Failed to create booking';
+        
+        if (data && typeof data === 'object' && 'error' in data) {
+          errorMessage = (data as any).error;
+        } else if (error.message && !error.message.includes('FunctionsHttpError') && !error.message.includes('non-2xx')) {
+          errorMessage = error.message;
+        }
+        
         throw new Error(errorMessage);
       }
 
-      // Check if the response contains an error in the data
-      if (data && (data as any).error) {
+      // Check if the response contains an error even without the error flag
+      if (data && typeof data === 'object' && 'error' in data) {
         throw new Error((data as any).error);
       }
 
