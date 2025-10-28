@@ -186,6 +186,16 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   };
 
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
+    // Prevent selecting booked dates
+    if (date && isDateBooked(date)) {
+      toast({
+        title: "Date Unavailable",
+        description: "This sitter is already booked on this date. Please select a different date.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     console.log(`=== handleDateSelect called ===`);
     console.log(`Type: ${type}`);
     console.log(`Selected date:`, date);
@@ -442,49 +452,44 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         body: bookingData
       });
 
-      // Handle edge function errors properly
-      if (error) {
-        console.error('Edge function error:', error);
-        console.error('Response data:', data);
-        
-        // Extract user-friendly error message
+      console.log('=== Booking Response ===');
+      console.log('Data:', data);
+      console.log('Error:', error);
+
+      // Check if data contains an error message first (this happens when edge function returns 400)
+      if (data && typeof data === 'object' && 'error' in data) {
+        const serverError = (data as any).error;
         let errorMessage = 'Unable to create booking. Please try again.';
         
-        if (data && typeof data === 'object' && 'error' in data) {
-          const serverError = (data as any).error;
-          // Convert technical errors to user-friendly messages
-          if (typeof serverError === 'string' && serverError.includes('not available for the selected dates')) {
+        if (typeof serverError === 'string') {
+          if (serverError.toLowerCase().includes('not available') || serverError.toLowerCase().includes('overlapping')) {
             errorMessage = 'These dates are no longer available. The sitter has another booking during this time. Please select different dates.';
-          } else if (typeof serverError === 'string' && serverError.includes('pricing') || serverError.includes('rate')) {
+          } else if (serverError.toLowerCase().includes('pricing') || serverError.toLowerCase().includes('rate')) {
             errorMessage = 'There was an issue with the pricing. Please try again or contact support.';
-          } else if (typeof serverError === 'string' && serverError.includes('pet')) {
+          } else if (serverError.toLowerCase().includes('pet')) {
             errorMessage = 'There was an issue with your pet selection. Please try again.';
           } else {
-            errorMessage = typeof serverError === 'string' ? serverError : 'Unable to create booking. Please try again.';
+            errorMessage = serverError;
           }
         }
         
-        toast({
-          title: "Booking Error",
-          description: errorMessage,
-          variant: "destructive",
-        });
-        throw new Error(errorMessage);
-      }
-
-      // Check if the response contains an error even without the error flag
-      if (data && typeof data === 'object' && 'error' in data) {
-        const serverError = (data as any).error;
-        let errorMessage = typeof serverError === 'string' ? serverError : 'Unable to create booking. Please try again.';
-        if (typeof serverError === 'string' && serverError.includes('not available for the selected dates')) {
-          errorMessage = 'These dates are no longer available. The sitter has another booking during this time. Please select different dates.';
-        }
         toast({
           title: "Booking Unavailable",
           description: errorMessage,
           variant: "destructive",
         });
         throw new Error(errorMessage);
+      }
+
+      // Handle network/function errors
+      if (error) {
+        console.error('Edge function error:', error);
+        toast({
+          title: "Booking Failed",
+          description: 'Unable to reach the server. Please check your connection and try again.',
+          variant: "destructive",
+        });
+        throw new Error('Network error');
       }
 
       // Booking created successfully - payment will be requested after sitter accepts
