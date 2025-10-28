@@ -82,6 +82,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     { id: '1', date: new Date() }
   ]);
   
+  const [bookedDates, setBookedDates] = useState<{ start: Date; end: Date }[]>([]);
+  
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -100,6 +102,29 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       }
     }
   }, [initialDates]);
+
+  // Fetch sitter's booked dates
+  useEffect(() => {
+    const fetchBookedDates = async () => {
+      if (!isOpen || !sitter?.id) return;
+
+      const { data: bookings } = await supabase
+        .from('bookings')
+        .select('start_date, end_date')
+        .eq('sitter_id', sitter.id.toString())
+        .in('status', ['pending', 'confirmed', 'in_progress']);
+
+      if (bookings) {
+        const dates = bookings.map(b => ({
+          start: new Date(b.start_date),
+          end: new Date(b.end_date)
+        }));
+        setBookedDates(dates);
+      }
+    };
+
+    fetchBookedDates();
+  }, [isOpen, sitter?.id]);
 
   // Fetch owner's pets when dialog opens
   useEffect(() => {
@@ -148,7 +173,25 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     fetchOwnerPets();
   }, [user, isOpen]);
 
+  const isDateBooked = (date: Date) => {
+    return bookedDates.some(booking => {
+      const checkDate = new Date(date.setHours(0, 0, 0, 0));
+      const bookingStart = new Date(booking.start.setHours(0, 0, 0, 0));
+      const bookingEnd = new Date(booking.end.setHours(0, 0, 0, 0));
+      return checkDate >= bookingStart && checkDate <= bookingEnd;
+    });
+  };
+
   const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
+    // Check if selected date is already booked
+    if (date && isDateBooked(date)) {
+      toast({
+        title: "Date Unavailable",
+        description: "This date is already booked. Please choose a different date.",
+        variant: "destructive",
+      });
+      return;
+    }
     console.log(`=== handleDateSelect called ===`);
     console.log(`Type: ${type}`);
     console.log(`Selected date:`, date);
@@ -410,21 +453,44 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         console.error('Edge function error:', error);
         console.error('Response data:', data);
         
-        // Try to extract the actual error message from various possible locations
-        let errorMessage = 'Failed to create booking';
+        // Extract user-friendly error message
+        let errorMessage = 'Unable to create booking. Please try again.';
         
         if (data && typeof data === 'object' && 'error' in data) {
-          errorMessage = (data as any).error;
-        } else if (error.message && !error.message.includes('FunctionsHttpError') && !error.message.includes('non-2xx')) {
-          errorMessage = error.message;
+          const serverError = (data as any).error;
+          // Convert technical errors to user-friendly messages
+          if (serverError.includes('not available for the selected dates')) {
+            errorMessage = 'Sorry, this sitter is already booked for these dates. Please choose different dates.';
+          } else if (serverError.includes('pricing') || serverError.includes('rate')) {
+            errorMessage = 'There was an issue with the pricing. Please try again or contact support.';
+          } else if (serverError.includes('pet')) {
+            errorMessage = 'There was an issue with your pet selection. Please try again.';
+          } else {
+            errorMessage = serverError;
+          }
         }
         
+        toast({
+          title: "Booking Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
         throw new Error(errorMessage);
       }
 
       // Check if the response contains an error even without the error flag
       if (data && typeof data === 'object' && 'error' in data) {
-        throw new Error((data as any).error);
+        const serverError = (data as any).error;
+        let errorMessage = serverError;
+        if (serverError.includes('not available for the selected dates')) {
+          errorMessage = 'Sorry, this sitter is already booked for these dates. Please choose different dates.';
+        }
+        toast({
+          title: "Booking Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        throw new Error(errorMessage);
       }
 
       // Booking created successfully - payment will be requested after sitter accepts
@@ -641,7 +707,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                         disabled={(date) => {
                           const today = new Date();
                           today.setHours(0, 0, 0, 0);
-                          return date < today;
+                          return date < today || isDateBooked(date);
+                        }}
+                        modifiers={{
+                          booked: (date) => isDateBooked(date)
+                        }}
+                        modifiersStyles={{
+                          booked: { 
+                            textDecoration: 'line-through',
+                            color: 'hsl(var(--muted-foreground))',
+                            opacity: 0.5
+                          }
                         }}
                         initialFocus
                       />
@@ -677,7 +753,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                             if (!startDate) return true;
                             const minDate = new Date(startDate);
                             minDate.setHours(0, 0, 0, 0);
-                            return date < minDate;
+                            return date < minDate || isDateBooked(date);
+                          }}
+                          modifiers={{
+                            booked: (date) => isDateBooked(date)
+                          }}
+                          modifiersStyles={{
+                            booked: { 
+                              textDecoration: 'line-through',
+                              color: 'hsl(var(--muted-foreground))',
+                              opacity: 0.5
+                            }
                           }}
                           initialFocus
                         />
@@ -825,6 +911,15 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                               selected={session.date}
                               onSelect={(date) => {
                                 if (date) {
+                                  // Check if date is booked
+                                  if (isDateBooked(date)) {
+                                    toast({
+                                      title: "Date Unavailable",
+                                      description: "This date is already booked. Please choose a different date.",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
                                   setWalkVisitSessions(
                                     walkVisitSessions.map(s =>
                                       s.id === session.id ? { ...s, date } : s
@@ -835,7 +930,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                               disabled={(date) => {
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
-                                return date < today;
+                                return date < today || isDateBooked(date);
+                              }}
+                              modifiers={{
+                                booked: (date) => isDateBooked(date)
+                              }}
+                              modifiersStyles={{
+                                booked: { 
+                                  textDecoration: 'line-through',
+                                  color: 'hsl(var(--muted-foreground))',
+                                  opacity: 0.5
+                                }
                               }}
                             />
                           </PopoverContent>
