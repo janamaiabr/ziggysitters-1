@@ -627,7 +627,7 @@ export default function BookingDetails() {
         <p className="text-lg text-muted-foreground">Reference: {booking.booking_reference}</p>
       </div>
 
-      {/* Sitter Accepted - Payment Required Banner */}
+      {/* Sitter Accepted - Payment Required Banner (for owners) */}
       {needsPayment && (
         <Card className="mb-8 border-2 border-green-500 bg-green-50">
           <CardContent className="p-6">
@@ -664,6 +664,29 @@ export default function BookingDetails() {
                     Already Paid? Verify Payment
                   </Button>
                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Waiting for Owner Payment Banner (for sitters) */}
+      {isSitter && booking.status === 'awaiting_payment' && (
+        <Card className="mb-8 border-2 border-blue-500 bg-blue-50 dark:bg-blue-950">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <Clock className="h-8 w-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 mb-2">
+                  Awaiting Pet Owner Payment
+                </h3>
+                <p className="text-blue-800 dark:text-blue-200">
+                  You've accepted this booking. The pet owner (<span className="font-semibold">
+                    {booking.owner?.first_name} {booking.owner?.last_name}
+                  </span>) has been notified and needs to complete payment to confirm the booking. You'll be notified once payment is received.
+                </p>
               </div>
             </div>
           </CardContent>
