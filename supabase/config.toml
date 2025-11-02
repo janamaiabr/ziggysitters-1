@@ -57,3 +57,6 @@ verify_jwt = false
 [functions.send-sitter-penalty-notification]
 verify_jwt = false
 
+[functions.auto-process-payouts]
+verify_jwt = false
+
