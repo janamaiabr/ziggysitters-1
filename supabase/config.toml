@@ -63,3 +63,6 @@ verify_jwt = false
 [functions.send-payout-success-email]
 verify_jwt = false
 
+[functions.create-booking]
+verify_jwt = true
+
