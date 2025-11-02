@@ -1,8 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@4.0.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY") as string);
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,166 +9,270 @@ const corsHeaders = {
 };
 
 interface OnboardingReminderRequest {
-  user_id?: string; // Optional - if not provided, sends to all incomplete users
+  sitterEmail: string;
+  sitterName: string;
+  onboardingUrl: string;
 }
 
-serve(async (req) => {
+const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    console.log('Onboarding reminder function started');
+    
+    const { sitterEmail, sitterName, onboardingUrl }: OnboardingReminderRequest = await req.json();
+    
+    console.log('Sending reminder to:', sitterEmail);
 
-    const { user_id }: OnboardingReminderRequest = await req.json();
+    const emailResponse = await resend.emails.send({
+      from: "Ziggy Sitters <onboarding@resend.dev>",
+      to: [sitterEmail],
+      subject: "🐾 Your Pet Sitting Journey Awaits - Complete Your Profile!",
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+              .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 30px;
+                border-radius: 10px 10px 0 0;
+                text-align: center;
+              }
+              .header h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+              }
+              .header p {
+                margin: 10px 0 0 0;
+                opacity: 0.95;
+                font-size: 16px;
+              }
+              .content {
+                background: #ffffff;
+                padding: 40px 30px;
+                border-left: 1px solid #e0e0e0;
+                border-right: 1px solid #e0e0e0;
+              }
+              .greeting {
+                font-size: 18px;
+                margin-bottom: 20px;
+                color: #667eea;
+                font-weight: 600;
+              }
+              .message {
+                margin-bottom: 25px;
+                color: #555;
+              }
+              .benefits {
+                background: #f8f9ff;
+                padding: 25px;
+                border-radius: 8px;
+                margin: 25px 0;
+                border-left: 4px solid #667eea;
+              }
+              .benefits h3 {
+                margin-top: 0;
+                color: #667eea;
+                font-size: 18px;
+              }
+              .benefits ul {
+                margin: 15px 0;
+                padding-left: 20px;
+              }
+              .benefits li {
+                margin: 8px 0;
+                color: #555;
+              }
+              .cta-button {
+                display: inline-block;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 16px 40px;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 16px;
+                margin: 20px 0;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                transition: transform 0.2s;
+              }
+              .cta-button:hover {
+                transform: translateY(-2px);
+              }
+              .steps {
+                background: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+              }
+              .step {
+                display: flex;
+                align-items: start;
+                margin: 15px 0;
+              }
+              .step-number {
+                background: #667eea;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-right: 15px;
+                flex-shrink: 0;
+              }
+              .step-content {
+                flex: 1;
+              }
+              .footer {
+                background: #f8f9fa;
+                padding: 30px;
+                text-align: center;
+                color: #666;
+                font-size: 14px;
+                border-radius: 0 0 10px 10px;
+                border: 1px solid #e0e0e0;
+              }
+              .footer a {
+                color: #667eea;
+                text-decoration: none;
+              }
+              .urgency {
+                background: #fff3cd;
+                border: 1px solid #ffc107;
+                padding: 15px;
+                border-radius: 6px;
+                margin: 20px 0;
+                text-align: center;
+                font-weight: 600;
+                color: #856404;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>🐾 Welcome to Ziggy Sitters!</h1>
+              <p>You're just a few steps away from joining New Zealand's trusted pet sitting community</p>
+            </div>
+            
+            <div class="content">
+              <div class="greeting">Hi ${sitterName}! 👋</div>
+              
+              <div class="message">
+                <p>Thank you for starting your journey with Ziggy Sitters! We noticed your profile is almost complete, and we're excited to help you get started.</p>
+                
+                <p>Pet owners across New Zealand are looking for caring, reliable sitters like you right now. Complete your profile and start earning while doing what you love - caring for pets!</p>
+              </div>
 
-    // Query for users with incomplete onboarding
-    let query = supabaseClient
-      .from('profiles')
-      .select('user_id, email, first_name, last_name, role, id, stripe_account_enabled, stripe_onboarding_completed, id_document_url, blue_card_document_url')
-      .eq('onboarding_completed', false)
-      .not('email', 'is', null);
+              <div class="benefits">
+                <h3>✨ What You'll Gain:</h3>
+                <ul>
+                  <li><strong>Flexible Schedule:</strong> Work when you want, where you want</li>
+                  <li><strong>Secure Payments:</strong> Get paid directly to your bank account</li>
+                  <li><strong>Trusted Platform:</strong> Verified bookings with real pet owners</li>
+                  <li><strong>Growing Demand:</strong> Join during our launch phase and build your client base</li>
+                  <li><strong>Make a Difference:</strong> Give pet owners peace of mind while they're away</li>
+                </ul>
+              </div>
 
-    if (user_id) {
-      query = query.eq('user_id', user_id);
-    }
+              <div class="urgency">
+                ⏰ Complete your profile today to be ready for our platform launch!
+              </div>
 
-    const { data: incompleteProfiles, error: profileError } = await query;
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${onboardingUrl}" class="cta-button">
+                  Complete My Profile Now →
+                </a>
+              </div>
 
-    if (profileError) throw profileError;
-
-    if (!incompleteProfiles || incompleteProfiles.length === 0) {
-      return new Response(
-        JSON.stringify({ message: 'No incomplete profiles found' }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
-    }
-
-    const emailResults = [];
-
-    for (const profile of incompleteProfiles) {
-      try {
-        // Check what's missing for sitters
-        let missingItems: string[] = [];
-        
-        if (profile.role === 'pet_sitter') {
-          // Check for services
-          const { data: services } = await supabaseClient
-            .from('sitter_services')
-            .select('id')
-            .eq('sitter_id', profile.id)
-            .limit(1);
-
-          if (!services || services.length === 0) {
-            missingItems.push('service offerings and pricing');
-          }
-
-          if (!profile.id_document_url && !profile.blue_card_document_url) {
-            missingItems.push('verification documents (ID and/or Police Vet Check)');
-          }
-
-          if (!profile.stripe_account_enabled || !profile.stripe_onboarding_completed) {
-            missingItems.push('payment account setup (Stripe Connect)');
-          }
-        }
-
-        const missingItemsText = missingItems.length > 0
-          ? `<p><strong>Still needed to complete your profile:</strong></p><ul style="padding-left: 20px;">${missingItems.map(item => `<li>${item}</li>`).join('')}</ul>`
-          : '<p>Just a few more steps to complete your profile!</p>';
-
-        const roleSpecificMessage = profile.role === 'pet_sitter'
-          ? `<p>Complete your sitter profile to start accepting bookings and earning money! Once your profile is complete and verified, you'll be visible to pet owners in your area.</p>${missingItemsText}`
-          : `<p>Complete your profile to start booking trusted sitters for your pets!</p>`;
-
-        const emailHtml = `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <style>
-                body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                .content { background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; }
-                .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-                .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-                .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">
-                  <h1 style="margin: 0;">🐾 Complete Your ZiggySitters Profile</h1>
-                </div>
-                <div class="content">
-                  <p>Hi ${profile.first_name || 'there'},</p>
-                  
-                  <p>We noticed you haven't finished setting up your ZiggySitters profile yet. We'd love to help you complete it!</p>
-                  
-                  ${roleSpecificMessage}
-
-                  <div class="warning-box">
-                    <p style="margin: 0;"><strong>⚠️ Safety Reminder:</strong> Never contact anyone outside of the ZiggySitters platform. All communication should happen through our secure messaging system to protect your safety and security.</p>
+              <div class="steps">
+                <h3 style="color: #667eea; margin-top: 0;">Quick Setup - Just 3 Steps:</h3>
+                
+                <div class="step">
+                  <div class="step-number">1</div>
+                  <div class="step-content">
+                    <strong>Upload Documents</strong><br>
+                    Police check and identification (we verify everything securely)
                   </div>
-
-                  <div style="text-align: center;">
-                    <a href="https://ziggysitters.com/onboarding" class="button">Complete My Profile</a>
-                  </div>
-
-                  <p>If you need any help or have questions, feel free to reply to this email or contact our support team.</p>
-
-                  <p>Thanks for choosing ZiggySitters!</p>
-                  
-                  <p style="margin-top: 30px;">Best regards,<br>The ZiggySitters Team</p>
                 </div>
-                <div class="footer">
-                  <p>© 2025 ZiggySitters. All rights reserved.</p>
-                  <p>This is an automated reminder. If you've already completed your profile, please disregard this message.</p>
+                
+                <div class="step">
+                  <div class="step-number">2</div>
+                  <div class="step-content">
+                    <strong>Set Your Services</strong><br>
+                    Tell us what services you offer and your rates
+                  </div>
+                </div>
+                
+                <div class="step">
+                  <div class="step-number">3</div>
+                  <div class="step-content">
+                    <strong>Connect Payment</strong><br>
+                    Quick Stripe setup to receive your earnings
+                  </div>
                 </div>
               </div>
-            </body>
-          </html>
-        `;
 
-        const { data: emailData, error: emailError } = await resend.emails.send({
-          from: "ZiggySitters <onboarding@ziggysitters.com>",
-          to: [profile.email],
-          subject: "Complete Your ZiggySitters Profile 🐾",
-          html: emailHtml,
-        });
+              <div class="message">
+                <p><strong>Need help?</strong> If you have any questions or run into any issues, just reply to this email. Our team is here to support you every step of the way!</p>
+                
+                <p>We can't wait to welcome you to the Ziggy Sitters family and help you start your pet sitting journey! 🎉</p>
+                
+                <p>Warm regards,<br>
+                <strong>The Ziggy Sitters Team</strong></p>
+              </div>
+            </div>
 
-        if (emailError) {
-          console.error(`Error sending email to ${profile.email}:`, emailError);
-          emailResults.push({ email: profile.email, success: false, error: emailError.message });
-        } else {
-          console.log(`Email sent successfully to ${profile.email}`);
-          emailResults.push({ email: profile.email, success: true, emailId: emailData?.id });
-        }
-      } catch (error: any) {
-        console.error(`Error processing profile ${profile.email}:`, error);
-        emailResults.push({ email: profile.email, success: false, error: error.message });
-      }
-    }
+            <div class="footer">
+              <p><strong>Ziggy Sitters</strong> - New Zealand's Trusted Pet Sitting Platform</p>
+              <p style="margin-top: 15px;">
+                <a href="${onboardingUrl}">Complete Onboarding</a> · 
+                <a href="mailto:support@ziggysitters.com">Contact Support</a>
+              </p>
+              <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                This email was sent because you started the sitter registration process on Ziggy Sitters.
+              </p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
 
-    return new Response(
-      JSON.stringify({
-        message: `Processed ${incompleteProfiles.length} profiles`,
-        results: emailResults,
-        summary: {
-          total: emailResults.length,
-          successful: emailResults.filter(r => r.success).length,
-          failed: emailResults.filter(r => !r.success).length
-        }
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-    );
+    console.log("Onboarding reminder sent successfully:", emailResponse);
+
+    return new Response(JSON.stringify({ success: true, messageId: emailResponse.data?.id }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    });
   } catch (error: any) {
-    console.error("Error in send-onboarding-reminder:", error);
+    console.error("Error sending onboarding reminder:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
     );
   }
-});
+};
+
+serve(handler);

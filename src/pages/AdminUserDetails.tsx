@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard } from 'lucide-react';
+import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type UserProfile = {
@@ -215,6 +215,36 @@ export default function AdminUserDetails() {
     }
   };
 
+  const sendOnboardingReminder = async () => {
+    if (!profile) return;
+
+    try {
+      const onboardingUrl = `${window.location.origin}/onboarding`;
+      
+      const { error } = await supabase.functions.invoke('send-onboarding-reminder', {
+        body: {
+          sitterEmail: profile.email,
+          sitterName: profile.first_name,
+          onboardingUrl: onboardingUrl
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reminder Sent!",
+        description: `Onboarding reminder email sent to ${profile.email}`,
+      });
+    } catch (error) {
+      console.error('Error sending onboarding reminder:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send onboarding reminder",
+        variant: "destructive"
+      });
+    }
+  };
+
   const updateVerificationStatus = async (isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
     if (!profile) return;
 
@@ -381,23 +411,37 @@ export default function AdminUserDetails() {
             </div>
             
             {/* Action Buttons for Sitters */}
-            {profile.role === 'pet_sitter' && profile.verification_status !== 'verified' && (
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => updateVerificationStatus(true, 'verified')}
-                  className="flex items-center"
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Approve Sitter
-                </Button>
-                {profile.verification_status !== 'rejected' && (
+            {profile.role === 'pet_sitter' && (
+              <div className="flex gap-2 flex-wrap">
+                {profile.verification_status !== 'verified' && (
+                  <>
+                    <Button 
+                      onClick={() => updateVerificationStatus(true, 'verified')}
+                      className="flex items-center"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Approve Sitter
+                    </Button>
+                    {profile.verification_status !== 'rejected' && (
+                      <Button 
+                        variant="destructive"
+                        onClick={() => updateVerificationStatus(false, 'rejected')}
+                        className="flex items-center"
+                      >
+                        <XCircle className="w-4 h-4 mr-2" />
+                        Reject
+                      </Button>
+                    )}
+                  </>
+                )}
+                {!profile.onboarding_completed && (
                   <Button 
-                    variant="destructive"
-                    onClick={() => updateVerificationStatus(false, 'rejected')}
+                    variant="outline"
+                    onClick={sendOnboardingReminder}
                     className="flex items-center"
                   >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Reject
+                    <Send className="w-4 h-4 mr-2" />
+                    Send Onboarding Reminder
                   </Button>
                 )}
               </div>
