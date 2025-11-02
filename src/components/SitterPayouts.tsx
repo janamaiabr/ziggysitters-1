@@ -35,27 +35,38 @@ export default function SitterPayouts({ sitterId }: SitterPayoutsProps) {
 
   const fetchPayouts = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
-        .select(`
-          id,
-          booking_reference,
-          total_amount,
-          platform_fee,
-          status,
-          payment_status,
-          start_date,
-          end_date,
-          penalty_amount,
-          owner:owner_id (first_name, last_name)
-        `)
+        .select('*')
         .eq('sitter_id', sitterId)
         .eq('status', 'completed')
         .in('payment_status', ['paid', 'paid_out'])
         .order('end_date', { ascending: false });
 
-      if (error) throw error;
-      setPayouts((data as any) || []);
+      if (bookingsError) throw bookingsError;
+
+      if (!bookingsData || bookingsData.length === 0) {
+        setPayouts([]);
+        return;
+      }
+
+      // Fetch owner profiles separately
+      const ownerIds = [...new Set(bookingsData.map(b => b.owner_id))];
+      const { data: ownersData, error: ownersError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name')
+        .in('id', ownerIds);
+
+      if (ownersError) throw ownersError;
+
+      // Map owners to bookings
+      const ownersMap = new Map(ownersData?.map(o => [o.id, o]) || []);
+      const payoutsWithOwners = bookingsData.map(booking => ({
+        ...booking,
+        owner: ownersMap.get(booking.owner_id) || { first_name: 'Unknown', last_name: 'Owner' }
+      }));
+
+      setPayouts(payoutsWithOwners as any);
     } catch (error) {
       console.error('Error fetching payouts:', error);
     } finally {
