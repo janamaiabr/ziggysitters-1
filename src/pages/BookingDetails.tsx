@@ -186,11 +186,22 @@ export default function BookingDetails() {
         }
       }
     } catch (error) {
-      console.error('Error fetching booking:', error);
+      console.error('Error fetching booking details:', error);
+      console.error('Error details:', { 
+        message: error instanceof Error ? error.message : 'Unknown error',
+        bookingId: id,
+        userId: user?.id,
+        profileId: profile?.id
+      });
+      
+      // Show more specific error message
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load booking details';
+      
       toast({
-        title: 'Error',
-        description: 'Failed to load booking details',
+        title: 'Error Loading Booking',
+        description: errorMessage,
         variant: 'destructive',
+        duration: 6000
       });
     } finally {
       setLoading(false);
