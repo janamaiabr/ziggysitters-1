@@ -25,19 +25,41 @@ const logStep = (step: string, details?: any) => {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  // Create Supabase client using the service role key for admin access
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    { auth: { persistSession: false } }
-  );
-
   try {
+    console.log("[CREATE-BOOKING] === FUNCTION INVOKED ===");
+    console.log("[CREATE-BOOKING] Request method:", req.method);
+    
+    // Handle CORS preflight requests
+    if (req.method === "OPTIONS") {
+      console.log("[CREATE-BOOKING] Handling OPTIONS request");
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    // Check environment variables
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error("[CREATE-BOOKING] Missing environment variables", { 
+        hasUrl: !!supabaseUrl, 
+        hasKey: !!serviceRoleKey 
+      });
+      return new Response(JSON.stringify({ error: "Server configuration error" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
+    
+    console.log("[CREATE-BOOKING] Environment variables OK");
+
+    // Create Supabase client using the service role key for admin access
+    const supabaseClient = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      { auth: { persistSession: false } }
+    );
+    
+    console.log("[CREATE-BOOKING] Supabase client created");
     logStep("Function started");
 
     // Retrieve authenticated user
@@ -362,7 +384,12 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-booking", { message: errorMessage });
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("[CREATE-BOOKING] === CRITICAL ERROR ===");
+    console.error("[CREATE-BOOKING] Error message:", errorMessage);
+    console.error("[CREATE-BOOKING] Error stack:", errorStack);
+    console.error("[CREATE-BOOKING] Error object:", JSON.stringify(error, null, 2));
+    logStep("ERROR in create-booking", { message: errorMessage, stack: errorStack });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
