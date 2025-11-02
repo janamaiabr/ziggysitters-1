@@ -108,6 +108,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   useEffect(() => {
     const fetchBookedDates = async () => {
       if (!isOpen || !sitter?.id) {
+        setBookedDates([]);
         setLoadingBookedDates(false);
         return;
       }
@@ -115,27 +116,41 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       setLoadingBookedDates(true);
       console.log('=== Fetching booked dates for sitter:', sitter.id);
 
-      const { data: bookings, error } = await supabase
-        .from('bookings')
-        .select('start_date, end_date, status')
-        .eq('sitter_id', sitter.id.toString())
-        .in('status', ['pending', 'awaiting_payment', 'confirmed', 'in_progress']);
+      try {
+        const { data: bookings, error } = await supabase
+          .from('bookings')
+          .select('start_date, end_date, status')
+          .eq('sitter_id', sitter.id.toString())
+          .in('status', ['pending', 'awaiting_payment', 'confirmed', 'in_progress']);
 
-      if (error) {
-        console.error('Error fetching booked dates:', error);
-        setLoadingBookedDates(false);
-        return;
+        if (error) {
+          console.error('Error fetching booked dates:', error);
+          toast({
+            title: "Warning",
+            description: "Unable to load sitter availability. Please refresh and try again.",
+            variant: "destructive"
+          });
+          setLoadingBookedDates(false);
+          return;
+        }
+
+        if (bookings && bookings.length > 0) {
+          const dates = bookings.map(b => ({
+            start: new Date(b.start_date),
+            end: new Date(b.end_date)
+          }));
+          console.log('=== Booked dates loaded:', dates.length, 'bookings');
+          console.log('Booked date ranges:', dates.map(d => `${d.start.toDateString()} - ${d.end.toDateString()}`));
+          setBookedDates(dates);
+        } else {
+          console.log('=== No bookings found for this sitter');
+          setBookedDates([]);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching booked dates:', err);
+        setBookedDates([]);
       }
 
-      if (bookings) {
-        const dates = bookings.map(b => ({
-          start: new Date(b.start_date),
-          end: new Date(b.end_date)
-        }));
-        console.log('=== Booked dates loaded:', dates.length, 'bookings');
-        console.log('Booked date ranges:', dates);
-        setBookedDates(dates);
-      }
       setLoadingBookedDates(false);
     };
 
@@ -485,10 +500,12 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       if (data && typeof data === 'object' && 'error' in data) {
         const serverError = (data as any).error;
         let errorMessage = 'Unable to create booking. Please try again.';
+        let errorTitle = 'Booking Error';
         
         if (typeof serverError === 'string') {
-          if (serverError.toLowerCase().includes('not available') || serverError.toLowerCase().includes('overlapping')) {
-            errorMessage = 'These dates are no longer available. The sitter has another booking during this time. Please select different dates.';
+          if (serverError.toLowerCase().includes('not available') || serverError.toLowerCase().includes('overlapping') || serverError.toLowerCase().includes('conflict')) {
+            errorTitle = '❌ Dates Not Available';
+            errorMessage = 'The sitter is already booked during these dates. Please select different dates and try again.';
           } else if (serverError.toLowerCase().includes('pricing') || serverError.toLowerCase().includes('rate')) {
             errorMessage = 'There was an issue with the pricing. Please try again or contact support.';
           } else if (serverError.toLowerCase().includes('pet')) {
@@ -498,11 +515,33 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           }
         }
         
+        console.error('Server error:', serverError);
         toast({
-          title: "Booking Unavailable",
+          title: errorTitle,
           description: errorMessage,
           variant: "destructive",
+          duration: 6000,
         });
+        
+        // Force refresh booked dates to show conflicts on calendar
+        try {
+          const { data: refreshedBookings } = await supabase
+            .from('bookings')
+            .select('start_date, end_date, status')
+            .eq('sitter_id', sitter.id.toString())
+            .in('status', ['pending', 'awaiting_payment', 'confirmed', 'in_progress']);
+          
+          if (refreshedBookings) {
+            const dates = refreshedBookings.map(b => ({
+              start: new Date(b.start_date),
+              end: new Date(b.end_date)
+            }));
+            setBookedDates(dates);
+          }
+        } catch (refreshError) {
+          console.error('Error refreshing booked dates:', refreshError);
+        }
+        
         throw new Error(errorMessage);
       }
 
