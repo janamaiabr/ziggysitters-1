@@ -504,8 +504,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         
         if (typeof serverError === 'string') {
           if (serverError.toLowerCase().includes('not available') || serverError.toLowerCase().includes('overlapping') || serverError.toLowerCase().includes('conflict')) {
-            errorTitle = '❌ Dates Not Available';
-            errorMessage = 'The sitter is already booked during these dates. Please select different dates and try again.';
+            errorTitle = '🚫 Sitter Unavailable';
+            errorMessage = '⚠️ This sitter is already booked for the selected dates. The calendar has been updated to show unavailable dates. Please choose different dates.';
           } else if (serverError.toLowerCase().includes('pricing') || serverError.toLowerCase().includes('rate')) {
             errorMessage = 'There was an issue with the pricing. Please try again or contact support.';
           } else if (serverError.toLowerCase().includes('pet')) {
@@ -516,14 +516,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         }
         
         console.error('Server error:', serverError);
-        toast({
-          title: errorTitle,
-          description: errorMessage,
-          variant: "destructive",
-          duration: 6000,
-        });
         
-        // Force refresh booked dates to show conflicts on calendar
+        // Force refresh booked dates to show conflicts on calendar BEFORE showing toast
         try {
           const { data: refreshedBookings } = await supabase
             .from('bookings')
@@ -541,6 +535,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         } catch (refreshError) {
           console.error('Error refreshing booked dates:', refreshError);
         }
+        
+        // Show a more prominent, longer-lasting toast for unavailability
+        toast({
+          title: errorTitle,
+          description: errorMessage,
+          variant: "destructive",
+          duration: 10000, // 10 seconds instead of 6
+        });
         
         throw new Error(errorMessage);
       }

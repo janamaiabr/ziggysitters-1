@@ -125,27 +125,33 @@ export default function BookingDetails() {
         .from('bookings')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (bookingError) throw bookingError;
+      
+      if (!bookingData) {
+        throw new Error('Booking not found');
+      }
 
       // Fetch owner profile
       const { data: ownerData, error: ownerError } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email, phone, address, suburb, city, avatar_url')
         .eq('id', bookingData.owner_id)
-        .single();
+        .maybeSingle();
 
       if (ownerError) throw ownerError;
+      if (!ownerData) throw new Error('Owner profile not found');
 
       // Fetch sitter profile
       const { data: sitterData, error: sitterError } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email, phone, avatar_url')
         .eq('id', bookingData.sitter_id)
-        .single();
+        .maybeSingle();
 
       if (sitterError) throw sitterError;
+      if (!sitterData) throw new Error('Sitter profile not found');
 
       // Combine the data
       const fullBookingData = {
