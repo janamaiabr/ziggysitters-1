@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 import { useToast } from '@/hooks/use-toast';
-import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard, CheckCircle2, Circle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
@@ -807,7 +807,7 @@ export default function Bookings() {
                             </>
                           )}
                           
-                          {(booking.status === 'confirmed' || booking.status === 'in_progress') && (
+                          {((booking.status === 'confirmed' || booking.status === 'in_progress') && booking.requires_daily_reports) && (
                             <Button 
                               variant="outline" 
                               size="sm" 
@@ -820,7 +820,18 @@ export default function Bookings() {
                               }}
                               className="flex-1 sm:flex-none sm:min-w-[120px]"
                             >
-                              {booking.sitter_id === profile.id ? 'Submit Report' : 'View Reports'}
+                              {booking.sitter_id === profile.id ? (
+                                <span className="flex items-center gap-2">
+                                  {booking.daily_reports_completed >= booking.daily_reports_required ? (
+                                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                  ) : (
+                                    <Circle className="w-4 h-4" />
+                                  )}
+                                  {booking.daily_reports_completed >= booking.daily_reports_required ? 'Reports Complete' : `Submit Report (${booking.daily_reports_completed}/${booking.daily_reports_required})`}
+                                </span>
+                              ) : (
+                                `View Reports (${booking.daily_reports_completed}/${booking.daily_reports_required})`
+                              )}
                             </Button>
                           )}
                           {/* Owner can pay only when status is awaiting_payment (after sitter accepts) */}
