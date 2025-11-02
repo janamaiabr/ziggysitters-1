@@ -488,15 +488,18 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         }));
       }
 
-      console.log('Sending booking data:', bookingData);
+      console.log('[BOOKING] Sending booking data:', bookingData);
+      console.log('[BOOKING] Current user session:', await supabase.auth.getSession());
 
       const { data, error } = await supabase.functions.invoke('create-booking', {
         body: bookingData
       });
 
-      console.log('=== Booking Response ===');
-      console.log('Data:', data);
-      console.log('Error:', error);
+      console.log('[BOOKING] === Response ===');
+      console.log('[BOOKING] Data:', JSON.stringify(data, null, 2));
+      console.log('[BOOKING] Error:', JSON.stringify(error, null, 2));
+      console.log('[BOOKING] Error message:', error?.message);
+      console.log('[BOOKING] Error context:', error?.context);
 
       // Check if data contains an error message first (this happens when edge function returns 400)
       if (data && typeof data === 'object' && 'error' in data) {
@@ -551,10 +554,28 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
 
       // Handle network/function errors
       if (error) {
-        console.error('Edge function error:', error);
+        console.error('[BOOKING] Edge function error:', error);
+        console.error('[BOOKING] Error details:', {
+          message: error.message,
+          name: error.name,
+          context: error.context,
+          status: error.status
+        });
+        
+        let errorMessage = 'Unable to reach the server. Please check your connection and try again.';
+        
+        // Provide more specific error message based on error type
+        if (error.message?.includes('FunctionsHttpError')) {
+          errorMessage = 'Server error occurred. Please try again or contact support.';
+        } else if (error.message?.includes('FunctionsRelayError')) {
+          errorMessage = 'Connection error. Please check your internet connection.';
+        } else if (error.message?.includes('FunctionsFetchError')) {
+          errorMessage = 'Network error. Please try again.';
+        }
+        
         toast({
           title: "Booking Failed",
-          description: 'Unable to reach the server. Please check your connection and try again.',
+          description: errorMessage + ` (${error.message})`,
           variant: "destructive",
         });
         throw new Error('Network error');

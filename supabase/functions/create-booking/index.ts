@@ -64,15 +64,30 @@ serve(async (req) => {
 
     // Retrieve authenticated user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      console.error("[CREATE-BOOKING] No authorization header");
+      throw new Error("No authorization header provided");
+    }
+    
+    console.log("[CREATE-BOOKING] Auth header present:", authHeader.substring(0, 20) + "...");
     
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    
+    if (userError) {
+      console.error("[CREATE-BOOKING] Auth error:", userError);
+      throw new Error(`Authentication failed: ${userError.message}`);
+    }
+    
+    const user = userData.user;
+    if (!user?.email) {
+      console.error("[CREATE-BOOKING] No user or email");
+      throw new Error("User not authenticated or email not available");
+    }
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     // Get user profile
+    console.log("[CREATE-BOOKING] Fetching profile for user:", user.id);
     const { data: profile, error: profileError } = await supabaseClient
       .from('profiles')
       .select('*')
@@ -80,13 +95,15 @@ serve(async (req) => {
       .maybeSingle();
     
     if (profileError) {
+      console.error("[CREATE-BOOKING] Profile error:", profileError);
       throw new Error(`Database error fetching profile: ${profileError.message}`);
     }
     
     if (!profile) {
-      throw new Error("User profile not found");
+      console.error("[CREATE-BOOKING] No profile found for user:", user.id);
+      throw new Error("User profile not found. Please complete your profile setup.");
     }
-    logStep("User profile found", { profileId: profile.id });
+    logStep("User profile found", { profileId: profile.id, role: profile.role });
 
     const bookingData: BookingRequest = await req.json();
     logStep("Booking request received", bookingData);
