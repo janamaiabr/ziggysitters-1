@@ -32,13 +32,20 @@ interface DailyReport {
   exercise_duration: number;
   photo_urls: string[];
   submitted_at: string;
+  booking?: {
+    booking_reference: string;
+  };
+}
+
+interface BookingWithReportCount extends Booking {
+  actualReportsCount: number;
 }
 
 export default function SitterDailyReports() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const { toast } = useToast();
-  const [activeBookings, setActiveBookings] = useState<Booking[]>([]);
+  const [activeBookings, setActiveBookings] = useState<BookingWithReportCount[]>([]);
   const [recentReports, setRecentReports] = useState<DailyReport[]>([]);
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
@@ -55,7 +62,7 @@ export default function SitterDailyReports() {
     if (!profile?.id) return;
 
     try {
-      const { data, error } = await supabase
+      const { data: bookingsData, error } = await supabase
         .from('bookings')
         .select(`
           id,
@@ -75,7 +82,23 @@ export default function SitterDailyReports() {
         .order('start_date', { ascending: true });
 
       if (error) throw error;
-      setActiveBookings(data || []);
+
+      // Fetch actual report counts for each booking
+      const bookingsWithCounts = await Promise.all(
+        (bookingsData || []).map(async (booking) => {
+          const { count } = await supabase
+            .from('daily_reports')
+            .select('*', { count: 'exact', head: true })
+            .eq('booking_id', booking.id);
+
+          return {
+            ...booking,
+            actualReportsCount: count || 0
+          };
+        })
+      );
+
+      setActiveBookings(bookingsWithCounts);
     } catch (error) {
       console.error('Error fetching active bookings:', error);
     } finally {
@@ -87,7 +110,7 @@ export default function SitterDailyReports() {
     if (!profile?.id) return;
 
     try {
-      const { data, error } = await supabase
+      const { data: reportsData, error } = await supabase
         .from('daily_reports')
         .select(`
           id,
@@ -105,7 +128,24 @@ export default function SitterDailyReports() {
         .limit(10);
 
       if (error) throw error;
-      setRecentReports(data || []);
+
+      // Fetch booking references for each report
+      const reportsWithBookings = await Promise.all(
+        (reportsData || []).map(async (report) => {
+          const { data: booking } = await supabase
+            .from('bookings')
+            .select('booking_reference')
+            .eq('id', report.booking_id)
+            .single();
+
+          return {
+            ...report,
+            booking: booking || undefined
+          };
+        })
+      );
+
+      setRecentReports(reportsWithBookings);
     } catch (error) {
       console.error('Error fetching recent reports:', error);
     }
@@ -192,7 +232,7 @@ export default function SitterDailyReports() {
                   
                   <div className="flex items-center justify-between">
                     <div className="text-sm">
-                      Reports: {booking.daily_reports_completed} / {booking.daily_reports_required}
+                      Reports: {booking.actualReportsCount} / {booking.daily_reports_required}
                     </div>
                     <Button 
                       size="sm"
@@ -230,9 +270,16 @@ export default function SitterDailyReports() {
               {recentReports.map((report) => (
                 <div key={report.id} className="border rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <div className="font-medium">
-                        Report for {format(new Date(report.report_date), 'MMM dd, yyyy')}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="font-medium">
+                          Report for {format(new Date(report.report_date), 'MMM dd, yyyy')}
+                        </div>
+                        {report.booking?.booking_reference && (
+                          <Badge variant="secondary" className="text-xs">
+                            {report.booking.booking_reference}
+                          </Badge>
+                        )}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         Submitted {format(new Date(report.submitted_at), 'MMM dd, yyyy h:mm a')}
