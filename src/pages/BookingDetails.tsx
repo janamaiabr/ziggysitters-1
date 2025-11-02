@@ -49,6 +49,8 @@ interface Booking {
   platform_fee: number;
   status: string;
   payment_status: string;
+  stripe_checkout_session_id: string | null;
+  stripe_payment_intent_id: string | null;
   special_instructions: string;
   requires_daily_reports: boolean;
   daily_reports_required: number;
@@ -462,6 +464,24 @@ export default function BookingDetails() {
   const canAccept = isSitter && booking.status === 'pending';
   const needsPayment = isOwner && booking.status === 'awaiting_payment';
 
+  // Determine display status based on payment state
+  const getStatusDisplay = () => {
+    if (booking.status === 'awaiting_payment') {
+      // If there's a Stripe session/intent ID, payment is being processed
+      if (booking.stripe_checkout_session_id || booking.stripe_payment_intent_id) {
+        return { label: 'PAYMENT PROCESSING', color: statusColors.awaiting_payment };
+      }
+      // Otherwise, still waiting for payment to be initiated
+      return { label: 'AWAITING PAYMENT', color: statusColors.awaiting_payment };
+    }
+    return { 
+      label: booking.status.replace('_', ' ').toUpperCase(), 
+      color: statusColors[booking.status] 
+    };
+  };
+
+  const statusDisplay = getStatusDisplay();
+
   const handleProceedToPayment = async () => {
     if (!booking) return;
     
@@ -600,8 +620,8 @@ export default function BookingDetails() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Booking Details
           </h1>
-          <Badge className={`${statusColors[booking.status]} text-lg px-4 py-2`}>
-            {booking.status.replace('_', ' ').toUpperCase()}
+          <Badge className={`${statusDisplay.color} text-lg px-4 py-2`}>
+            {statusDisplay.label}
           </Badge>
         </div>
         <p className="text-lg text-muted-foreground">Reference: {booking.booking_reference}</p>
