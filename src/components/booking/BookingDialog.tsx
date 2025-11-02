@@ -14,7 +14,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
-import { CalendarIcon, Clock, DollarSign, MapPin, User, Shield, Plus, X } from 'lucide-react';
+import { 
+  CalendarIcon, Clock, DollarSign, MapPin, User, Shield, Plus, X, AlertCircle
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { metaPixel } from '@/lib/metaPixel';
 
@@ -755,6 +757,20 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           {/* Date Selection - For pet sitting and dog walking */}
           {serviceType && (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home' || serviceType === 'dog_walking') && (
             <div className="space-y-4">
+              {/* Booked dates info banner */}
+              {bookedDates.length > 0 && (
+                <Card className="bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-800">
+                  <CardContent className="p-3">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm text-orange-900 dark:text-orange-100">
+                        <span className="font-semibold">Note:</span> Dates with a red background are already booked and cannot be selected. Please choose different dates.
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
               <div className={cn("grid gap-4", serviceType === 'dog_walking' ? "grid-cols-1" : "grid-cols-2")}>
                 <div className="space-y-3">
                   <label className="text-sm font-medium">{serviceType === 'dog_walking' ? 'Start Date' : 'Start Date'} *</label>
@@ -787,9 +803,11 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                         }}
                         modifiersStyles={{
                           booked: { 
+                            backgroundColor: 'hsl(0 84.2% 60.2%)',
+                            color: 'white',
                             textDecoration: 'line-through',
-                            color: 'hsl(var(--muted-foreground))',
-                            opacity: 0.5
+                            opacity: 0.7,
+                            fontWeight: 'bold'
                           }
                         }}
                         initialFocus
@@ -833,9 +851,11 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                           }}
                           modifiersStyles={{
                             booked: { 
+                              backgroundColor: 'hsl(0 84.2% 60.2%)',
+                              color: 'white',
                               textDecoration: 'line-through',
-                              color: 'hsl(var(--muted-foreground))',
-                              opacity: 0.5
+                              opacity: 0.7,
+                              fontWeight: 'bold'
                             }
                           }}
                           initialFocus
@@ -987,9 +1007,10 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                                   // Check if date is booked
                                   if (isDateBooked(date)) {
                                     toast({
-                                      title: "Date Unavailable",
-                                      description: "This date is already booked. Please choose a different date.",
+                                      title: "🚫 Date Unavailable",
+                                      description: "This sitter is already booked on this date. Please choose a different date - booked dates are shown with a red background.",
                                       variant: "destructive",
+                                      duration: 8000,
                                     });
                                     return;
                                   }
@@ -1010,9 +1031,11 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                               }}
                               modifiersStyles={{
                                 booked: { 
+                                  backgroundColor: 'hsl(0 84.2% 60.2%)',
+                                  color: 'white',
                                   textDecoration: 'line-through',
-                                  color: 'hsl(var(--muted-foreground))',
-                                  opacity: 0.5
+                                  opacity: 0.7,
+                                  fontWeight: 'bold'
                                 }
                               }}
                             />
