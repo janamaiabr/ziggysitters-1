@@ -118,25 +118,41 @@ export default function BookingDetails() {
     try {
       setLoading(true);
       
-      // Fetch booking with owner and sitter details
+      // Fetch booking
       const { data: bookingData, error: bookingError } = await supabase
         .from('bookings')
-        .select(`
-          *,
-          owner:profiles!bookings_owner_id_fkey(
-            id, first_name, last_name, email, phone, 
-            address, suburb, city, avatar_url
-          ),
-          sitter:profiles!bookings_sitter_id_fkey(
-            id, first_name, last_name, email, phone, avatar_url
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .single();
 
       if (bookingError) throw bookingError;
+
+      // Fetch owner profile
+      const { data: ownerData, error: ownerError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, avatar_url')
+        .eq('id', bookingData.owner_id)
+        .single();
+
+      if (ownerError) throw ownerError;
+
+      // Fetch sitter profile
+      const { data: sitterData, error: sitterError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email, phone, avatar_url')
+        .eq('id', bookingData.sitter_id)
+        .single();
+
+      if (sitterError) throw sitterError;
+
+      // Combine the data
+      const fullBookingData = {
+        ...bookingData,
+        owner: ownerData,
+        sitter: sitterData
+      };
       
-      setBooking(bookingData);
+      setBooking(fullBookingData);
 
       // Fetch pets
       if (bookingData.pet_ids && bookingData.pet_ids.length > 0) {
@@ -149,8 +165,8 @@ export default function BookingDetails() {
         setPets(petsData || []);
       }
 
-      // Fetch daily reports for this booking
-      if (isSitter && bookingData?.requires_daily_reports) {
+      // Fetch daily reports for this booking (only for sitters)
+      if (profile?.id === sitterData.id && bookingData?.requires_daily_reports) {
         const { data: reportsData, error: reportsError } = await supabase
           .from('daily_reports')
           .select('*')
