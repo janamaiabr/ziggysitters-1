@@ -547,6 +547,26 @@ export default function Bookings() {
 
   const handleCompleteBooking = async (bookingId: string) => {
     try {
+      // Find the booking to check report requirements
+      const booking = bookings.find(b => b.id === bookingId);
+      
+      if (!booking) {
+        throw new Error('Booking not found');
+      }
+
+      // Check if daily reports are required and all have been submitted
+      if (booking.requires_daily_reports) {
+        if (booking.daily_reports_completed < booking.daily_reports_required) {
+          toast({
+            title: "Cannot complete booking",
+            description: `You must submit all ${booking.daily_reports_required} required daily reports before completing this booking. Currently submitted: ${booking.daily_reports_completed}`,
+            variant: "destructive",
+            duration: 8000,
+          });
+          return;
+        }
+      }
+
       const { error } = await supabase.rpc('update_booking_status', {
         booking_id: bookingId,
         new_status: 'completed'
@@ -886,15 +906,23 @@ export default function Bookings() {
                              Cancel
                            </Button>
                          )}
-                         {booking.status === 'in_progress' && booking.sitter_id === profile?.id && (
-                           <Button
-                             size="sm"
-                             onClick={() => handleCompleteBooking(booking.id)}
-                             className="flex-1 sm:flex-none sm:min-w-[140px]"
-                           >
-                             Complete Service
-                           </Button>
-                         )}
+                          {booking.status === 'in_progress' && booking.sitter_id === profile?.id && (
+                            <>
+                              {booking.requires_daily_reports && booking.daily_reports_completed < booking.daily_reports_required && (
+                                <div className="text-xs text-amber-600 dark:text-amber-500 font-medium mb-2 px-2 py-1 bg-amber-50 dark:bg-amber-950 rounded border border-amber-200 dark:border-amber-800">
+                                  ⚠️ Submit all {booking.daily_reports_required} daily reports before completing ({booking.daily_reports_completed}/{booking.daily_reports_required} done)
+                                </div>
+                              )}
+                              <Button
+                                size="sm"
+                                onClick={() => handleCompleteBooking(booking.id)}
+                                className="flex-1 sm:flex-none sm:min-w-[140px]"
+                                disabled={booking.requires_daily_reports && booking.daily_reports_completed < booking.daily_reports_required}
+                              >
+                                Complete Service
+                              </Button>
+                            </>
+                          )}
                        </div>
                      </div>
                   </div>
