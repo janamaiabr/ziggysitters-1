@@ -101,9 +101,15 @@ serve(async (req) => {
         booking.daily_reports_completed < booking.daily_reports_required &&
         !booking.penalty_applied) {
       
-      // Calculate 15% penalty
-      penaltyAmount = Math.round(booking.total_amount * 0.15 * 100) / 100;
-      logStep("Incomplete reports detected - applying 15% penalty", { 
+      // Calculate PROPORTIONAL penalty: 15% total, divided by missing reports
+      // Example: 5 days, 4 reports = 1 missing = 15% / 5 = 3% penalty
+      // Example: 5 days, 3 reports = 2 missing = 15% / 5 * 2 = 6% penalty
+      const totalPenaltyPercentage = 0.15; // 15% maximum
+      const missedReports = booking.daily_reports_required - booking.daily_reports_completed;
+      const penaltyPercentage = (totalPenaltyPercentage / booking.daily_reports_required) * missedReports;
+      penaltyAmount = Math.round(booking.total_amount * penaltyPercentage * 100) / 100;
+      
+      logStep("Incomplete reports detected - applying proportional penalty", {
         penalty_amount: penaltyAmount,
         reports_completed: booking.daily_reports_completed,
         reports_required: booking.daily_reports_required 
@@ -123,19 +129,19 @@ serve(async (req) => {
 
         logStep("Creating refund for penalty", { charge_id: chargeId, amount: penaltyAmount });
 
-        // Create a refund for 15% back to the owner
-        // This also reverses the transfer to the sitter automatically
+        // Create a partial refund back to the owner (proportional to missing reports)
         const refund = await stripe.refunds.create({
           charge: chargeId,
           amount: Math.round(penaltyAmount * 100), // Convert to cents
           reason: 'requested_by_customer',
           metadata: {
             booking_id: booking_id,
-            reason: 'Incomplete daily reports',
+            reason: 'Proportional penalty for incomplete daily reports',
             reports_completed: booking.daily_reports_completed.toString(),
             reports_required: booking.daily_reports_required.toString(),
+            missed_reports: missedReports.toString(),
+            penalty_percentage: (penaltyPercentage * 100).toFixed(1) + '%',
           },
-          reverse_transfer: true, // This reverses the transfer from sitter's account
         });
 
         logStep("Refund created successfully", { refund_id: refund.id, amount: penaltyAmount });
@@ -220,23 +226,72 @@ serve(async (req) => {
       sitter_receives: sitterReceived
     });
 
-    // Record payout transaction
-    await supabaseClient.from('transactions').insert({
-      booking_id: booking_id,
-      transaction_type: 'payout',
-      amount: -sitterReceived, // Negative for money leaving platform
-      gst_amount: 0,
-      platform_earnings: 0,
-      description: `Payout to sitter for booking ${booking.booking_reference}${penaltyApplied ? ` (with ${penaltyAmount} penalty)` : ''}`,
-      stripe_payment_intent_id: booking.stripe_payment_intent_id,
-      metadata: {
-        penalty_applied: penaltyApplied,
-        penalty_amount: penaltyAmount,
-        stripe_fee: stripeFee,
-        platform_fee: booking.platform_fee,
-        net_payout: sitterReceived
-      }
-    });
+    // Create Stripe Transfer to pay the sitter
+    try {
+      logStep("Creating Stripe Transfer to sitter", {
+        amount: sitterReceived,
+        destination: booking.sitter.stripe_account_id
+      });
+
+      const transfer = await stripe.transfers.create({
+        amount: Math.round(sitterReceived * 100), // Convert to cents
+        currency: 'nzd',
+        destination: booking.sitter.stripe_account_id,
+        description: `Payout for booking ${booking.booking_reference}${penaltyApplied ? ` (penalty: $${penaltyAmount})` : ''}`,
+        metadata: {
+          booking_id: booking_id,
+          booking_reference: booking.booking_reference,
+          penalty_applied: penaltyApplied.toString(),
+          penalty_amount: penaltyAmount.toString(),
+        },
+      });
+
+      logStep("Stripe Transfer created successfully", {
+        transfer_id: transfer.id,
+        amount: sitterReceived
+      });
+
+      // Record payout transaction with transfer ID
+      await supabaseClient.from('transactions').insert({
+        booking_id: booking_id,
+        transaction_type: 'payout',
+        amount: -sitterReceived, // Negative for money leaving platform
+        gst_amount: 0,
+        platform_earnings: 0,
+        description: `Payout to sitter for booking ${booking.booking_reference}${penaltyApplied ? ` (with $${penaltyAmount} penalty)` : ''}`,
+        stripe_payment_intent_id: booking.stripe_payment_intent_id,
+        stripe_transfer_id: transfer.id,
+        metadata: {
+          penalty_applied: penaltyApplied,
+          penalty_amount: penaltyAmount,
+          stripe_fee: stripeFee,
+          platform_fee: booking.platform_fee,
+          net_payout: sitterReceived,
+          transfer_id: transfer.id
+        }
+      });
+
+      // Send success email to sitter
+      await supabaseClient.functions.invoke('send-payout-success-email', {
+        body: {
+          sitter_email: booking.sitter.email,
+          sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+          owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+          booking_reference: booking.booking_reference,
+          payout_amount: sitterReceived,
+          penalty_applied: penaltyApplied,
+          penalty_amount: penaltyAmount,
+          reports_completed: booking.daily_reports_completed,
+          reports_required: booking.daily_reports_required,
+        }
+      });
+
+      logStep("Payout success email sent to sitter");
+
+    } catch (transferError) {
+      logStep("ERROR creating Stripe Transfer", { error: transferError.message });
+      throw new Error(`Failed to transfer payout to sitter: ${transferError.message}`);
+    }
 
     return new Response(
       JSON.stringify({
