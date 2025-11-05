@@ -48,7 +48,12 @@ export default function SitterCalendar() {
   }, [profile?.id]);
 
   const fetchBookings = async () => {
-    if (!profile?.id) return;
+    if (!profile?.id) {
+      console.log('[CALENDAR] No profile ID available');
+      return;
+    }
+    
+    console.log('[CALENDAR] Fetching bookings for sitter:', profile.id);
     
     const { data, error } = await supabase
       .from('bookings')
@@ -56,10 +61,18 @@ export default function SitterCalendar() {
       .eq('sitter_id', profile.id)
       .in('status', ['pending', 'confirmed', 'in_progress']);
 
+    console.log('[CALENDAR] Bookings response:', { data, error, count: data?.length });
+
     if (error) {
-      console.error('Error fetching bookings:', error);
+      console.error('[CALENDAR] Error fetching bookings:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load your bookings',
+        variant: 'destructive'
+      });
     } else {
       setBookings(data || []);
+      console.log('[CALENDAR] Bookings set:', data?.length || 0);
     }
   };
 
