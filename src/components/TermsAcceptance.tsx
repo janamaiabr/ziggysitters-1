@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 
 interface TermsAcceptanceProps {
   isOpen: boolean;
@@ -15,44 +13,13 @@ interface TermsAcceptanceProps {
 
 export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAcceptanceProps) {
   const [accepted, setAccepted] = useState(false);
-  const [alreadyAccepted, setAlreadyAccepted] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth();
-
-  // Check if user has already accepted terms
-  useEffect(() => {
-    const checkTermsAcceptance = async () => {
-      if (!user || !isOpen) return;
-      
-      const { data } = await supabase
-        .from('profiles')
-        .select('terms_accepted')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      if (data?.terms_accepted) {
-        console.log('User already accepted terms - auto-closing dialog');
-        setAlreadyAccepted(true);
-        // Auto-close and call onAccept to proceed
-        onAccept();
-      }
-    };
-    
-    checkTermsAcceptance();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, user]); // Intentionally excluding onAccept to prevent infinite loop
 
   const handleAccept = () => {
     if (accepted) {
       onAccept();
     }
   };
-
-  // Don't render if user already accepted
-  if (alreadyAccepted) {
-    return null;
-  }
-
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onDecline(); }}>
