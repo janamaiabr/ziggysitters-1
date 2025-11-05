@@ -123,11 +123,16 @@ export default function SitterPayouts({ sitterId }: SitterPayoutsProps) {
       {/* Pending Payouts */}
       {pendingPayouts.length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-semibold">Pending Payouts</h3>
+          <div>
+            <h3 className="font-semibold">Pending Payouts</h3>
+            <p className="text-xs text-muted-foreground mt-1">
+              Automatically processed daily. Funds will be transferred to your Stripe account.
+            </p>
+          </div>
           {pendingPayouts.map((booking) => (
             <Card key={booking.id}>
               <CardContent className="pt-6">
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start justify-between mb-4">
                   <div>
                     <h4 className="font-semibold">{booking.booking_reference}</h4>
                     <p className="text-sm text-muted-foreground">
@@ -139,30 +144,31 @@ export default function SitterPayouts({ sitterId }: SitterPayoutsProps) {
                   </div>
                   <Badge variant="secondary">
                     <Clock className="w-3 h-3 mr-1" />
-                    Pending
+                    Processing
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-sm">
-                  <div>
-                    <p className="text-muted-foreground text-xs">Service Fee</p>
-                    <p className="font-semibold">${booking.total_amount.toFixed(2)}</p>
+                {/* Earnings Breakdown */}
+                <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Booking Total</span>
+                    <span className="font-medium">${booking.total_amount.toFixed(2)}</span>
                   </div>
-                  <div>
-                    <p className="text-muted-foreground text-xs">Platform Fee</p>
-                    <p className="font-semibold text-red-600">-${booking.platform_fee.toFixed(2)}</p>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Platform Fee (10%)</span>
+                    <span className="font-medium">${booking.platform_fee.toFixed(2)}</span>
                   </div>
                   {booking.penalty_amount > 0 && (
-                    <div>
-                      <p className="text-muted-foreground text-xs">Penalty</p>
-                      <p className="font-semibold text-red-600">-${booking.penalty_amount.toFixed(2)}</p>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Report Penalty</span>
+                      <span className="font-medium">${booking.penalty_amount.toFixed(2)}</span>
                     </div>
                   )}
-                  <div className={booking.penalty_amount > 0 ? 'col-span-3' : ''}>
-                    <p className="text-muted-foreground text-xs">Your Payout</p>
-                    <p className="font-bold text-green-600 text-lg">
+                  <div className="border-t pt-2 flex justify-between">
+                    <span className="font-semibold">You'll Receive</span>
+                    <span className="font-bold text-lg text-primary">
                       ${calculateNetPayout(booking).toFixed(2)}
-                    </p>
+                    </span>
                   </div>
                 </div>
               </CardContent>
