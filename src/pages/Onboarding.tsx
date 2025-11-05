@@ -82,8 +82,8 @@ export default function Onboarding() {
       return;
     }
 
-    // Check if user is admin - if so, skip onboarding
-    const checkAdminStatus = async () => {
+    // Check if user is admin or already completed onboarding
+    const checkUserStatus = async () => {
       try {
         // Use secure user_roles table
         const { data: roleData, error } = await supabase
@@ -98,12 +98,32 @@ export default function Onboarding() {
           navigate('/admin-dashboard');
           return;
         }
+
+        // Check if user already completed onboarding
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('onboarding_completed, terms_accepted')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (profileData?.onboarding_completed) {
+          console.log('User already completed onboarding - redirecting away');
+          // Clear any stale localStorage
+          localStorage.removeItem('onboarding_step');
+          localStorage.removeItem('onboarding_data');
+          navigate('/', { replace: true });
+          return;
+        }
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error('Error checking user status:', error);
       }
     };
 
-    checkAdminStatus();
+    checkUserStatus();
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (!user) return;
 
     // Pre-fill with existing user data if available
     const fetchExistingProfile = async () => {
