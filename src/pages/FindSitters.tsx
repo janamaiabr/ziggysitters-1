@@ -130,7 +130,7 @@ export default function FindSitters() {
     }
   }, [allSitters]); // Run when sitters are loaded
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     console.log('Performing search with:', { location, serviceType, petType, selectedDate, checkOutDate });
     
     let filtered = [...allSitters];
@@ -163,6 +163,57 @@ export default function FindSitters() {
       filtered = filtered.filter(sitter => 
         sitter.pet_types.includes(petType)
       );
+    }
+
+    // Filter by date availability if dates are provided
+    if (selectedDate && checkOutDate) {
+      try {
+        const startDate = selectedDate.toISOString().split('T')[0];
+        const endDate = checkOutDate.toISOString().split('T')[0];
+        
+        console.log('Checking availability for dates:', startDate, 'to', endDate);
+
+        // Get all sitters who have marked themselves as UNavailable for these dates
+        const { data: unavailableSitters, error: availError } = await supabase
+          .from('sitter_availability')
+          .select('sitter_id')
+          .gte('date', startDate)
+          .lte('date', endDate)
+          .eq('is_available', false);
+
+        if (availError) {
+          console.error('Error checking availability:', availError);
+        } else {
+          const unavailableSitterIds = new Set(
+            (unavailableSitters || []).map(a => a.sitter_id)
+          );
+          console.log('Sitters unavailable for these dates:', Array.from(unavailableSitterIds));
+
+          // Get bookings that overlap with requested dates
+          const { data: bookings, error: bookingError } = await supabase
+            .from('bookings')
+            .select('sitter_id')
+            .lte('start_date', endDate)
+            .gte('end_date', startDate)
+            .in('status', ['pending', 'awaiting_payment', 'confirmed', 'in_progress']);
+
+          if (bookingError) {
+            console.error('Error checking bookings:', bookingError);
+          } else {
+            const bookedSitterIds = new Set(
+              (bookings || []).map(b => b.sitter_id)
+            );
+            console.log('Sitters with overlapping bookings:', Array.from(bookedSitterIds));
+
+            // Filter out sitters who are unavailable OR have bookings
+            filtered = filtered.filter(sitter => 
+              !unavailableSitterIds.has(sitter.id) && !bookedSitterIds.has(sitter.id)
+            );
+          }
+        }
+      } catch (error) {
+        console.error('Error filtering by availability:', error);
+      }
     }
 
     console.log('Filtered results:', filtered);
