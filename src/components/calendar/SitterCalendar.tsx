@@ -59,7 +59,7 @@ export default function SitterCalendar() {
       .from('bookings')
       .select('*')
       .eq('sitter_id', profile.id)
-      .in('status', ['pending', 'confirmed', 'in_progress']);
+      .in('status', ['pending', 'confirmed', 'in_progress', 'awaiting_payment', 'completed']);
 
     console.log('[CALENDAR] Bookings response:', { data, error, count: data?.length });
 
