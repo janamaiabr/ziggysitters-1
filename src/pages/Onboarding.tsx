@@ -202,13 +202,25 @@ export default function Onboarding() {
 
   const handleAcceptTerms = async () => {
     try {
+      if (!user?.id) {
+        throw new Error('User not authenticated');
+      }
+
+      console.log('Attempting to save terms acceptance for user:', user.id);
+      
       // Save terms acceptance to database
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({ terms_accepted: true })
-        .eq('user_id', user?.id);
+        .eq('user_id', user.id)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error details:', error);
+        throw error;
+      }
+
+      console.log('Terms acceptance saved successfully:', data);
 
       setShowTerms(false);
       setTermsChecked(true);
@@ -223,7 +235,7 @@ export default function Onboarding() {
       console.error('Error saving terms acceptance:', error);
       toast({
         title: "Error",
-        description: "Failed to save terms acceptance. Please try again.",
+        description: `Failed to save terms acceptance: ${error.message || 'Please try again.'}`,
         variant: "destructive",
       });
     }
