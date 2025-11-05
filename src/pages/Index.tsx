@@ -399,17 +399,17 @@ const Index = () => {
             
             <div className="bg-card border rounded-xl p-8 shadow-sm">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <span className="text-4xl font-bold text-primary">2%</span>
+                <span className="text-4xl font-bold text-primary">5%</span>
                 <div className="text-left">
                   <p className="font-semibold">of our profits</p>
                   <p className="text-sm text-muted-foreground">goes directly to</p>
                 </div>
               </div>
               
-              <h3 className="text-xl font-semibold mb-3">Animal Shelters & Charities Worldwide</h3>
+              <h3 className="text-xl font-semibold mb-3">SPCA New Zealand</h3>
               <p className="text-muted-foreground mb-6">
-                Your bookings help us support animal rescue organizations, provide medical care for abandoned pets, 
-                and fund spay/neuter programs in communities that need it most.
+                Your bookings help us support the SPCA's vital work in animal rescue, providing medical care for abandoned pets, 
+                and funding spay/neuter programs across New Zealand.
               </p>
               
               <div className="grid md:grid-cols-3 gap-6 text-sm">
