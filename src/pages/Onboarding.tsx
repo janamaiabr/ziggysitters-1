@@ -206,21 +206,27 @@ export default function Onboarding() {
         throw new Error('User not authenticated');
       }
 
-      console.log('Attempting to save terms acceptance for user:', user.id);
-      
-      // Save terms acceptance to database
-      const { data, error } = await supabase
-        .from('profiles')
-        .update({ terms_accepted: true })
-        .eq('user_id', user.id)
-        .select();
+      // Get the current session to pass auth token to edge function
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('No active session');
+      }
+
+      // Call edge function to save terms acceptance with elevated privileges
+      const { data, error } = await supabase.functions.invoke('save-terms-acceptance', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
       if (error) {
-        console.error('Supabase error details:', error);
+        console.error('Edge function error:', error);
         throw error;
       }
 
-      console.log('Terms acceptance saved successfully:', data);
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to save terms acceptance');
+      }
 
       setShowTerms(false);
       setTermsChecked(true);
@@ -235,7 +241,7 @@ export default function Onboarding() {
       console.error('Error saving terms acceptance:', error);
       toast({
         title: "Error",
-        description: `Failed to save terms acceptance: ${error.message || 'Please try again.'}`,
+        description: error.message || 'Failed to save terms acceptance. Please try again.',
         variant: "destructive",
       });
     }
