@@ -22,7 +22,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
   // Check if user has already accepted terms
   useEffect(() => {
     const checkTermsAcceptance = async () => {
-      if (!user) return;
+      if (!user || !isOpen) return;
       
       const { data } = await supabase
         .from('profiles')
@@ -38,10 +38,9 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
       }
     };
     
-    if (isOpen) {
-      checkTermsAcceptance();
-    }
-  }, [isOpen, user, onAccept]);
+    checkTermsAcceptance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, user]); // Intentionally excluding onAccept to prevent infinite loop
 
   const handleAccept = () => {
     if (accepted) {
