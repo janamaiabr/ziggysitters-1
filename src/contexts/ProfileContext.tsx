@@ -106,16 +106,21 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
           return;
         }
         
-        // Use the onboarding_completed flag as the primary check
-        // If onboarding_completed is explicitly true, consider it completed
-        const isCompleted = data.onboarding_completed === true;
+        // Check if user has completed basic profile info
+        // If they have basic info, consider onboarding complete regardless of flag
+        const hasBasicInfo = !!(data.first_name && data.last_name && data.phone && data.address);
+        const onboardingFlagSet = data.onboarding_completed === true;
+        
+        // User needs onboarding only if they lack basic info AND flag is not set
+        const isCompleted = hasBasicInfo || onboardingFlagSet;
         
         console.log('ProfileContext: Onboarding completion check:', {
           onboardingCompleted: data.onboarding_completed,
+          hasBasicInfo,
+          onboardingFlagSet,
           isCompleted,
           hasPhone: !!data.phone,
           hasAddress: !!data.address,
-          hasSuburb: !!data.suburb,
           hasFirstName: !!data.first_name,
           hasLastName: !!data.last_name,
           role: data.role
