@@ -140,15 +140,22 @@ export default function Onboarding() {
           const hasAcceptedTerms = profile.terms_accepted === true;
           setTermsChecked(hasAcceptedTerms);
           
-          // Only show terms if not accepted AND not currently showing
-          if (!hasAcceptedTerms && !showTerms) {
-            setShowTerms(true);
-            setStep(0);
-            localStorage.setItem('onboarding_step', '0');
-          } else if (hasAcceptedTerms && step === 0) {
-            // If terms already accepted and we're at step 0, move forward
-            setStep(1);
-            localStorage.setItem('onboarding_step', '1');
+          // For existing users who already accepted terms, clear any stale localStorage
+          if (hasAcceptedTerms) {
+            const savedStep = localStorage.getItem('onboarding_step');
+            if (savedStep === '0') {
+              console.log('Existing user with accepted terms - clearing stale step 0');
+              localStorage.removeItem('onboarding_step');
+              setStep(1);
+            }
+            setShowTerms(false);
+          } else {
+            // Only show terms if not accepted AND not currently showing
+            if (!showTerms) {
+              setShowTerms(true);
+              setStep(0);
+              localStorage.setItem('onboarding_step', '0');
+            }
           }
 
           // Only update data if localStorage doesn't have it
