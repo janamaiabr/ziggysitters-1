@@ -76,6 +76,9 @@ export default function Onboarding() {
   // Stripe returns are now handled in Profile.tsx payments tab
   // No need to handle them here anymore
 
+  // CRITICAL: Block rendering if user already completed onboarding
+  const [blockRender, setBlockRender] = useState(true);
+  
   useEffect(() => {
     if (!user) {
       navigate('/auth');
@@ -95,7 +98,7 @@ export default function Onboarding() {
 
         if (!error && roleData) {
           // Admin users skip onboarding and go directly to admin dashboard
-          navigate('/admin-dashboard');
+          navigate('/admin-dashboard', { replace: true });
           return;
         }
 
@@ -114,8 +117,13 @@ export default function Onboarding() {
           navigate('/', { replace: true });
           return;
         }
+        
+        // User needs onboarding - allow rendering
+        setBlockRender(false);
       } catch (error) {
         console.error('Error checking user status:', error);
+        // On error, allow rendering to prevent blocking
+        setBlockRender(false);
       }
     };
 
@@ -474,6 +482,11 @@ export default function Onboarding() {
   };
 
   const prevStep = () => setStep(step - 1);
+  
+  // Don't render anything if user already completed onboarding
+  if (blockRender) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   const renderRoleSelection = () => (
     <div className="space-y-6">
