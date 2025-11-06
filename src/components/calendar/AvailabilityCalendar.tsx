@@ -15,6 +15,14 @@ interface AvailabilityData {
   is_available: boolean;
 }
 
+interface Booking {
+  id: string;
+  start_date: string;
+  end_date: string;
+  status: string;
+  booking_reference: string;
+}
+
 interface AvailabilityCalendarProps {
   sitterId: string;
 }
@@ -23,12 +31,14 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [availability, setAvailability] = useState<AvailabilityData[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchAvailability();
+    fetchBookings();
   }, [currentDate, sitterId]);
 
   const fetchAvailability = async () => {
@@ -48,6 +58,27 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
       }
     } catch (error) {
       console.error('Error fetching availability:', error);
+    }
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const startDate = startOfMonth(currentDate);
+      const endDate = endOfMonth(currentDate);
+
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('id, start_date, end_date, status, booking_reference')
+        .eq('sitter_id', sitterId)
+        .in('status', ['confirmed', 'awaiting_payment', 'in_progress'])
+        .lte('start_date', format(endDate, 'yyyy-MM-dd'))
+        .gte('end_date', format(startDate, 'yyyy-MM-dd'));
+
+      if (!error && data) {
+        setBookings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
     }
   };
 
@@ -142,30 +173,63 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
     );
   };
 
+  const isDateBooked = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return bookings.some(booking => {
+      return dateStr >= booking.start_date && dateStr <= booking.end_date;
+    });
+  };
+
+  const getBookingForDate = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return bookings.find(booking => {
+      return dateStr >= booking.start_date && dateStr <= booking.end_date;
+    });
+  };
+
   const getDayClassName = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     const dayAvailability = availability.find(a => a.date === dateStr);
+    const isBooked = isDateBooked(date);
     
+    // Booked dates take priority - show as blue (booking)
+    if (isBooked) {
+      return cn(
+        "relative",
+        "bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-100 hover:bg-blue-200 dark:hover:bg-blue-900 border-blue-300 dark:border-blue-700"
+      );
+    }
+    
+    // Then manually marked availability
     if (!dayAvailability) return '';
     
     return cn(
       "relative",
       dayAvailability.is_available 
-        ? "bg-green-100 text-green-900 hover:bg-green-200" 
-        : "bg-red-100 text-red-900 hover:bg-red-200"
+        ? "bg-green-100 dark:bg-green-950 text-green-900 dark:text-green-100 hover:bg-green-200 dark:hover:bg-green-900" 
+        : "bg-red-100 dark:bg-red-950 text-red-900 dark:text-red-100 hover:bg-red-200 dark:hover:bg-red-900"
     );
   };
 
   const getDayContent = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     const dayAvailability = availability.find(a => a.date === dateStr);
+    const booking = getBookingForDate(date);
     
+    // Show booking indicator
+    if (booking) {
+      return (
+        <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />
+      );
+    }
+    
+    // Show manual availability indicator
     if (!dayAvailability) return null;
     
     return (
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="absolute top-0 right-0 w-2 h-2 rounded-full">
         <div className={cn(
-          "w-2 h-2 rounded-full",
+          "w-full h-full rounded-full",
           dayAvailability.is_available ? "bg-green-500" : "bg-red-500"
         )} />
       </div>
@@ -240,7 +304,11 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center space-x-6 text-sm text-muted-foreground">
+        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-blue-600 mr-2" />
+            Booked
+          </div>
           <div className="flex items-center">
             <div className="w-3 h-3 rounded-full bg-red-500 mr-2" />
             Unavailable
@@ -264,39 +332,51 @@ export default function AvailabilityCalendar({ sitterId }: AvailabilityCalendarP
               {selectedDate && (() => {
                 const dateStr = format(selectedDate, 'yyyy-MM-dd');
                 const currentAvailability = availability.find(a => a.date === dateStr);
+                const booking = getBookingForDate(selectedDate);
                 
                 return (
-                  <div className="p-4 bg-muted rounded-lg">
+                  <div className="p-4 bg-muted rounded-lg space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="font-medium">Current Status:</span>
-                      <Badge variant={currentAvailability?.is_available !== false ? 'default' : 'destructive'}>
-                        {currentAvailability ? (currentAvailability.is_available ? 'Available' : 'Unavailable') : 'Available (default)'}
+                      <Badge variant={
+                        booking ? 'default' : 
+                        currentAvailability?.is_available !== false ? 'default' : 'destructive'
+                      }>
+                        {booking ? `Booked (${booking.booking_reference})` : 
+                         currentAvailability ? (currentAvailability.is_available ? 'Available' : 'Unavailable') : 'Available (default)'}
                       </Badge>
                     </div>
+                    {booking && (
+                      <p className="text-sm text-muted-foreground">
+                        This date is part of a confirmed booking and cannot be changed.
+                      </p>
+                    )}
                   </div>
                 );
               })()}
 
-              {/* Action buttons */}
-              <div className="flex space-x-2">
-                <Button 
-                  onClick={() => handleSaveAvailability(true)}
-                  disabled={loading}
-                  className="flex-1"
-                >
-                  <Check className="w-4 h-4 mr-2" />
-                  Mark Available
-                </Button>
-                <Button 
-                  onClick={() => handleSaveAvailability(false)}
-                  disabled={loading}
-                  variant="destructive"
-                  className="flex-1"
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Mark Unavailable
-                </Button>
-              </div>
+              {/* Action buttons - disabled if date is booked */}
+              {selectedDate && !getBookingForDate(selectedDate) && (
+                <div className="flex space-x-2">
+                  <Button 
+                    onClick={() => handleSaveAvailability(true)}
+                    disabled={loading}
+                    className="flex-1"
+                  >
+                    <Check className="w-4 h-4 mr-2" />
+                    Mark Available
+                  </Button>
+                  <Button 
+                    onClick={() => handleSaveAvailability(false)}
+                    disabled={loading}
+                    variant="destructive"
+                    className="flex-1"
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Mark Unavailable
+                  </Button>
+                </div>
+              )}
 
               {selectedDate && (() => {
                 const dateStr = format(selectedDate, 'yyyy-MM-dd');
