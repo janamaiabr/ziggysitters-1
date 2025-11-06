@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 import { useToast } from '@/hooks/use-toast';
-import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard, CheckCircle2, Circle } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard, CheckCircle2, Circle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
@@ -828,31 +828,51 @@ export default function Bookings() {
                           )}
                           
                           {((booking.status === 'confirmed' || booking.status === 'in_progress') && booking.requires_daily_reports) && (
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => {
-                                if (booking.owner_id === profile.id) {
-                                  navigate('/daily-reports');
-                                } else if (booking.sitter_id === profile.id) {
-                                  navigate('/daily-reports');
-                                }
-                              }}
-                              className="flex-1 sm:flex-none sm:min-w-[120px]"
-                            >
+                            <div className="flex-1 sm:flex-none">
                               {booking.sitter_id === profile.id ? (
-                                <span className="flex items-center gap-2">
-                                  {booking.daily_reports_completed >= booking.daily_reports_required ? (
-                                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                  ) : (
-                                    <Circle className="w-4 h-4" />
-                                  )}
-                                  {booking.daily_reports_completed >= booking.daily_reports_required ? 'Reports Complete' : `Submit Report (${booking.daily_reports_completed}/${booking.daily_reports_required})`}
-                                </span>
+                                booking.daily_reports_completed >= booking.daily_reports_required ? (
+                                  <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold text-green-700 dark:text-green-300">All Reports Complete</p>
+                                      <p className="text-xs text-green-600 dark:text-green-400">{booking.daily_reports_completed}/{booking.daily_reports_required} submitted</p>
+                                    </div>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => navigate(`/booking/${booking.id}`)}
+                                      className="text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200"
+                                    >
+                                      View
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-2 p-2 bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg">
+                                    <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold text-orange-700 dark:text-orange-300">Reports Needed</p>
+                                      <p className="text-xs text-orange-600 dark:text-orange-400">{booking.daily_reports_completed}/{booking.daily_reports_required} submitted</p>
+                                    </div>
+                                    <Button 
+                                      size="sm"
+                                      onClick={() => navigate(`/booking/${booking.id}`)}
+                                      className="bg-orange-600 hover:bg-orange-700 text-white"
+                                    >
+                                      Submit
+                                    </Button>
+                                  </div>
+                                )
                               ) : (
-                                `View Reports (${booking.daily_reports_completed}/${booking.daily_reports_required})`
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => navigate(`/booking/${booking.id}`)}
+                                  className="w-full"
+                                >
+                                  View Reports ({booking.daily_reports_completed}/{booking.daily_reports_required})
+                                </Button>
                               )}
-                            </Button>
+                            </div>
                           )}
                           {/* Owner can pay only when status is awaiting_payment (after sitter accepts) */}
                           {booking.owner_id === profile.id && (booking.status === 'awaiting_payment' || booking.status === 'pending') && (
