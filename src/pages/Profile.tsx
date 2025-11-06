@@ -433,35 +433,49 @@ export default function Profile() {
     }
 
     try {
+      console.log('Saving service:', { editingService, serviceEditData, profileId: profile.id });
+      
       // Check if this is a new service (using key) or existing (using id)
       const existingService = sitterServices.find(s => s.id === editingService);
       
       if (existingService) {
         // Update existing service
-        const { error } = await supabase
+        console.log('Updating existing service:', existingService.id);
+        const { data, error } = await supabase
           .from('sitter_services')
           .update(serviceEditData)
           .eq('id', editingService)
-          .eq('sitter_id', profile.id);
+          .eq('sitter_id', profile.id)
+          .select();
 
-        if (!error) {
-          setSitterServices(prev => 
-            prev.map(service => 
-              service.id === editingService 
-                ? { ...service, ...serviceEditData }
-                : service
-            )
-          );
-          setEditingService(null);
-          setServiceEditData({});
+        if (error) {
+          console.error('Update error:', error);
           toast({
-            title: "Service updated",
-            description: "Your service has been successfully updated.",
+            title: "Error updating service",
+            description: error.message || "Failed to update service. Please try again.",
+            variant: "destructive",
           });
+          return;
         }
+
+        console.log('Update successful:', data);
+        setSitterServices(prev => 
+          prev.map(service => 
+            service.id === editingService 
+              ? { ...service, ...serviceEditData }
+              : service
+          )
+        );
+        setEditingService(null);
+        setServiceEditData({});
+        toast({
+          title: "Service updated",
+          description: "Your service has been successfully updated.",
+        });
       } else {
         // Insert new service
-        const { error } = await supabase
+        console.log('Inserting new service for type:', serviceEditData.service_type);
+        const { data, error } = await supabase
           .from('sitter_services')
           .insert({
             sitter_id: profile.id,
@@ -469,26 +483,36 @@ export default function Profile() {
             daily_rate: serviceEditData.daily_rate,
             overnight_rate: serviceEditData.overnight_rate,
             description: serviceEditData.description,
-            max_pets: serviceEditData.max_pets,
-            is_offered: serviceEditData.is_offered
-          });
+            max_pets: serviceEditData.max_pets || 1,
+            is_offered: serviceEditData.is_offered !== false
+          })
+          .select();
 
-        if (!error) {
-          setEditingService(null);
-          setServiceEditData({});
-          // Refresh services list
-          fetchSitterServices();
+        if (error) {
+          console.error('Insert error:', error);
           toast({
-            title: "Service added",
-            description: "Your new service has been added successfully.",
+            title: "Error adding service",
+            description: error.message || "Failed to add service. Please try again.",
+            variant: "destructive",
           });
+          return;
         }
+
+        console.log('Insert successful:', data);
+        setEditingService(null);
+        setServiceEditData({});
+        // Refresh services list
+        await fetchSitterServices();
+        toast({
+          title: "Service added",
+          description: "Your new service has been added successfully.",
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving service:', error);
       toast({
         title: "Error",
-        description: "Failed to save service. Please try again.",
+        description: error?.message || "Failed to save service. Please try again.",
         variant: "destructive",
       });
     }
