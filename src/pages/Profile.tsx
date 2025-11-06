@@ -419,7 +419,10 @@ export default function Profile() {
   };
 
   const handleSaveService = async () => {
-    if (!editingService || !profile) return;
+    if (!editingService || !profile) {
+      console.error('Missing requirements:', { editingService, profile });
+      return;
+    }
 
     // Validate that at least one rate is provided and greater than 0
     const { daily_rate, overnight_rate } = serviceEditData;
@@ -433,23 +436,40 @@ export default function Profile() {
     }
 
     try {
-      console.log('Saving service:', { editingService, serviceEditData, profileId: profile.id });
+      console.log('=== SAVE SERVICE DEBUG ===');
+      console.log('editingService:', editingService);
+      console.log('serviceEditData:', serviceEditData);
+      console.log('profile.id:', profile.id);
+      console.log('sitterServices:', sitterServices);
       
       // Check if this is a new service (using key) or existing (using id)
       const existingService = sitterServices.find(s => s.id === editingService);
+      console.log('existingService found:', existingService);
       
       if (existingService) {
         // Update existing service
-        console.log('Updating existing service:', existingService.id);
+        console.log('=== UPDATING EXISTING SERVICE ===');
+        console.log('Updating service ID:', existingService.id);
+        
+        const updatePayload = {
+          daily_rate: serviceEditData.daily_rate || null,
+          overnight_rate: serviceEditData.overnight_rate || null,
+          description: serviceEditData.description || '',
+          max_pets: serviceEditData.max_pets || 1,
+          is_offered: serviceEditData.is_offered !== false
+        };
+        console.log('Update payload:', updatePayload);
+        
         const { data, error } = await supabase
           .from('sitter_services')
-          .update(serviceEditData)
-          .eq('id', editingService)
-          .eq('sitter_id', profile.id)
+          .update(updatePayload)
+          .eq('id', existingService.id)
           .select();
 
+        console.log('Update response:', { data, error });
+
         if (error) {
-          console.error('Update error:', error);
+          console.error('❌ Update error:', error);
           toast({
             title: "Error updating service",
             description: error.message || "Failed to update service. Please try again.",
@@ -458,11 +478,21 @@ export default function Profile() {
           return;
         }
 
-        console.log('Update successful:', data);
+        if (!data || data.length === 0) {
+          console.error('❌ Update returned no data - RLS might be blocking');
+          toast({
+            title: "Permission error",
+            description: "Unable to update service. Please check your permissions.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        console.log('✅ Update successful:', data);
         setSitterServices(prev => 
           prev.map(service => 
-            service.id === editingService 
-              ? { ...service, ...serviceEditData }
+            service.id === existingService.id 
+              ? { ...service, ...updatePayload }
               : service
           )
         );
@@ -474,22 +504,29 @@ export default function Profile() {
         });
       } else {
         // Insert new service
-        console.log('Inserting new service for type:', serviceEditData.service_type);
+        console.log('=== INSERTING NEW SERVICE ===');
+        console.log('Service type:', serviceEditData.service_type);
+        
+        const insertPayload = {
+          sitter_id: profile.id,
+          service_type: serviceEditData.service_type,
+          daily_rate: serviceEditData.daily_rate || null,
+          overnight_rate: serviceEditData.overnight_rate || null,
+          description: serviceEditData.description || '',
+          max_pets: serviceEditData.max_pets || 1,
+          is_offered: serviceEditData.is_offered !== false
+        };
+        console.log('Insert payload:', insertPayload);
+        
         const { data, error } = await supabase
           .from('sitter_services')
-          .insert({
-            sitter_id: profile.id,
-            service_type: serviceEditData.service_type,
-            daily_rate: serviceEditData.daily_rate,
-            overnight_rate: serviceEditData.overnight_rate,
-            description: serviceEditData.description,
-            max_pets: serviceEditData.max_pets || 1,
-            is_offered: serviceEditData.is_offered !== false
-          })
+          .insert(insertPayload)
           .select();
 
+        console.log('Insert response:', { data, error });
+
         if (error) {
-          console.error('Insert error:', error);
+          console.error('❌ Insert error:', error);
           toast({
             title: "Error adding service",
             description: error.message || "Failed to add service. Please try again.",
@@ -498,7 +535,17 @@ export default function Profile() {
           return;
         }
 
-        console.log('Insert successful:', data);
+        if (!data || data.length === 0) {
+          console.error('❌ Insert returned no data - RLS might be blocking');
+          toast({
+            title: "Permission error",
+            description: "Unable to add service. Please check your permissions.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        console.log('✅ Insert successful:', data);
         setEditingService(null);
         setServiceEditData({});
         // Refresh services list
@@ -509,7 +556,7 @@ export default function Profile() {
         });
       }
     } catch (error: any) {
-      console.error('Error saving service:', error);
+      console.error('❌ Exception in save service:', error);
       toast({
         title: "Error",
         description: error?.message || "Failed to save service. Please try again.",
