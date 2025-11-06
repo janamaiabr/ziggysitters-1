@@ -857,6 +857,10 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
+      can_sitter_view_owner_profile: {
+        Args: { owner_profile_id: string }
+        Returns: boolean
+      }
       cleanup_stale_payments: { Args: never; Returns: undefined }
       get_pet_basic_info_for_booking: {
         Args: { booking_id: string }
