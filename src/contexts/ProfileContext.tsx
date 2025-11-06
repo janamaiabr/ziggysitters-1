@@ -87,15 +87,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         });
         setProfile(data);
         
-        // Check if user is admin using secure user_roles table
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user?.id)
-          .eq('role', 'admin')
-          .maybeSingle();
-        
-        const isAdmin = !!roleData;
+        // Simple admin check using email - avoid RLS recursion
+        const isAdmin = user?.email === 'admin@ziggysitters.com';
         
         // Admin users should never need onboarding
         if (isAdmin) {
