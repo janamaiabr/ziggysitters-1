@@ -75,7 +75,16 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         console.log('ProfileContext: No profile found, setting needsOnboarding to true');
         setNeedsOnboarding(true);
       } else {
-        console.log('ProfileContext: Profile found:', data);
+        console.log('=== ProfileContext: Profile found ===', {
+          id: data.id,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          phone: data.phone,
+          address: data.address,
+          onboarding_completed: data.onboarding_completed,
+          terms_accepted: data.terms_accepted,
+          role: data.role
+        });
         setProfile(data);
         
         // Check if user is admin using secure user_roles table
@@ -114,7 +123,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         // User needs onboarding only if they lack basic info AND flag is not set
         const isCompleted = hasBasicInfo || onboardingFlagSet;
         
-        console.log('ProfileContext: Onboarding completion check:', {
+        console.log('=== ProfileContext: Onboarding completion check ===', {
           onboardingCompleted: data.onboarding_completed,
           hasBasicInfo,
           onboardingFlagSet,
@@ -127,7 +136,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         });
         
         const needsOnboardingValue = !isCompleted;
-        console.log('ProfileContext: Setting needsOnboarding to:', needsOnboardingValue);
+        console.log('=== ProfileContext: FINAL needsOnboarding ===', needsOnboardingValue);
         setNeedsOnboarding(needsOnboardingValue);
       }
     } catch (error) {

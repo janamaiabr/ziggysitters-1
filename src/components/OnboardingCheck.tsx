@@ -10,12 +10,19 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log('OnboardingCheck Debug:', {
+  console.log('=== OnboardingCheck Debug ===', {
     user: !!user,
     loading,
     needsOnboarding,
     currentPath: location.pathname,
-    profile: !!profile
+    hasProfile: !!profile,
+    profileData: profile ? {
+      first_name: profile.first_name,
+      last_name: profile.last_name,
+      phone: profile.phone,
+      address: profile.address,
+      onboarding_completed: profile.onboarding_completed
+    } : null
   });
 
   useEffect(() => {
@@ -43,7 +50,7 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
     // Don't redirect if they have basic info (name, phone, address) - let them use the app
     const hasBasicInfo = profile && profile.first_name && profile.last_name && profile.phone && profile.address;
     
-    console.log('OnboardingCheck useEffect:', {
+    console.log('=== OnboardingCheck useEffect ===', {
       user: !!user,
       loading,
       needsOnboarding,
@@ -54,7 +61,7 @@ export function OnboardingCheck({ children }: { children: React.ReactNode }) {
     });
     
     if (user && !loading && needsOnboarding && !hasBasicInfo && !isExcludedPath) {
-      console.log('OnboardingCheck: Redirecting to onboarding - missing basic info');
+      console.log('=== OnboardingCheck: REDIRECTING TO ONBOARDING ===');
       navigate('/onboarding', { replace: true });
     }
   }, [user, loading, needsOnboarding, profile, navigate, location.pathname]);
