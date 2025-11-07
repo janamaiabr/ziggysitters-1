@@ -95,6 +95,7 @@ serve(async (req) => {
     // Check if penalty needs to be applied
     let penaltyAmount = 0;
     let penaltyApplied = false;
+    let refundId = null;
     
     if (booking.requires_daily_reports && 
         booking.daily_reports_required > 0 && 
@@ -102,8 +103,6 @@ serve(async (req) => {
         !booking.penalty_applied) {
       
       // Calculate PROPORTIONAL penalty: 15% total, divided by missing reports
-      // Example: 5 days, 4 reports = 1 missing = 15% / 5 = 3% penalty
-      // Example: 5 days, 3 reports = 2 missing = 15% / 5 * 2 = 6% penalty
       const totalPenaltyPercentage = 0.15; // 15% maximum
       const missedReports = booking.daily_reports_required - booking.daily_reports_completed;
       const penaltyPercentage = (totalPenaltyPercentage / booking.daily_reports_required) * missedReports;
@@ -127,57 +126,83 @@ serve(async (req) => {
           ? paymentIntent.latest_charge 
           : paymentIntent.latest_charge.id;
 
-        logStep("Creating refund for penalty", { charge_id: chargeId, amount: penaltyAmount });
-
-        // Create a partial refund back to the owner (proportional to missing reports)
-        const refund = await stripe.refunds.create({
+        // Check if refunds already exist for this charge to prevent duplicates
+        const existingRefunds = await stripe.refunds.list({
           charge: chargeId,
-          amount: Math.round(penaltyAmount * 100), // Convert to cents
-          reason: 'requested_by_customer',
-          metadata: {
-            booking_id: booking_id,
-            reason: 'Proportional penalty for incomplete daily reports',
-            reports_completed: booking.daily_reports_completed.toString(),
-            reports_required: booking.daily_reports_required.toString(),
-            missed_reports: missedReports.toString(),
-            penalty_percentage: (penaltyPercentage * 100).toFixed(1) + '%',
-          },
+          limit: 10,
         });
 
-        logStep("Refund created successfully", { refund_id: refund.id, amount: penaltyAmount });
-        penaltyApplied = true;
+        const totalRefunded = existingRefunds.data.reduce((sum, refund) => {
+          return sum + (refund.status === 'succeeded' ? refund.amount : 0);
+        }, 0) / 100; // Convert from cents to dollars
 
-        // Send notification email to owner about refund
-        await supabaseClient.functions.invoke('send-penalty-notification', {
-          body: {
-            booking_id: booking_id,
-            owner_email: booking.owner.email,
-            owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
-            sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-            penalty_amount: penaltyAmount,
-            reports_completed: booking.daily_reports_completed,
-            reports_required: booking.daily_reports_required,
-            booking_reference: booking.booking_reference,
-          }
+        logStep("Checking existing refunds", { 
+          charge_id: chargeId, 
+          total_refunded: totalRefunded,
+          refund_count: existingRefunds.data.length 
         });
 
-        logStep("Penalty notification email sent to owner");
+        if (totalRefunded >= penaltyAmount) {
+          logStep("Penalty refund already processed - skipping", { 
+            total_refunded: totalRefunded,
+            penalty_amount: penaltyAmount 
+          });
+          penaltyApplied = true;
+          refundId = existingRefunds.data[0]?.id || null;
+        } else {
+          logStep("Creating refund for penalty", { charge_id: chargeId, amount: penaltyAmount });
 
-        // Send notification email to sitter about penalty deduction
-        await supabaseClient.functions.invoke('send-sitter-penalty-notification', {
-          body: {
-            booking_id: booking_id,
-            sitter_email: booking.sitter.email,
-            sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-            owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
-            penalty_amount: penaltyAmount,
-            reports_completed: booking.daily_reports_completed,
-            reports_required: booking.daily_reports_required,
-            booking_reference: booking.booking_reference,
-          }
-        });
+          // Create a partial refund back to the owner (proportional to missing reports)
+          const refund = await stripe.refunds.create({
+            charge: chargeId,
+            amount: Math.round(penaltyAmount * 100), // Convert to cents
+            reason: 'requested_by_customer',
+            metadata: {
+              booking_id: booking_id,
+              reason: 'Proportional penalty for incomplete daily reports',
+              reports_completed: booking.daily_reports_completed.toString(),
+              reports_required: booking.daily_reports_required.toString(),
+              missed_reports: missedReports.toString(),
+              penalty_percentage: (penaltyPercentage * 100).toFixed(1) + '%',
+            },
+          });
 
-        logStep("Penalty notification email sent to sitter");
+          logStep("Refund created successfully", { refund_id: refund.id, amount: penaltyAmount });
+          penaltyApplied = true;
+          refundId = refund.id;
+
+          // Send notification email to owner about refund
+          await supabaseClient.functions.invoke('send-penalty-notification', {
+            body: {
+              booking_id: booking_id,
+              owner_email: booking.owner.email,
+              owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+              sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+              penalty_amount: penaltyAmount,
+              reports_completed: booking.daily_reports_completed,
+              reports_required: booking.daily_reports_required,
+              booking_reference: booking.booking_reference,
+            }
+          });
+
+          logStep("Penalty notification email sent to owner");
+
+          // Send notification email to sitter about penalty deduction
+          await supabaseClient.functions.invoke('send-sitter-penalty-notification', {
+            body: {
+              booking_id: booking_id,
+              sitter_email: booking.sitter.email,
+              sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+              owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+              penalty_amount: penaltyAmount,
+              reports_completed: booking.daily_reports_completed,
+              reports_required: booking.daily_reports_required,
+              booking_reference: booking.booking_reference,
+            }
+          });
+
+          logStep("Penalty notification email sent to sitter");
+        }
 
       } catch (refundError) {
         logStep("ERROR creating refund", { error: refundError.message });

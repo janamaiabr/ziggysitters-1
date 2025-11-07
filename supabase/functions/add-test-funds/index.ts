@@ -56,26 +56,12 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Create a test payment method using the special card that adds to available balance
-    logStep("Creating test payment method");
-    const paymentMethod = await stripe.paymentMethods.create({
-      type: 'card',
-      card: {
-        number: '4000000000000077', // Special test card that adds to available balance
-        exp_month: 12,
-        exp_year: 2030,
-        cvc: '123',
-      },
-    });
-
-    logStep("Payment method created", { pm_id: paymentMethod.id });
-
-    // Create a PaymentIntent with this payment method
-    logStep("Creating payment intent");
+    // Create a PaymentIntent using the bypass pending token
+    logStep("Creating payment intent with bypass pending token");
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100, // Convert to cents
       currency: 'nzd',
-      payment_method: paymentMethod.id,
+      payment_method: 'pm_card_bypassPending',
       confirm: true,
       automatic_payment_methods: {
         enabled: true,
