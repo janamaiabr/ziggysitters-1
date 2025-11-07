@@ -97,7 +97,7 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
   };
 
   const handleSubmit = async (data: ReportFormData) => {
-    // CRITICAL FIX: Validate general notes not empty/spaces-only
+    // Validate general notes not empty/spaces-only
     if (!data.general_notes || !data.general_notes.trim() || data.general_notes.trim().length < 10) {
       toast({
         title: "Invalid Notes",
@@ -107,22 +107,42 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       return;
     }
 
-    // TEMPORARILY DISABLED FOR TESTING - RE-ENABLE AFTER TESTING COMPLETE
-    // CRITICAL FIX: Prevent future-dated reports
-    // const today = new Date().toISOString().split('T')[0];
-    // if (reportDate > today) {
-    //   toast({
-    //     title: "Invalid Date",
-    //     description: "You cannot submit reports for future dates. Please wait until the booking day.",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
+    // Prevent future-dated reports
+    const today = new Date().toISOString().split('T')[0];
+    if (reportDate > today) {
+      toast({
+        title: "Invalid Date",
+        description: "You cannot submit reports for future dates. Please wait until the booking day.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (uploadedPhotos.length === 0) {
       toast({
         title: "Photo required",
         description: "Please upload at least one photo of the pet",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if report already exists for this date
+    const { data: existingReport, error: checkError } = await supabase
+      .from('daily_reports')
+      .select('id')
+      .eq('booking_id', bookingId)
+      .eq('report_date', reportDate)
+      .maybeSingle();
+
+    if (checkError) {
+      console.error('Error checking for existing report:', checkError);
+    }
+
+    if (existingReport) {
+      toast({
+        title: "Report Already Submitted",
+        description: "You have already submitted a report for this date. Only one report per day is allowed.",
         variant: "destructive",
       });
       return;
@@ -192,11 +212,38 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       }
 
       onSubmit();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting report:', error);
+      
+      // Provide user-friendly error messages based on error type
+      let errorTitle = "Submission failed";
+      let errorDescription = "Failed to submit daily report. Please try again.";
+
+      if (error?.message) {
+        // Handle duplicate report error
+        if (error.message.includes('unique_booking_report_date') || 
+            error.message.includes('duplicate key')) {
+          errorTitle = "Report Already Submitted";
+          errorDescription = "You have already submitted a report for this date. Only one report per day is allowed.";
+        }
+        // Handle date validation errors from trigger
+        else if (error.message.includes('Report date must be within the booking period')) {
+          errorTitle = "Invalid Date";
+          errorDescription = "This date is outside your booking period. You can only submit reports for dates within your booking.";
+        }
+        else if (error.message.includes('Cannot submit reports for future dates')) {
+          errorTitle = "Invalid Date";
+          errorDescription = "You cannot submit reports for future dates. Please wait until the booking day.";
+        }
+        // Show actual error message if available
+        else if (error.message) {
+          errorDescription = error.message;
+        }
+      }
+
       toast({
-        title: "Submission failed",
-        description: "Failed to submit daily report. Please try again.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
     } finally {
