@@ -35,12 +35,12 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // Fetch directly from profiles table instead of view
+      // Only query safe public fields - NO email, phone, address, documents
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, response_rate, is_verified')
         .eq('role', 'pet_sitter')
-        .eq('is_verified', true) // Only show verified sitters
+        .eq('is_verified', true)
         .order('rating', { ascending: false })
         .limit(4);
       
@@ -56,7 +56,6 @@ const Index = () => {
           location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
           services: ['Pet Sitting', 'Drop-in Visits'],
           verified: sitter.is_verified,
-          
           avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
           bio: sitter.bio || 'Experienced pet care provider'
         })));
