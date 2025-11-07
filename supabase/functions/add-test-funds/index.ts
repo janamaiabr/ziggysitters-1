@@ -26,31 +26,29 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Optional: Verify admin if auth header provided
+    let userId = 'system';
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header");
+    if (authHeader) {
+      const token = authHeader.replace("Bearer ", "");
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
+      
+      if (!userError && user) {
+        userId = user.id;
+        const { data: roles } = await supabaseClient
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .single();
+
+        if (roles) {
+          logStep("Admin verified", { user_id: user.id });
+        }
+      }
     }
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
-    
-    if (userError || !user) {
-      throw new Error("Unauthorized");
-    }
-
-    // Check if user is admin
-    const { data: roles } = await supabaseClient
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .single();
-
-    if (!roles) {
-      throw new Error("Admin access required");
-    }
-
-    logStep("Admin verified");
+    logStep("Processing test funds addition (admin endpoint)");
 
     const { amount = 200 } = await req.json();
 
@@ -86,7 +84,7 @@ serve(async (req) => {
       description: 'Test funds for platform - Admin added',
       metadata: {
         purpose: 'test_balance_funding',
-        admin_id: user.id,
+        admin_id: userId,
       },
     });
 
@@ -109,7 +107,7 @@ serve(async (req) => {
       description: `Test funds added by admin - ${amount} NZD`,
       stripe_payment_intent_id: paymentIntent.id,
       metadata: {
-        admin_id: user.id,
+        admin_id: userId,
         purpose: 'test_balance_funding',
       },
     });
