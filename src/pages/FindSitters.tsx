@@ -43,11 +43,8 @@ export default function FindSitters() {
         
         // Fetch all verified pet sitters - only safe public fields
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, response_rate, created_at, role, is_verified')
-          .eq('role', 'pet_sitter')
-          .eq('is_verified', true)
-          .eq('onboarding_completed', true)
+          .from('public_sitters')
+          .select('*')
           .order('rating', { ascending: false });
         
         console.log('Profiles data:', profilesData);

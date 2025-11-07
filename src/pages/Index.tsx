@@ -35,12 +35,10 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // Only query safe public fields - NO email, phone, address, documents
+      // Query the public view - automatically filtered for verified sitters only
       const { data, error } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, response_rate, is_verified')
-        .eq('role', 'pet_sitter')
-        .eq('is_verified', true)
+        .from('public_sitters')
+        .select('*')
         .order('rating', { ascending: false })
         .limit(4);
       
