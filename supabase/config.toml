@@ -66,3 +66,6 @@ verify_jwt = false
 [functions.create-booking]
 verify_jwt = true
 
+[functions.add-test-funds]
+verify_jwt = false
+
