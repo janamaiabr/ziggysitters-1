@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, Mail, Save, Eye, Edit } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Mail, Save, Eye, Edit2, ArrowLeft } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 interface EmailTemplate {
   id: string;
@@ -17,8 +17,9 @@ interface EmailTemplate {
   subject: string;
   html_content: string;
   description: string;
-  variables: any;
+  variables: string[];
   is_active: boolean;
+  created_at: string;
   updated_at: string;
 }
 
@@ -26,139 +27,160 @@ export default function AdminEmailTemplates() {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isPreviewing, setIsPreviewing] = useState(false);
-  const [editedTemplate, setEditedTemplate] = useState<Partial<EmailTemplate>>({});
-  const [saving, setSaving] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [formData, setFormData] = useState({
+    subject: "",
+    html_content: "",
+    description: "",
+  });
 
   useEffect(() => {
     fetchTemplates();
   }, []);
 
   const fetchTemplates = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('email_templates')
-      .select('*')
-      .order('template_name');
+    try {
+      const { data, error } = await supabase
+        .from("email_templates")
+        .select("*")
+        .order("template_name");
 
-    if (error) {
+      if (error) throw error;
+      
+      // Cast variables from Json to string[]
+      const templatesWithCastedVariables = (data || []).map(template => ({
+        ...template,
+        variables: Array.isArray(template.variables) 
+          ? (template.variables as string[]).filter(v => typeof v === 'string')
+          : []
+      }));
+      
+      setTemplates(templatesWithCastedVariables as EmailTemplate[]);
+    } catch (error: any) {
+      console.error("Error fetching templates:", error);
       toast.error("Failed to load email templates");
-      console.error(error);
-    } else {
-      setTemplates(data || []);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
-    setEditedTemplate(template);
-    setIsEditing(true);
+    setFormData({
+      subject: template.subject,
+      html_content: template.html_content,
+      description: template.description,
+    });
+    setEditMode(true);
+    setPreviewMode(false);
   };
 
   const handlePreview = (template: EmailTemplate) => {
     setSelectedTemplate(template);
-    setIsPreviewing(true);
+    setPreviewMode(true);
+    setEditMode(false);
   };
 
   const handleSave = async () => {
-    if (!selectedTemplate || !editedTemplate) return;
+    if (!selectedTemplate) return;
 
-    setSaving(true);
-    const { error } = await supabase
-      .from('email_templates')
-      .update({
-        subject: editedTemplate.subject,
-        html_content: editedTemplate.html_content,
-        description: editedTemplate.description,
-      })
-      .eq('id', selectedTemplate.id);
+    try {
+      const { error } = await supabase
+        .from("email_templates")
+        .update({
+          subject: formData.subject,
+          html_content: formData.html_content,
+          description: formData.description,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", selectedTemplate.id);
 
-    if (error) {
-      toast.error("Failed to save template");
-      console.error(error);
-    } else {
-      toast.success("Template saved successfully");
-      fetchTemplates();
-      setIsEditing(false);
+      if (error) throw error;
+
+      toast.success("Email template updated successfully");
+      setEditMode(false);
       setSelectedTemplate(null);
+      fetchTemplates();
+    } catch (error: any) {
+      console.error("Error updating template:", error);
+      toast.error("Failed to update email template");
     }
-    setSaving(false);
   };
 
-  const handleToggleActive = async (template: EmailTemplate) => {
-    const { error } = await supabase
-      .from('email_templates')
-      .update({ is_active: !template.is_active })
-      .eq('id', template.id);
+  const handleClose = () => {
+    setEditMode(false);
+    setPreviewMode(false);
+    setSelectedTemplate(null);
+  };
 
-    if (error) {
-      toast.error("Failed to update template status");
-      console.error(error);
-    } else {
-      toast.success(`Template ${template.is_active ? 'disabled' : 'enabled'}`);
-      fetchTemplates();
-    }
+  const replaceVariables = (content: string, variables: string[]) => {
+    let result = content;
+    variables.forEach((variable) => {
+      const placeholder = `{${variable}}`;
+      result = result.replace(new RegExp(placeholder, "g"), `<span style="background: #fef3c7; padding: 2px 4px; border-radius: 3px; font-weight: 600;">${variable}</span>`);
+    });
+    return result;
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="container mx-auto py-8">
+        <p>Loading email templates...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Email Templates</h1>
-        <p className="text-muted-foreground">
-          View and edit all email templates sent by the platform
-        </p>
+    <div className="container mx-auto py-8 space-y-6">
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <div>
+          <h1 className="text-3xl font-bold">Email Templates</h1>
+          <p className="text-muted-foreground">View and edit all email templates sent by the platform</p>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {templates.map((template) => (
-          <Card key={template.id} className={!template.is_active ? 'opacity-60' : ''}>
+          <Card key={template.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Mail className="h-4 w-4" />
-                    {template.template_name}
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    {template.description}
-                  </CardDescription>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <CardTitle className="text-lg">{template.template_name}</CardTitle>
                 </div>
-                <Badge variant={template.is_active ? "default" : "secondary"}>
-                  {template.is_active ? 'Active' : 'Disabled'}
-                </Badge>
+                {template.is_active && (
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    Active
+                  </Badge>
+                )}
               </div>
+              <CardDescription className="text-sm mt-2">
+                {template.description}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm font-medium mb-1">Subject:</p>
-                  <p className="text-sm text-muted-foreground">{template.subject}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Subject:</p>
+                  <p className="text-sm">{template.subject}</p>
                 </div>
-                
                 {template.variables && template.variables.length > 0 && (
                   <div>
-                    <p className="text-sm font-medium mb-1">Variables:</p>
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Variables:</p>
                     <div className="flex flex-wrap gap-1">
                       {template.variables.map((variable) => (
                         <Badge key={variable} variant="outline" className="text-xs">
-                          {`{${variable}}`}
+                          {variable}
                         </Badge>
                       ))}
                     </div>
                   </div>
                 )}
-
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 mt-4">
                   <Button
                     variant="outline"
                     size="sm"
@@ -174,92 +196,57 @@ export default function AdminEmailTemplates() {
                     className="flex-1"
                     onClick={() => handleEdit(template)}
                   >
-                    <Edit className="h-4 w-4 mr-1" />
+                    <Edit2 className="h-4 w-4 mr-1" />
                     Edit
                   </Button>
                 </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleToggleActive(template)}
-                >
-                  {template.is_active ? 'Disable' : 'Enable'} Template
-                </Button>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Preview Dialog */}
-      <Dialog open={isPreviewing} onOpenChange={setIsPreviewing}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{selectedTemplate?.template_name}</DialogTitle>
-            <DialogDescription>Email preview</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>Subject:</Label>
-              <p className="text-sm mt-1 p-3 bg-muted rounded-md">{selectedTemplate?.subject}</p>
-            </div>
-            <div>
-              <Label>HTML Content:</Label>
-              <div 
-                className="mt-2 p-4 bg-background border rounded-md"
-                dangerouslySetInnerHTML={{ __html: selectedTemplate?.html_content || '' }}
-              />
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* Edit Dialog */}
-      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+      <Dialog open={editMode} onOpenChange={handleClose}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit {selectedTemplate?.template_name}</DialogTitle>
+            <DialogTitle>Edit Email Template: {selectedTemplate?.template_name}</DialogTitle>
             <DialogDescription>
-              Modify the email template content. Use variables like {'{firstName}'} for dynamic content.
+              Edit the subject and content of this email template. Use variables in curly braces like {"{variable}"}.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             <div>
               <Label htmlFor="subject">Subject Line</Label>
               <Input
                 id="subject"
-                value={editedTemplate.subject || ''}
-                onChange={(e) => setEditedTemplate({ ...editedTemplate, subject: e.target.value })}
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 placeholder="Email subject"
               />
             </div>
-
             <div>
               <Label htmlFor="description">Description</Label>
               <Input
                 id="description"
-                value={editedTemplate.description || ''}
-                onChange={(e) => setEditedTemplate({ ...editedTemplate, description: e.target.value })}
-                placeholder="Internal description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Template description"
               />
             </div>
-
             <div>
               <Label htmlFor="html_content">HTML Content</Label>
               <Textarea
                 id="html_content"
-                value={editedTemplate.html_content || ''}
-                onChange={(e) => setEditedTemplate({ ...editedTemplate, html_content: e.target.value })}
+                value={formData.html_content}
+                onChange={(e) => setFormData({ ...formData, html_content: e.target.value })}
                 placeholder="Email HTML content"
                 rows={15}
                 className="font-mono text-sm"
               />
             </div>
-
-            {selectedTemplate?.variables && selectedTemplate.variables.length > 0 && (
-              <div className="bg-muted p-4 rounded-md">
+            {selectedTemplate && selectedTemplate.variables.length > 0 && (
+              <div className="bg-muted p-3 rounded-lg">
                 <p className="text-sm font-medium mb-2">Available Variables:</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedTemplate.variables.map((variable) => (
@@ -270,24 +257,43 @@ export default function AdminEmailTemplates() {
                 </div>
               </div>
             )}
-
             <div className="flex justify-end gap-2 pt-4">
-              <Button variant="outline" onClick={() => setIsEditing(false)}>
+              <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} disabled={saving}>
-                {saving ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Changes
-                  </>
-                )}
+              <Button onClick={handleSave}>
+                <Save className="h-4 w-4 mr-2" />
+                Save Changes
               </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Dialog */}
+      <Dialog open={previewMode} onOpenChange={handleClose}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Preview: {selectedTemplate?.template_name}</DialogTitle>
+            <DialogDescription>
+              This is how the email will appear. Variables are highlighted in yellow.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="bg-muted p-4 rounded-lg">
+              <p className="text-sm font-medium text-muted-foreground mb-1">Subject:</p>
+              <p className="text-lg font-semibold">
+                <span dangerouslySetInnerHTML={{ 
+                  __html: selectedTemplate ? replaceVariables(selectedTemplate.subject, selectedTemplate.variables) : "" 
+                }} />
+              </p>
+            </div>
+            <div className="border rounded-lg p-6 bg-white">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: selectedTemplate ? replaceVariables(selectedTemplate.html_content, selectedTemplate.variables) : "",
+                }}
+              />
             </div>
           </div>
         </DialogContent>
