@@ -245,6 +245,33 @@ export default function AdminUserDetails() {
     }
   };
 
+  const sendDocumentReminder = async () => {
+    if (!profile) return;
+
+    try {
+      const { error } = await supabase.functions.invoke('send-document-upload-reminder', {
+        body: {
+          sitterEmail: profile.email,
+          sitterName: profile.first_name
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Document Reminder Sent!",
+        description: `Document upload reminder sent to ${profile.email}`,
+      });
+    } catch (error) {
+      console.error('Error sending document reminder:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send document reminder",
+        variant: "destructive"
+      });
+    }
+  };
+
   const updateVerificationStatus = async (isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
     if (!profile) return;
 
@@ -748,7 +775,20 @@ export default function AdminUserDetails() {
           <TabsContent value="verification">
             <Card>
               <CardHeader>
-                <CardTitle>Verification Documents</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Verification Documents</CardTitle>
+                  {(!idDocUrl || !blueCardUrl) && (
+                    <Button 
+                      onClick={sendDocumentReminder}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Send className="h-4 w-4" />
+                      Request Documents
+                    </Button>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
