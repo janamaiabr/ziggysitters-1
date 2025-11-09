@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Clock, AlertCircle, FileText, DollarSign, Shield } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 interface SitterStatusBadgeProps {
   profile: any;
@@ -10,9 +11,10 @@ interface SitterStatusBadgeProps {
     onboarding_completed: boolean;
     payout_ready?: boolean;
   };
+  onNavigate?: (tab: string) => void;
 }
 
-export function SitterStatusBadge({ profile, stripeStatus }: SitterStatusBadgeProps) {
+export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterStatusBadgeProps) {
   const getStatusInfo = () => {
     // Check if profile needs completion
     const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address;
@@ -101,6 +103,18 @@ export function SitterStatusBadge({ profile, stripeStatus }: SitterStatusBadgePr
   const statusInfo = getStatusInfo();
   const StatusIcon = statusInfo.icon;
 
+  const handleActionClick = () => {
+    if (!onNavigate) return;
+    
+    if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
+      // Navigate to verification tab
+      onNavigate('verification');
+    } else if (statusInfo.action === 'Connect Bank Account') {
+      // Navigate to payments tab
+      onNavigate('payments');
+    }
+  };
+
   return (
     <Alert className={`
       ${statusInfo.variant === 'destructive' ? 'bg-destructive/10 border-destructive/50' : ''}
@@ -119,6 +133,16 @@ export function SitterStatusBadge({ profile, stripeStatus }: SitterStatusBadgePr
           <AlertDescription className="text-sm">
             {statusInfo.description}
           </AlertDescription>
+          {statusInfo.action && (
+            <Button 
+              onClick={handleActionClick}
+              className="mt-3"
+              variant={statusInfo.variant === 'destructive' ? 'destructive' : 'default'}
+              size="sm"
+            >
+              {statusInfo.action}
+            </Button>
+          )}
         </div>
       </div>
     </Alert>

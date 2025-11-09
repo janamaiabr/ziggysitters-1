@@ -1081,7 +1081,11 @@ export default function Profile() {
           <TabsContent value="overview" className="space-y-6">
             {/* Sitter Status Badge - shows current onboarding/verification status */}
             {profile.role === 'pet_sitter' && (
-              <SitterStatusBadge profile={profile} stripeStatus={stripeStatus} />
+              <SitterStatusBadge 
+                profile={profile} 
+                stripeStatus={stripeStatus}
+                onNavigate={setActiveTab}
+              />
             )}
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
