@@ -105,8 +105,13 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
   const statusInfo = getStatusInfo();
   const StatusIcon = statusInfo.icon;
 
-  const handleActionClick = () => {
-    console.log('Button clicked, action:', statusInfo.action);
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    alert(`Button clicked! Action: ${statusInfo.action}`);
+    console.log('=== BUTTON CLICKED ===');
+    console.log('Action:', statusInfo.action);
     console.log('onNavigate exists:', !!onNavigate);
     console.log('Profile is_verified:', profile.is_verified);
     
@@ -128,9 +133,12 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
       // If already verified, go to overview with a message
       if (profile.is_verified) {
         console.log('User already verified, cannot access verification tab');
+        alert('You are already verified!');
         return;
       }
+      console.log('Calling onNavigate with: verification');
       onNavigate('verification');
+      alert('Should have navigated to verification tab');
     } else if (statusInfo.action === 'Connect Bank Account') {
       console.log('Navigating to payments tab');
       onNavigate('payments');
@@ -160,9 +168,10 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
           {statusInfo.action && (
             <Button 
               onClick={handleActionClick}
-              className="mt-3"
+              className="mt-3 relative z-50"
               variant={statusInfo.variant === 'destructive' ? 'destructive' : 'default'}
               size="sm"
+              type="button"
             >
               {statusInfo.action}
             </Button>
