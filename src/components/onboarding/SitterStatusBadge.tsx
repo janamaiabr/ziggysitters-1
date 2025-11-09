@@ -104,13 +104,19 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
   const StatusIcon = statusInfo.icon;
 
   const handleActionClick = () => {
-    if (!onNavigate) return;
+    console.log('Button clicked, action:', statusInfo.action);
+    console.log('onNavigate exists:', !!onNavigate);
+    
+    if (!onNavigate) {
+      console.error('onNavigate is not defined');
+      return;
+    }
     
     if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
-      // Navigate to verification tab
+      console.log('Navigating to verification tab');
       onNavigate('verification');
     } else if (statusInfo.action === 'Connect Bank Account') {
-      // Navigate to payments tab
+      console.log('Navigating to payments tab');
       onNavigate('payments');
     }
   };
