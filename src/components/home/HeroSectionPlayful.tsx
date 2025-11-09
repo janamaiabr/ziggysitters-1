@@ -60,13 +60,7 @@ const HeroSectionPlayful = ({
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-2 md:mb-3">
             {/* Left side - Content */}
-            <div className="space-y-4 md:space-y-6 animate-fade-in">
-              {/* Trust Badge */}
-              <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-4 md:px-5 py-2 md:py-2.5 shadow-lg">
-                <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                <span className="text-xs md:text-sm font-bold text-primary">Premium Pet Care</span>
-              </div>
-
+          <div className="space-y-4 md:space-y-6 animate-fade-in">
               {/* Main Headline */}
               <div className="space-y-3 md:space-y-4">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-tight">
