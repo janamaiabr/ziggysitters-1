@@ -36,12 +36,10 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // Query the public view with police vet check
+      // First get basic sitter info from public view
       const { data, error } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, blue_card_document_url, role')
-        .eq('role', 'pet_sitter')
-        .eq('is_verified', true)
+        .from('public_sitters')
+        .select('*')
         .order('rating', { ascending: false })
         .limit(4);
       
@@ -49,6 +47,16 @@ const Index = () => {
       console.log('Featured sitters error:', error);
       
       if (data && data.length > 0) {
+        // Then check police vet status for each sitter (requires auth or admin)
+        // For now, we'll fetch with current user context
+        const sitterIds = data.map(s => s.id);
+        const { data: policeVetData } = await supabase
+          .from('profiles')
+          .select('id, blue_card_document_url')
+          .in('id', sitterIds);
+        
+        const policeVetMap = new Map(policeVetData?.map(p => [p.id, !!p.blue_card_document_url]) || []);
+        
         setFeaturedSitters(data.map(sitter => ({
           id: sitter.id,
           name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
@@ -57,7 +65,7 @@ const Index = () => {
           location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
           services: ['Pet Sitting', 'Drop-in Visits'],
           verified: sitter.is_verified,
-          hasPoliceVet: !!sitter.blue_card_document_url,
+          hasPoliceVet: policeVetMap.get(sitter.id) || false,
           avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
           bio: sitter.bio || 'Experienced pet care provider'
         })));

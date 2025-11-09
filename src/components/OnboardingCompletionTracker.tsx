@@ -71,12 +71,13 @@ export function OnboardingCompletionTracker() {
           if (servicesError) throw servicesError;
 
           const hasServices = services && services.length > 0;
-          const hasVerificationDocs = profile.id_document_url || profile.blue_card_document_url;
+          // ID document is REQUIRED - police vet is optional for gold badge
+          const hasRequiredDoc = !!profile.id_document_url;
           // Accept Stripe setup as complete if onboarding is done (enabled status may take time)
           const hasStripeSetup = profile.stripe_onboarding_completed === true;
 
           // Only auto-complete if sitter has ALL requirements
-          if (hasServices && hasVerificationDocs && hasStripeSetup) {
+          if (hasServices && hasRequiredDoc && hasStripeSetup) {
             console.log('Auto-completing onboarding for sitter with complete profile');
             const { error } = await supabase
               .from('profiles')
@@ -90,7 +91,7 @@ export function OnboardingCompletionTracker() {
           } else {
             console.log('Sitter onboarding incomplete:', {
               hasServices,
-              hasVerificationDocs,
+              hasRequiredDoc: hasRequiredDoc,
               hasStripeSetup
             });
           }
