@@ -8,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import StripeModeIndicator from '@/components/admin/StripeModeIndicator';
 
@@ -46,6 +48,8 @@ export default function AdminDashboard() {
   const [allUsers, setAllUsers] = useState<PublicSitterProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -192,6 +196,70 @@ export default function AdminDashboard() {
     }
   };
 
+  const toggleUserSelection = (userId: string) => {
+    const newSelected = new Set(selectedUserIds);
+    if (newSelected.has(userId)) {
+      newSelected.delete(userId);
+    } else {
+      newSelected.add(userId);
+    }
+    setSelectedUserIds(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedUserIds.size === allUsers.length) {
+      setSelectedUserIds(new Set());
+    } else {
+      setSelectedUserIds(new Set(allUsers.map(u => u.id)));
+    }
+  };
+
+  const handleDeleteUsers = async () => {
+    if (selectedUserIds.size === 0) return;
+
+    setIsDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('No session');
+
+      // Get user_ids from profile IDs
+      const { data: usersToDelete, error: fetchError } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .in('id', Array.from(selectedUserIds));
+
+      if (fetchError) throw fetchError;
+      if (!usersToDelete || usersToDelete.length === 0) {
+        throw new Error('No users found to delete');
+      }
+
+      const userIds = usersToDelete.map(u => u.user_id);
+
+      const { data, error } = await supabase.functions.invoke('delete-users', {
+        body: { userIds }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Successfully deleted ${data.successCount} user(s)`,
+      });
+
+      setSelectedUserIds(new Set());
+      await Promise.all([fetchPendingSitters(), fetchAllUsers()]);
+    } catch (error) {
+      console.error('Error deleting users:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete users",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -271,13 +339,44 @@ export default function AdminDashboard() {
 
         <TabsContent value="all-users">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>All Platform Users</CardTitle>
+              {selectedUserIds.size > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm" disabled={isDeleting}>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Selected ({selectedUserIds.size})
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete {selectedUserIds.size} user(s) and all their associated data. 
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteUsers} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Delete Users
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox 
+                        checked={selectedUserIds.size === allUsers.length && allUsers.length > 0}
+                        onCheckedChange={toggleSelectAll}
+                      />
+                    </TableHead>
                     <TableHead>User</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
@@ -289,7 +388,13 @@ export default function AdminDashboard() {
                 </TableHeader>
                 <TableBody>
                   {allUsers.map((user) => (
-                    <TableRow key={user.id} className="cursor-pointer hover:bg-muted/50">
+                    <TableRow key={user.id} className="hover:bg-muted/50">
+                      <TableCell>
+                        <Checkbox 
+                          checked={selectedUserIds.has(user.id)}
+                          onCheckedChange={() => toggleUserSelection(user.id)}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-8 w-8">
