@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Mail, Save, Eye, Edit2, ArrowLeft } from "lucide-react";
+import { Mail, Save, Eye, Edit2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { AdminNav } from "@/components/admin/AdminNav";
 
 interface EmailTemplate {
   id: string;
@@ -132,16 +133,13 @@ export default function AdminEmailTemplates() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
+    <div>
+      <AdminNav />
+      <div className="container mx-auto py-8 space-y-6">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold">Email Templates</h1>
           <p className="text-muted-foreground">View and edit all email templates sent by the platform</p>
         </div>
-      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {templates.map((template) => (
@@ -298,6 +296,7 @@ export default function AdminEmailTemplates() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }

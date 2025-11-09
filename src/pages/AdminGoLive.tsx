@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Rocket, Mail, CreditCard, Calendar, Users, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { AdminNav } from '@/components/admin/AdminNav';
 
 export default function AdminGoLive() {
   const { toast } = useToast();
@@ -83,22 +84,21 @@ export default function AdminGoLive() {
   const allTasksComplete = Object.values(checklist).every(v => v === true);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <Rocket className="w-8 h-8 text-primary" />
-              Go-Live Checklist
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Complete all tasks before launching to production
-            </p>
+    <div>
+      <AdminNav />
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold flex items-center gap-3">
+                <Rocket className="w-8 h-8 text-primary" />
+                Go-Live Checklist
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                Complete all tasks before launching to production
+              </p>
+            </div>
           </div>
-          <Button variant="outline" onClick={() => navigate('/admin')}>
-            Back to Admin
-          </Button>
-        </div>
 
         {/* Progress Alert */}
         {allTasksComplete ? (
@@ -350,6 +350,7 @@ export default function AdminGoLive() {
             </CardContent>
           </Card>
         )}
+      </div>
       </div>
     </div>
   );

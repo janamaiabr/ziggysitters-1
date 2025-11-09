@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import StripeModeIndicator from '@/components/admin/StripeModeIndicator';
+import { AdminNav } from '@/components/admin/AdminNav';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
@@ -293,29 +294,15 @@ export default function AdminDashboard() {
   const rejectedSitters = profiles.filter(p => p.verification_status === 'rejected');
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
+    <div>
+      <AdminNav />
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
           <p className="text-gray-600">Manage pet sitter applications and verifications</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" onClick={() => navigate('/admin/email-templates')}>
-            <Mail className="w-4 h-4 mr-2" />
-            Email Templates
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/admin/send-reonboarding-emails')}>
-            <Mail className="w-4 h-4 mr-2" />
-            Send Re-onboarding Emails
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/admin/go-live')}>
-            <Rocket className="w-4 h-4 mr-2" />
-            Go-Live Checklist
-          </Button>
-        </div>
-      </div>
 
-      <StripeModeIndicator />
+        <StripeModeIndicator />
 
       <Tabs defaultValue="all-users" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
@@ -533,6 +520,7 @@ export default function AdminDashboard() {
           <PayoutsTab />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
