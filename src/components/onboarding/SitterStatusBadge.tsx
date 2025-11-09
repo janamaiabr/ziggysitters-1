@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Clock, AlertCircle, FileText, DollarSign, Shield } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface SitterStatusBadgeProps {
   profile: any;
@@ -15,6 +16,7 @@ interface SitterStatusBadgeProps {
 }
 
 export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterStatusBadgeProps) {
+  const navigate = useNavigate();
   const getStatusInfo = () => {
     // Check if profile needs completion
     const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address;
@@ -108,8 +110,16 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
     console.log('onNavigate exists:', !!onNavigate);
     console.log('Profile is_verified:', profile.is_verified);
     
+    // If on a different page (onNavigate not provided), navigate to profile page
     if (!onNavigate) {
-      console.error('onNavigate is not defined');
+      console.log('No onNavigate, redirecting to profile page');
+      if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
+        navigate('/profile?tab=verification');
+      } else if (statusInfo.action === 'Connect Bank Account') {
+        navigate('/profile?tab=payments');
+      } else {
+        navigate('/profile');
+      }
       return;
     }
     
