@@ -106,7 +106,7 @@ export default function AdminUserDetails() {
 
       setProfile(data);
 
-      // Fetch signed URLs for documents if they exist
+      // Clear or set signed URLs for documents
       if (data.id_document_url) {
         // Extract filename from the full URL path
         const fileName = data.id_document_url.includes('/verification-docs/')
@@ -121,8 +121,12 @@ export default function AdminUserDetails() {
             setIdDocUrl(signedData.signedUrl);
           } else {
             console.error('Error creating signed URL for ID doc:', signError);
+            setIdDocUrl(null);
           }
         }
+      } else {
+        // Clear state if no document URL exists
+        setIdDocUrl(null);
       }
 
       if (data.blue_card_document_url) {
@@ -139,8 +143,12 @@ export default function AdminUserDetails() {
             setBlueCardUrl(signedData.signedUrl);
           } else {
             console.error('Error creating signed URL for police vet doc:', signError);
+            setBlueCardUrl(null);
           }
         }
+      } else {
+        // Clear state if no document URL exists
+        setBlueCardUrl(null);
       }
 
       // Fetch additional data based on role
@@ -276,6 +284,7 @@ export default function AdminUserDetails() {
     if (!profile) return;
 
     try {
+      // Update verification status
       const { error } = await supabase.rpc('update_verification_status', {
         profile_id: profile.id,
         is_verified: isVerified,
@@ -284,64 +293,71 @@ export default function AdminUserDetails() {
 
       if (error) throw error;
 
-      // Delete verification documents after approval
-      if (isVerified && verificationStatus === 'verified') {
-        try {
-          const filesToDelete: string[] = [];
-          
-          if (profile.id_document_url) {
-            const fileName = profile.id_document_url.includes('/verification-docs/')
-              ? profile.id_document_url.split('/verification-docs/')[1].split('?')[0]
-              : profile.id_document_url.split('/').pop()?.split('?')[0];
-            if (fileName) filesToDelete.push(fileName);
-          }
-          
-          if (profile.blue_card_document_url) {
-            const fileName = profile.blue_card_document_url.includes('/verification-docs/')
-              ? profile.blue_card_document_url.split('/verification-docs/')[1].split('?')[0]
-              : profile.blue_card_document_url.split('/').pop()?.split('?')[0];
-            if (fileName) filesToDelete.push(fileName);
-          }
-
-          if (filesToDelete.length > 0) {
-            await supabase.storage.from('verification-docs').remove(filesToDelete);
-            
-            // Clear document URLs from profile BUT KEEP the uploaded_at timestamp
-            await supabase
-              .from('profiles')
-              .update({ 
-                id_document_url: null,
-                blue_card_document_url: null
-                // NOTE: verification_documents_uploaded_at is intentionally NOT cleared
-                // so we have a record of when documents were submitted
-              })
-              .eq('id', profile.id);
-          }
-        } catch (deleteError) {
-          console.error('Error deleting verification documents:', deleteError);
-        }
-      }
-
-      // Send verification update email
-      try {
-        await supabase.functions.invoke('send-verification-update', {
-          body: {
-            user_email: profile.email,
-            user_name: `${profile.first_name} ${profile.last_name}`,
-            verification_status: verificationStatus,
-            rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined
-          }
-        });
-      } catch (emailError) {
-        console.error('Error sending verification email:', emailError);
-      }
-
+      // Show immediate feedback
       toast({
         title: "Success",
         description: `User ${isVerified ? 'approved' : 'rejected'} successfully`,
       });
 
+      // Refresh profile to show updated status
       fetchUserProfile();
+
+      // Handle background tasks asynchronously (don't block UI)
+      if (isVerified && verificationStatus === 'verified') {
+        // Delete verification documents in background
+        (async () => {
+          try {
+            const filesToDelete: string[] = [];
+            
+            if (profile.id_document_url) {
+              const fileName = profile.id_document_url.includes('/verification-docs/')
+                ? profile.id_document_url.split('/verification-docs/')[1].split('?')[0]
+                : profile.id_document_url.split('/').pop()?.split('?')[0];
+              if (fileName) filesToDelete.push(fileName);
+            }
+            
+            if (profile.blue_card_document_url) {
+              const fileName = profile.blue_card_document_url.includes('/verification-docs/')
+                ? profile.blue_card_document_url.split('/verification-docs/')[1].split('?')[0]
+                : profile.blue_card_document_url.split('/').pop()?.split('?')[0];
+              if (fileName) filesToDelete.push(fileName);
+            }
+
+            if (filesToDelete.length > 0) {
+              await supabase.storage.from('verification-docs').remove(filesToDelete);
+              
+              // Clear document URLs from profile BUT KEEP the uploaded_at timestamp
+              await supabase
+                .from('profiles')
+                .update({ 
+                  id_document_url: null,
+                  blue_card_document_url: null
+                  // NOTE: verification_documents_uploaded_at is intentionally NOT cleared
+                  // so we have a record of when documents were submitted
+                })
+                .eq('id', profile.id);
+              
+              // Refresh again after document deletion completes
+              fetchUserProfile();
+            }
+          } catch (deleteError) {
+            console.error('Error deleting verification documents:', deleteError);
+          }
+        })();
+      }
+
+      // Send verification email in background (non-blocking)
+      supabase.functions.invoke('send-verification-update', {
+        body: {
+          user_email: profile.email,
+          user_name: `${profile.first_name} ${profile.last_name}`,
+          verification_status: verificationStatus,
+          rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined
+        }
+      }).catch(emailError => {
+        console.error('Error sending verification email:', emailError);
+      });
+
     } catch (error) {
       console.error('Error updating verification:', error);
       toast({
