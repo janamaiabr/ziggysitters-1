@@ -1070,9 +1070,7 @@ export default function Profile() {
             {profile.role === 'pet_sitter' && (
               <>
                 <TabsTrigger value="payments">Payments</TabsTrigger>
-                {!profile.is_verified && (
-                  <TabsTrigger value="verification">Verification</TabsTrigger>
-                )}
+                <TabsTrigger value="verification">Verification</TabsTrigger>
               </>
             )}
           </TabsList>
@@ -1565,8 +1563,8 @@ export default function Profile() {
             </Card>
           </TabsContent>
 
-          {/* Verification Tab - Only for unverified sitters */}
-          {profile.role === 'pet_sitter' && !profile.is_verified && (
+          {/* Verification Tab - For sitters */}
+          {profile.role === 'pet_sitter' && (
             <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>
