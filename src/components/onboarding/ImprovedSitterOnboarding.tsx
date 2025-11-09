@@ -483,11 +483,26 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     } catch (error: any) {
       console.error('Error in handleInitiatePaymentSetup:', error);
       setIsLoading(false);
-      toast({
-        title: "Connection failed",
-        description: error?.message || "Failed to connect to Stripe.",
-        variant: "destructive",
-      });
+      
+      // Check if this is the platform profile setup error
+      const errorMessage = error?.message || '';
+      const isPlatformSetupError = errorMessage.includes('platform-profile') || 
+                                    errorMessage.includes('managing losses for connected accounts');
+      
+      if (isPlatformSetupError) {
+        toast({
+          title: "Platform Setup In Progress",
+          description: "We're still setting up the payment system. This should be ready soon! Please check back in a few hours or contact support if this persists.",
+          variant: "default",
+          duration: 8000,
+        });
+      } else {
+        toast({
+          title: "Connection failed",
+          description: error?.message || "Failed to connect to Stripe. Please try again or contact support.",
+          variant: "destructive",
+        });
+      }
     }
   };
 

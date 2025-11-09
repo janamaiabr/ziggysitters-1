@@ -331,11 +331,25 @@ export default function EnhancedSitterOnboarding({ profileId, userId, onComplete
           }
         } catch (error: any) {
           console.error('Stripe Connect error:', error);
-          toast({
-            title: "Payment setup notice",
-            description: "You can set up your payment account later from your profile.",
-            variant: "default",
-          });
+          
+          // Check if this is the platform profile setup error
+          const errorMessage = error?.message || '';
+          const isPlatformSetupError = errorMessage.includes('platform-profile') || 
+                                        errorMessage.includes('managing losses for connected accounts');
+          
+          if (isPlatformSetupError) {
+            toast({
+              title: "Platform Setup In Progress",
+              description: "We're still setting up the payment system. You can set up your payment account from your profile once it's ready.",
+              duration: 8000,
+            });
+          } else {
+            toast({
+              title: "Payment setup notice",
+              description: "You can set up your payment account later from your profile.",
+              variant: "default",
+            });
+          }
         }
       }, 1000);
 
