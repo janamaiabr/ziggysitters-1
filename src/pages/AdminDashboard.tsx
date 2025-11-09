@@ -417,6 +417,8 @@ export default function AdminDashboard() {
                             <div>
                               {user.id_document_url ? (
                                 <Badge variant="default" className="text-xs">ID ✓</Badge>
+                              ) : user.is_verified && user.verification_documents_uploaded_at ? (
+                                <Badge variant="secondary" className="text-xs">ID ✓ (Verified)</Badge>
                               ) : (
                                 <Badge variant="destructive" className="text-xs">ID ✗</Badge>
                               )}
@@ -424,6 +426,8 @@ export default function AdminDashboard() {
                             <div>
                               {user.blue_card_document_url ? (
                                 <Badge variant="default" className="text-xs bg-yellow-500">Police Vet ⭐</Badge>
+                              ) : user.is_verified && user.verification_documents_uploaded_at ? (
+                                <Badge variant="secondary" className="text-xs">Police Vet ✓ (Verified)</Badge>
                               ) : (
                                 <Badge variant="outline" className="text-xs">No Police Vet</Badge>
                               )}
