@@ -56,6 +56,7 @@ import SitterServiceTests from "./pages/SitterServiceTests";
 import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 import AdminResendReportEmails from "./pages/AdminResendReportEmails";
 import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
+import { lazy } from "react";
 
 const queryClient = new QueryClient();
 
@@ -195,6 +196,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <AdminGoLive />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/email-templates" 
+              element={
+                <ProtectedRoute>
+                  {React.createElement(lazy(() => import("@/pages/AdminEmailTemplates")))}
                 </ProtectedRoute>
               } 
             />

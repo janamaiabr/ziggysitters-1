@@ -300,6 +300,10 @@ export default function AdminDashboard() {
           <p className="text-gray-600">Manage pet sitter applications and verifications</p>
         </div>
         <div className="flex gap-3">
+          <Button variant="outline" onClick={() => navigate('/admin/email-templates')}>
+            <Mail className="w-4 h-4 mr-2" />
+            Email Templates
+          </Button>
           <Button variant="outline" onClick={() => navigate('/admin/send-reonboarding-emails')}>
             <Mail className="w-4 h-4 mr-2" />
             Send Re-onboarding Emails
