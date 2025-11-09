@@ -109,41 +109,24 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
     e.preventDefault();
     e.stopPropagation();
     
-    alert(`Button clicked! Action: ${statusInfo.action}`);
-    console.log('=== BUTTON CLICKED ===');
-    console.log('Action:', statusInfo.action);
-    console.log('onNavigate exists:', !!onNavigate);
-    console.log('Profile is_verified:', profile.is_verified);
-    
-    // If on a different page (onNavigate not provided), navigate to profile page
-    if (!onNavigate) {
-      console.log('No onNavigate, redirecting to profile page');
-      if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
+    if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
+      if (onNavigate) {
+        onNavigate('verification');
+      } else {
         navigate('/profile?tab=verification');
-      } else if (statusInfo.action === 'Connect Bank Account') {
+      }
+    } else if (statusInfo.action === 'Connect Bank Account') {
+      if (onNavigate) {
+        onNavigate('payments');
+      } else {
         navigate('/profile?tab=payments');
+      }
+    } else if (statusInfo.action === 'Go to Profile Settings') {
+      if (onNavigate) {
+        onNavigate('overview');
       } else {
         navigate('/profile');
       }
-      return;
-    }
-    
-    if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
-      console.log('Navigating to verification tab');
-      // If already verified, go to overview with a message
-      if (profile.is_verified) {
-        console.log('User already verified, cannot access verification tab');
-        alert('You are already verified!');
-        return;
-      }
-      console.log('Calling onNavigate with: verification');
-      onNavigate('verification');
-      alert('Should have navigated to verification tab');
-    } else if (statusInfo.action === 'Connect Bank Account') {
-      console.log('Navigating to payments tab');
-      onNavigate('payments');
-    } else if (statusInfo.action === 'Go to Profile Settings') {
-      onNavigate('overview');
     }
   };
 
@@ -168,7 +151,7 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
           {statusInfo.action && (
             <Button 
               onClick={handleActionClick}
-              className="mt-3 relative z-50"
+              className="mt-3"
               variant={statusInfo.variant === 'destructive' ? 'destructive' : 'default'}
               size="sm"
               type="button"
