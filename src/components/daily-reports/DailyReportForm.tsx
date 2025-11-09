@@ -13,6 +13,10 @@ import { Camera, Upload, Heart, Clock, Utensils, Bed, Pill, X } from 'lucide-rea
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+// ⚠️ TESTING MODE: Set to true to allow future date submissions for testing
+// TODO: Set back to false before production launch
+const ALLOW_FUTURE_DATES_FOR_TESTING = true;
+
 const reportSchema = z.object({
   exercise_duration: z.number().min(0, 'Exercise duration must be 0 or greater'),
   exercise_notes: z.string().optional(),
@@ -107,15 +111,17 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       return;
     }
 
-    // Prevent future-dated reports
-    const today = new Date().toISOString().split('T')[0];
-    if (reportDate > today) {
-      toast({
-        title: "Invalid Date",
-        description: "You cannot submit reports for future dates. Please wait until the booking day.",
-        variant: "destructive",
-      });
-      return;
+    // Prevent future-dated reports (disabled for testing if ALLOW_FUTURE_DATES_FOR_TESTING is true)
+    if (!ALLOW_FUTURE_DATES_FOR_TESTING) {
+      const today = new Date().toISOString().split('T')[0];
+      if (reportDate > today) {
+        toast({
+          title: "Invalid Date",
+          description: "You cannot submit reports for future dates. Please wait until the booking day.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
     
     if (uploadedPhotos.length === 0) {
