@@ -106,6 +106,7 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
   const handleActionClick = () => {
     console.log('Button clicked, action:', statusInfo.action);
     console.log('onNavigate exists:', !!onNavigate);
+    console.log('Profile is_verified:', profile.is_verified);
     
     if (!onNavigate) {
       console.error('onNavigate is not defined');
@@ -114,10 +115,17 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
     
     if (statusInfo.action === 'Upload Documents' || statusInfo.action === 'Re-upload Documents') {
       console.log('Navigating to verification tab');
+      // If already verified, go to overview with a message
+      if (profile.is_verified) {
+        console.log('User already verified, cannot access verification tab');
+        return;
+      }
       onNavigate('verification');
     } else if (statusInfo.action === 'Connect Bank Account') {
       console.log('Navigating to payments tab');
       onNavigate('payments');
+    } else if (statusInfo.action === 'Go to Profile Settings') {
+      onNavigate('overview');
     }
   };
 
