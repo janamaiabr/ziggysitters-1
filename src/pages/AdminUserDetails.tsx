@@ -306,12 +306,14 @@ export default function AdminUserDetails() {
           if (filesToDelete.length > 0) {
             await supabase.storage.from('verification-docs').remove(filesToDelete);
             
-            // Clear document URLs from profile
+            // Clear document URLs from profile BUT KEEP the uploaded_at timestamp
             await supabase
               .from('profiles')
               .update({ 
                 id_document_url: null,
-                blue_card_document_url: null 
+                blue_card_document_url: null
+                // NOTE: verification_documents_uploaded_at is intentionally NOT cleared
+                // so we have a record of when documents were submitted
               })
               .eq('id', profile.id);
           }

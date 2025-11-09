@@ -381,6 +381,7 @@ export default function AdminDashboard() {
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Location</TableHead>
+                    <TableHead>Documents</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead>Actions</TableHead>
@@ -418,6 +419,35 @@ export default function AdminDashboard() {
                       </TableCell>
                       <TableCell>
                         {user.suburb && user.city ? `${user.suburb}, ${user.city}` : user.city || '-'}
+                      </TableCell>
+                      <TableCell>
+                        {user.role === 'pet_sitter' ? (
+                          <div className="flex items-center gap-2">
+                            {user.id_document_url && user.blue_card_document_url ? (
+                              <Badge variant="default" className="gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                Complete
+                              </Badge>
+                            ) : user.id_document_url || user.blue_card_document_url ? (
+                              <Badge variant="secondary" className="gap-1">
+                                <FileText className="w-3 h-3" />
+                                Partial
+                              </Badge>
+                            ) : user.verification_documents_uploaded_at ? (
+                              <Badge variant="outline" className="gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                Verified
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive" className="gap-1">
+                                <XCircle className="w-3 h-3" />
+                                Missing
+                              </Badge>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         {user.role === 'pet_sitter' ? (

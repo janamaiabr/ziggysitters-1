@@ -72,3 +72,6 @@ verify_jwt = true
 [functions.send-document-upload-reminder]
 verify_jwt = false
 
+[functions.check-missing-documents]
+verify_jwt = false
+
