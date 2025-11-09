@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import StripeModeIndicator from '@/components/admin/StripeModeIndicator';
@@ -231,10 +231,16 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
           <p className="text-gray-600">Manage pet sitter applications and verifications</p>
         </div>
-        <Button variant="outline" onClick={() => navigate('/admin/go-live')}>
-          <Rocket className="w-4 h-4 mr-2" />
-          Go-Live Checklist
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => navigate('/admin/send-reonboarding-emails')}>
+            <Mail className="w-4 h-4 mr-2" />
+            Send Re-onboarding Emails
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/admin/go-live')}>
+            <Rocket className="w-4 h-4 mr-2" />
+            Go-Live Checklist
+          </Button>
+        </div>
       </div>
 
       <StripeModeIndicator />

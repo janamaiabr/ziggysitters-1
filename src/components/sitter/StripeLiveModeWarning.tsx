@@ -64,49 +64,65 @@ export default function StripeLiveModeWarning() {
   }
 
   return (
-    <Alert className="mb-6 border-orange-500 bg-orange-50 dark:bg-orange-950/20">
-      <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-      <AlertTitle className="text-orange-900 dark:text-orange-100 font-semibold">
-        Action Required: Stripe Account Setup for Live Payments
+    <Alert className="mb-6 border-red-600 bg-red-50 dark:bg-red-950/20 shadow-lg">
+      <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400 animate-pulse" />
+      <AlertTitle className="text-red-900 dark:text-red-100 font-bold text-lg">
+        🚀 LIVE LAUNCH: Stripe Re-onboarding Required
       </AlertTitle>
-      <AlertDescription className="text-orange-800 dark:text-orange-200 mt-2 space-y-3">
-        <p>
-          Our platform is now processing <strong>real payments</strong> in live mode. 
-          {stripeStatus?.connected 
-            ? " Your current Stripe account was set up in test mode and needs to be updated."
-            : " You need to connect your Stripe account to receive payouts for bookings."}
-        </p>
-        
-        <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border border-orange-200 dark:border-orange-800 space-y-2">
-          <p className="font-semibold text-sm">What you need to do:</p>
-          <ol className="list-decimal list-inside space-y-1 text-sm">
-            <li>Click the button below to go to your Payments settings</li>
-            <li>Click "Connect Stripe Account" (or "Re-connect for Live Mode")</li>
-            <li>Complete the Stripe verification process with your bank details</li>
-            <li>Wait 1-2 business days for Stripe to verify your account</li>
-          </ol>
-          <p className="text-xs text-orange-700 dark:text-orange-300 mt-3">
-            <strong>Important:</strong> You cannot accept new bookings until this is complete. Stripe verification is required to receive payouts for your services.
+      <AlertDescription className="text-red-800 dark:text-red-200 mt-2 space-y-4">
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-lg border-2 border-red-300 dark:border-red-800 space-y-3">
+          <p className="font-bold text-base">
+            Ziggy Sitters is now processing <span className="text-red-600">REAL PAYMENTS</span>! 
+            {stripeStatus?.connected 
+              ? " Your test mode Stripe account must be upgraded to live mode."
+              : " You must connect your Stripe account to accept bookings."}
           </p>
+          
+          <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded border border-red-200 dark:border-red-900">
+            <p className="font-semibold mb-2 text-red-900 dark:text-red-100">⚠️ YOU CANNOT ACCEPT BOOKINGS UNTIL THIS IS COMPLETE</p>
+            <p className="text-sm">Complete Stripe verification to start earning with real payouts.</p>
+          </div>
+
+          <div className="space-y-2">
+            <p className="font-semibold text-sm text-red-900 dark:text-red-100">Follow these steps now:</p>
+            <ol className="list-decimal list-inside space-y-2 text-sm">
+              <li className="font-medium">Click "Set Up Stripe Now" button below</li>
+              <li>Complete Stripe Connect verification with your bank details</li>
+              <li>Wait 1-2 business days for Stripe approval</li>
+              <li>Start accepting paid bookings!</li>
+            </ol>
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded border border-blue-200 dark:border-blue-900">
+            <p className="text-xs text-blue-900 dark:text-blue-100">
+              <strong>Why this is needed:</strong> The platform was previously in test mode. Now that we're processing real money, 
+              Stripe requires live verification for all sitters. This is a one-time process that enables secure payouts to your bank.
+            </p>
+          </div>
         </div>
 
-        <div className="flex gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <Button 
             onClick={() => navigate('/profile?tab=payments')}
-            className="bg-orange-600 hover:bg-orange-700 text-white"
+            className="bg-red-600 hover:bg-red-700 text-white font-bold shadow-md flex-1"
+            size="lg"
           >
-            <CreditCard className="h-4 w-4 mr-2" />
+            <CreditCard className="h-5 w-5 mr-2" />
             Set Up Stripe Now
           </Button>
           <Button 
             variant="outline"
             onClick={() => window.open('https://stripe.com/connect', '_blank')}
-            className="border-orange-300 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-300"
+            className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300"
           >
             <ExternalLink className="h-4 w-4 mr-2" />
-            Learn About Stripe
+            Learn More
           </Button>
         </div>
+
+        <p className="text-xs text-center text-red-700 dark:text-red-400 italic">
+          Check your email for detailed instructions. Contact support if you need help.
+        </p>
       </AlertDescription>
     </Alert>
   );
