@@ -205,8 +205,23 @@ serve(async (req) => {
         }
 
       } catch (refundError) {
-        logStep("ERROR creating refund", { error: refundError.message });
-        throw new Error(`Failed to process penalty refund: ${refundError.message}`);
+        // IMPORTANT: Don't fail the entire payout if refund fails
+        // The sitter should still get paid (minus penalty), even if we can't refund the owner
+        logStep("WARNING: Refund failed, but continuing with payout", { 
+          error: refundError.message,
+          penalty_amount: penaltyAmount,
+          note: "Penalty will still be deducted from sitter payment" 
+        });
+        
+        // Mark penalty as applied even though refund failed
+        // This ensures the sitter's payout is reduced appropriately
+        penaltyApplied = true;
+        refundId = null; // No refund ID since it failed
+        
+        // Log this issue for manual review
+        console.error(`[PROCESS-PAYOUT] MANUAL REVIEW NEEDED: Booking ${booking.booking_reference} - ` +
+          `Refund of $${penaltyAmount} to owner failed, but penalty deducted from sitter payout. ` +
+          `Reason: ${refundError.message}`);
       }
     } else {
       logStep("No penalty required", { 
