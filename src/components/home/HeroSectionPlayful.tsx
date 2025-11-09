@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { Camera, Heart, Star, Search, Sparkles } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
@@ -40,6 +41,14 @@ const HeroSectionPlayful = ({
 
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-accent via-background to-secondary/10">
+      {/* SPCA Charity Badge - Top Left */}
+      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20 animate-fade-in">
+        <Badge className="bg-gradient-to-r from-pink-500 to-rose-500 text-white border-none hover:from-pink-600 hover:to-rose-600 px-4 py-2 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2">
+          <Heart className="w-4 h-4 md:w-5 md:h-5 fill-white" />
+          5% Donated to SPCA NZ
+        </Badge>
+      </div>
+
       {/* Playful background blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-10 right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
