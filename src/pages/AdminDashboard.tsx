@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PayoutsTab from '@/components/admin/PayoutsTab';
+import StripeModeIndicator from '@/components/admin/StripeModeIndicator';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
@@ -235,6 +236,8 @@ export default function AdminDashboard() {
           Go-Live Checklist
         </Button>
       </div>
+
+      <StripeModeIndicator />
 
       <Tabs defaultValue="all-users" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
