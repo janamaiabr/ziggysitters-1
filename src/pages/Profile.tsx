@@ -1070,7 +1070,9 @@ export default function Profile() {
             {profile.role === 'pet_sitter' && (
               <>
                 <TabsTrigger value="payments">Payments</TabsTrigger>
-                <TabsTrigger value="verification">Verification</TabsTrigger>
+                {!profile.is_verified && (
+                  <TabsTrigger value="verification">Verification</TabsTrigger>
+                )}
               </>
             )}
           </TabsList>
@@ -1078,7 +1080,7 @@ export default function Profile() {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             {/* Sitter Status Badge - shows current onboarding/verification status */}
-            {profile.role === 'pet_sitter' && (
+            {profile.role === 'pet_sitter' && !profile.is_verified && (
               <SitterStatusBadge 
                 profile={profile} 
                 stripeStatus={stripeStatus}
@@ -1563,8 +1565,8 @@ export default function Profile() {
             </Card>
           </TabsContent>
 
-          {/* Verification Tab - For sitters */}
-          {profile.role === 'pet_sitter' && (
+          {/* Verification Tab - Only for unverified sitters */}
+          {profile.role === 'pet_sitter' && !profile.is_verified && (
             <TabsContent value="verification" className="space-y-6">
             <Card>
               <CardHeader>

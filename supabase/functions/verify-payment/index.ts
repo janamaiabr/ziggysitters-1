@@ -96,7 +96,18 @@ serve(async (req) => {
         }
       });
 
-      return new Response(JSON.stringify({ 
+      // Send payment confirmation email to sitter
+      try {
+        await supabaseClient.functions.invoke('send-booking-payment-confirmation', {
+          body: { booking_id: booking.id }
+        });
+        console.log('Payment confirmation email sent to sitter');
+      } catch (emailError) {
+        console.error('Error sending payment confirmation email:', emailError);
+        // Don't fail the payment verification if email fails
+      }
+
+      return new Response(JSON.stringify({
         success: true, 
         booking_status: 'confirmed',
         payment_status: 'paid',
