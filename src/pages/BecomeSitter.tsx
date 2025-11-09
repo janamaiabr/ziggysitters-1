@@ -44,7 +44,7 @@ const steps = [
   {
     step: 2,
     title: 'Get Verified',
-    description: 'Complete profile verification and identity confirmation'
+    description: 'Upload your ID (required) and Police Vet check (optional gold badge)'
   },
   {
     step: 3,

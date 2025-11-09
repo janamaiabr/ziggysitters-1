@@ -422,28 +422,21 @@ export default function AdminDashboard() {
                       </TableCell>
                       <TableCell>
                         {user.role === 'pet_sitter' ? (
-                          <div className="flex items-center gap-2">
-                            {user.id_document_url && user.blue_card_document_url ? (
-                              <Badge variant="default" className="gap-1">
-                                <CheckCircle className="w-3 h-3" />
-                                Complete
-                              </Badge>
-                            ) : user.id_document_url || user.blue_card_document_url ? (
-                              <Badge variant="secondary" className="gap-1">
-                                <FileText className="w-3 h-3" />
-                                Partial
-                              </Badge>
-                            ) : user.verification_documents_uploaded_at ? (
-                              <Badge variant="outline" className="gap-1">
-                                <CheckCircle className="w-3 h-3" />
-                                Verified
-                              </Badge>
-                            ) : (
-                              <Badge variant="destructive" className="gap-1">
-                                <XCircle className="w-3 h-3" />
-                                Missing
-                              </Badge>
-                            )}
+                          <div className="flex flex-col gap-1">
+                            <div>
+                              {user.id_document_url ? (
+                                <Badge variant="default" className="text-xs">ID ✓</Badge>
+                              ) : (
+                                <Badge variant="destructive" className="text-xs">ID ✗</Badge>
+                              )}
+                            </div>
+                            <div>
+                              {user.blue_card_document_url ? (
+                                <Badge variant="default" className="text-xs bg-yellow-500">Police Vet ⭐</Badge>
+                              ) : (
+                                <Badge variant="outline" className="text-xs">No Police Vet</Badge>
+                              )}
+                            </div>
                           </div>
                         ) : (
                           <span className="text-muted-foreground">-</span>

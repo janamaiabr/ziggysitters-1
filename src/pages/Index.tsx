@@ -36,10 +36,12 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // Query the public view - automatically filtered for verified sitters only
+      // Query the public view with police vet check
       const { data, error } = await supabase
-        .from('public_sitters')
-        .select('*')
+        .from('profiles')
+        .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, blue_card_document_url, role')
+        .eq('role', 'pet_sitter')
+        .eq('is_verified', true)
         .order('rating', { ascending: false })
         .limit(4);
       
@@ -55,6 +57,7 @@ const Index = () => {
           location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
           services: ['Pet Sitting', 'Drop-in Visits'],
           verified: sitter.is_verified,
+          hasPoliceVet: !!sitter.blue_card_document_url,
           avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
           bio: sitter.bio || 'Experienced pet care provider'
         })));
@@ -208,6 +211,9 @@ const Index = () => {
                            <span className="text-xs md:text-sm text-muted-foreground ml-1">⭐ Top rated</span>
                           {sitter.verified && (
                             <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500 ml-2" />
+                          )}
+                          {sitter.hasPoliceVet && (
+                            <Badge variant="default" className="ml-2 text-xs bg-yellow-500">⭐</Badge>
                           )}
                         </div>
                       </div>

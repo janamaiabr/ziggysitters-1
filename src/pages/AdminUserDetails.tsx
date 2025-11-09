@@ -795,7 +795,9 @@ export default function AdminUserDetails() {
               <CardContent>
                 <div className="space-y-6">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground block mb-2">ID Document</label>
+                    <label className="text-sm font-medium text-muted-foreground block mb-2">
+                      ID Document <Badge variant="destructive" className="ml-2">Required</Badge>
+                    </label>
                     {idDocUrl ? (
                       <div className="space-y-2">
                         <a 
@@ -817,7 +819,9 @@ export default function AdminUserDetails() {
                   <Separator />
                   
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground block mb-2">NZ Police Vetting Service Check</label>
+                    <label className="text-sm font-medium text-muted-foreground block mb-2">
+                      NZ Police Vetting Service Check <Badge variant="secondary" className="ml-2 bg-yellow-500">Optional - Gold Badge ⭐</Badge>
+                    </label>
                     {blueCardUrl ? (
                       <div className="space-y-2">
                         <a 

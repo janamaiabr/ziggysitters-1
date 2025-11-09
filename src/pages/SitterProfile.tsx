@@ -36,6 +36,7 @@ interface SitterData {
   petTypes: string[];
   avatar: string;
   verified: boolean;
+  hasPoliceVet?: boolean; // Gold badge
   
   bio: string;
   experience: string;
@@ -99,11 +100,12 @@ export default function SitterProfile() {
       try {
         console.log('Fetching sitter with ID:', id);
         
-        // Fetch from public view (excludes email/phone for security)
+        // Fetch from public view AND check for police vet
         const { data, error } = await supabase
-          .from('public_sitter_profiles')
-          .select('*')
+          .from('profiles')
+          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, rating, total_reviews, blue_card_document_url')
           .eq('id', id)
+          .eq('role', 'pet_sitter')
           .maybeSingle();
 
         console.log('Profile fetch result:', { data, error });
@@ -184,6 +186,7 @@ export default function SitterProfile() {
             ) : ['Dogs', 'Cats'],
           avatar: data.avatar_url,
           verified: data.is_verified,
+          hasPoliceVet: !!data.blue_card_document_url, // Gold badge
           
           bio: data.bio || 'Experienced pet care provider',
           experience: servicesData?.length > 0 ? 
@@ -273,6 +276,11 @@ export default function SitterProfile() {
                   <Badge variant="secondary" className="text-xs">
                     <Shield className="mr-1 h-3 w-3" />
                     Verified
+                  </Badge>
+                )}
+                {sitterData.hasPoliceVet && (
+                  <Badge variant="default" className="text-xs bg-yellow-500">
+                    ⭐ Police Vet
                   </Badge>
                 )}
               </div>

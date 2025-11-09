@@ -1130,13 +1130,13 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             <Alert className="bg-primary/5 border-primary/20">
               <Shield className="h-4 w-4" />
               <AlertDescription>
-                Upload verification documents to build trust with pet owners. At least one document is required.
+                ID document is required for verification. Upload your Police Vet check to earn a gold badge!
               </AlertDescription>
             </Alert>
             
             <div className="space-y-6">
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Photo ID (Driver's License, Passport, etc.) *</Label>
+                <Label className="text-base font-semibold">Photo ID (Driver's License, Passport, etc.) <span className="text-destructive">*</span></Label>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
@@ -1153,9 +1153,12 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
               </div>
 
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Police Vet Check</Label>
+                <Label className="text-base font-semibold flex items-center gap-2">
+                  Police Vet Check 
+                  <Badge variant="secondary" className="bg-yellow-500 text-white">Optional - Gold Badge ⭐</Badge>
+                </Label>
                 <p className="text-sm text-muted-foreground">
-                  Required: NZ Police Vetting Service check. <a href="https://www.police.govt.nz/advice-services/businesses-and-organisations/nz-police-vetting-service/forms-and-guides" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Get your police vet here →</a>
+                  Stand out with a gold badge! Upload your NZ Police Vetting Service check. <a href="https://www.police.govt.nz/advice-services/businesses-and-organisations/nz-police-vetting-service/forms-and-guides" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Get your police vet here →</a>
                 </p>
                 <Input
                   type="file"

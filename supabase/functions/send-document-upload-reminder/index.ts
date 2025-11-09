@@ -164,15 +164,18 @@ const handler = async (req: Request): Promise<Response> => {
 
               <div class="important-box">
                 <h3>⚠️ Why This Is Important:</h3>
-                <p><strong>Your profile will NOT be visible to pet owners until you upload and we verify your documents.</strong></p>
-                <p>This means you cannot receive booking requests or start earning as a sitter until verification is complete.</p>
+                <p><strong>Your profile will NOT be visible to pet owners until you upload your ID and we verify it.</strong></p>
+                <p>This means you cannot receive booking requests or start earning as a sitter until your ID is verified.</p>
               </div>
 
               <div class="required-docs">
-                <h3>📋 Required Documents:</h3>
+                <h3>📋 Required Document:</h3>
                 <ul>
-                  <li><strong>Valid ID Document</strong> - Driver's license, passport, or government-issued ID</li>
-                  <li><strong>NZ Police Vetting Service Check</strong> - For the safety of our pet owners and their furry friends</li>
+                  <li><strong>Valid ID Document (REQUIRED)</strong> - Driver's license, passport, or government-issued ID</li>
+                </ul>
+                <h3 style="margin-top: 20px;">⭐ Optional Gold Badge:</h3>
+                <ul>
+                  <li><strong>NZ Police Vetting Service Check (OPTIONAL)</strong> - Stand out with a gold badge and get more bookings!</li>
                 </ul>
                 <p style="margin-top: 15px;"><em>Note: All documents must be clear, legible, and current.</em></p>
               </div>

@@ -24,14 +24,14 @@ serve(async (req) => {
     // 1. Are pet_sitters
     // 2. Have completed onboarding
     // 3. Are not yet verified
-    // 4. Don't have both documents uploaded
+    // 4. Don't have ID document uploaded (police vet is optional)
     const { data: sittersWithoutDocs, error } = await supabaseClient
       .from('profiles')
       .select('id, first_name, last_name, email, id_document_url, blue_card_document_url, verification_documents_uploaded_at')
       .eq('role', 'pet_sitter')
       .eq('onboarding_completed', true)
       .eq('is_verified', false)
-      .or('id_document_url.is.null,blue_card_document_url.is.null');
+      .is('id_document_url', null); // Only check for missing ID, police vet is optional
 
     if (error) {
       console.error("[CHECK-MISSING-DOCS] Error fetching sitters:", error);
@@ -44,12 +44,8 @@ serve(async (req) => {
 
     for (const sitter of sittersWithoutDocs || []) {
       try {
-        // Skip if they have no documents at all and it's been less than 24 hours since signup
-        // (give them time to upload initially)
-        if (!sitter.id_document_url && !sitter.blue_card_document_url) {
-          // Skip for now - they're brand new
-          continue;
-        }
+        // Since we're only querying for sitters missing ID, we send the reminder
+        // (No need to skip - they need to upload ID to get verified)
 
         // Send reminder email
         const { error: emailError } = await supabaseClient.functions.invoke('send-document-upload-reminder', {
