@@ -10,6 +10,7 @@ import { MapPin, Star, CheckCircle, Camera, Shield, Clock, DollarSign, Search, H
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
 import { supabase } from '@/integrations/supabase/client';
+import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 // Import hero versions - swap these to switch between versions
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
 // import HeroSectionV2 from '@/components/home/HeroSectionV2';
@@ -118,6 +119,13 @@ const Index = () => {
           📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
         </p>
       </div>
+
+      {/* Stripe Live Mode Warning for Logged-in Sitters */}
+      {user && (
+        <div className="container mx-auto px-4 pt-6">
+          <StripeLiveModeWarning />
+        </div>
+      )}
       
       {/* Hero Section - To rollback, replace HeroSectionPlayful with HeroSectionV2 */}
       <HeroSectionPlayful

@@ -22,6 +22,7 @@ import SitterDailyReports from '@/components/SitterDailyReports';
 import ClientDailyReports from '@/components/ClientDailyReports';
 import { SitterStatusBadge } from '@/components/onboarding/SitterStatusBadge';
 import SitterPayouts from '@/components/SitterPayouts';
+import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -933,6 +934,9 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 max-w-6xl">
+        {/* Stripe Live Mode Warning for Sitters */}
+        <StripeLiveModeWarning />
+        
         {/* Profile Header */}
         <Card className="mb-8">
           <CardContent className="p-8">

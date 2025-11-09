@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Clock, MapPin, Star, User, Phone, Mail, CreditCard, CheckCircle2, Circle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 
 export default function Bookings() {
   const { toast } = useToast();
@@ -636,6 +637,9 @@ export default function Bookings() {
           <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
           <p className="text-muted-foreground">Manage your pet care bookings</p>
         </div>
+
+        {/* Stripe Live Mode Warning for Sitters */}
+        <StripeLiveModeWarning />
 
         {/* Stripe Setup Warning for Sitters */}
         {profile?.role === 'pet_sitter' && (!profile?.stripe_account_id || !profile?.stripe_account_enabled) && (
