@@ -1606,7 +1606,18 @@ export default function Profile() {
                       />
                       <Button
                         variant="outline"
-                        onClick={() => document.getElementById('id-upload')?.click()}
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          console.log('ID Upload button clicked');
+                          const input = document.getElementById('id-upload') as HTMLInputElement;
+                          console.log('Input element found:', !!input);
+                          if (input) {
+                            input.click();
+                          } else {
+                            console.error('ID upload input not found');
+                          }
+                        }}
                       >
                         <Upload className="w-4 h-4 mr-2" />
                         Upload Photo ID
@@ -1648,7 +1659,18 @@ export default function Profile() {
                       />
                       <Button
                         variant="outline"
-                        onClick={() => document.getElementById('blue-card-upload')?.click()}
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          console.log('Police Vet Upload button clicked');
+                          const input = document.getElementById('blue-card-upload') as HTMLInputElement;
+                          console.log('Input element found:', !!input);
+                          if (input) {
+                            input.click();
+                          } else {
+                            console.error('Blue card upload input not found');
+                          }
+                        }}
                       >
                         <Upload className="w-4 h-4 mr-2" />
                         Upload Police Vet
