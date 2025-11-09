@@ -482,6 +482,7 @@ export type Database = {
           first_name: string
           id: string
           id_document_url: string | null
+          is_test_account: boolean
           is_verified: boolean | null
           last_name: string
           latitude: number | null
@@ -517,6 +518,7 @@ export type Database = {
           first_name: string
           id?: string
           id_document_url?: string | null
+          is_test_account?: boolean
           is_verified?: boolean | null
           last_name: string
           latitude?: number | null
@@ -552,6 +554,7 @@ export type Database = {
           first_name?: string
           id?: string
           id_document_url?: string | null
+          is_test_account?: boolean
           is_verified?: boolean | null
           last_name?: string
           latitude?: number | null
