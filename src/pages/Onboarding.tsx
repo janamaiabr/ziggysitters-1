@@ -618,6 +618,10 @@ export default function Onboarding() {
           <Label htmlFor="address">Address *</Label>
           <Input
             id="address"
+            name="address"
+            type="text"
+            autoComplete="street-address"
+            inputMode="text"
             placeholder="Your street address"
             value={data.address || ''}
             onChange={(e) => handleInputChange('address', e.target.value)}
