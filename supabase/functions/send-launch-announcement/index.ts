@@ -210,7 +210,7 @@ const handler = async (req: Request): Promise<Response> => {
                       <p>📅 <strong>Flexible Schedule:</strong> Set your availability and work on your terms</p>
                     ` : `
                       <p>🐾 <strong>Find Your Perfect Sitter:</strong> Browse verified, experienced pet sitters in your area</p>
-                      <p>🔒 <strong>Book with Confidence:</strong> All sitters are background-checked and verified</p>
+                      <p>🔒 <strong>Book with Confidence:</strong> All sitters are verified</p>
                       <p>📸 <strong>Stay Connected:</strong> Receive daily photo updates and reports during bookings</p>
                       <p>💳 <strong>Secure Payments:</strong> Safe, encrypted payment processing through Stripe</p>
                     `}
