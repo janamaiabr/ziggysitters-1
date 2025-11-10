@@ -520,6 +520,9 @@ export type Database = {
           created_at: string
           email: string
           first_name: string
+          golden_badge_approved: boolean | null
+          golden_badge_approved_at: string | null
+          golden_badge_approved_by: string | null
           id: string
           id_document_url: string | null
           is_test_account: boolean
@@ -557,6 +560,9 @@ export type Database = {
           created_at?: string
           email: string
           first_name: string
+          golden_badge_approved?: boolean | null
+          golden_badge_approved_at?: string | null
+          golden_badge_approved_by?: string | null
           id?: string
           id_document_url?: string | null
           is_test_account?: boolean
@@ -594,6 +600,9 @@ export type Database = {
           created_at?: string
           email?: string
           first_name?: string
+          golden_badge_approved?: boolean | null
+          golden_badge_approved_at?: string | null
+          golden_badge_approved_by?: string | null
           id?: string
           id_document_url?: string | null
           is_test_account?: boolean

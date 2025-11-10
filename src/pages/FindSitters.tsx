@@ -41,17 +41,30 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch all verified pet sitters - only safe public fields
-        const { data: profilesData, error: profilesError } = await supabase
+        // Fetch all verified pet sitters with golden badge status
+        const { data: sitterProfilesData, error: sitterProfilesError } = await supabase
           .from('public_sitters')
-          .select('*')
-          .order('rating', { ascending: false });
+          .select('*');
+        
+        // Also fetch golden badge status separately (requires different table)
+        const { data: goldenBadgeData } = await supabase
+          .from('profiles')
+          .select('id, golden_badge_approved')
+          .eq('golden_badge_approved', true);
+        
+        const goldenBadgeMap = new Map(goldenBadgeData?.map(p => [p.id, true]) || []);
+        
+        // Combine data
+        const profilesData = sitterProfilesData?.map(sitter => ({
+          ...sitter,
+          golden_badge_approved: goldenBadgeMap.has(sitter.id)
+        }));
         
         console.log('Profiles data:', profilesData);
-        console.log('Profiles error:', profilesError);
+        console.log('Profiles error:', sitterProfilesError);
         
-        if (profilesError) {
-          console.error('Error fetching profiles:', profilesError);
+        if (sitterProfilesError) {
+          console.error('Error fetching profiles:', sitterProfilesError);
           setAllSitters([]);
           setFilteredSitters([]);
           return;
@@ -102,6 +115,7 @@ export default function FindSitters() {
             age: 25,
             experience: '2+ years',
             verified: sitter.is_verified || false,
+            golden_badge: sitter.golden_badge_approved || false,
             instant_booking: false,
             pet_types: ['dogs']
           };
@@ -110,9 +124,16 @@ export default function FindSitters() {
           return transformed;
         });
 
-        console.log('All transformed sitters:', transformedSitters);
-        setAllSitters(transformedSitters);
-        setFilteredSitters(transformedSitters);
+        // Sort sitters: golden badge holders first, then by rating
+        const sortedSitters = transformedSitters.sort((a, b) => {
+          if (a.golden_badge && !b.golden_badge) return -1;
+          if (!a.golden_badge && b.golden_badge) return 1;
+          return 0; // Keep original order if both have same golden badge status
+        });
+        
+        console.log('All transformed sitters:', sortedSitters);
+        setAllSitters(sortedSitters);
+        setFilteredSitters(sortedSitters);
       } catch (error) {
         console.error('Error in fetchSitters:', error);
         setAllSitters([]);
