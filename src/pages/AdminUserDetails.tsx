@@ -8,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send } from 'lucide-react';
+import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send, StickyNote } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 type UserProfile = {
   id: string;
@@ -38,6 +40,7 @@ type UserProfile = {
   stripe_account_enabled?: boolean;
   stripe_onboarding_completed?: boolean;
   onboarding_completed?: boolean;
+  admin_notes?: string | null;
 }
 
 export default function AdminUserDetails() {
@@ -53,6 +56,8 @@ export default function AdminUserDetails() {
   const [services, setServices] = useState<any[]>([]);
   const [idDocUrl, setIdDocUrl] = useState<string | null>(null);
   const [blueCardUrl, setBlueCardUrl] = useState<string | null>(null);
+  const [adminNotes, setAdminNotes] = useState<string>('');
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
@@ -105,6 +110,7 @@ export default function AdminUserDetails() {
       }
 
       setProfile(data);
+      setAdminNotes(data.admin_notes || '');
 
       // Clear or set signed URLs for documents
       if (data.id_document_url) {
@@ -277,6 +283,37 @@ export default function AdminUserDetails() {
         description: "Failed to send document reminder",
         variant: "destructive"
       });
+    }
+  };
+
+  const handleSaveAdminNotes = async () => {
+    if (!profile) return;
+
+    setIsSavingNotes(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ admin_notes: adminNotes.trim() || null })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Admin notes saved successfully",
+      });
+
+      // Update local profile state
+      setProfile({ ...profile, admin_notes: adminNotes.trim() || null });
+    } catch (error) {
+      console.error('Error saving admin notes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save admin notes",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSavingNotes(false);
     }
   };
 
@@ -856,7 +893,7 @@ export default function AdminUserDetails() {
                     )}
                   </div>
                   
-                  {profile.verification_documents_uploaded_at && (
+                   {profile.verification_documents_uploaded_at && (
                     <>
                       <Separator />
                       <p className="text-xs text-muted-foreground">
@@ -864,6 +901,37 @@ export default function AdminUserDetails() {
                       </p>
                     </>
                   )}
+                  
+                  <Separator />
+                  
+                  {/* Admin Notes Section */}
+                  <div className="space-y-3 bg-muted/50 p-4 rounded-lg border">
+                    <div className="flex items-center gap-2">
+                      <StickyNote className="h-5 w-5 text-primary" />
+                      <Label htmlFor="admin-notes" className="text-base font-semibold">
+                        Admin Notes (Confidential)
+                      </Label>
+                    </div>
+                    <Textarea
+                      id="admin-notes"
+                      value={adminNotes}
+                      onChange={(e) => setAdminNotes(e.target.value)}
+                      placeholder="E.g., ID shows maiden name 'Carroll' - married name is 'Akroyd'. License: CC632208, DOB: 28-12-1983. Verified identity matches."
+                      className="min-h-[120px]"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      These notes are only visible to admins and are used for internal verification purposes.
+                    </p>
+                    <div className="flex justify-end">
+                      <Button 
+                        onClick={handleSaveAdminNotes}
+                        disabled={isSavingNotes}
+                        size="sm"
+                      >
+                        {isSavingNotes ? 'Saving...' : 'Save Notes'}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
