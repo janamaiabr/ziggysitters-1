@@ -57,7 +57,7 @@ import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 import AdminResendReportEmails from "./pages/AdminResendReportEmails";
 import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
 import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
-import { lazy } from "react";
+import AdminEmailTemplates from "./pages/AdminEmailTemplates";
 
 const queryClient = new QueryClient();
 
@@ -204,7 +204,7 @@ function AppContent() {
               path="/admin/email-templates" 
               element={
                 <ProtectedRoute>
-                  {React.createElement(lazy(() => import("@/pages/AdminEmailTemplates")))}
+                  <AdminEmailTemplates />
                 </ProtectedRoute>
               } 
             />
