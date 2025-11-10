@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Mail, Eye } from "lucide-react";
+import { Mail, Eye, Edit2, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { AdminNav } from "@/components/admin/AdminNav";
@@ -142,6 +145,12 @@ export default function AdminEmailPreview() {
   const [loading, setLoading] = useState(true);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    subject: "",
+    html_content: "",
+    description: "",
+  });
 
   useEffect(() => {
     fetchTemplates();
@@ -176,10 +185,53 @@ export default function AdminEmailPreview() {
   const handlePreview = (template: EmailTemplate) => {
     setSelectedTemplate(template);
     setPreviewMode(true);
+    setEditMode(false);
+  };
+
+  const handleEdit = (template: EmailTemplate) => {
+    if (template.source === 'hardcoded') {
+      toast.error("Hardcoded templates cannot be edited. They must be updated in the code.");
+      return;
+    }
+    setSelectedTemplate(template);
+    setFormData({
+      subject: template.subject,
+      html_content: template.html_content,
+      description: template.description,
+    });
+    setEditMode(true);
+    setPreviewMode(false);
+  };
+
+  const handleSave = async () => {
+    if (!selectedTemplate || selectedTemplate.source === 'hardcoded') return;
+
+    try {
+      const { error } = await supabase
+        .from("email_templates")
+        .update({
+          subject: formData.subject,
+          html_content: formData.html_content,
+          description: formData.description,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", selectedTemplate.id);
+
+      if (error) throw error;
+
+      toast.success("Email template updated successfully");
+      setEditMode(false);
+      setSelectedTemplate(null);
+      fetchTemplates();
+    } catch (error: any) {
+      console.error("Error updating template:", error);
+      toast.error("Failed to update email template");
+    }
   };
 
   const handleClose = () => {
     setPreviewMode(false);
+    setEditMode(false);
     setSelectedTemplate(null);
   };
 
@@ -207,8 +259,8 @@ export default function AdminEmailPreview() {
       <AdminNav />
       <div className="container mx-auto py-8 space-y-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">Email Template Preview</h1>
-          <p className="text-muted-foreground">View all email templates with full rendering</p>
+          <h1 className="text-3xl font-bold">Email Templates Management</h1>
+          <p className="text-muted-foreground">View, preview, and edit all email templates with full rendering</p>
         </div>
 
         <Tabs defaultValue="all" className="w-full">
@@ -220,19 +272,19 @@ export default function AdminEmailPreview() {
 
           <TabsContent value="all" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
             {allTemplates.map((template) => (
-              <TemplateCard key={template.id} template={template} onPreview={handlePreview} />
+              <TemplateCard key={template.id} template={template} onPreview={handlePreview} onEdit={handleEdit} />
             ))}
           </TabsContent>
 
           <TabsContent value="database" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
             {dbTemplates.map((template) => (
-              <TemplateCard key={template.id} template={template} onPreview={handlePreview} />
+              <TemplateCard key={template.id} template={template} onPreview={handlePreview} onEdit={handleEdit} />
             ))}
           </TabsContent>
 
           <TabsContent value="hardcoded" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
             {hardcodedTemplates.map((template, idx) => (
-              <TemplateCard key={`hardcoded-${idx}`} template={{ ...template, id: `hardcoded-${idx}`, is_active: true }} onPreview={handlePreview} />
+              <TemplateCard key={`hardcoded-${idx}`} template={{ ...template, id: `hardcoded-${idx}`, is_active: true }} onPreview={handlePreview} onEdit={handleEdit} />
             ))}
           </TabsContent>
         </Tabs>
@@ -269,12 +321,84 @@ export default function AdminEmailPreview() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Dialog */}
+        <Dialog open={editMode} onOpenChange={handleClose}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Email Template: {selectedTemplate?.template_name}</DialogTitle>
+              <DialogDescription>
+                Edit the subject and content of this email template. Use variables in curly braces like {"{variable}"}.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label htmlFor="subject">Subject Line</Label>
+                <Input
+                  id="subject"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  placeholder="Email subject"
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Input
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Template description"
+                />
+              </div>
+              <div>
+                <Label htmlFor="html_content">HTML Content</Label>
+                <Textarea
+                  id="html_content"
+                  value={formData.html_content}
+                  onChange={(e) => setFormData({ ...formData, html_content: e.target.value })}
+                  placeholder="Email HTML content"
+                  rows={15}
+                  className="font-mono text-sm"
+                />
+              </div>
+              {selectedTemplate && selectedTemplate.variables.length > 0 && (
+                <div className="bg-muted p-3 rounded-lg">
+                  <p className="text-sm font-medium mb-2">Available Variables:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTemplate.variables.map((variable) => (
+                      <code key={variable} className="text-xs bg-background px-2 py-1 rounded">
+                        {`{${variable}}`}
+                      </code>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
 }
 
-function TemplateCard({ template, onPreview }: { template: EmailTemplate; onPreview: (template: EmailTemplate) => void }) {
+function TemplateCard({ 
+  template, 
+  onPreview, 
+  onEdit 
+}: { 
+  template: EmailTemplate; 
+  onPreview: (template: EmailTemplate) => void;
+  onEdit: (template: EmailTemplate) => void;
+}) {
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
@@ -309,15 +433,27 @@ function TemplateCard({ template, onPreview }: { template: EmailTemplate; onPrev
               </div>
             </div>
           )}
-          <Button
-            variant="default"
-            size="sm"
-            className="w-full mt-4"
-            onClick={() => onPreview(template)}
-          >
-            <Eye className="h-4 w-4 mr-1" />
-            Preview Email
-          </Button>
+          <div className="flex gap-2 mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1"
+              onClick={() => onPreview(template)}
+            >
+              <Eye className="h-4 w-4 mr-1" />
+              Preview
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              className="flex-1"
+              onClick={() => onEdit(template)}
+              disabled={template.source === 'hardcoded'}
+            >
+              <Edit2 className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
