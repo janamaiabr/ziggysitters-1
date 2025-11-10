@@ -144,19 +144,23 @@ const handler = async (req: Request): Promise<Response> => {
                 }
                 .button { 
                   display: inline-block; 
-                  padding: 16px 40px; 
-                  background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
-                  color: #333 !important; 
+                  padding: 20px 50px; 
+                  background: linear-gradient(135deg, #ffd700 0%, #ffb700 50%, #ffd700 100%);
+                  color: #1a1a1a !important; 
                   text-decoration: none; 
-                  border-radius: 30px; 
+                  border-radius: 50px; 
                   margin: 25px 0;
-                  font-weight: bold;
-                  font-size: 16px;
-                  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-                  transition: transform 0.2s;
+                  font-weight: 800;
+                  font-size: 18px;
+                  box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+                  transition: all 0.3s ease;
+                  border: 3px solid #fff;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
                 }
                 .button:hover {
-                  transform: translateY(-2px);
+                  transform: translateY(-3px);
+                  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.4);
                 }
                 .cta-section {
                   text-align: center;
@@ -361,7 +365,7 @@ const handler = async (req: Request): Promise<Response> => {
                     </p>
                     <center>
                       <a href="https://ziggysitters.com/profile" class="button">
-                        ⭐ Get My Golden Badge
+                        ⭐ Get My Golden Badge Now ⭐
                       </a>
                     </center>
                   </div>
