@@ -164,7 +164,8 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; text-align: center; }
     .content { padding: 40px 30px; }
     .info-box { background: #f0f4ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 8px; margin: 25px 0; }
-    .cta-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 700; margin: 20px 0; }
+    .cta-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 700; margin: 20px 0; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+    .text-link { color: #667eea; text-decoration: underline; font-weight: 500; }
     .footer { background: #f8f9fa; padding: 30px; text-align: center; color: #666; font-size: 14px; }
   </style>
 </head>
@@ -182,7 +183,12 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
           <li>Takes less than 2 minutes!</li>
         </ul>
       </div>
-      <center><a href="{profileUrl}" class="cta-button">Upload Your ID Now →</a></center>
+      <center>
+        <a href="{profileUrl}" class="cta-button">Upload Your ID Now →</a>
+      </center>
+      <p style="text-align: center; margin-top: 15px;">
+        <a href="{profileUrl}" class="text-link">Or click here to go to your profile</a>
+      </p>
       <p>Once verified, you'll be able to accept booking requests from pet owners in your area.</p>
       <p>Best regards,<br><strong>The ZiggySitters Team</strong></p>
     </div>
