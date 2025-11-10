@@ -145,6 +145,51 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
   </div>
 </body>
 </html>`
+  },
+  {
+    template_key: 'id_submission_reminder',
+    template_name: 'ID Submission Reminder',
+    subject: '📝 Complete Your Verification - Upload Your ID',
+    description: 'Reminder for sitters to submit their ID for verification',
+    variables: ['sitterName', 'profileUrl'],
+    source: 'hardcoded' as const,
+    trigger: 'Manual - Admin sends to sitters missing ID verification',
+    edge_function: 'send-id-submission-reminder',
+    html_content: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 0 auto; background: white; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; text-align: center; }
+    .content { padding: 40px 30px; }
+    .info-box { background: #f0f4ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 8px; margin: 25px 0; }
+    .cta-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 700; margin: 20px 0; }
+    .footer { background: #f8f9fa; padding: 30px; text-align: center; color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h1>📝 Complete Your Verification</h1><p>One more step to start accepting bookings</p></div>
+    <div class="content">
+      <p style="font-size: 18px; color: #667eea; font-weight: 600;">Hi {sitterName}! 👋</p>
+      <p>We noticed you haven't uploaded your ID verification yet. This is a quick step to complete your profile and start accepting bookings!</p>
+      <div class="info-box">
+        <h3 style="margin-top: 0; color: #667eea;">✅ What you need:</h3>
+        <ul>
+          <li>A valid government-issued photo ID (driver's license or passport)</li>
+          <li>Clear photo or scan of your ID</li>
+          <li>Takes less than 2 minutes!</li>
+        </ul>
+      </div>
+      <center><a href="{profileUrl}" class="cta-button">Upload Your ID Now →</a></center>
+      <p>Once verified, you'll be able to accept booking requests from pet owners in your area.</p>
+      <p>Best regards,<br><strong>The ZiggySitters Team</strong></p>
+    </div>
+    <div class="footer"><p><strong>ZiggySitters</strong></p></div>
+  </div>
+</body>
+</html>`
   }
 ];
 
