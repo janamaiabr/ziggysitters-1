@@ -208,20 +208,22 @@ const Index = () => {
                         <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <CardTitle className="text-lg md:text-xl">{sitter.name}</CardTitle>
+                         <CardTitle className="text-lg md:text-xl">{sitter.name}</CardTitle>
                         <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                           <MapPin className="w-3 h-3 mr-1" />
                           {sitter.location}
                         </div>
-                         <div className="flex items-center mt-1">
-                           <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                           <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
-                           <span className="text-xs md:text-sm text-muted-foreground ml-1">⭐ Top rated</span>
+                         <div className="flex flex-wrap items-center gap-1 mt-1">
+                           <div className="flex items-center">
+                             <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                             <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
+                             <span className="text-xs md:text-sm text-muted-foreground ml-1">⭐ Top rated</span>
+                           </div>
                           {sitter.verified && (
-                            <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500 ml-2" />
+                            <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
                           )}
                           {sitter.hasPoliceVet && (
-                            <Badge variant="default" className="ml-2 text-xs bg-yellow-500">⭐</Badge>
+                            <Badge variant="default" className="text-xs bg-yellow-500 whitespace-nowrap">⭐</Badge>
                           )}
                         </div>
                       </div>

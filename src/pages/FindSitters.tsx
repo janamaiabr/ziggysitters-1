@@ -486,18 +486,18 @@ export default function FindSitters() {
                           alt={`${sitter.name}'s profile`}
                           className="w-full h-full object-cover"
                         />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                          <div className="text-center">
-                            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
-                              <span className="text-2xl font-bold text-primary">
-                                {sitter.name.split(' ').map(n => n[0]).join('')}
-                              </span>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                            <div className="text-center">
+                              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
+                                <span className="text-2xl font-bold text-primary">
+                                  {sitter.name.split(' ').map(n => n[0]).join('')}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 font-medium">{sitter.name}</p>
                             </div>
-                            <p className="text-sm text-gray-600">Pet Sitter</p>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                     {sitter.verified && (
                       <Badge className="absolute top-2 right-2 bg-green-500 text-white">
@@ -633,7 +633,7 @@ export default function FindSitters() {
                                   {sitter.name.split(' ').map(n => n[0]).join('')}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600">Pet Sitter</p>
+                              <p className="text-sm text-gray-600 font-medium">{sitter.name}</p>
                             </div>
                           </div>
                         )}
