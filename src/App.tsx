@@ -58,6 +58,7 @@ import AdminResendReportEmails from "./pages/AdminResendReportEmails";
 import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
 import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
 import AdminEmailTemplates from "./pages/AdminEmailTemplates";
+import AdminEmailPreview from "./pages/AdminEmailPreview";
 
 const queryClient = new QueryClient();
 
@@ -205,6 +206,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <AdminEmailTemplates />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/email-preview" 
+              element={
+                <ProtectedRoute>
+                  <AdminEmailPreview />
                 </ProtectedRoute>
               } 
             />

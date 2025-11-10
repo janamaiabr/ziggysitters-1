@@ -7,7 +7,8 @@ import {
   Rocket, 
   FileText,
   DollarSign,
-  Settings
+  Settings,
+  Eye
 } from "lucide-react";
 
 const navItems = [
@@ -15,6 +16,11 @@ const navItems = [
     title: "Dashboard",
     href: "/admin-dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Email Preview",
+    href: "/admin/email-preview",
+    icon: Eye,
   },
   {
     title: "Email Templates",
