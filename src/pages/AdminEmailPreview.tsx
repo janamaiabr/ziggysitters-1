@@ -182,7 +182,7 @@ export default function AdminEmailPreview() {
           ? (template.variables as string[]).filter(v => typeof v === 'string')
           : [],
         source: 'database' as const,
-        trigger: 'Automatic - Sent based on system events',
+        trigger: template.trigger || 'Automatic - Sent based on system events',
         edge_function: undefined
       }));
       

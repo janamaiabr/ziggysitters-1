@@ -235,6 +235,7 @@ export type Database = {
           subject: string
           template_key: string
           template_name: string
+          trigger: string | null
           updated_at: string | null
           variables: Json | null
         }
@@ -247,6 +248,7 @@ export type Database = {
           subject: string
           template_key: string
           template_name: string
+          trigger?: string | null
           updated_at?: string | null
           variables?: Json | null
         }
@@ -259,6 +261,7 @@ export type Database = {
           subject?: string
           template_key?: string
           template_name?: string
+          trigger?: string | null
           updated_at?: string | null
           variables?: Json | null
         }
