@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Mail, Eye, Edit2, Save } from "lucide-react";
+import { Mail, Eye, Edit2, Save, Send } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { AdminNav } from "@/components/admin/AdminNav";
@@ -22,6 +22,8 @@ interface EmailTemplate {
   variables: string[];
   is_active: boolean;
   source: 'database' | 'hardcoded';
+  trigger: string;
+  edge_function?: string;
 }
 
 // Hardcoded email templates from edge functions
@@ -33,6 +35,8 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     description: 'Email sent to pet owners announcing the platform launch',
     variables: ['firstName'],
     source: 'hardcoded' as const,
+    trigger: 'Manual - Admin sends to all users',
+    edge_function: 'send-launch-announcement',
     html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -68,6 +72,8 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     description: 'Congratulations email for sitters who earned the golden badge',
     variables: ['sitterName'],
     source: 'hardcoded' as const,
+    trigger: 'Automatic - When sitter completes golden badge requirements',
+    edge_function: 'send-golden-badge-congratulations',
     html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -103,6 +109,8 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     description: 'Invitation for verified sitters to apply for golden badge',
     variables: ['sitterName', 'policeCheckUrl'],
     source: 'hardcoded' as const,
+    trigger: 'Manual - Admin sends to verified sitters',
+    edge_function: 'send-golden-badge-invitation',
     html_content: `<!DOCTYPE html>
 <html>
 <head>
@@ -146,11 +154,14 @@ export default function AdminEmailPreview() {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [sendMode, setSendMode] = useState(false);
+  const [sending, setSending] = useState(false);
   const [formData, setFormData] = useState({
     subject: "",
     html_content: "",
     description: "",
   });
+  const [sendFormData, setSendFormData] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchTemplates();
@@ -170,7 +181,9 @@ export default function AdminEmailPreview() {
         variables: Array.isArray(template.variables) 
           ? (template.variables as string[]).filter(v => typeof v === 'string')
           : [],
-        source: 'database' as const
+        source: 'database' as const,
+        trigger: 'Automatic - Sent based on system events',
+        edge_function: undefined
       }));
       
       setDbTemplates(templatesWithSource as EmailTemplate[]);
@@ -232,7 +245,47 @@ export default function AdminEmailPreview() {
   const handleClose = () => {
     setPreviewMode(false);
     setEditMode(false);
+    setSendMode(false);
     setSelectedTemplate(null);
+    setSendFormData({});
+  };
+
+  const handleSendEmail = (template: EmailTemplate) => {
+    setSelectedTemplate(template);
+    setSendMode(true);
+    setPreviewMode(false);
+    setEditMode(false);
+    
+    // Initialize form with empty values for all variables
+    const initialData: Record<string, string> = {};
+    template.variables.forEach(v => {
+      initialData[v] = '';
+    });
+    setSendFormData(initialData);
+  };
+
+  const handleSendSubmit = async () => {
+    if (!selectedTemplate?.edge_function) {
+      toast.error("No edge function defined for this template");
+      return;
+    }
+
+    setSending(true);
+    try {
+      const { error } = await supabase.functions.invoke(selectedTemplate.edge_function, {
+        body: sendFormData
+      });
+
+      if (error) throw error;
+
+      toast.success("Email sent successfully!");
+      handleClose();
+    } catch (error: any) {
+      console.error("Error sending email:", error);
+      toast.error(`Failed to send email: ${error.message}`);
+    } finally {
+      setSending(false);
+    }
   };
 
   const replaceVariables = (content: string, variables: string[]) => {
@@ -272,19 +325,19 @@ export default function AdminEmailPreview() {
 
           <TabsContent value="all" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
             {allTemplates.map((template) => (
-              <TemplateCard key={template.id} template={template} onPreview={handlePreview} onEdit={handleEdit} />
+              <TemplateCard key={template.id} template={template} onPreview={handlePreview} onEdit={handleEdit} onSend={handleSendEmail} />
             ))}
           </TabsContent>
 
           <TabsContent value="database" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
             {dbTemplates.map((template) => (
-              <TemplateCard key={template.id} template={template} onPreview={handlePreview} onEdit={handleEdit} />
+              <TemplateCard key={template.id} template={template} onPreview={handlePreview} onEdit={handleEdit} onSend={handleSendEmail} />
             ))}
           </TabsContent>
 
           <TabsContent value="hardcoded" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
             {hardcodedTemplates.map((template, idx) => (
-              <TemplateCard key={`hardcoded-${idx}`} template={{ ...template, id: `hardcoded-${idx}`, is_active: true }} onPreview={handlePreview} onEdit={handleEdit} />
+              <TemplateCard key={`hardcoded-${idx}`} template={{ ...template, id: `hardcoded-${idx}`, is_active: true }} onPreview={handlePreview} onEdit={handleEdit} onSend={handleSendEmail} />
             ))}
           </TabsContent>
         </Tabs>
@@ -385,6 +438,66 @@ export default function AdminEmailPreview() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Send Email Dialog */}
+        <Dialog open={sendMode} onOpenChange={handleClose}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Send Email: {selectedTemplate?.template_name}</DialogTitle>
+              <DialogDescription>
+                Fill in the required information to send this email manually
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 mt-4">
+              <div className="bg-muted p-3 rounded-lg">
+                <p className="text-sm font-medium mb-1">Trigger:</p>
+                <p className="text-sm">{selectedTemplate?.trigger}</p>
+              </div>
+              
+              {selectedTemplate?.variables && selectedTemplate.variables.length > 0 ? (
+                <>
+                  {selectedTemplate.variables.map((variable) => (
+                    <div key={variable}>
+                      <Label htmlFor={variable}>
+                        {variable.charAt(0).toUpperCase() + variable.slice(1).replace(/([A-Z])/g, ' $1')}
+                      </Label>
+                      <Input
+                        id={variable}
+                        value={sendFormData[variable] || ''}
+                        onChange={(e) => setSendFormData({ ...sendFormData, [variable]: e.target.value })}
+                        placeholder={`Enter ${variable}`}
+                      />
+                    </div>
+                  ))}
+                  <div className="flex justify-end gap-2 pt-4">
+                    <Button variant="outline" onClick={handleClose} disabled={sending}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSendSubmit} disabled={sending}>
+                      <Send className="h-4 w-4 mr-2" />
+                      {sending ? 'Sending...' : 'Send Email'}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    This email will be sent to all eligible recipients automatically.
+                  </p>
+                  <div className="flex justify-end gap-2 pt-4">
+                    <Button variant="outline" onClick={handleClose} disabled={sending}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSendSubmit} disabled={sending}>
+                      <Send className="h-4 w-4 mr-2" />
+                      {sending ? 'Sending...' : 'Send to All'}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
@@ -393,11 +506,13 @@ export default function AdminEmailPreview() {
 function TemplateCard({ 
   template, 
   onPreview, 
-  onEdit 
+  onEdit,
+  onSend 
 }: { 
   template: EmailTemplate; 
   onPreview: (template: EmailTemplate) => void;
   onEdit: (template: EmailTemplate) => void;
+  onSend: (template: EmailTemplate) => void;
 }) {
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -419,8 +534,16 @@ function TemplateCard({
         <div className="space-y-3">
           <div>
             <p className="text-sm font-medium text-muted-foreground">Subject:</p>
-            <p className="text-sm">{template.subject}</p>
+            <p className="text-sm font-semibold line-clamp-2">{template.subject}</p>
           </div>
+          
+          {template.trigger && (
+            <div>
+              <p className="text-sm font-medium text-muted-foreground mb-1">Trigger:</p>
+              <p className="text-xs bg-muted px-2 py-1 rounded">{template.trigger}</p>
+            </div>
+          )}
+          
           {template.variables && template.variables.length > 0 && (
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-1">Variables:</p>
@@ -433,27 +556,33 @@ function TemplateCard({
               </div>
             </div>
           )}
-          <div className="flex gap-2 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1"
-              onClick={() => onPreview(template)}
-            >
+          <div className="flex gap-2 pt-2">
+            <Button size="sm" variant="outline" onClick={() => onPreview(template)} className="flex-1">
               <Eye className="h-4 w-4 mr-1" />
               Preview
             </Button>
-            <Button
-              variant="default"
-              size="sm"
-              className="flex-1"
+            <Button 
+              size="sm" 
+              variant="outline" 
               onClick={() => onEdit(template)}
               disabled={template.source === 'hardcoded'}
+              className="flex-1"
             >
               <Edit2 className="h-4 w-4 mr-1" />
               Edit
             </Button>
           </div>
+          {template.edge_function && (
+            <Button 
+              size="sm" 
+              variant="default" 
+              onClick={() => onSend(template)}
+              className="w-full mt-2"
+            >
+              <Send className="h-4 w-4 mr-1" />
+              Send Email
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
