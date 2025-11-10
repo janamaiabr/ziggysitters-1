@@ -72,8 +72,8 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     description: 'Congratulations email for sitters who earned the golden badge',
     variables: ['sitterName'],
     source: 'hardcoded' as const,
-    trigger: 'Automatic - When sitter completes golden badge requirements',
-    edge_function: 'send-golden-badge-congratulations',
+    trigger: 'Automatic - When admin approves police vet verification',
+    edge_function: undefined,
     html_content: `<!DOCTYPE html>
 <html>
 <head>
