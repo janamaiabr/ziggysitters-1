@@ -41,6 +41,11 @@ const navItems = [
     href: "/admin/send-reonboarding-emails",
     icon: Mail,
   },
+  {
+    title: "Launch Email",
+    href: "/admin/launch-announcement",
+    icon: Rocket,
+  },
 ];
 
 export function AdminNav() {

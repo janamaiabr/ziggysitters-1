@@ -56,6 +56,7 @@ import SitterServiceTests from "./pages/SitterServiceTests";
 import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 import AdminResendReportEmails from "./pages/AdminResendReportEmails";
 import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
+import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
 import { lazy } from "react";
 
 const queryClient = new QueryClient();
@@ -235,6 +236,7 @@ function AppContent() {
           <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
           <Route path="/admin-resend-report-emails" element={<AdminResendReportEmails />} />
           <Route path="/admin/send-reonboarding-emails" element={<AdminSendReonboardingEmails />} />
+          <Route path="/admin/launch-announcement" element={<AdminLaunchAnnouncement />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
