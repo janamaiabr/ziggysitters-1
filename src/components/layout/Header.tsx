@@ -106,10 +106,12 @@ export default function Header() {
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/bookings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    My Bookings
-                  </DropdownMenuItem>
+                  {!isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate('/bookings')}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      My Bookings
+                    </DropdownMenuItem>
+                  )}
                   {isAdmin && (
                     <DropdownMenuItem onClick={() => navigate('/admin-dashboard')}>
                       <Shield className="mr-2 h-4 w-4" />
@@ -180,10 +182,12 @@ export default function Header() {
                         <User className="mr-2 h-4 w-4" />
                         Profile
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/bookings')}>
-                        <Settings className="mr-2 h-4 w-4" />
-                        My Bookings
-                      </Button>
+                      {!isAdmin && (
+                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/bookings')}>
+                          <Settings className="mr-2 h-4 w-4" />
+                          My Bookings
+                        </Button>
+                      )}
                       {isAdmin && (
                         <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin-dashboard')}>
                           <Shield className="mr-2 h-4 w-4" />
