@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2 } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2, StickyNote } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -41,6 +43,7 @@ type PublicSitterProfile = {
   blue_card_document_url?: string | null;
   verification_documents_uploaded_at?: string | null;
   created_at: string;
+  admin_notes?: string | null;
 }
 
 export default function AdminDashboard() {
@@ -58,6 +61,11 @@ export default function AdminDashboard() {
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [documentFilter, setDocumentFilter] = useState<string>('all');
+  
+  // Admin notes dialog
+  const [notesDialogOpen, setNotesDialogOpen] = useState(false);
+  const [selectedUserForNotes, setSelectedUserForNotes] = useState<PublicSitterProfile | null>(null);
+  const [adminNotes, setAdminNotes] = useState<string>('');
 
   useEffect(() => {
     if (!user) {
@@ -112,10 +120,10 @@ export default function AdminDashboard() {
     if (!user) return;
     
     try {
-      // Fetch from profiles table with admin privileges - include documents
+      // Fetch from profiles table with admin privileges - include documents and admin notes
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at, admin_notes')
         .eq('role', 'pet_sitter')
         .order('created_at', { ascending: false });
 
@@ -139,7 +147,7 @@ export default function AdminDashboard() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at, admin_notes')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -219,6 +227,40 @@ export default function AdminDashboard() {
       setSelectedUserIds(new Set());
     } else {
       setSelectedUserIds(new Set(allUsers.map(u => u.id)));
+    }
+  };
+
+  const handleOpenNotesDialog = (user: PublicSitterProfile) => {
+    setSelectedUserForNotes(user);
+    setAdminNotes(user.admin_notes || '');
+    setNotesDialogOpen(true);
+  };
+
+  const handleSaveAdminNotes = async () => {
+    if (!selectedUserForNotes) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ admin_notes: adminNotes.trim() || null })
+        .eq('id', selectedUserForNotes.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Admin notes saved successfully",
+      });
+
+      setNotesDialogOpen(false);
+      await Promise.all([fetchPendingSitters(), fetchAllUsers()]);
+    } catch (error) {
+      console.error('Error saving admin notes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save admin notes",
+        variant: "destructive"
+      });
     }
   };
 
@@ -452,6 +494,7 @@ export default function AdminDashboard() {
                     <TableHead>Location</TableHead>
                     <TableHead>Documents</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Notes</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -459,7 +502,7 @@ export default function AdminDashboard() {
                 <TableBody>
                   {filteredUsers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                         No users found matching the selected filters.
                       </TableCell>
                     </TableRow>
@@ -535,6 +578,16 @@ export default function AdminDashboard() {
                           <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenNotesDialog(user)}
+                          className="h-8"
+                        >
+                          <StickyNote className={`h-4 w-4 ${user.admin_notes ? 'text-primary' : 'text-muted-foreground'}`} />
+                        </Button>
+                      </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {new Date(user.created_at).toLocaleDateString()}
                       </TableCell>
@@ -556,6 +609,46 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Admin Notes Dialog */}
+        <Dialog open={notesDialogOpen} onOpenChange={setNotesDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Admin Notes - {selectedUserForNotes?.first_name} {selectedUserForNotes?.last_name}</DialogTitle>
+              <DialogDescription>
+                Secure admin-only notes for verification details, ID name discrepancies, etc.
+                <div className="mt-2 text-sm">
+                  <strong>Email:</strong> {selectedUserForNotes?.email}
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="admin-notes" className="text-sm font-medium">
+                  Admin Notes (Confidential)
+                </Label>
+                <Textarea
+                  id="admin-notes"
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  placeholder="E.g., ID shows maiden name 'Carroll' - married name is 'Akroyd'. License: CC632208, DOB: 28-12-1983"
+                  className="mt-2 min-h-[200px]"
+                />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  These notes are only visible to admins and are used for internal verification purposes.
+                </p>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setNotesDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveAdminNotes}>
+                  Save Notes
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <TabsContent value="pending">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

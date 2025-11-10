@@ -511,6 +511,7 @@ export type Database = {
       profiles: {
         Row: {
           address: string | null
+          admin_notes: string | null
           avatar_url: string | null
           background_check_verified: boolean | null
           bio: string | null
@@ -547,6 +548,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          admin_notes?: string | null
           avatar_url?: string | null
           background_check_verified?: boolean | null
           bio?: string | null
@@ -583,6 +585,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          admin_notes?: string | null
           avatar_url?: string | null
           background_check_verified?: boolean | null
           bio?: string | null
