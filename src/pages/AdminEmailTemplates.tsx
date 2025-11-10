@@ -270,11 +270,11 @@ export default function AdminEmailTemplates() {
 
       {/* Preview Dialog */}
       <Dialog open={previewMode} onOpenChange={handleClose}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Preview: {selectedTemplate?.template_name}</DialogTitle>
             <DialogDescription>
-              This is how the email will appear. Variables are highlighted in yellow.
+              This is how the email will appear to recipients. Variables are highlighted in yellow.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
@@ -286,11 +286,12 @@ export default function AdminEmailTemplates() {
                 }} />
               </p>
             </div>
-            <div className="border rounded-lg p-6 bg-white">
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: selectedTemplate ? replaceVariables(selectedTemplate.html_content, selectedTemplate.variables) : "",
-                }}
+            <div className="border rounded-lg bg-gray-100 overflow-hidden">
+              <iframe
+                srcDoc={selectedTemplate ? replaceVariables(selectedTemplate.html_content, selectedTemplate.variables) : ""}
+                className="w-full min-h-[600px] bg-white"
+                style={{ border: 'none' }}
+                title="Email Preview"
               />
             </div>
           </div>
