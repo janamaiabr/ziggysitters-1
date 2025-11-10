@@ -75,3 +75,12 @@ verify_jwt = false
 [functions.check-missing-documents]
 verify_jwt = false
 
+[functions.send-golden-badge-congratulations]
+verify_jwt = false
+
+[functions.send-id-submission-reminder]
+verify_jwt = false
+
+[functions.send-golden-badge-invitation]
+verify_jwt = false
+
