@@ -18,13 +18,8 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Email Preview",
-    href: "/admin/email-preview",
-    icon: Eye,
-  },
-  {
     title: "Email Templates",
-    href: "/admin/email-templates",
+    href: "/admin/email-preview",
     icon: Mail,
   },
   {
