@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, parseISO, startOfDay } from 'date-fns';
 import { CalendarDays, Plus, X } from 'lucide-react';
 
 interface Booking {
@@ -96,9 +96,10 @@ export default function SitterCalendar() {
     
     // Check for bookings
     const booking = bookings.find(b => {
-      const startDate = new Date(b.start_date);
-      const endDate = new Date(b.end_date);
-      return date >= startDate && date <= endDate;
+      const checkDate = startOfDay(date);
+      const startDate = startOfDay(parseISO(b.start_date));
+      const endDate = startOfDay(parseISO(b.end_date));
+      return checkDate >= startDate && checkDate <= endDate;
     });
 
     if (booking) {
@@ -180,9 +181,10 @@ export default function SitterCalendar() {
   const modifiers = {
     booking: (date: Date) => {
       return bookings.some(b => {
-        const startDate = new Date(b.start_date);
-        const endDate = new Date(b.end_date);
-        return date >= startDate && date <= endDate;
+        const checkDate = startOfDay(date);
+        const startDate = startOfDay(parseISO(b.start_date));
+        const endDate = startOfDay(parseISO(b.end_date));
+        return checkDate >= startDate && checkDate <= endDate;
       });
     },
     unavailable: (date: Date) => {
@@ -214,9 +216,10 @@ export default function SitterCalendar() {
   };
 
   const selectedDateBookings = selectedDate ? bookings.filter(b => {
-    const startDate = new Date(b.start_date);
-    const endDate = new Date(b.end_date);
-    return selectedDate >= startDate && selectedDate <= endDate;
+    const checkDate = startOfDay(selectedDate);
+    const startDate = startOfDay(parseISO(b.start_date));
+    const endDate = startOfDay(parseISO(b.end_date));
+    return checkDate >= startDate && checkDate <= endDate;
   }) : [];
 
   return (
