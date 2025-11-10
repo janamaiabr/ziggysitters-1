@@ -12,6 +12,8 @@ import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rock
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import StripeModeIndicator from '@/components/admin/StripeModeIndicator';
 import { AdminNav } from '@/components/admin/AdminNav';
@@ -51,6 +53,11 @@ export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Filters
+  const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [documentFilter, setDocumentFilter] = useState<string>('all');
 
   useEffect(() => {
     if (!user) {
@@ -292,6 +299,29 @@ export default function AdminDashboard() {
   const pendingSitters = profiles.filter(p => p.verification_status === 'pending' || (!p.verification_status && !p.is_verified));
   const approvedSitters = profiles.filter(p => p.is_verified && p.verification_status === 'verified');
   const rejectedSitters = profiles.filter(p => p.verification_status === 'rejected');
+  
+  // Apply filters to all users
+  const filteredUsers = allUsers.filter(user => {
+    // Role filter
+    if (roleFilter !== 'all' && user.role !== roleFilter) return false;
+    
+    // Status filter (for sitters only)
+    if (statusFilter !== 'all') {
+      if (user.role !== 'pet_sitter') return false;
+      if (statusFilter === 'pending' && !(user.verification_status === 'pending' || (!user.verification_status && !user.is_verified))) return false;
+      if (statusFilter === 'verified' && !user.is_verified) return false;
+      if (statusFilter === 'rejected' && user.verification_status !== 'rejected') return false;
+    }
+    
+    // Document filter (for sitters only)
+    if (documentFilter !== 'all') {
+      if (user.role !== 'pet_sitter') return false;
+      if (documentFilter === 'has_id' && !user.id_document_url) return false;
+      if (documentFilter === 'no_id' && user.id_document_url) return false;
+    }
+    
+    return true;
+  });
 
   return (
     <div>
@@ -330,9 +360,56 @@ export default function AdminDashboard() {
 
         <TabsContent value="all-users">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader>
               <CardTitle>All Platform Users</CardTitle>
-              {selectedUserIds.size > 0 && (
+              
+              {/* Filters */}
+              <div className="flex flex-wrap gap-4 mt-4 items-end">
+                <div className="flex-1 min-w-[200px]">
+                  <Label htmlFor="role-filter" className="text-sm font-medium mb-2 block">Role</Label>
+                  <Select value={roleFilter} onValueChange={setRoleFilter}>
+                    <SelectTrigger id="role-filter">
+                      <SelectValue placeholder="All Roles" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      <SelectItem value="pet_owner">Pet Owner</SelectItem>
+                      <SelectItem value="pet_sitter">Pet Sitter</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex-1 min-w-[200px]">
+                  <Label htmlFor="status-filter" className="text-sm font-medium mb-2 block">Verification Status</Label>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger id="status-filter">
+                      <SelectValue placeholder="All Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="verified">Verified</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex-1 min-w-[200px]">
+                  <Label htmlFor="document-filter" className="text-sm font-medium mb-2 block">ID Document</Label>
+                  <Select value={documentFilter} onValueChange={setDocumentFilter}>
+                    <SelectTrigger id="document-filter">
+                      <SelectValue placeholder="All" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="has_id">Has ID</SelectItem>
+                      <SelectItem value="no_id">No ID</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {selectedUserIds.size > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="sm" disabled={isDeleting}>
@@ -356,7 +433,8 @@ export default function AdminDashboard() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-              )}
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <Table>
@@ -364,7 +442,7 @@ export default function AdminDashboard() {
                   <TableRow>
                     <TableHead className="w-12">
                       <Checkbox 
-                        checked={selectedUserIds.size === allUsers.length && allUsers.length > 0}
+                        checked={selectedUserIds.size === filteredUsers.length && filteredUsers.length > 0}
                         onCheckedChange={toggleSelectAll}
                       />
                     </TableHead>
@@ -379,7 +457,14 @@ export default function AdminDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {allUsers.map((user) => (
+                  {filteredUsers.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                        No users found matching the selected filters.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredUsers.map((user) => (
                     <TableRow key={user.id} className="hover:bg-muted/50">
                       <TableCell>
                         <Checkbox 
@@ -464,7 +549,8 @@ export default function AdminDashboard() {
                         </Button>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
