@@ -6,12 +6,28 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Rocket, ArrowLeft, Send, CheckCircle2, AlertCircle, Clock, Sparkles, Mail, Eye } from 'lucide-react';
+import { Rocket, ArrowLeft, Send, CheckCircle2, AlertCircle, Clock, Sparkles, Mail, Eye, Edit } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AdminNav } from '@/components/admin/AdminNav';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-const getEmailHTML = (firstName: string, isSitter: boolean) => {
+const getEmailHTML = (firstName: string, isSitter: boolean, customContent?: {
+  subject?: string;
+  headerTitle?: string;
+  headerSubtitle?: string;
+  introText?: string;
+  ownerCTA?: string;
+  sitterCTA?: string;
+}) => {
+  const subject = customContent?.subject || "We're Officially LIVE! 🚀";
+  const headerTitle = customContent?.headerTitle || "Welcome to the Future of Pet Care!";
+  const headerSubtitle = customContent?.headerSubtitle || "ZiggySitters is now fully operational and ready to serve you";
+  const introText = customContent?.introText || `We're thrilled to announce that <strong>ZiggySitters is officially LIVE</strong> and ready to transform the way you ${isSitter ? 'provide pet care services' : 'care for your beloved pets'}!`;
+  const ownerCTA = customContent?.ownerCTA || "Find the perfect sitter for your furry friend and book with confidence!";
+  const sitterCTA = customContent?.sitterCTA || "Start accepting bookings today and turn your love for pets into income!";
   return `
     <!DOCTYPE html>
     <html>
@@ -124,9 +140,9 @@ const getEmailHTML = (firstName: string, isSitter: boolean) => {
         </div>
         
         <div class="header">
-          <h1>Welcome to the Future of Pet Care!</h1>
+          <h1>${headerTitle}</h1>
           <p style="font-size: 18px; margin-top: 15px; opacity: 0.95;">
-            ZiggySitters is now fully operational and ready to serve you
+            ${headerSubtitle}
           </p>
         </div>
 
@@ -134,8 +150,7 @@ const getEmailHTML = (firstName: string, isSitter: boolean) => {
           <h2>Hi ${firstName}! 🎊</h2>
           
           <p style="font-size: 16px;">
-            We're thrilled to announce that <strong>ZiggySitters is officially LIVE</strong> and ready to transform 
-            the way you ${isSitter ? 'provide pet care services' : 'care for your beloved pets'}!
+            ${introText}
           </p>
 
           <div class="highlight-box">
@@ -200,9 +215,7 @@ const getEmailHTML = (firstName: string, isSitter: boolean) => {
           <div class="cta-section">
             <h2 style="margin-top: 0; color: #667eea;">Ready to Get Started?</h2>
             <p style="font-size: 16px; margin-bottom: 25px;">
-              ${isSitter 
-                ? 'Start accepting bookings today and turn your love for pets into income!' 
-                : 'Find the perfect sitter for your furry friend and book with confidence!'}
+              ${isSitter ? sitterCTA : ownerCTA}
             </p>
             <center>
               <a href="https://ziggysitters.com/${isSitter ? 'profile' : 'find-sitters'}" class="button">
@@ -273,6 +286,14 @@ export default function AdminLaunchAnnouncement() {
   const { toast } = useToast();
   const [sending, setSending] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [emailContent, setEmailContent] = useState({
+    subject: "We're Officially LIVE! 🚀",
+    headerTitle: "Welcome to the Future of Pet Care!",
+    headerSubtitle: "ZiggySitters is now fully operational and ready to serve you",
+    introText: "We're thrilled to announce that <strong>ZiggySitters is officially LIVE</strong> and ready to transform the way you care for pets!",
+    ownerCTA: "Find the perfect sitter for your furry friend and book with confidence!",
+    sitterCTA: "Start accepting bookings today and turn your love for pets into income!"
+  });
 
   // Redirect non-admins
   if (profile?.role !== 'admin') {
@@ -349,13 +370,84 @@ export default function AdminLaunchAnnouncement() {
               </Alert>
 
               <Tabs defaultValue="preview" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="edit">
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit Content
+                  </TabsTrigger>
                   <TabsTrigger value="preview">
                     <Eye className="h-4 w-4 mr-2" />
-                    Email Preview
+                    Preview
                   </TabsTrigger>
                   <TabsTrigger value="details">Details</TabsTrigger>
                 </TabsList>
+                
+                <TabsContent value="edit" className="space-y-4">
+                  <div className="space-y-4 p-4 border rounded-lg">
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Email Subject</Label>
+                      <Input
+                        id="subject"
+                        value={emailContent.subject}
+                        onChange={(e) => setEmailContent({...emailContent, subject: e.target.value})}
+                        placeholder="Email subject line"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="headerTitle">Header Title</Label>
+                      <Input
+                        id="headerTitle"
+                        value={emailContent.headerTitle}
+                        onChange={(e) => setEmailContent({...emailContent, headerTitle: e.target.value})}
+                        placeholder="Main header title"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="headerSubtitle">Header Subtitle</Label>
+                      <Input
+                        id="headerSubtitle"
+                        value={emailContent.headerSubtitle}
+                        onChange={(e) => setEmailContent({...emailContent, headerSubtitle: e.target.value})}
+                        placeholder="Header subtitle"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="introText">Introduction Text</Label>
+                      <Textarea
+                        id="introText"
+                        value={emailContent.introText}
+                        onChange={(e) => setEmailContent({...emailContent, introText: e.target.value})}
+                        placeholder="Introduction paragraph"
+                        rows={3}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="ownerCTA">Pet Owner Call-to-Action</Label>
+                      <Textarea
+                        id="ownerCTA"
+                        value={emailContent.ownerCTA}
+                        onChange={(e) => setEmailContent({...emailContent, ownerCTA: e.target.value})}
+                        placeholder="CTA text for pet owners"
+                        rows={2}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="sitterCTA">Pet Sitter Call-to-Action</Label>
+                      <Textarea
+                        id="sitterCTA"
+                        value={emailContent.sitterCTA}
+                        onChange={(e) => setEmailContent({...emailContent, sitterCTA: e.target.value})}
+                        placeholder="CTA text for pet sitters"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
                 
                 <TabsContent value="preview" className="space-y-4">
                   <Alert>
@@ -375,7 +467,7 @@ export default function AdminLaunchAnnouncement() {
                     <TabsContent value="owner" className="mt-4">
                       <div className="border rounded-lg overflow-hidden">
                         <iframe
-                          srcDoc={getEmailHTML('John', false)}
+                          srcDoc={getEmailHTML('John', false, emailContent)}
                           className="w-full h-[600px] bg-white"
                           title="Pet Owner Email Preview"
                         />
@@ -385,7 +477,7 @@ export default function AdminLaunchAnnouncement() {
                     <TabsContent value="sitter" className="mt-4">
                       <div className="border rounded-lg overflow-hidden">
                         <iframe
-                          srcDoc={getEmailHTML('Sarah', true)}
+                          srcDoc={getEmailHTML('Sarah', true, emailContent)}
                           className="w-full h-[600px] bg-white"
                           title="Pet Sitter Email Preview"
                         />
