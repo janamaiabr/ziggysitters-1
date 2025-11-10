@@ -138,12 +138,12 @@ export default function Onboarding() {
       if (initialLoadComplete) return; // Prevent multiple loads
       
       try {
-        // Check if terms were just accepted in this session (during signup)
-        const termsJustAccepted = sessionStorage.getItem('terms_just_accepted') === 'true';
+        // Check if terms were just accepted during signup (localStorage persists across refreshes)
+        const termsAcceptedDuringSignup = localStorage.getItem('terms_accepted_during_signup') === 'true';
         
-        if (termsJustAccepted) {
-          console.log('Terms were just accepted during signup - skipping terms popup');
-          sessionStorage.removeItem('terms_just_accepted'); // Clean up
+        if (termsAcceptedDuringSignup) {
+          console.log('✅ Terms were accepted during signup - skipping terms popup');
+          localStorage.removeItem('terms_accepted_during_signup'); // Clean up
           setTermsChecked(true);
           setShowTerms(false);
           
@@ -186,30 +186,35 @@ export default function Onboarding() {
             }
           }
 
-          // Only update data if localStorage doesn't have it
+          // Always pre-fill names from user metadata if available (don't make users re-enter)
           const savedData = localStorage.getItem('onboarding_data');
-          if (!savedData) {
-            setData(prev => ({
-              ...prev,
-              role: (profile.role === 'pet_owner' || profile.role === 'pet_sitter') ? profile.role : prev.role,
-              first_name: profile.first_name || user.user_metadata?.first_name || '',
-              last_name: profile.last_name || user.user_metadata?.last_name || '',
-              phone: profile.phone || '',
-              address: profile.address || '',
-              suburb: profile.suburb || '',
-              city: profile.city || 'Auckland',
-              postal_code: profile.postal_code || '',
-              bio: profile.bio || '',
-              avatar_url: profile.avatar_url || '',
-            }));
-          }
+          const parsedSavedData = savedData ? JSON.parse(savedData) : {};
+          
+          setData(prev => ({
+            ...prev,
+            role: (profile.role === 'pet_owner' || profile.role === 'pet_sitter') ? profile.role : prev.role,
+            // CRITICAL: Pre-fill names from profile or user metadata - don't make users enter twice
+            first_name: parsedSavedData.first_name || profile.first_name || user.user_metadata?.first_name || '',
+            last_name: parsedSavedData.last_name || profile.last_name || user.user_metadata?.last_name || '',
+            phone: parsedSavedData.phone || profile.phone || '',
+            address: parsedSavedData.address || profile.address || '',
+            suburb: parsedSavedData.suburb || profile.suburb || '',
+            city: parsedSavedData.city || profile.city || 'Auckland',
+            postal_code: parsedSavedData.postal_code || profile.postal_code || '',
+            bio: parsedSavedData.bio || profile.bio || '',
+            avatar_url: parsedSavedData.avatar_url || profile.avatar_url || '',
+          }));
         } else {
-          // If no profile exists, show terms
-          if (!showTerms) {
+          // If no profile exists, check if terms were just accepted during signup
+          const termsAcceptedDuringSignup = localStorage.getItem('terms_accepted_during_signup') === 'true';
+          
+          if (!termsAcceptedDuringSignup && !showTerms) {
             setShowTerms(true);
             setStep(0);
             localStorage.setItem('onboarding_step', '0');
           }
+          
+          // Always pre-fill names from user metadata if available
           setData(prev => ({
             ...prev,
             first_name: user.user_metadata?.first_name || prev.first_name || '',

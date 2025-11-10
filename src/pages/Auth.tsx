@@ -113,21 +113,27 @@ export default function Auth() {
         // Get the newly created user session
         const { data: { session } } = await supabase.auth.getSession();
         
-        // Save terms acceptance to database to prevent duplicate popups in onboarding
+        // Save terms acceptance to database using edge function for proper permissions
         if (session?.user?.id) {
           try {
-            // Wait a bit for the profile to be created by the trigger
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Wait for the profile to be created by the trigger
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
-            await supabase
-              .from('profiles')
-              .update({ terms_accepted: true })
-              .eq('user_id', session.user.id);
+            // Use edge function to save terms acceptance with elevated privileges
+            const { error: termsError } = await supabase.functions.invoke('save-terms-acceptance', {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
             
-            console.log('Terms acceptance saved to database');
+            if (termsError) {
+              console.error('Error saving terms acceptance:', termsError);
+            } else {
+              console.log('✅ Terms acceptance saved to database during signup');
+            }
           } catch (error) {
             console.error('Error saving terms acceptance:', error);
-            // Don't fail signup if this fails - the session flag will prevent double popup
+            // Don't fail signup if this fails
           }
         }
         
@@ -186,8 +192,8 @@ export default function Auth() {
   const handleTermsAccept = async () => {
     setShowTerms(false);
     if (pendingAuthAction) {
-      // Set a session flag that terms were just accepted
-      sessionStorage.setItem('terms_just_accepted', 'true');
+      // Set a flag in localStorage (persists across refreshes) that terms were just accepted
+      localStorage.setItem('terms_accepted_during_signup', 'true');
       await pendingAuthAction();
       setPendingAuthAction(null);
     }
