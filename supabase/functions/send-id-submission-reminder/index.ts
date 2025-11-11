@@ -285,7 +285,7 @@ const handler = async (req: Request): Promise<Response> => {
                     Submit your ID now and start receiving bookings today!
                   </p>
                   <center>
-                    <a href="${profileUrl}" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important; text-decoration: none; border-radius: 30px; margin: 25px 0; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                    <a href="${profileUrl}" class="button">
                       🆔 Upload Your ID Now
                     </a>
                   </center>
@@ -620,7 +620,7 @@ const handler = async (req: Request): Promise<Response> => {
                       Submit your ID now and start receiving bookings today!
                     </p>
                     <center>
-                      <a href="https://ziggysitters.com/profile" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important; text-decoration: none; border-radius: 30px; margin: 25px 0; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                      <a href="https://ziggysitters.com/profile" class="button">
                         🆔 Upload Your ID Now
                       </a>
                     </center>
