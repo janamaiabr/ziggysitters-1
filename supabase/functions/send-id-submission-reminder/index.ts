@@ -284,9 +284,16 @@ const handler = async (req: Request): Promise<Response> => {
                   <p style="font-size: 16px; margin-bottom: 25px;">
                     Submit your ID now and start receiving bookings today!
                   </p>
-                  <div style="text-align: center;">
-                    <a href="${profileUrl}" style="display: inline-block; padding: 16px 40px; background-color: #667eea; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 30px; margin: 10px 0;">Upload Your ID Now</a>
-                  </div>
+                  <!--[if mso]>
+                  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${profileUrl}" style="height:50px;v-text-anchor:middle;width:250px;" arcsize="10%" stroke="f" fillcolor="#667eea">
+                    <w:anchorlock/>
+                    <center>
+                  <![endif]-->
+                  <a href="${profileUrl}" style="background-color:#667eea;border-radius:5px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;font-weight:bold;line-height:50px;text-align:center;text-decoration:none;width:250px;-webkit-text-size-adjust:none;">Upload Your ID Now</a>
+                  <!--[if mso]>
+                    </center>
+                  </v:roundrect>
+                  <![endif]-->
                 </div>
 
                 <div class="highlight-box">
@@ -617,9 +624,16 @@ const handler = async (req: Request): Promise<Response> => {
                     <p style="font-size: 16px; margin-bottom: 25px;">
                       Submit your ID now and start receiving bookings today!
                     </p>
-                    <div style="text-align: center;">
-                      <a href="https://ziggysitters.com/profile" style="display: inline-block; padding: 16px 40px; background-color: #667eea; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 30px; margin: 10px 0;">Upload Your ID Now</a>
-                    </div>
+                    <!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://ziggysitters.com/profile" style="height:50px;v-text-anchor:middle;width:250px;" arcsize="10%" stroke="f" fillcolor="#667eea">
+                      <w:anchorlock/>
+                      <center>
+                    <![endif]-->
+                    <a href="https://ziggysitters.com/profile" style="background-color:#667eea;border-radius:5px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;font-weight:bold;line-height:50px;text-align:center;text-decoration:none;width:250px;-webkit-text-size-adjust:none;">Upload Your ID Now</a>
+                    <!--[if mso]>
+                      </center>
+                    </v:roundrect>
+                    <![endif]-->
                   </div>
 
                   <div class="highlight-box">
