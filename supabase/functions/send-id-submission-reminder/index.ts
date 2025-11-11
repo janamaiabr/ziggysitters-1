@@ -284,15 +284,9 @@ const handler = async (req: Request): Promise<Response> => {
                   <p style="font-size: 16px; margin-bottom: 25px;">
                     Submit your ID now and start receiving bookings today!
                   </p>
-                  <table cellpadding="0" cellspacing="0" border="0" align="center">
-                    <tr>
-                      <td align="center" style="border-radius: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-                        <a href="${profileUrl}" style="display: inline-block; padding: 16px 40px; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px;">
-                          📝 Submit My ID Now
-                        </a>
-                      </td>
-                    </tr>
-                  </table>
+                  <div style="text-align: center;">
+                    <a href="${profileUrl}" style="display: inline-block; padding: 16px 40px; background-color: #667eea; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 30px; margin: 10px 0;">Upload Your ID Now</a>
+                  </div>
                 </div>
 
                 <div class="highlight-box">
@@ -623,15 +617,9 @@ const handler = async (req: Request): Promise<Response> => {
                     <p style="font-size: 16px; margin-bottom: 25px;">
                       Submit your ID now and start receiving bookings today!
                     </p>
-                  <table cellpadding="0" cellspacing="0" border="0" align="center">
-                    <tr>
-                      <td align="center" style="border-radius: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-                        <a href="https://ziggysitters.com/profile" style="display: inline-block; padding: 16px 40px; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px;">
-                          📝 Submit My ID Now
-                        </a>
-                      </td>
-                    </tr>
-                  </table>
+                    <div style="text-align: center;">
+                      <a href="https://ziggysitters.com/profile" style="display: inline-block; padding: 16px 40px; background-color: #667eea; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 30px; margin: 10px 0;">Upload Your ID Now</a>
+                    </div>
                   </div>
 
                   <div class="highlight-box">

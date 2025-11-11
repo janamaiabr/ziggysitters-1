@@ -183,20 +183,9 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
           <li>Takes less than 2 minutes!</li>
         </ul>
       </div>
-      <center>
-        <table cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td align="center" style="border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-              <a href="{profileUrl}" style="display: inline-block; padding: 16px 40px; color: #ffffff !important; text-decoration: none; font-weight: 700; font-size: 16px;">
-                Upload Your ID Now →
-              </a>
-            </td>
-          </tr>
-        </table>
-      </center>
-      <p style="text-align: center; margin-top: 15px;">
-        <a href="{profileUrl}" style="color: #667eea; text-decoration: underline; font-weight: 500;">Or click here to go to your profile</a>
-      </p>
+      <div style="text-align: center;">
+        <a href="{profileUrl}" style="display: inline-block; padding: 16px 40px; background-color: #667eea; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 8px; margin: 10px 0;">Upload Your ID Now</a>
+      </div>
       <p>Once verified, you'll be able to accept booking requests from pet owners in your area.</p>
       <p>Best regards,<br><strong>The ZiggySitters Team</strong></p>
     </div>
