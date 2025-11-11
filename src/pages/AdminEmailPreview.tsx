@@ -338,9 +338,24 @@ export default function AdminEmailPreview() {
 
   const replaceVariables = (content: string, variables: string[]) => {
     let result = content;
+    
+    // Sample data for each variable type
+    const sampleData: Record<string, string> = {
+      firstName: 'John',
+      sitterName: 'Sarah',
+      ownerName: 'Michael',
+      email: 'user@example.com',
+      sitterEmail: 'sitter@example.com',
+      profileUrl: 'https://ziggysitters.com/profile',
+      policeCheckUrl: 'https://ziggysitters.com/profile',
+      bookingUrl: 'https://ziggysitters.com/bookings/123',
+      reportUrl: 'https://ziggysitters.com/daily-reports',
+    };
+    
     variables.forEach((variable) => {
       const placeholder = `{${variable}}`;
-      result = result.replace(new RegExp(placeholder, "g"), `<span style="background: #fef3c7; padding: 2px 4px; border-radius: 3px; font-weight: 600;">${variable}</span>`);
+      const sampleValue = sampleData[variable] || variable;
+      result = result.replace(new RegExp(placeholder, "g"), sampleValue);
     });
     return result;
   };
