@@ -183,18 +183,11 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
           <li>Takes less than 2 minutes!</li>
         </ul>
       </div>
-      <div style="text-align: center; margin: 20px 0;">
-        <!--[if mso]>
-        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{profileUrl}" style="height:50px;v-text-anchor:middle;width:250px;" arcsize="10%" stroke="f" fillcolor="#667eea">
-          <w:anchorlock/>
-          <center>
-        <![endif]-->
-        <a href="{profileUrl}" style="background-color:#667eea;border-radius:5px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;font-weight:bold;line-height:50px;text-align:center;text-decoration:none;width:250px;-webkit-text-size-adjust:none;">Upload Your ID Now</a>
-        <!--[if mso]>
-          </center>
-        </v:roundrect>
-        <![endif]-->
-      </div>
+      <center>
+        <a href="{profileUrl}" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important; text-decoration: none; border-radius: 30px; margin: 25px 0; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+          🆔 Upload Your ID Now
+        </a>
+      </center>
       <p>Once verified, you'll be able to accept booking requests from pet owners in your area.</p>
       <p>Best regards,<br><strong>The ZiggySitters Team</strong></p>
     </div>
