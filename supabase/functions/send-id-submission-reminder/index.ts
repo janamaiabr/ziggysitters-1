@@ -29,14 +29,14 @@ const handler = async (req: Request): Promise<Response> => {
     // Bulk send mode - send to all sitters without ID documents who haven't been approved
     console.log("Fetching sitters without ID documents who are not yet approved...");
 
-    // Get all sitters without ID documents who are not test accounts and not already verified/approved
+    // Get all sitters without ID documents who are not test accounts and not already verified
+    // We check is_verified=false which means they haven't been approved yet
     const { data: sitters, error: sittersError } = await supabaseAdmin
       .from("profiles")
       .select("id, email, first_name, last_name, is_verified, verification_status")
       .eq("role", "pet_sitter")
       .eq("is_test_account", false)
       .eq("is_verified", false)
-      .neq("verification_status", "approved")
       .or("id_document_url.is.null,id_document_url.eq.")
       .order("created_at", { ascending: true });
 
