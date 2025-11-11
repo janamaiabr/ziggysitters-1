@@ -151,7 +151,7 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     template_name: 'ID Submission Reminder',
     subject: '📝 Complete Your Verification - Upload Your ID',
     description: 'Reminder for sitters to submit their ID for verification',
-    variables: ['sitterName', 'profileUrl'],
+    variables: ['sitterName', 'profileUrl', 'email'],
     source: 'hardcoded' as const,
     trigger: 'Manual - Admin sends to sitters missing ID verification',
     edge_function: 'send-id-submission-reminder',
@@ -184,10 +184,18 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
         </ul>
       </div>
       <center>
-        <a href="{profileUrl}" class="cta-button">Upload Your ID Now →</a>
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td align="center" style="border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+              <a href="{profileUrl}" style="display: inline-block; padding: 16px 40px; color: #ffffff !important; text-decoration: none; font-weight: 700; font-size: 16px;">
+                Upload Your ID Now →
+              </a>
+            </td>
+          </tr>
+        </table>
       </center>
       <p style="text-align: center; margin-top: 15px;">
-        <a href="{profileUrl}" class="text-link">Or click here to go to your profile</a>
+        <a href="{profileUrl}" style="color: #667eea; text-decoration: underline; font-weight: 500;">Or click here to go to your profile</a>
       </p>
       <p>Once verified, you'll be able to accept booking requests from pet owners in your area.</p>
       <p>Best regards,<br><strong>The ZiggySitters Team</strong></p>
