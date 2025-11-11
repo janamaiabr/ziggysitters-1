@@ -151,9 +151,9 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
     template_name: 'ID Submission Reminder',
     subject: '📝 Complete Your Verification - Upload Your ID',
     description: 'Reminder for sitters to submit their ID for verification',
-    variables: ['sitterName', 'profileUrl', 'email'],
+    variables: [],  // No manual input needed - sends to all unverified sitters
     source: 'hardcoded' as const,
-    trigger: 'Manual - Admin sends to sitters missing ID verification',
+    trigger: 'Manual - Admin sends to all sitters missing ID verification',
     edge_function: 'send-id-submission-reminder',
     html_content: `<!DOCTYPE html>
 <html>
@@ -508,7 +508,10 @@ export default function AdminEmailPreview() {
             <DialogHeader>
               <DialogTitle>Send Email: {selectedTemplate?.template_name}</DialogTitle>
               <DialogDescription>
-                Fill in the required information to send this email manually
+                {selectedTemplate?.template_key === 'id_submission_reminder' 
+                  ? 'This will send emails to all sitters who have not submitted their ID and are not yet verified.'
+                  : 'Fill in the required information to send this email manually'
+                }
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 mt-4">
