@@ -451,10 +451,16 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
 
+    // Track initiate checkout event
+    const total = calculateTotal();
+    metaPixel.trackInitiateCheckout({ 
+      value: total, 
+      currency: 'NZD' 
+    });
+
     setLoading(true);
 
     try {
-      const total = calculateTotal();
       
       // Only allow daily reports for overnight pet sitting services
       const allowsDailyReports = serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home';

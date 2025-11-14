@@ -212,6 +212,12 @@ export default function SitterProfile() {
 
         console.log('Setting sitter data:', transformedData);
         setSitterData(transformedData);
+        
+        // Track view content event
+        metaPixel.trackViewContent(
+          transformedData.display_name,
+          'Sitter Profile'
+        );
       } catch (error) {
         console.error('Error in fetchSitterData:', error);
         setSitterData(null);
