@@ -154,6 +154,9 @@ export default function FindSitters() {
   const handleSearch = async () => {
     console.log('Performing search with:', { location, serviceType, petType, selectedDate, checkOutDate });
     
+    // Track search event
+    metaPixel.trackSearch(location || serviceType || 'sitters');
+    
     let filtered = [...allSitters];
 
     // Filter by location (case-insensitive partial match)
