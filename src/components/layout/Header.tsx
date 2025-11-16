@@ -81,6 +81,9 @@ export default function Header() {
           <Link to="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
             How it Works
           </Link>
+          <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">
+            Blog
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -178,6 +181,9 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/how-it-works')}>
                         How it Works
                       </Button>
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
+                        Blog
+                      </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/profile')}>
                         <User className="mr-2 h-4 w-4" />
                         Profile
@@ -211,6 +217,9 @@ export default function Header() {
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/how-it-works')}>
                         How it Works
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
+                        Blog
                       </Button>
                     </div>
                     <div className="space-y-3 pt-4 border-t">

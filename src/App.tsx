@@ -59,6 +59,8 @@ import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
 import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
 import AdminEmailTemplates from "./pages/AdminEmailTemplates";
 import AdminEmailPreview from "./pages/AdminEmailPreview";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
@@ -229,6 +231,8 @@ function AppContent() {
             <Route path="/help" element={<Contact />} />
             <Route path="/cookies" element={<PrivacyPolicy />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/500" element={<Error500 />} />
             <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
             <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
