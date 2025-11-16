@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight } from 'lucide-react';
 import blogHeroImage from '@/assets/blog-pet-care-sheet-hero.jpg';
+import profileTipsHero from '@/assets/blog-profile-tips-hero.jpg';
 
 interface BlogPost {
   slug: string;
@@ -12,9 +14,20 @@ interface BlogPost {
   author: string;
   image: string;
   readTime: string;
+  tag: 'For Pet Owners' | 'For Sitters';
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: 'profile-tips-stand-out',
+    title: 'Get Spotted — 3 Tips To Make Your Profile Stand Out',
+    excerpt: 'Your profile is your first impression, and a great one does most of the work for you. Learn from our most successful pet sitters how to create a profile that really shines.',
+    date: '2025-11-16',
+    author: 'Jana and Rachel',
+    image: profileTipsHero,
+    readTime: '3 min read',
+    tag: 'For Sitters'
+  },
   {
     slug: 'pet-care-sheet-guide',
     title: 'Your Pet Care Sheet — The Small Step That Makes a Big Difference',
@@ -22,7 +35,8 @@ const blogPosts: BlogPost[] = [
     date: '2025-11-16',
     author: 'Jana and Rachel',
     image: blogHeroImage,
-    readTime: '4 min read'
+    readTime: '4 min read',
+    tag: 'For Pet Owners'
   }
 ];
 
@@ -97,6 +111,10 @@ export default function Blog() {
                               </div>
                               <span>•</span>
                               <span>{post.readTime}</span>
+                              <span>•</span>
+                              <Badge variant="secondary" className="font-normal">
+                                {post.tag}
+                              </Badge>
                             </div>
                             <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors">
                               {post.title}
