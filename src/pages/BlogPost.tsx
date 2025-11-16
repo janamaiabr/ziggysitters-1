@@ -1,8 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import blogHeroImage from '@/assets/blog-pet-care-sheet-hero.jpg';
+import profileTipsHero from '@/assets/blog-profile-tips-hero.jpg';
 
 interface BlogPostData {
   slug: string;
@@ -13,9 +15,59 @@ interface BlogPostData {
   author: string;
   image: string;
   readTime: string;
+  tag: 'For Pet Owners' | 'For Sitters';
 }
 
 const blogPosts: Record<string, BlogPostData> = {
+  'profile-tips-stand-out': {
+    slug: 'profile-tips-stand-out',
+    title: 'Get Spotted — 3 Tips To Make Your Profile Stand Out',
+    excerpt: 'Your profile is your first impression, and a great one does most of the work for you. Learn from our most successful pet sitters how to create a profile that really shines.',
+    date: '2025-11-16',
+    author: 'Jana and Rachel',
+    image: profileTipsHero,
+    readTime: '3 min read',
+    tag: 'For Sitters',
+    content: (
+      <>
+        <p className="text-lg text-muted-foreground mb-8">
+          Your profile is your first impression, and a great one does most of the work for you. We asked some of our most successful pet sitters how to stand out from the crowd. Here are their top three tips for creating a profile that really shines:
+        </p>
+
+        <h2 className="text-2xl font-bold mt-12 mb-6">1. Show who you are, not just what you do</h2>
+        <p className="mb-6">
+          Pet parents want to feel a connection. Share a little of your personality — why you love pet sitting, the kind of animals you click with, or a sweet story from a past sit. Being authentic builds trust faster than anything else.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-12 mb-6">2. Use photos that feel warm and real</h2>
+        <p className="mb-6">
+          Skip the stiff selfies. Choose photos of you genuinely interacting with pets: a cuddle, a walk, a playful moment. These images tell owners instantly, "My pet will be safe with you."
+        </p>
+
+        <h2 className="text-2xl font-bold mt-12 mb-6">3. Be specific about your skills</h2>
+        <p className="mb-6">
+          Instead of saying "experienced," say what you're experienced in: giving medication, handling reactive dogs, caring for senior pets, or managing multi-pet households. Specifics help owners imagine you in their home.
+        </p>
+
+        <div className="bg-destructive/10 border-l-4 border-destructive p-6 my-8 rounded-r">
+          <h3 className="font-semibold mb-3">Three no-nos:</h3>
+          <p className="mb-0">
+            Don't lie, don't exaggerate and don't mention names or details of past clients unless you have their consent.
+          </p>
+        </div>
+
+        <p className="mb-6">
+          And finally, just be you. A standout profile isn't about selling - it's about reassuring. Make every word feel like a handshake.
+        </p>
+
+        <p className="text-muted-foreground italic mt-8">
+          Thank you.<br />
+          Jana and Rachel<br />
+          Team ZiggySitters
+        </p>
+      </>
+    )
+  },
   'pet-care-sheet-guide': {
     slug: 'pet-care-sheet-guide',
     title: 'Your Pet Care Sheet — The Small Step That Makes a Big Difference',
@@ -24,6 +76,7 @@ const blogPosts: Record<string, BlogPostData> = {
     author: 'Jana and Rachel',
     image: blogHeroImage,
     readTime: '4 min read',
+    tag: 'For Pet Owners',
     content: (
       <>
         <p className="text-lg text-muted-foreground mb-8">
@@ -221,6 +274,10 @@ export default function BlogPost() {
                 </div>
                 <span>•</span>
                 <span>{post.readTime}</span>
+                <span>•</span>
+                <Badge variant="secondary" className="font-normal">
+                  {post.tag}
+                </Badge>
               </div>
             </header>
 
