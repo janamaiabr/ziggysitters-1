@@ -9,7 +9,7 @@ import { Loader2, Mail, CheckCircle2 } from 'lucide-react';
 
 export default function SendTestEmail() {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('test-7oq8f48y2@srv1.mail-tester.com');
+  const [email, setEmail] = useState('test-h0dzhzhuz@srv1.mail-tester.com');
   const [result, setResult] = useState<any>(null);
 
   const handleSendTestEmail = async () => {
