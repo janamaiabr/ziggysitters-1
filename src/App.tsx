@@ -56,6 +56,7 @@ import SitterServiceTests from "./pages/SitterServiceTests";
 import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 import AdminResendReportEmails from "./pages/AdminResendReportEmails";
 import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
+import SendTestEmail from "./pages/SendTestEmail";
 import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
 import AdminEmailTemplates from "./pages/AdminEmailTemplates";
 import AdminEmailPreview from "./pages/AdminEmailPreview";
@@ -242,6 +243,7 @@ function AppContent() {
             <Route path="/test-payment-comprehensive" element={<PaymentFlowComprehensiveTestPage />} />
             <Route path="/test-terms-acceptance" element={<TermsAcceptanceTestPage />} />
             <Route path="/test-emails" element={<TestEmails />} />
+            <Route path="/send-test-email" element={<SendTestEmail />} />
             <Route path="/test-daily-report-email" element={<TestDailyReportEmail />} />
             <Route path="/stripe-onboarding-tests" element={<StripeOnboardingTests />} />
             <Route path="/sitter-service-tests" element={<SitterServiceTests />} />
