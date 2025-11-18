@@ -472,6 +472,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         console.log('Opening Stripe setup in new tab:', data.url);
         // Open in new tab to keep Ziggysitters page open
         window.open(data.url, '_blank');
+        setIsLoading(false);
         toast({
           title: "Complete Stripe setup",
           description: "A new tab has opened. Please complete your payment account setup and return here when done.",
@@ -1233,11 +1234,12 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                   <Button
                     type="button"
                     onClick={(e) => handleInitiatePaymentSetup(e)}
+                    disabled={isLoading}
                     size="lg"
                     className="w-full"
                   >
                     <DollarSign className="w-5 h-5 mr-2" />
-                    Connect Bank Account with Stripe
+                    {isLoading ? "Opening Stripe..." : "Connect Bank Account with Stripe"}
                   </Button>
                   
                   <Button
