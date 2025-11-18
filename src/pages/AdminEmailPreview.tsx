@@ -551,11 +551,13 @@ export default function AdminEmailPreview() {
         <Dialog open={sendMode} onOpenChange={handleClose}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Send Email: {selectedTemplate?.template_name}</DialogTitle>
+              <DialogTitle>Send Test Email: {selectedTemplate?.template_name}</DialogTitle>
               <DialogDescription>
                 {selectedTemplate?.template_key === 'id_submission_reminder' 
                   ? 'This will send emails to all sitters who have not submitted their ID and are not yet verified.'
-                  : 'Fill in the required information to send this email manually'
+                  : selectedTemplate?.template_key?.includes('launch_announcement')
+                  ? '⚠️ This is a TEST send only. To send the launch announcement to all users, use the dedicated Launch Announcement page in the admin dashboard.'
+                  : 'Fill in the required information to send a test email with sample data'
                 }
               </DialogDescription>
             </DialogHeader>
