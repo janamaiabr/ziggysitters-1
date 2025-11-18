@@ -26,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
     const uploadUrl = "https://ziggysitters.lovable.app/onboarding";
 
     const emailResponse = await resend.emails.send({
-      from: "Ziggy Sitters <onboarding@resend.dev>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [sitterEmail],
       subject: "📄 Action Required: Upload Verification Documents",
       html: `
