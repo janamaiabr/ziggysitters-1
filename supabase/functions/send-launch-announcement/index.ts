@@ -53,6 +53,10 @@ const handler = async (req: Request): Promise<Response> => {
           from: "ZiggySitters <welcome@ziggysitters.com>",
           to: [profile.email],
           subject: "🎉 ZiggySitters is Officially LIVE! Your Pet Care Journey Starts Now",
+          headers: {
+            'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
           html: `
             <!DOCTYPE html>
             <html>

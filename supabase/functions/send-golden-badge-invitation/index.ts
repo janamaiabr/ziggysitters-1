@@ -55,6 +55,10 @@ const handler = async (req: Request): Promise<Response> => {
           from: "ZiggySitters <welcome@ziggysitters.com>",
           to: [sitter.email],
           subject: "⭐ Unlock Your Golden Badge - Get Priority Booking Visibility!",
+          headers: {
+            'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
           html: `
             <!DOCTYPE html>
             <html>
