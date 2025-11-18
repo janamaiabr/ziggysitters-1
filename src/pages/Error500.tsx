@@ -41,8 +41,8 @@ export default function Error500() {
 
           <p className="text-sm text-muted-foreground mt-6">
             If the problem persists, please contact us at{' '}
-            <a href="mailto:support@ziggysitters.co.nz" className="text-primary hover:underline">
-              support@ziggysitters.co.nz
+            <a href="mailto:support@ziggysitters.com" className="text-primary hover:underline">
+              support@ziggysitters.com
             </a>
           </p>
         </CardContent>

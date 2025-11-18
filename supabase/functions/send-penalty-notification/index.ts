@@ -101,7 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
             ZiggySitters - Transparent Pet Care You Can Trust
           </p>
           <p style="color: #999; margin: 10px 0 0 0; font-size: 12px;">
-            Questions? Contact us at support@ziggysitters.co.nz
+            Questions? Contact us at support@ziggysitters.com
           </p>
         </div>
       </div>

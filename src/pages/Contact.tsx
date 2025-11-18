@@ -222,7 +222,7 @@ export default function Contact() {
                   <Mail className="h-5 w-5 text-primary" />
                   <div>
                     <p className="font-medium">Email</p>
-                    <p className="text-gray-600">hello@ziggysitters.co.nz</p>
+                    <p className="text-gray-600">hello@ziggysitters.com</p>
                   </div>
                 </div>
                 

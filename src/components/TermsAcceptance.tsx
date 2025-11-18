@@ -88,7 +88,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
             <section>
               <h3 className="font-semibold mb-2">Contact Information</h3>
               <p>
-                For questions about these Terms: <strong>legal@ziggysitters.co.nz</strong>
+                For questions about these Terms: <strong>legal@ziggysitters.com</strong>
               </p>
             </section>
           </div>
