@@ -8,17 +8,20 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log("🔵 stripe-connect-onboarding: Request received", req.method);
+  
   if (req.method === "OPTIONS") {
+    console.log("🔵 Handling CORS preflight");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log("Starting Stripe Connect onboarding process");
+    console.log("🔵 Starting Stripe Connect onboarding process");
     
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    console.log("Environment check - SUPABASE_URL exists:", !!supabaseUrl);
-    console.log("Environment check - SERVICE_ROLE_KEY exists:", !!serviceRoleKey);
+    console.log("🔵 Environment check - SUPABASE_URL exists:", !!supabaseUrl);
+    console.log("🔵 Environment check - SERVICE_ROLE_KEY exists:", !!serviceRoleKey);
     
     const supabaseClient = createClient(
       supabaseUrl ?? "",
@@ -26,28 +29,39 @@ serve(async (req) => {
     );
 
     const authHeader = req.headers.get("Authorization");
-    console.log("Auth header exists:", !!authHeader);
+    console.log("🔵 Auth header exists:", !!authHeader);
+    console.log("🔵 Auth header value (first 20 chars):", authHeader?.substring(0, 20));
     
     if (!authHeader) {
-      throw new Error("No authorization header provided");
+      console.error("🔴 No authorization header provided");
+      return new Response(
+        JSON.stringify({ error: "No authorization header provided" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
     
     const token = authHeader.replace("Bearer ", "");
-    console.log("Attempting to get user with token...");
+    console.log("🔵 Attempting to get user with token...");
     
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
     
     if (authError) {
-      console.error("Auth error:", authError);
-      throw new Error(`Authentication failed: ${authError.message}`);
+      console.error("🔴 Auth error:", authError);
+      return new Response(
+        JSON.stringify({ error: `Authentication failed: ${authError.message}` }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
     
     if (!user?.email) {
-      console.error("User not found or no email");
-      throw new Error("User not authenticated or email not available");
+      console.error("🔴 User not found or no email");
+      return new Response(
+        JSON.stringify({ error: "User not authenticated or email not available" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    console.log("User authenticated:", user.id, "Email:", user.email);
+    console.log("🟢 User authenticated:", user.id, "Email:", user.email);
 
     // Get user profile
     console.log("Fetching profile for user_id:", user.id);
@@ -170,12 +184,22 @@ serve(async (req) => {
       throw new Error(`Failed to create account link: ${linkError.message || JSON.stringify(linkError)}`);
     }
   } catch (error: any) {
-    console.error("Error in stripe-connect-onboarding:", error);
-    const errorMessage = error.message || "Unknown error occurred";
-    console.error("Returning error to client:", errorMessage);
+    console.error("🔴 Error in stripe-connect-onboarding:", error);
+    console.error("🔴 Error type:", typeof error);
+    console.error("🔴 Error name:", error?.name);
+    console.error("🔴 Error message:", error?.message);
+    console.error("🔴 Error stack:", error?.stack);
+    console.error("🔴 Full error object:", JSON.stringify(error, null, 2));
+    
+    const errorMessage = error.message || error.toString() || "Unknown error occurred";
+    console.error("🔴 Returning error to client:", errorMessage);
     
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ 
+        error: errorMessage,
+        details: error?.name || 'Error',
+        timestamp: new Date().toISOString()
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,

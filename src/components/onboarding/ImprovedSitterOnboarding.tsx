@@ -458,18 +458,36 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     e?.preventDefault();
     e?.stopPropagation();
     
+    console.log('🔵 handleInitiatePaymentSetup CLICKED');
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding');
+      // Check authentication
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('🔵 Session exists:', !!session);
+      console.log('🔵 Session user:', session?.user?.id);
+      
+      if (!session) {
+        throw new Error('Not authenticated. Please sign in and try again.');
+      }
+      
+      console.log('🔵 Invoking stripe-connect-onboarding function...');
+      const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        }
+      });
+      
+      console.log('🔵 Function response:', { data, error });
       
       if (error) {
-        console.error('Stripe connect error:', error);
+        console.error('🔴 Stripe connect error:', error);
+        console.error('🔴 Error details:', JSON.stringify(error, null, 2));
         throw error;
       }
       
       if (data?.url) {
-        console.log('Opening Stripe setup in new tab:', data.url);
+        console.log('🟢 Opening Stripe setup in new tab:', data.url);
         // Open in new tab to keep Ziggysitters page open
         window.open(data.url, '_blank');
         setIsLoading(false);
@@ -479,10 +497,12 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           duration: 10000,
         });
       } else {
+        console.error('🔴 No URL in response:', data);
         throw new Error('No URL returned from Stripe');
       }
     } catch (error: any) {
-      console.error('Error in handleInitiatePaymentSetup:', error);
+      console.error('🔴 Error in handleInitiatePaymentSetup:', error);
+      console.error('🔴 Full error object:', JSON.stringify(error, null, 2));
       setIsLoading(false);
       
       // Check if this is the platform profile setup error
@@ -502,6 +522,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           title: "Connection failed",
           description: error?.message || "Failed to connect to Stripe. Please try again or contact support.",
           variant: "destructive",
+          duration: 10000,
         });
       }
     }
