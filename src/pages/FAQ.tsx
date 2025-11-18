@@ -229,7 +229,7 @@ export default function FAQ() {
                   If issues arise during or after a booking:
                   <ol className="list-decimal ml-6 mt-2 space-y-2">
                     <li>First, try to resolve the issue directly with the sitter through our messaging system</li>
-                    <li>If unresolved, contact our support team at <a href="mailto:support@ziggysitters.co.nz" className="text-primary hover:underline">support@ziggysitters.co.nz</a></li>
+                    <li>If unresolved, contact our support team at <a href="mailto:support@ziggysitters.com" className="text-primary hover:underline">support@ziggysitters.com</a></li>
                     <li>We'll mediate and work toward a fair resolution</li>
                     <li>Disputes may be referred to third-party dispute resolution in line with NZ consumer law</li>
                   </ol>

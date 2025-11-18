@@ -118,7 +118,7 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               <div className="flex items-center space-x-2 text-gray-300">
                 <Mail className="w-4 h-4" />
-                <span className="break-all">hello@ziggysitters.co.nz</span>
+                <span className="break-all">hello@ziggysitters.com</span>
               </div>
             </div>
             

@@ -247,7 +247,7 @@ export default function Security() {
                 or have concerns about platform safety, please report it immediately.
               </p>
               <div className="space-y-3">
-                <p><strong>Security Email:</strong> security@ziggysitters.co.nz</p>
+                <p><strong>Security Email:</strong> security@ziggysitters.com</p>
                 <p className="text-sm text-gray-500">
                   For all security-related questions and concerns.
                 </p>

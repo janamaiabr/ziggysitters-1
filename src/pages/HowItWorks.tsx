@@ -98,26 +98,26 @@ export default function HowItWorks() {
         "@type": "HowToStep",
         "name": "Search for Pet Sitters",
         "text": "Browse verified pet sitters in your area and choose whether you want daily photo updates",
-        "url": "https://ziggysitters.co.nz/find-sitters",
-        "image": "https://ziggysitters.co.nz/images/search-sitters.jpg"
+        "url": "https://ziggysitters.com/find-sitters",
+        "image": "https://ziggysitters.com/images/search-sitters.jpg"
       },
       {
         "@type": "HowToStep",
         "name": "View Sitter Profiles",
         "text": "Review sitter profiles, ratings, and feedback from other pet owners to find the perfect match",
-        "url": "https://ziggysitters.co.nz/find-sitters"
+        "url": "https://ziggysitters.com/find-sitters"
       },
       {
         "@type": "HowToStep",
         "name": "Book Your Sitter",
         "text": "Select dates, service type, and choose if you want daily reports - complete secure payment through our platform",
-        "url": "https://ziggysitters.co.nz/bookings"
+        "url": "https://ziggysitters.com/bookings"
       },
       {
         "@type": "HowToStep",
         "name": "Receive Daily Updates (Optional)",
         "text": "Get comprehensive daily reports with photos if you requested them - sitters held accountable",
-        "url": "https://ziggysitters.co.nz/daily-reports"
+        "url": "https://ziggysitters.com/daily-reports"
       }
     ]
   };

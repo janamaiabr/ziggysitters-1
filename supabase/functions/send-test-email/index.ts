@@ -24,7 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[TEST-EMAIL] Sending test email to: ${to}`);
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <noreply@ziggysitters.co.nz>",
+      from: "ZiggySitters <noreply@ziggysitters.com>",
       to: [to],
       subject: subject,
       html: `
@@ -51,7 +51,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div style="background: #f9fafb; border-left: 4px solid #667eea; padding: 20px; margin: 30px 0;">
               <h3 style="margin-top: 0; color: #374151; font-size: 16px;">Email Configuration Details:</h3>
               <ul style="color: #6b7280; padding-left: 20px;">
-                <li>From: noreply@ziggysitters.co.nz</li>
+                <li>From: noreply@ziggysitters.com</li>
                 <li>Service: Resend Email API</li>
                 <li>Platform: ZiggySitters Pet Care Platform</li>
                 <li>Purpose: Deliverability Testing</li>
@@ -63,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
             </p>
             
             <div style="text-align: center; margin: 40px 0 20px 0;">
-              <a href="https://ziggysitters.co.nz" 
+              <a href="https://ziggysitters.com" 
                  style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 Visit ZiggySitters
               </a>
@@ -73,7 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
           <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 14px;">
             <p style="margin: 5px 0;">ZiggySitters - Trusted Pet Care in New Zealand</p>
             <p style="margin: 5px 0;">
-              <a href="https://ziggysitters.co.nz" style="color: #667eea; text-decoration: none;">www.ziggysitters.co.nz</a>
+              <a href="https://ziggysitters.com" style="color: #667eea; text-decoration: none;">www.ziggysitters.com</a>
             </p>
             <p style="margin: 15px 0 5px 0; font-size: 12px;">
               This is a test email. If you received this in error, please disregard.
