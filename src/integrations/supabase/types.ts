@@ -225,6 +225,61 @@ export type Database = {
         }
         Relationships: []
       }
+      email_subscriptions: {
+        Row: {
+          booking_notifications: boolean | null
+          created_at: string | null
+          daily_report_notifications: boolean | null
+          id: string
+          marketing_emails: boolean | null
+          payment_notifications: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          booking_notifications?: boolean | null
+          created_at?: string | null
+          daily_report_notifications?: boolean | null
+          id?: string
+          marketing_emails?: boolean | null
+          payment_notifications?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          booking_notifications?: boolean | null
+          created_at?: string | null
+          daily_report_notifications?: boolean | null
+          id?: string
+          marketing_emails?: boolean | null
+          payment_notifications?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_templates: {
         Row: {
           created_at: string | null
