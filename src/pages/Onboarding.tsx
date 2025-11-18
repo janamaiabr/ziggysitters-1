@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { PawPrint, User, UserCheck, Heart } from 'lucide-react';
-import PetOwnerOnboarding from '@/components/onboarding/PetOwnerOnboarding';
+import ImprovedPetOwnerOnboarding from '@/components/onboarding/ImprovedPetOwnerOnboarding';
 import ImprovedSitterOnboarding from '@/components/onboarding/ImprovedSitterOnboarding';
 import TermsAcceptance from '@/components/TermsAcceptance';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -676,7 +676,7 @@ export default function Onboarding() {
     if (!data.role) return null;
 
     if (data.role === 'pet_owner') {
-      return <PetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+      return <ImprovedPetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
     }
     
     if (data.role === 'pet_sitter') {
