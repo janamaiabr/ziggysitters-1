@@ -28,6 +28,10 @@ const handler = async (req: Request): Promise<Response> => {
       from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [user_email],
       subject: "Reminder: Complete Your Police Vetting Check",
+      headers: {
+        'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">Hi ${user_name},</h1>

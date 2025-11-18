@@ -29,6 +29,10 @@ const handler = async (req: Request): Promise<Response> => {
       from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [sitterEmail],
       subject: "📄 Action Required: Upload Verification Documents",
+      headers: {
+        'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
       html: `
         <!DOCTYPE html>
         <html>
