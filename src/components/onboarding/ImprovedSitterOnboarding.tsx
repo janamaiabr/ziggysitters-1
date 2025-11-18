@@ -680,7 +680,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   };
 
   const handleNextStep = async () => {
+    console.log('🔵 handleNextStep called, currentStep:', currentStep);
+    console.log('🔵 Step validity:', isStepValid(currentStep));
+    
     if (!isStepValid(currentStep) && currentStep !== 1 && currentStep !== 3 && currentStep !== 5) {
+      console.log('🔴 Step validation failed');
       toast({
         title: "Required fields missing",
         description: "Please complete required fields before continuing.",
@@ -692,17 +696,26 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
     // Auto-save on next (CRITICAL: Must await to ensure save completes!)
     if (currentStep < totalSteps) {
       try {
-        console.log('Saving progress before moving to next step...');
+        console.log('🔵 Saving progress before moving to next step...');
         await handleSaveProgress();
-        console.log('Progress saved, moving to next step');
+        console.log('🟢 Progress saved successfully, moving to next step');
         const newStep = currentStep + 1;
         setCurrentStep(newStep);
+        console.log('🟢 Moved to step:', newStep);
         // Notify parent of step change if callback provided
         if (onStepChange && overallStep) {
           onStepChange(overallStep + 1);
         }
-      } catch (error) {
-        console.error('Failed to save progress, not advancing step');
+      } catch (error: any) {
+        console.error('🔴 Failed to save progress:', error);
+        console.error('🔴 Error message:', error?.message);
+        console.error('🔴 Error details:', JSON.stringify(error, null, 2));
+        
+        toast({
+          title: "Save Failed",
+          description: error?.message || "Could not save your progress. Please try again.",
+          variant: "destructive",
+        });
         // Don't advance if save fails
         return;
       }
@@ -1254,7 +1267,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                 <div className="space-y-4">
                   <Button
                     type="button"
-                    onClick={(e) => handleInitiatePaymentSetup(e)}
+                    onClick={(e) => {
+                      console.log('🔵 STRIPE BUTTON CLICKED');
+                      console.log('🔵 isLoading:', isLoading);
+                      handleInitiatePaymentSetup(e);
+                    }}
                     disabled={isLoading}
                     size="lg"
                     className="w-full"
