@@ -66,6 +66,51 @@ const hardcodedTemplates: Omit<EmailTemplate, 'id' | 'is_active'>[] = [
 </html>`
   },
   {
+    template_key: 'launch_announcement_sitter',
+    template_name: 'Launch Announcement - Pet Sitter',
+    subject: '🎉 ZiggySitters is Officially LIVE! Your Pet Care Journey Starts Now',
+    description: 'Email sent to pet sitters announcing the platform launch',
+    variables: ['firstName'],
+    source: 'hardcoded' as const,
+    trigger: 'Manual - Admin sends to all users',
+    edge_function: 'send-launch-announcement',
+    html_content: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #333; margin: 0; padding: 0; background: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; background: white; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; text-align: center; }
+    .banner { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; text-align: center; padding: 15px; font-weight: bold; font-size: 18px; }
+    .content { padding: 40px 30px; }
+    .highlight-box { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 5px; }
+    .button { display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important; text-decoration: none; border-radius: 30px; margin: 25px 0; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+    .footer { text-align: center; padding: 30px; background: #f9f9f9; color: #666; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="banner">🚀 WE'RE OFFICIALLY LIVE! 🚀</div>
+    <div class="header"><h1>Welcome to the Future of Pet Care!</h1></div>
+    <div class="content">
+      <h2>Hi {firstName}! 🎊</h2>
+      <p>We're thrilled to announce that <strong>ZiggySitters is officially LIVE</strong> and ready to transform the way you provide pet care services!</p>
+      <div class="highlight-box">
+        <h3 style="margin-top: 0; color: #667eea;">What This Means for You:</h3>
+        <p>✨ <strong>Start Accepting Real Bookings:</strong> Pet owners are actively searching for trusted sitters like you</p>
+        <p>💰 <strong>Earn Real Income:</strong> All payments are now processed securely through Stripe</p>
+        <p>🌟 <strong>Build Your Reputation:</strong> Start receiving reviews and growing your profile</p>
+        <p>📅 <strong>Flexible Schedule:</strong> Set your availability and work on your terms</p>
+      </div>
+      <center><a href="https://ziggysitters.com/profile" class="button">🚀 View My Dashboard</a></center>
+      <p>Warm regards,<br><strong>The ZiggySitters Team</strong></p>
+    </div>
+    <div class="footer"><p><strong>ZiggySitters</strong></p></div>
+  </div>
+</body>
+</html>`
+  },
+  {
     template_key: 'golden_badge_congratulations',
     template_name: 'Golden Badge Congratulations',
     subject: '🏆 Congratulations! You\'ve Earned Your Golden Badge',
