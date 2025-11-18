@@ -156,9 +156,13 @@ serve(async (req) => {
           `;
 
           await resend.emails.send({
-            from: "Ziggy Sitters <onboarding@resend.dev>",
+            from: "ZiggySitters <onboarding@ziggysitters.com>",
             to: [sitter.email],
             subject: "🚀 ACTION REQUIRED: Complete Stripe Setup for Live Payments",
+            headers: {
+              'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+              'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+            },
             html: emailHtml,
           });
 

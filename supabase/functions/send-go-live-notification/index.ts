@@ -28,6 +28,10 @@ serve(async (req) => {
       from: 'ZiggySitters <onboarding@ziggysitters.com>',
       to: [email],
       subject: 'Important: Update Your ZiggySitters Profile Before Launch',
+      headers: {
+        'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
           <div style="background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
