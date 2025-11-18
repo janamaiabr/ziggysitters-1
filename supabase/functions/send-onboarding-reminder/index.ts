@@ -27,9 +27,13 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending reminder to:', sitterEmail);
 
     const emailResponse = await resend.emails.send({
-      from: "Ziggy Sitters <onboarding@resend.dev>",
+      from: "ZiggySitters <onboarding@ziggysitters.com>",
       to: [sitterEmail],
       subject: "🐾 Your Pet Sitting Journey Awaits - Complete Your Profile!",
+      headers: {
+        'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
       html: `
         <!DOCTYPE html>
         <html>

@@ -66,6 +66,10 @@ const handler = async (req: Request): Promise<Response> => {
       from: "ZiggySitters <reminders@ziggysitters.com>",
       to: [sitterEmail],
       subject: `📝 Reminder: Daily report for ${ownerName}'s pets`,
+      headers: {
+        'List-Unsubscribe': `<mailto:unsubscribe@ziggysitters.com?subject=Unsubscribe>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
       html: `
         <!DOCTYPE html>
         <html>
