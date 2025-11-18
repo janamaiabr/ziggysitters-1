@@ -317,7 +317,32 @@ export default function SitterProfile() {
               </div>
               
               <div className="flex gap-3">
-                {/* Removed save sitter and message functionality */}
+                {profile?.role === 'pet_owner' && (
+                  <Button 
+                    size="lg"
+                    onClick={() => {
+                      setIsBookingOpen(true);
+                      setTimeout(() => {
+                        const bookingSection = document.getElementById('booking-section');
+                        if (bookingSection) {
+                          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                      }, 100);
+                    }}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    Book Now
+                  </Button>
+                )}
+                {!user && (
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate(`/auth?redirect=/sitter/${id}?booking=true`)}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    Book Now
+                  </Button>
+                )}
               </div>
             </div>
           </div>
