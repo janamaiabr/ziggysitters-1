@@ -60,6 +60,7 @@ import SendTestEmail from "./pages/SendTestEmail";
 import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
 import AdminEmailTemplates from "./pages/AdminEmailTemplates";
 import AdminEmailPreview from "./pages/AdminEmailPreview";
+import AdminBulkEmails from "./pages/AdminBulkEmails";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
@@ -217,6 +218,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <AdminEmailPreview />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/bulk-emails" 
+              element={
+                <ProtectedRoute>
+                  <AdminBulkEmails />
                 </ProtectedRoute>
               } 
             />

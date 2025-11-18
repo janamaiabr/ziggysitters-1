@@ -18,9 +18,14 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "Bulk Email Campaigns",
+    href: "/admin/bulk-emails",
+    icon: Mail,
+  },
+  {
     title: "Email Templates",
     href: "/admin/email-preview",
-    icon: Mail,
+    icon: Eye,
   },
   {
     title: "Go Live Checklist",
@@ -36,16 +41,6 @@ const navItems = [
     title: "Resend Reports",
     href: "/admin/resend-report-emails",
     icon: FileText,
-  },
-  {
-    title: "Re-onboarding",
-    href: "/admin/send-reonboarding-emails",
-    icon: Mail,
-  },
-  {
-    title: "Launch Email",
-    href: "/admin/launch-announcement",
-    icon: Rocket,
   },
 ];
 
