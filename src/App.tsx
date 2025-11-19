@@ -61,6 +61,7 @@ import AdminEmailManagement from "./pages/AdminEmailManagement";
 import AdminLayout from "./pages/AdminLayout";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Calendar from "./pages/Calendar";
 
 const queryClient = new QueryClient();
 
@@ -171,7 +172,15 @@ function AppContent() {
                } 
              />
              <Route
-               path="/daily-reports" 
+               path="/calendar" 
+               element={
+                 <ProtectedRoute>
+                   <Calendar />
+                 </ProtectedRoute>
+               } 
+             />
+             <Route
+               path="/daily-reports"
                element={
                  <ProtectedRoute>
                    <DailyReports />
