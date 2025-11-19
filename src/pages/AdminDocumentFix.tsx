@@ -77,11 +77,13 @@ export default function AdminDocumentFix() {
   const handleMarkDocumentsVerified = async (user: AffectedUser) => {
     setProcessing(true);
     try {
-      // Update profile to mark both documents as verified
+      // Update profile to mark both documents as verified AND approve golden badge
       const { error } = await supabase
         .from('profiles')
         .update({
           background_check_verified: true,
+          golden_badge_approved: true,
+          golden_badge_approved_at: new Date().toISOString(),
           id_document_url: 'MANUALLY_VERIFIED_BY_ADMIN',
           blue_card_document_url: 'MANUALLY_VERIFIED_BY_ADMIN',
           verification_documents_uploaded_at: user.verification_documents_uploaded_at || new Date().toISOString(),
@@ -118,6 +120,8 @@ export default function AdminDocumentFix() {
         .from('profiles')
         .update({
           background_check_verified: true,
+          golden_badge_approved: true,
+          golden_badge_approved_at: new Date().toISOString(),
           id_document_url: 'MANUALLY_VERIFIED_BY_ADMIN',
           blue_card_document_url: 'MANUALLY_VERIFIED_BY_ADMIN',
         })
