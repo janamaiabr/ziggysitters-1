@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2, StickyNote } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2, StickyNote, Star } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -42,6 +42,8 @@ type PublicSitterProfile = {
   verification_documents_uploaded_at?: string | null;
   created_at: string;
   admin_notes?: string | null;
+  golden_badge_approved?: boolean | null;
+  golden_badge_approved_at?: string | null;
 }
 
 export default function AdminDashboard() {
@@ -160,14 +162,14 @@ export default function AdminDashboard() {
     }
   };
 
-  const updateVerificationStatus = async (profileId: string, isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
+  const updateDocumentVerification = async (profileId: string, isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
     try {
       const profileToUpdate = profiles.find(p => p.id === profileId);
       if (!profileToUpdate) throw new Error('Profile not found');
 
-      console.log('Updating verification status:', { profileId, isVerified, verificationStatus });
+      console.log('Updating document verification:', { profileId, isVerified, verificationStatus });
 
-      // Use the new admin RPC function to update verification status
+      // Use the admin RPC function to update document verification status
       const { error } = await supabase.rpc('update_verification_status', {
         profile_id: profileId,
         is_verified: isVerified,
@@ -196,7 +198,7 @@ export default function AdminDashboard() {
 
       toast({
         title: "Success",
-        description: `Sitter ${isVerified ? 'approved' : 'rejected'} successfully`,
+        description: `Document verification ${isVerified ? 'approved' : 'rejected'} successfully`,
       });
 
       fetchPendingSitters();
@@ -650,8 +652,8 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
-                onReject={() => profile.id && updateVerificationStatus(profile.id, false, 'rejected')}
+                onApprove={() => profile.id && updateDocumentVerification(profile.id, true, 'verified')}
+                onReject={() => profile.id && updateDocumentVerification(profile.id, false, 'rejected')}
                 onViewDetails={() => navigate(`/admin/user/${profile.id}`)}
                 showActions={true}
               />
@@ -684,7 +686,7 @@ export default function AdminDashboard() {
               <SitterCard 
                 key={profile.id} 
                 profile={profile} 
-                onApprove={() => profile.id && updateVerificationStatus(profile.id, true, 'verified')}
+                onApprove={() => profile.id && updateDocumentVerification(profile.id, true, 'verified')}
                 onViewDetails={() => navigate(`/admin/user/${profile.id}`)}
                 showActions={true}
                 isRejected={true}
@@ -737,6 +739,12 @@ function SitterCard({ profile, onApprove, onReject, onViewDetails, showActions, 
           >
             {profile.is_verified ? 'Verified' : profile.verification_status || 'Pending'}
           </Badge>
+          {profile.golden_badge_approved && (
+            <Badge className="bg-yellow-500 hover:bg-yellow-600 ml-2">
+              <Star className="mr-1 h-3 w-3" />
+              Golden
+            </Badge>
+          )}
         </div>
       </CardHeader>
       
@@ -794,7 +802,7 @@ function SitterCard({ profile, onApprove, onReject, onViewDetails, showActions, 
                 className="flex-1"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                {isRejected ? 'Reapprove' : 'Approve'}
+                Verify Documents
               </Button>
             )}
             {onReject && !isRejected && (

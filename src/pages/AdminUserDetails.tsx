@@ -41,6 +41,9 @@ type UserProfile = {
   stripe_onboarding_completed?: boolean;
   onboarding_completed?: boolean;
   admin_notes?: string | null;
+  golden_badge_approved?: boolean | null;
+  golden_badge_approved_at?: string | null;
+  golden_badge_approved_by?: string | null;
 }
 
 export default function AdminUserDetails() {
@@ -317,11 +320,11 @@ export default function AdminUserDetails() {
     }
   };
 
-  const updateVerificationStatus = async (isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
+  const updateDocumentVerification = async (isVerified: boolean, verificationStatus: 'pending' | 'verified' | 'rejected') => {
     if (!profile) return;
 
     try {
-      // Update verification status
+      // Update document verification status (separate from golden badge)
       const { error } = await supabase.rpc('update_verification_status', {
         profile_id: profile.id,
         is_verified: isVerified,
@@ -330,7 +333,6 @@ export default function AdminUserDetails() {
 
       if (error) throw error;
 
-      // Show immediate feedback
       toast({
         title: "Success",
         description: `User ${isVerified ? 'approved' : 'rejected'} successfully`,
@@ -498,20 +500,20 @@ export default function AdminUserDetails() {
                 {profile.verification_status !== 'verified' && (
                   <>
                     <Button 
-                      onClick={() => updateVerificationStatus(true, 'verified')}
+                      onClick={() => updateDocumentVerification(true, 'verified')}
                       className="flex items-center"
                     >
                       <CheckCircle className="w-4 h-4 mr-2" />
-                      Approve Sitter
+                      Verify Documents
                     </Button>
                     {profile.verification_status !== 'rejected' && (
                       <Button 
                         variant="destructive"
-                        onClick={() => updateVerificationStatus(false, 'rejected')}
+                        onClick={() => updateDocumentVerification(false, 'rejected')}
                         className="flex items-center"
                       >
                         <XCircle className="w-4 h-4 mr-2" />
-                        Reject
+                        Reject Documents
                       </Button>
                     )}
                   </>
