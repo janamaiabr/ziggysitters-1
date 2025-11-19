@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { Mail, Eye, Edit2, Save, Send } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface EmailTemplate {
@@ -416,8 +415,6 @@ export default function AdminEmailPreview() {
   }
 
   return (
-    <div>
-      <AdminNav />
       <div className="container mx-auto py-8 space-y-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Email Templates Management</h1>
@@ -612,7 +609,6 @@ export default function AdminEmailPreview() {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
   );
 }
 

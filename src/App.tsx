@@ -63,6 +63,8 @@ import AdminEmailPreview from "./pages/AdminEmailPreview";
 import AdminBulkEmails from "./pages/AdminBulkEmails";
 import AdminStripeReset from "./pages/AdminStripeReset";
 import AdminDocumentFix from "./pages/AdminDocumentFix";
+import AdminEmailSubscriptions from "./pages/AdminEmailSubscriptions";
+import AdminLayout from "./pages/AdminLayout";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
@@ -182,55 +184,24 @@ function AppContent() {
                  </ProtectedRoute>
                } 
              />
-            <Route 
-              path="/admin-dashboard" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            />
+            {/* Admin Routes - Wrapped in AdminLayout with Sidebar */}
+            <Route element={<AdminLayout />}>
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/user/:id" element={<AdminUserDetails />} />
+              <Route path="/admin/go-live" element={<AdminGoLive />} />
+              <Route path="/admin/email-templates" element={<AdminEmailTemplates />} />
+              <Route path="/admin/email-preview" element={<AdminEmailPreview />} />
+              <Route path="/admin/bulk-emails" element={<AdminBulkEmails />} />
+              <Route path="/admin/email-subscriptions" element={<AdminEmailSubscriptions />} />
+              <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
+              <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
+              <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
+              <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
+              <Route path="/admin/resend-report-emails" element={<AdminResendReportEmails />} />
+              <Route path="/admin/send-reonboarding-emails" element={<AdminSendReonboardingEmails />} />
+              <Route path="/admin/launch-announcement" element={<AdminLaunchAnnouncement />} />
+            </Route>
             <Route path="/admin" element={<Navigate to="/admin-dashboard" replace />} />
-            <Route 
-              path="/admin/user/:id" 
-              element={
-                <ProtectedRoute>
-                  <AdminUserDetails />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/go-live" 
-              element={
-                <ProtectedRoute>
-                  <AdminGoLive />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/email-templates" 
-              element={
-                <ProtectedRoute>
-                  <AdminEmailTemplates />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/email-preview" 
-              element={
-                <ProtectedRoute>
-                  <AdminEmailPreview />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/bulk-emails" 
-              element={
-                <ProtectedRoute>
-                  <AdminBulkEmails />
-                </ProtectedRoute>
-              } 
-            />
             
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -247,8 +218,6 @@ function AppContent() {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/500" element={<Error500 />} />
             <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
-            <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
-            <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
             <Route path="/test-payment" element={<PaymentTests />} />
             <Route path="/test-payment-flow" element={<PaymentFlowTestsPage />} />
             <Route path="/test-payment-comprehensive" element={<PaymentFlowComprehensiveTestPage />} />
@@ -260,11 +229,6 @@ function AppContent() {
             <Route path="/sitter-service-tests" element={<SitterServiceTests />} />
             <Route path="/manual-service-creator" element={<ManualServiceCreator />} />
           <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
-          <Route path="/admin-resend-report-emails" element={<AdminResendReportEmails />} />
-          <Route path="/admin/send-reonboarding-emails" element={<AdminSendReonboardingEmails />} />
-          <Route path="/admin/launch-announcement" element={<AdminLaunchAnnouncement />} />
-          <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
-          <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

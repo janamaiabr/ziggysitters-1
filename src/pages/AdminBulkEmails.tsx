@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Send, Rocket, Mail, AlertTriangle, CheckCircle, Users, Shield, Star, Clock } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AdminNav } from '@/components/admin/AdminNav';
 import { Badge } from '@/components/ui/badge';
 
 interface Campaign {
@@ -139,8 +138,6 @@ export default function AdminBulkEmails() {
   };
 
   return (
-    <div>
-      <AdminNav />
       <div className="min-h-screen bg-background py-8">
         <div className="container mx-auto px-4 max-w-7xl">
           <Button
@@ -162,12 +159,21 @@ export default function AdminBulkEmails() {
             </p>
           </div>
 
+          <Alert className="mb-6 border-green-500/50 bg-green-500/10">
+            <CheckCircle className="h-4 w-4 text-green-500" />
+            <AlertTitle>GDPR Compliant</AlertTitle>
+            <AlertDescription>
+              All campaigns include RFC-compliant unsubscribe headers (List-Unsubscribe) to comply with email regulations.
+              Users can unsubscribe via mailto link or manage preferences in their account settings.
+            </AlertDescription>
+          </Alert>
+
           <Alert className="mb-6 border-orange-500/50 bg-orange-500/10">
             <AlertTriangle className="h-4 w-4 text-orange-500" />
             <AlertTitle>Important</AlertTitle>
             <AlertDescription>
               These are bulk email campaigns that will send to multiple users at once. 
-              Make sure you understand the target audience before sending. All emails include unsubscribe headers for deliverability.
+              Make sure you understand the target audience before sending.
             </AlertDescription>
           </Alert>
 
@@ -233,6 +239,5 @@ export default function AdminBulkEmails() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

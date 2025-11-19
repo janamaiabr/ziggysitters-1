@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Rocket, ArrowLeft, Send, CheckCircle2, AlertCircle, Clock, Sparkles, Mail, Eye, Edit } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AdminNav } from '@/components/admin/AdminNav';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -335,8 +334,6 @@ export default function AdminLaunchAnnouncement() {
   };
 
   return (
-    <div>
-      <AdminNav />
       <div className="min-h-screen bg-background py-8">
         <div className="container mx-auto px-4 max-w-4xl">
           <Button
@@ -593,6 +590,5 @@ export default function AdminLaunchAnnouncement() {
           </Card>
         </div>
       </div>
-    </div>
   );
 }
