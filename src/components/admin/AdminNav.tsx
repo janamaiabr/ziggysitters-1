@@ -8,7 +8,8 @@ import {
   FileText,
   DollarSign,
   Settings,
-  Eye
+  Eye,
+  RefreshCw
 } from "lucide-react";
 
 const navItems = [
@@ -36,6 +37,11 @@ const navItems = [
     title: "Payment Fix",
     href: "/admin/payment-fix",
     icon: DollarSign,
+  },
+  {
+    title: "Stripe Migration",
+    href: "/admin/stripe-reset",
+    icon: RefreshCw,
   },
   {
     title: "Resend Reports",

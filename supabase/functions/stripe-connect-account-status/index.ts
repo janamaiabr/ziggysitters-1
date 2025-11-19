@@ -101,6 +101,66 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("Error in stripe-connect-account-status:", error);
+    
+    // Check if this is an account access error (old platform)
+    const errorMessage = error?.message || '';
+    const isAccountAccessError = errorMessage.includes('does not have access to account') || 
+                                  errorMessage.includes('account_invalid') ||
+                                  error?.code === 'account_invalid';
+    
+    if (isAccountAccessError) {
+      console.log("Detected old platform account - auto-resetting Stripe fields");
+      
+      try {
+        // Auto-reset the Stripe fields for this user
+        const authHeader = req.headers.get("Authorization")!;
+        const token = authHeader.replace("Bearer ", "");
+        const supabaseClient = createClient(
+          Deno.env.get("SUPABASE_URL") ?? "",
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+        );
+        const { data: { user } } = await supabaseClient.auth.getUser(token);
+        
+        if (user) {
+          const { data: profile } = await supabaseClient
+            .from("profiles")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+            
+          if (profile) {
+            await supabaseClient
+              .from("profiles")
+              .update({
+                stripe_account_id: null,
+                stripe_account_enabled: false,
+                stripe_onboarding_completed: false,
+              })
+              .eq("id", profile.id);
+              
+            console.log("Successfully reset Stripe fields for profile:", profile.id);
+          }
+        }
+      } catch (resetError) {
+        console.error("Error resetting Stripe fields:", resetError);
+      }
+      
+      // Return a clear message about needing to reconnect
+      return new Response(
+        JSON.stringify({ 
+          connected: false,
+          enabled: false,
+          onboarding_completed: false,
+          needs_reconnection: true,
+          error: "Your payment account needs to be reconnected. Please complete the Stripe setup again."
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ error: error.message }),
       {
