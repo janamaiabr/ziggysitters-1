@@ -70,28 +70,10 @@ const navSections = [
     label: 'Communications',
     items: [
       {
-        title: 'Email Campaigns',
-        href: '/admin/bulk-emails',
-        icon: Send,
-        description: 'Send bulk promotional emails to users',
-      },
-      {
-        title: 'Email Templates',
-        href: '/admin/email-preview',
-        icon: Eye,
-        description: 'Preview and test all email templates',
-      },
-      {
-        title: 'Email Subscriptions',
-        href: '/admin/email-subscriptions',
-        icon: MailOpen,
-        description: 'View and manage user email subscription preferences',
-      },
-      {
-        title: 'Resend Reports',
-        href: '/admin/resend-report-emails',
+        title: 'Email Management',
+        href: '/admin/email-management',
         icon: Mail,
-        description: 'Manually resend daily report emails to pet owners',
+        description: 'Send campaigns, manage subscriptions, and view email templates',
       },
     ],
   },

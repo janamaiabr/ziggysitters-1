@@ -38,7 +38,7 @@ import Onboarding from "./pages/Onboarding";
 import OnboardingComplete from "./pages/OnboardingComplete";
 import OnboardingPendingApproval from "./pages/OnboardingPendingApproval";
 import CreateAdmin from "./pages/CreateAdmin";
-import AdminGoLive from "./pages/AdminGoLive";
+
 import FAQ from "./pages/FAQ";
 import Error500 from "./pages/Error500";
 import ComprehensiveTestSuite from "./components/testing/ComprehensiveTestSuite";
@@ -54,16 +54,10 @@ import ManualServiceCreator from "./pages/ManualServiceCreator";
 import TermsAcceptanceTestPage from "./pages/TermsAcceptanceTest";
 import SitterServiceTests from "./pages/SitterServiceTests";
 import PayoutAutomationTests from "./pages/PayoutAutomationTests";
-import AdminResendReportEmails from "./pages/AdminResendReportEmails";
-import AdminSendReonboardingEmails from "./pages/AdminSendReonboardingEmails";
 import SendTestEmail from "./pages/SendTestEmail";
-import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
-import AdminEmailTemplates from "./pages/AdminEmailTemplates";
-import AdminEmailPreview from "./pages/AdminEmailPreview";
-import AdminBulkEmails from "./pages/AdminBulkEmails";
 import AdminStripeReset from "./pages/AdminStripeReset";
 import AdminDocumentFix from "./pages/AdminDocumentFix";
-import AdminEmailSubscriptions from "./pages/AdminEmailSubscriptions";
+import AdminEmailManagement from "./pages/AdminEmailManagement";
 import AdminLayout from "./pages/AdminLayout";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -188,18 +182,11 @@ function AppContent() {
             <Route element={<AdminLayout />}>
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/admin/user/:id" element={<AdminUserDetails />} />
-              <Route path="/admin/go-live" element={<AdminGoLive />} />
-              <Route path="/admin/email-templates" element={<AdminEmailTemplates />} />
-              <Route path="/admin/email-preview" element={<AdminEmailPreview />} />
-              <Route path="/admin/bulk-emails" element={<AdminBulkEmails />} />
-              <Route path="/admin/email-subscriptions" element={<AdminEmailSubscriptions />} />
+              <Route path="/admin/email-management" element={<AdminEmailManagement />} />
               <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
               <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
-              <Route path="/admin/resend-report-emails" element={<AdminResendReportEmails />} />
-              <Route path="/admin/send-reonboarding-emails" element={<AdminSendReonboardingEmails />} />
-              <Route path="/admin/launch-announcement" element={<AdminLaunchAnnouncement />} />
             </Route>
             <Route path="/admin" element={<Navigate to="/admin-dashboard" replace />} />
             
