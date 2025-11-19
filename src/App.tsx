@@ -62,6 +62,8 @@ import AdminLayout from "./pages/AdminLayout";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
+import GoldenBadgeTests from "./pages/GoldenBadgeTests";
+import CalendarTests from "./pages/CalendarTests";
 
 const queryClient = new QueryClient();
 
@@ -224,7 +226,9 @@ function AppContent() {
             <Route path="/stripe-onboarding-tests" element={<StripeOnboardingTests />} />
             <Route path="/sitter-service-tests" element={<SitterServiceTests />} />
             <Route path="/manual-service-creator" element={<ManualServiceCreator />} />
-          <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
+            <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
+            <Route path="/test-golden-badge" element={<GoldenBadgeTests />} />
+            <Route path="/test-calendar" element={<CalendarTests />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
