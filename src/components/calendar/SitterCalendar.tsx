@@ -36,7 +36,6 @@ export default function SitterCalendar() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [availability, setAvailability] = useState<Availability[]>([]);
   const [showAvailabilityDialog, setShowAvailabilityDialog] = useState(false);
-  const [showBookingDialog, setShowBookingDialog] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [availabilityNotes, setAvailabilityNotes] = useState('');
   const [dateToUpdate, setDateToUpdate] = useState<Date | null>(null);
@@ -177,7 +176,6 @@ export default function SitterCalendar() {
     
     if (status.type === 'booking') {
       setSelectedBooking(status.data as Booking);
-      setShowBookingDialog(true);
       return;
     }
     
@@ -369,22 +367,72 @@ export default function SitterCalendar() {
           </CardContent>
         </Card>
 
-        {/* Upcoming Bookings */}
+        {/* Booking Details / Upcoming Bookings */}
         <Card className="animate-fade-in">
           <CardHeader>
-            <CardTitle className="text-lg">Upcoming Bookings</CardTitle>
+            <CardTitle className="text-lg flex items-center justify-between">
+              {selectedBooking ? 'Booking Details' : 'Upcoming Bookings'}
+              {selectedBooking && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setSelectedBooking(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            {upcomingBookings.length > 0 ? (
+            {selectedBooking ? (
+              <div className="space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Reference</span>
+                  <Badge variant="outline">{selectedBooking.booking_reference}</Badge>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Status</span>
+                  <Badge className={`${getStatusColor(selectedBooking.status)} text-white border-0 flex items-center gap-1`}>
+                    {getStatusIcon(selectedBooking.status)}
+                    {selectedBooking.status}
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Service</span>
+                  <span className="text-sm font-medium">
+                    {selectedBooking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Dates</span>
+                  <span className="text-sm font-medium">
+                    {format(parseISO(selectedBooking.start_date), 'MMM d')} - {format(parseISO(selectedBooking.end_date), 'MMM d, yyyy')}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Amount</span>
+                  <span className="text-lg font-bold">${selectedBooking.total_amount}</span>
+                </div>
+
+                <Button 
+                  className="w-full"
+                  onClick={() => navigate(`/booking/${selectedBooking.id}`)}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Full Details
+                </Button>
+              </div>
+            ) : upcomingBookings.length > 0 ? (
               <div className="space-y-3">
                 {upcomingBookings.map(booking => (
                   <div 
                     key={booking.id} 
                     className="p-3 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors animate-scale-in"
-                    onClick={() => {
-                      setSelectedBooking(booking);
-                      setShowBookingDialog(true);
-                    }}
+                    onClick={() => setSelectedBooking(booking)}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <Badge variant="outline" className="text-xs">
@@ -504,58 +552,6 @@ export default function SitterCalendar() {
         </DialogContent>
       </Dialog>
 
-      {/* Booking Details Dialog */}
-      <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Booking Details</DialogTitle>
-          </DialogHeader>
-          
-          {selectedBooking && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Reference</span>
-                <Badge variant="outline">{selectedBooking.booking_reference}</Badge>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
-                <Badge className={`${getStatusColor(selectedBooking.status)} text-white border-0 flex items-center gap-1`}>
-                  {getStatusIcon(selectedBooking.status)}
-                  {selectedBooking.status}
-                </Badge>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Service</span>
-                <span className="text-sm font-medium">
-                  {selectedBooking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Dates</span>
-                <span className="text-sm font-medium">
-                  {format(parseISO(selectedBooking.start_date), 'MMM d')} - {format(parseISO(selectedBooking.end_date), 'MMM d, yyyy')}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Amount</span>
-                <span className="text-lg font-bold">${selectedBooking.total_amount}</span>
-              </div>
-
-              <Button 
-                className="w-full"
-                onClick={() => navigate(`/booking/${selectedBooking.id}`)}
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                View Full Details
-              </Button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
