@@ -3,7 +3,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,13 +35,13 @@ export default function SitterCalendar() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [availability, setAvailability] = useState<Availability[]>([]);
-  const [showAvailabilityDialog, setShowAvailabilityDialog] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [availabilityNotes, setAvailabilityNotes] = useState('');
   const [dateToUpdate, setDateToUpdate] = useState<Date | null>(null);
   const [blockMode, setBlockMode] = useState<'single' | 'range'>('single');
   const [rangeStart, setRangeStart] = useState<Date | null>(null);
   const [rangeEnd, setRangeEnd] = useState<Date | null>(null);
+  const [showBlockForm, setShowBlockForm] = useState(false);
   const { user } = useAuth();
   const { profile } = useProfile();
   const { toast } = useToast();
@@ -155,7 +155,7 @@ export default function SitterCalendar() {
       });
 
       fetchAvailability();
-      setShowAvailabilityDialog(false);
+      setShowBlockForm(false);
       setAvailabilityNotes('');
       setDateToUpdate(null);
       setRangeStart(null);
@@ -176,6 +176,7 @@ export default function SitterCalendar() {
     
     if (status.type === 'booking') {
       setSelectedBooking(status.data as Booking);
+      setShowBlockForm(false);
       return;
     }
     
@@ -183,7 +184,11 @@ export default function SitterCalendar() {
     setDateToUpdate(date);
     const avail = status.type === 'unavailable' ? status.data as Availability : null;
     setAvailabilityNotes(avail?.notes || '');
-    setShowAvailabilityDialog(true);
+    setBlockMode('single');
+    setRangeStart(null);
+    setRangeEnd(null);
+    setShowBlockForm(true);
+    setSelectedBooking(null);
   };
 
   const handleBlockRange = () => {
@@ -297,7 +302,9 @@ export default function SitterCalendar() {
           onClick={() => {
             setBlockMode('single');
             setDateToUpdate(new Date());
-            setShowAvailabilityDialog(true);
+            setAvailabilityNotes('');
+            setShowBlockForm(true);
+            setSelectedBooking(null);
           }}
         >
           <Ban className="h-4 w-4 mr-2" />
@@ -307,7 +314,11 @@ export default function SitterCalendar() {
           variant="outline"
           onClick={() => {
             setBlockMode('range');
-            setShowAvailabilityDialog(true);
+            setRangeStart(null);
+            setRangeEnd(null);
+            setAvailabilityNotes('');
+            setShowBlockForm(true);
+            setSelectedBooking(null);
           }}
         >
           <CalIcon className="h-4 w-4 mr-2" />
@@ -367,16 +378,22 @@ export default function SitterCalendar() {
           </CardContent>
         </Card>
 
-        {/* Booking Details / Upcoming Bookings */}
+        {/* Booking Details / Block Form / Upcoming Bookings */}
         <Card className="animate-fade-in">
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
-              {selectedBooking ? 'Booking Details' : 'Upcoming Bookings'}
-              {selectedBooking && (
+              {showBlockForm ? (blockMode === 'single' ? 'Block Single Day' : 'Block Date Range') : selectedBooking ? 'Booking Details' : 'Upcoming Bookings'}
+              {(selectedBooking || showBlockForm) && (
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => setSelectedBooking(null)}
+                  onClick={() => {
+                    setSelectedBooking(null);
+                    setShowBlockForm(false);
+                    setAvailabilityNotes('');
+                    setRangeStart(null);
+                    setRangeEnd(null);
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -384,7 +401,82 @@ export default function SitterCalendar() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {selectedBooking ? (
+            {showBlockForm ? (
+              <div className="space-y-4 animate-fade-in">
+                {blockMode === 'single' ? (
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-sm font-medium mb-1">Selected Date</p>
+                    <p className="text-sm text-muted-foreground">
+                      {dateToUpdate ? format(dateToUpdate, 'EEEE, MMMM d, yyyy') : 'No date selected'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium">Start Date</label>
+                      <input
+                        type="date"
+                        className="w-full mt-1 px-3 py-2 border rounded-md bg-background"
+                        value={rangeStart ? format(rangeStart, 'yyyy-MM-dd') : ''}
+                        onChange={(e) => setRangeStart(e.target.value ? new Date(e.target.value) : null)}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">End Date</label>
+                      <input
+                        type="date"
+                        className="w-full mt-1 px-3 py-2 border rounded-md bg-background"
+                        value={rangeEnd ? format(rangeEnd, 'yyyy-MM-dd') : ''}
+                        onChange={(e) => setRangeEnd(e.target.value ? new Date(e.target.value) : null)}
+                        min={rangeStart ? format(rangeStart, 'yyyy-MM-dd') : undefined}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="text-sm font-medium">Notes (optional)</label>
+                  <Textarea 
+                    value={availabilityNotes}
+                    onChange={(e) => setAvailabilityNotes(e.target.value)}
+                    placeholder="E.g., 'On vacation', 'Family emergency', etc."
+                    rows={3}
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      setShowBlockForm(false);
+                      setAvailabilityNotes('');
+                      setRangeStart(null);
+                      setRangeEnd(null);
+                      setBlockMode('single');
+                    }}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    variant="destructive"
+                    onClick={() => {
+                      if (blockMode === 'single' && dateToUpdate) {
+                        updateAvailability([dateToUpdate], false, availabilityNotes);
+                      } else if (blockMode === 'range') {
+                        handleBlockRange();
+                      }
+                    }}
+                    className="flex-1"
+                    disabled={blockMode === 'range' && (!rangeStart || !rangeEnd)}
+                  >
+                    <Ban className="h-4 w-4 mr-2" />
+                    Block {blockMode === 'range' ? 'Range' : 'Day'}
+                  </Button>
+                </div>
+              </div>
+            ) : selectedBooking ? (
               <div className="space-y-4 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Reference</span>
@@ -466,92 +558,6 @@ export default function SitterCalendar() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Availability Dialog */}
-      <Dialog open={showAvailabilityDialog} onOpenChange={setShowAvailabilityDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {blockMode === 'single' ? 'Block Single Day' : 'Block Date Range'}
-            </DialogTitle>
-            <DialogDescription>
-              {blockMode === 'single' 
-                ? `Mark ${dateToUpdate ? format(dateToUpdate, 'EEEE, MMMM d') : 'date'} as unavailable`
-                : 'Select start and end dates to block multiple days'
-              }
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            {blockMode === 'range' && (
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium">Start Date</label>
-                  <input
-                    type="date"
-                    className="w-full px-3 py-2 border rounded-md"
-                    value={rangeStart ? format(rangeStart, 'yyyy-MM-dd') : ''}
-                    onChange={(e) => setRangeStart(e.target.value ? new Date(e.target.value) : null)}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">End Date</label>
-                  <input
-                    type="date"
-                    className="w-full px-3 py-2 border rounded-md"
-                    value={rangeEnd ? format(rangeEnd, 'yyyy-MM-dd') : ''}
-                    onChange={(e) => setRangeEnd(e.target.value ? new Date(e.target.value) : null)}
-                    min={rangeStart ? format(rangeStart, 'yyyy-MM-dd') : undefined}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="text-sm font-medium">Notes (optional)</label>
-              <Textarea 
-                value={availabilityNotes}
-                onChange={(e) => setAvailabilityNotes(e.target.value)}
-                placeholder="E.g., 'On vacation', 'Family emergency', etc."
-                rows={3}
-                className="mt-1"
-              />
-            </div>
-            
-            <div className="flex gap-3">
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setShowAvailabilityDialog(false);
-                  setAvailabilityNotes('');
-                  setRangeStart(null);
-                  setRangeEnd(null);
-                  setBlockMode('single');
-                }}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button 
-                variant="destructive"
-                onClick={() => {
-                  if (blockMode === 'single' && dateToUpdate) {
-                    updateAvailability([dateToUpdate], false, availabilityNotes);
-                  } else if (blockMode === 'range') {
-                    handleBlockRange();
-                  }
-                }}
-                className="flex-1"
-                disabled={blockMode === 'range' && (!rangeStart || !rangeEnd)}
-              >
-                <Ban className="h-4 w-4 mr-2" />
-                Block {blockMode === 'range' ? 'Range' : 'Day'}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
     </div>
   );
 }
