@@ -44,6 +44,11 @@ const navItems = [
     icon: RefreshCw,
   },
   {
+    title: "Document Fix Tool",
+    href: "/admin/document-fix",
+    icon: FileText,
+  },
+  {
     title: "Resend Reports",
     href: "/admin/resend-report-emails",
     icon: FileText,
