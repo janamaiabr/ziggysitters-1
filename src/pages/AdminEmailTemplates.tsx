@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { Mail, Save, Eye, Edit2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { AdminNav } from "@/components/admin/AdminNav";
 
 interface EmailTemplate {
   id: string;
@@ -133,8 +132,6 @@ export default function AdminEmailTemplates() {
   }
 
   return (
-    <div>
-      <AdminNav />
       <div className="container mx-auto py-8 space-y-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Email Templates</h1>
@@ -298,6 +295,5 @@ export default function AdminEmailTemplates() {
         </DialogContent>
       </Dialog>
       </div>
-    </div>
   );
 }

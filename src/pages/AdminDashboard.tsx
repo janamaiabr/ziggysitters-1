@@ -17,8 +17,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import PayoutsTab from '@/components/admin/PayoutsTab';
-import StripeModeIndicator from '@/components/admin/StripeModeIndicator';
-import { AdminNav } from '@/components/admin/AdminNav';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
@@ -366,15 +364,11 @@ export default function AdminDashboard() {
   });
 
   return (
-    <div>
-      <AdminNav />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
           <p className="text-gray-600">Manage pet sitter applications and verifications</p>
         </div>
-
-        <StripeModeIndicator />
 
       <Tabs defaultValue="all-users" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
@@ -704,7 +698,6 @@ export default function AdminDashboard() {
         </TabsContent>
       </Tabs>
       </div>
-    </div>
   );
 }
 

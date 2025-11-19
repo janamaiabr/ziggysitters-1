@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { AdminNav } from '@/components/admin/AdminNav';
 
 export default function AdminPaymentFix() {
   const navigate = useNavigate();
@@ -103,8 +102,6 @@ export default function AdminPaymentFix() {
   };
 
   return (
-    <div>
-      <AdminNav />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
@@ -179,6 +176,5 @@ export default function AdminPaymentFix() {
         </CardContent>
       </Card>
       </div>
-    </div>
   );
 }

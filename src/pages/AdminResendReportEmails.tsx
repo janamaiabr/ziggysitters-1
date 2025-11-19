@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { AdminNav } from '@/components/admin/AdminNav';
 
 interface ReportToResend {
   id: string;
@@ -178,8 +177,6 @@ export default function AdminResendReportEmails() {
   };
 
   return (
-    <div>
-      <AdminNav />
       <div className="container mx-auto py-8 px-4">
       <Card>
         <CardHeader>
@@ -282,6 +279,5 @@ export default function AdminResendReportEmails() {
         </CardContent>
       </Card>
       </div>
-    </div>
   );
 }

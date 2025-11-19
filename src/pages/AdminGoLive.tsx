@@ -7,7 +7,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Rocket, Mail, CreditCard, Calendar, Users, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { AdminNav } from '@/components/admin/AdminNav';
 
 export default function AdminGoLive() {
   const { toast } = useToast();
@@ -84,8 +83,6 @@ export default function AdminGoLive() {
   const allTasksComplete = Object.values(checklist).every(v => v === true);
 
   return (
-    <div>
-      <AdminNav />
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="flex items-center justify-between">
@@ -350,8 +347,7 @@ export default function AdminGoLive() {
             </CardContent>
           </Card>
         )}
+        </div>
       </div>
-      </div>
-    </div>
   );
 }
