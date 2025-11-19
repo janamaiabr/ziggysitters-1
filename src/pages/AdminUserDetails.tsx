@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send, StickyNote } from 'lucide-react';
+import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send, StickyNote, Award } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -402,6 +402,46 @@ export default function AdminUserDetails() {
       toast({
         title: "Error",
         description: "Failed to update verification status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleGoldenBadgeUpdate = async (approve: boolean) => {
+    if (!profile) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          golden_badge_approved: approve,
+          golden_badge_approved_at: approve ? new Date().toISOString() : null,
+          golden_badge_approved_by: approve ? user?.id : null
+        })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      if (approve) {
+        // Send congratulations email
+        await supabase.functions.invoke('send-golden-badge-congratulations', {
+          body: { sitterId: profile.id }
+        });
+      }
+
+      toast({
+        title: "Success",
+        description: approve ? 'Golden Badge granted successfully!' : 'Golden Badge revoked',
+      });
+
+      fetchUserProfile();
+    } catch (error: any) {
+      console.error('Error updating golden badge:', error);
+      toast({
+        title: "Error",
+        description: error.message || 'Failed to update golden badge status',
         variant: "destructive"
       });
     }
@@ -829,30 +869,48 @@ export default function AdminUserDetails() {
 
         {/* Verification Tab (Sitters only) */}
         {profile.role === 'pet_sitter' && (
-          <TabsContent value="verification">
+          <TabsContent value="verification" className="space-y-6">
+            {/* ID Verification Card */}
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Verification Documents</CardTitle>
-                  {(!idDocUrl || !blueCardUrl) && (
-                    <Button 
-                      onClick={sendDocumentReminder}
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <Send className="h-4 w-4" />
-                      Request Documents
-                    </Button>
-                  )}
-                </div>
+                <CardTitle>ID Verification</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground block mb-2">
-                      ID Document <Badge variant="destructive" className="ml-2">Required</Badge>
-                    </label>
+                    <h3 className="font-semibold mb-1">Verification Status</h3>
+                    <Badge variant={profile.is_verified ? "default" : "secondary"}>
+                      {profile.verification_status || 'Pending'}
+                    </Badge>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => updateDocumentVerification(true, 'verified')}
+                      variant="default"
+                      size="sm"
+                      disabled={profile.verification_status === 'verified'}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Approve ID
+                    </Button>
+                    <Button
+                      onClick={() => updateDocumentVerification(false, 'rejected')}
+                      variant="destructive"
+                      size="sm"
+                      disabled={profile.verification_status === 'rejected'}
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Reject ID
+                    </Button>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground block mb-2">
+                    ID Document <Badge variant="destructive" className="ml-2">Required</Badge>
+                  </label>
                     {idDocUrl ? (
                       <div className="space-y-2">
                         <a 
@@ -871,31 +929,7 @@ export default function AdminUserDetails() {
                     )}
                   </div>
                   
-                  <Separator />
-                  
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground block mb-2">
-                      NZ Police Vetting Service Check <Badge variant="secondary" className="ml-2 bg-yellow-500">Optional - Gold Badge ⭐</Badge>
-                    </label>
-                    {blueCardUrl ? (
-                      <div className="space-y-2">
-                        <a 
-                          href={blueCardUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
-                        >
-                          <FileText className="w-4 h-4 mr-2" />
-                          View Police Vet
-                        </a>
-                        <p className="text-xs text-muted-foreground">This link is valid for 1 hour</p>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">Not uploaded</p>
-                    )}
-                  </div>
-                  
-                   {profile.verification_documents_uploaded_at && (
+                  {profile.verification_documents_uploaded_at && (
                     <>
                       <Separator />
                       <p className="text-xs text-muted-foreground">
@@ -930,10 +964,111 @@ export default function AdminUserDetails() {
                         disabled={isSavingNotes}
                         size="sm"
                       >
-                        {isSavingNotes ? 'Saving...' : 'Save Notes'}
-                      </Button>
-                    </div>
+                      {isSavingNotes ? 'Saving...' : 'Save Notes'}
+                    </Button>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Golden Badge Card */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Golden Badge Approval</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Grant after verifying NZ Police Vetting Service Check
+                    </p>
+                  </div>
+                  {!blueCardUrl && (
+                    <Button 
+                      onClick={sendDocumentReminder}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Send className="h-4 w-4" />
+                      Request Police Vet
+                    </Button>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold">Badge Status</h3>
+                      {profile.golden_badge_approved && (
+                        <Badge className="bg-yellow-500 hover:bg-yellow-600">
+                          <Star className="h-3 w-3 mr-1 fill-white" />
+                          Golden Badge
+                        </Badge>
+                      )}
+                      {!profile.golden_badge_approved && !blueCardUrl && (
+                        <Badge variant="outline" className="text-amber-600 border-amber-600">
+                          Awaiting Police Vet
+                        </Badge>
+                      )}
+                    </div>
+                    {profile.golden_badge_approved && profile.golden_badge_approved_at && (
+                      <p className="text-sm text-muted-foreground">
+                        Granted on {new Date(profile.golden_badge_approved_at).toLocaleDateString()}
+                      </p>
+                    )}
+                    {!profile.golden_badge_approved && !blueCardUrl && (
+                      <p className="text-sm text-amber-600">
+                        Police vet document required before approval
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {!profile.golden_badge_approved ? (
+                      <Button
+                        onClick={() => handleGoldenBadgeUpdate(true)}
+                        variant="default"
+                        size="sm"
+                        disabled={!blueCardUrl}
+                        className="bg-yellow-500 hover:bg-yellow-600"
+                      >
+                        <Star className="h-4 w-4 mr-2" />
+                        Grant Golden Badge
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => handleGoldenBadgeUpdate(false)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <XCircle className="h-4 w-4 mr-2" />
+                        Revoke Badge
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground block mb-2">
+                    NZ Police Vetting Service Check <Badge variant="secondary" className="ml-2 bg-yellow-500">Required for Golden Badge</Badge>
+                  </label>
+                  {blueCardUrl ? (
+                    <div className="space-y-2">
+                      <a 
+                        href={blueCardUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
+                      >
+                        <FileText className="w-4 h-4 mr-2" />
+                        View Police Vet Document
+                      </a>
+                      <p className="text-xs text-muted-foreground">This link is valid for 1 hour</p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Not uploaded</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
