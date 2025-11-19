@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, User, Settings, LogOut, Shield, X } from 'lucide-react';
+import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon } from 'lucide-react';
 import logoSvg from '@/assets/logo.svg';
 import { useState, useEffect } from 'react';
 
@@ -84,6 +84,12 @@ export default function Header() {
           <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">
             Blog
           </Link>
+          {user && profile?.role === 'pet_sitter' && (
+            <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1.5">
+              <CalendarIcon className="h-4 w-4" />
+              Calendar
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -109,6 +115,12 @@ export default function Header() {
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
+                  {profile?.role === 'pet_sitter' && (
+                    <DropdownMenuItem onClick={() => navigate('/calendar')}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      My Calendar
+                    </DropdownMenuItem>
+                  )}
                   {!isAdmin && (
                     <DropdownMenuItem onClick={() => navigate('/bookings')}>
                       <Settings className="mr-2 h-4 w-4" />
@@ -188,6 +200,12 @@ export default function Header() {
                         <User className="mr-2 h-4 w-4" />
                         Profile
                       </Button>
+                      {profile?.role === 'pet_sitter' && (
+                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/calendar')}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          My Calendar
+                        </Button>
+                      )}
                       {!isAdmin && (
                         <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/bookings')}>
                           <Settings className="mr-2 h-4 w-4" />
