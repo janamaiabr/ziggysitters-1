@@ -181,6 +181,75 @@ serve(async (req) => {
       );
     } catch (linkError: any) {
       console.error("Account link creation error:", linkError);
+      
+      // Check if this is an "account not connected" error (old platform)
+      const errorMessage = linkError?.message || '';
+      const isOldPlatformError = errorMessage.includes('not connected to your platform') ||
+                                  errorMessage.includes('does not exist');
+      
+      if (isOldPlatformError && profile?.id) {
+        console.log("Detected old platform account - resetting and creating new account");
+        
+        try {
+          // Reset the old Stripe account ID
+          await supabaseClient
+            .from("profiles")
+            .update({
+              stripe_account_id: null,
+              stripe_account_enabled: false,
+              stripe_onboarding_completed: false,
+            })
+            .eq("id", profile.id);
+          
+          console.log("Reset old Stripe account, creating new one...");
+          
+          // Create a brand new Stripe Connect account
+          const newAccount = await stripe.accounts.create({
+            type: "express",
+            email: profile.email,
+            capabilities: {
+              transfers: { requested: true },
+            },
+            business_type: "individual",
+            business_profile: {
+              product_description: "Pet sitting and care services",
+            },
+            metadata: {
+              user_id: user.id,
+              profile_id: profile.id,
+            },
+          });
+          
+          // Save new account ID
+          await supabaseClient
+            .from("profiles")
+            .update({ stripe_account_id: newAccount.id })
+            .eq("id", profile.id);
+          
+          console.log("Created new account:", newAccount.id);
+          
+          // Create account link with new account
+          const accountLink = await stripe.accountLinks.create({
+            account: newAccount.id,
+            refresh_url: `${origin}/profile?tab=payments&stripe_refresh=true`,
+            return_url: `${origin}/profile?tab=payments&stripe_success=true`,
+            type: "account_onboarding",
+            collect: "eventually_due",
+          });
+          
+          return new Response(
+            JSON.stringify({ url: accountLink.url }),
+            {
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              status: 200,
+            }
+          );
+        } catch (recoveryError: any) {
+          console.error("Recovery attempt failed:", recoveryError);
+          throw new Error(`Failed to recover from old platform error: ${recoveryError.message}`);
+        }
+      }
+      
       throw new Error(`Failed to create account link: ${linkError.message || JSON.stringify(linkError)}`);
     }
   } catch (error: any) {

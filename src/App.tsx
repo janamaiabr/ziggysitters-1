@@ -61,6 +61,7 @@ import AdminLaunchAnnouncement from "./pages/AdminLaunchAnnouncement";
 import AdminEmailTemplates from "./pages/AdminEmailTemplates";
 import AdminEmailPreview from "./pages/AdminEmailPreview";
 import AdminBulkEmails from "./pages/AdminBulkEmails";
+import AdminStripeReset from "./pages/AdminStripeReset";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
@@ -261,6 +262,7 @@ function AppContent() {
           <Route path="/admin-resend-report-emails" element={<AdminResendReportEmails />} />
           <Route path="/admin/send-reonboarding-emails" element={<AdminSendReonboardingEmails />} />
           <Route path="/admin/launch-announcement" element={<AdminLaunchAnnouncement />} />
+          <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
