@@ -1120,6 +1120,40 @@ export type Database = {
           weight: number
         }[]
       }
+      get_pet_basic_info_safe: {
+        Args: { pet_id: string }
+        Returns: {
+          age: number
+          breed: string
+          exercise_needs: string
+          feeding_instructions: string
+          gender: string
+          id: string
+          name: string
+          personality_traits: string[]
+          photo_urls: string[]
+          size: Database["public"]["Enums"]["pet_size"]
+          special_care_notes: string
+          species: Database["public"]["Enums"]["pet_species"]
+          weight: number
+        }[]
+      }
+      get_public_sitter_info: {
+        Args: { sitter_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          city: string
+          first_name: string
+          id: string
+          is_verified: boolean
+          last_name: string
+          rating: number
+          response_rate: number
+          suburb: string
+          total_reviews: number
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
