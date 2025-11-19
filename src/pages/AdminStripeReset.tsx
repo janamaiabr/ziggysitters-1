@@ -16,6 +16,8 @@ interface AffectedSitter {
   stripe_account_enabled: boolean;
   stripe_onboarding_completed: boolean;
   onboarding_completed: boolean;
+  email_sent_at?: string;
+  completed_at?: string;
 }
 
 const AdminStripeReset = () => {
@@ -56,15 +58,36 @@ const AdminStripeReset = () => {
 
   const fetchAffectedSitters = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch sitters with Stripe accounts that are not fully enabled
+      const { data: sittersData, error: sittersError } = await supabase
         .from('profiles')
         .select('id, email, first_name, last_name, stripe_account_id, stripe_account_enabled, stripe_onboarding_completed, onboarding_completed')
         .eq('role', 'pet_sitter')
         .not('stripe_account_id', 'is', null)
+        .eq('stripe_account_enabled', false)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setAffectedSitters(data || []);
+      if (sittersError) throw sittersError;
+
+      // Fetch tracking data
+      const { data: trackingData, error: trackingError } = await supabase
+        .from('stripe_migration_tracking')
+        .select('sitter_id, email_sent_at, completed_at');
+
+      if (trackingError) throw trackingError;
+
+      // Merge tracking data with sitter data
+      const trackingMap = new Map(trackingData?.map(t => [t.sitter_id, t]) || []);
+      const mergedData = sittersData?.map(sitter => ({
+        ...sitter,
+        email_sent_at: trackingMap.get(sitter.id)?.email_sent_at,
+        completed_at: trackingMap.get(sitter.id)?.completed_at,
+      })) || [];
+
+      // Filter out completed sitters
+      const needsAction = mergedData.filter(s => !s.completed_at);
+
+      setAffectedSitters(needsAction);
     } catch (error) {
       console.error('Error fetching affected sitters:', error);
       toast({
@@ -118,6 +141,18 @@ const AdminStripeReset = () => {
 
       if (error) throw error;
 
+      // Track email sends
+      const now = new Date().toISOString();
+      for (const sitter of affectedSitters) {
+        await supabase
+          .from('stripe_migration_tracking')
+          .upsert({
+            sitter_id: sitter.id,
+            email_sent_at: now,
+            old_stripe_account_id: sitter.stripe_account_id,
+          });
+      }
+
       toast({
         title: 'Emails Sent',
         description: `Notification emails sent to ${affectedSitters.length} sitters.`,
@@ -131,6 +166,7 @@ const AdminStripeReset = () => {
       });
     } finally {
       setSendingEmails(false);
+      fetchAffectedSitters();
     }
   };
 
@@ -247,9 +283,12 @@ const AdminStripeReset = () => {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={sitter.stripe_account_enabled ? 'default' : 'secondary'}>
-                    {sitter.stripe_account_enabled ? 'Enabled' : 'Not Enabled'}
-                  </Badge>
+                  {sitter.email_sent_at && (
+                    <Badge variant="outline">
+                      <Mail className="mr-1 h-3 w-3" />
+                      Emailed {new Date(sitter.email_sent_at).toLocaleDateString()}
+                    </Badge>
+                  )}
                   <Button
                     size="sm"
                     variant="outline"
@@ -272,7 +311,8 @@ const AdminStripeReset = () => {
 
           {affectedSitters.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
-              <p>No affected sitters found. All Stripe accounts are up to date!</p>
+              <p className="font-semibold">✅ Migration Complete!</p>
+              <p className="text-sm mt-2">All sitters have either completed re-onboarding or don't require migration.</p>
             </div>
           )}
         </CardContent>

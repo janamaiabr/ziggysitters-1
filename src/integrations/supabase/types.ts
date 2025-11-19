@@ -909,6 +909,61 @@ export type Database = {
           },
         ]
       }
+      stripe_migration_tracking: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          email_sent_at: string | null
+          id: string
+          notes: string | null
+          old_stripe_account_id: string | null
+          sitter_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          email_sent_at?: string | null
+          id?: string
+          notes?: string | null
+          old_stripe_account_id?: string | null
+          sitter_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          email_sent_at?: string | null
+          id?: string
+          notes?: string | null
+          old_stripe_account_id?: string | null
+          sitter_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_migration_tracking_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stripe_migration_tracking_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: true
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stripe_migration_tracking_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: true
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           amount: number
