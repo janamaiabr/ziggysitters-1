@@ -373,7 +373,7 @@ export default function AdminDashboard() {
         </div>
 
       <Tabs defaultValue="all-users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="all-users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             All Users ({allUsers.length})
@@ -393,6 +393,10 @@ export default function AdminDashboard() {
           <TabsTrigger value="payouts" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Payouts
+          </TabsTrigger>
+          <TabsTrigger value="marketing" className="flex items-center gap-2">
+            <Mail className="h-4 w-4" />
+            Marketing
           </TabsTrigger>
         </TabsList>
 
@@ -698,8 +702,68 @@ export default function AdminDashboard() {
         <TabsContent value="payouts">
           <PayoutsTab />
         </TabsContent>
+
+        <TabsContent value="marketing">
+          <Card>
+            <CardHeader>
+              <CardTitle>Email Campaigns</CardTitle>
+              <p className="text-sm text-muted-foreground">Send promotional emails to users with marketing subscriptions</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="border rounded-lg p-6 space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-full bg-primary/10 p-3">
+                    <Rocket className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg mb-2">Black Friday Promotion</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Send Black Friday promotional emails with the <code className="bg-muted px-2 py-1 rounded">BLACKFRIDAY50</code> promo code to all users subscribed to marketing emails.
+                    </p>
+                    <div className="bg-muted/50 rounded-lg p-4 space-y-2 mb-4">
+                      <p className="text-sm"><strong>Code:</strong> BLACKFRIDAY50</p>
+                      <p className="text-sm"><strong>Discount:</strong> 50% off platform fee</p>
+                      <p className="text-sm"><strong>Valid Until:</strong> November 30, 2025</p>
+                      <p className="text-sm"><strong>Target:</strong> Pet owners (discount offer) + Sitters (info about promotion)</p>
+                    </div>
+                    <Button
+                      onClick={async () => {
+                        try {
+                          toast({
+                            title: "Sending emails...",
+                            description: "This may take a moment for large user bases",
+                          });
+                          
+                          const { data, error } = await supabase.functions.invoke('send-black-friday-promo');
+                          
+                          if (error) throw error;
+                          
+                          toast({
+                            title: "Campaign sent!",
+                            description: `Successfully sent ${data.successful} emails (${data.failed} failed)`,
+                          });
+                        } catch (error) {
+                          console.error('Error sending campaign:', error);
+                          toast({
+                            title: "Error",
+                            description: "Failed to send email campaign",
+                            variant: "destructive"
+                          });
+                        }
+                      }}
+                      className="gap-2"
+                    >
+                      <Mail className="h-4 w-4" />
+                      Send Black Friday Campaign
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
-      </div>
+    </div>
   );
 }
 
