@@ -191,6 +191,39 @@ export default function SitterCalendar() {
     setSelectedBooking(null);
   };
 
+  const handleUnblockDate = async (date: Date) => {
+    if (!profile?.id) return;
+
+    try {
+      const dateStr = format(date, 'yyyy-MM-dd');
+      const existingAvail = availability.find(a => a.date === dateStr);
+
+      if (existingAvail) {
+        await supabase
+          .from('sitter_availability')
+          .delete()
+          .eq('id', existingAvail.id);
+
+        toast({
+          title: 'Success',
+          description: 'Date unblocked successfully',
+        });
+
+        fetchAvailability();
+        setShowBlockForm(false);
+        setAvailabilityNotes('');
+        setDateToUpdate(null);
+      }
+    } catch (error) {
+      console.error('Error unblocking date:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to unblock date',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleBlockRange = () => {
     if (!rangeStart || !rangeEnd) return;
     
@@ -383,7 +416,11 @@ export default function SitterCalendar() {
         <Card className="animate-fade-in">
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
-              {showBlockForm ? (blockMode === 'single' ? 'Block Single Day' : 'Block Date Range') : selectedBooking ? 'Booking Details' : 'Upcoming Bookings'}
+              {showBlockForm ? (
+                blockMode === 'single' ? (
+                  dateToUpdate && getDateStatus(dateToUpdate).type === 'unavailable' ? 'Unblock Day' : 'Block Single Day'
+                ) : 'Block Date Range'
+              ) : selectedBooking ? 'Booking Details' : 'Upcoming Bookings'}
               {(selectedBooking || showBlockForm) && (
                 <Button 
                   variant="ghost" 
@@ -405,12 +442,27 @@ export default function SitterCalendar() {
             {showBlockForm ? (
               <div className="space-y-4 animate-fade-in">
                 {blockMode === 'single' ? (
-                  <div className="p-3 bg-muted/50 rounded-lg">
-                    <p className="text-sm font-medium mb-1">Selected Date</p>
-                    <p className="text-sm text-muted-foreground">
-                      {dateToUpdate ? format(dateToUpdate, 'EEEE, MMMM d, yyyy') : 'No date selected'}
-                    </p>
-                  </div>
+                  <>
+                    <div className="p-3 bg-muted/50 rounded-lg">
+                      <p className="text-sm font-medium mb-1">Selected Date</p>
+                      <p className="text-sm text-muted-foreground">
+                        {dateToUpdate ? format(dateToUpdate, 'EEEE, MMMM d, yyyy') : 'No date selected'}
+                      </p>
+                      {dateToUpdate && getDateStatus(dateToUpdate).type === 'unavailable' && (
+                        <p className="text-sm text-destructive font-semibold mt-2">
+                          Currently blocked
+                        </p>
+                      )}
+                    </div>
+                    {dateToUpdate && getDateStatus(dateToUpdate).type === 'unavailable' && (
+                      <div className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm font-medium mb-1">Notes</p>
+                        <p className="text-sm text-muted-foreground">
+                          {availabilityNotes || 'No notes'}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="space-y-3">
                     <div>
@@ -435,16 +487,18 @@ export default function SitterCalendar() {
                   </div>
                 )}
 
-                <div>
-                  <label className="text-sm font-medium">Notes (optional)</label>
-                  <Textarea 
-                    value={availabilityNotes}
-                    onChange={(e) => setAvailabilityNotes(e.target.value)}
-                    placeholder="E.g., 'On vacation', 'Family emergency', etc."
-                    rows={3}
-                    className="mt-1"
-                  />
-                </div>
+                {!(blockMode === 'single' && dateToUpdate && getDateStatus(dateToUpdate).type === 'unavailable') && (
+                  <div>
+                    <label className="text-sm font-medium">Notes (optional)</label>
+                    <Textarea 
+                      value={availabilityNotes}
+                      onChange={(e) => setAvailabilityNotes(e.target.value)}
+                      placeholder="E.g., 'On vacation', 'Family emergency', etc."
+                      rows={3}
+                      className="mt-1"
+                    />
+                  </div>
+                )}
                 
                 <div className="flex gap-3">
                   <Button 
@@ -460,21 +514,32 @@ export default function SitterCalendar() {
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    variant="destructive"
-                    onClick={() => {
-                      if (blockMode === 'single' && dateToUpdate) {
-                        updateAvailability([dateToUpdate], false, availabilityNotes);
-                      } else if (blockMode === 'range') {
-                        handleBlockRange();
-                      }
-                    }}
-                    className="flex-1"
-                    disabled={blockMode === 'range' && (!rangeStart || !rangeEnd)}
-                  >
-                    <Ban className="h-4 w-4 mr-2" />
-                    Block {blockMode === 'range' ? 'Range' : 'Day'}
-                  </Button>
+                  {blockMode === 'single' && dateToUpdate && getDateStatus(dateToUpdate).type === 'unavailable' ? (
+                    <Button 
+                      variant="default"
+                      onClick={() => handleUnblockDate(dateToUpdate)}
+                      className="flex-1"
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Unblock Day
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="destructive"
+                      onClick={() => {
+                        if (blockMode === 'single' && dateToUpdate) {
+                          updateAvailability([dateToUpdate], false, availabilityNotes);
+                        } else if (blockMode === 'range') {
+                          handleBlockRange();
+                        }
+                      }}
+                      className="flex-1"
+                      disabled={blockMode === 'range' && (!rangeStart || !rangeEnd)}
+                    >
+                      <Ban className="h-4 w-4 mr-2" />
+                      Block {blockMode === 'range' ? 'Range' : 'Day'}
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : selectedBooking ? (
