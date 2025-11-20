@@ -87,6 +87,12 @@ const navSections = [
         description: 'Monitor and process sitter payouts',
       },
       {
+        title: 'Promo Codes',
+        href: '/admin/promo-codes',
+        icon: Send,
+        description: 'Create and manage promotional discount codes',
+      },
+      {
         title: 'Payment Issues',
         href: '/admin/payment-fix',
         icon: AlertTriangle,

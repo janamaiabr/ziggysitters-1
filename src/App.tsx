@@ -59,6 +59,7 @@ import AdminStripeReset from "./pages/AdminStripeReset";
 import AdminDocumentFix from "./pages/AdminDocumentFix";
 import AdminEmailManagement from "./pages/AdminEmailManagement";
 import AdminLayout from "./pages/AdminLayout";
+import AdminPromoCodeManagement from "./pages/AdminPromoCodeManagement";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
@@ -194,6 +195,7 @@ function AppContent() {
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/admin/user/:id" element={<AdminUserDetails />} />
               <Route path="/admin/email-management" element={<AdminEmailManagement />} />
+              <Route path="/admin/promo-codes" element={<AdminPromoCodeManagement />} />
               <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
