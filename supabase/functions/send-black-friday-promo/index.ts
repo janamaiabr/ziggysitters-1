@@ -139,7 +139,8 @@ serve(async (req) => {
                 <p>ZiggySitters - Trusted Pet Care in New Zealand</p>
                 <p style="font-size: 12px; color: #a0aec0;">
                   You're receiving this because you're subscribed to marketing emails.<br>
-                  <a href="https://ziggysitters.lovable.app/profile" style="color: #667eea;">Manage preferences</a>
+                  <a href="https://ziggysitters.lovable.app/profile" style="color: #667eea;">Manage email preferences</a> | 
+                  <a href="https://ziggysitters.lovable.app/profile" style="color: #667eea;">Unsubscribe</a>
                 </p>
               </div>
             </div>
