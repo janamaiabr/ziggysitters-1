@@ -276,8 +276,9 @@ export default function SitterCalendar() {
       opacity: 0.6
     },
     unavailable: { 
-      backgroundColor: 'hsl(0 0% 45%)', // gray-500
-      color: 'white'
+      backgroundColor: 'hsl(0 84% 60%)', // red-500
+      color: 'white',
+      fontWeight: 'bold'
     }
   };
 
@@ -366,12 +367,12 @@ export default function SitterCalendar() {
                   <span className="text-sm">Awaiting Payment</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-sm bg-gray-500"></div>
-                  <span className="text-sm">Unavailable</span>
+                  <div className="w-4 h-4 rounded-sm bg-red-500"></div>
+                  <span className="text-sm">Blocked</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-sm bg-gray-600 opacity-60"></div>
-                  <span className="text-sm">Cancelled</span>
+                  <span className="text-sm">Cancelled Booking</span>
                 </div>
               </div>
             </div>
