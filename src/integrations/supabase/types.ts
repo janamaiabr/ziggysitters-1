@@ -32,6 +32,8 @@ export type Database = {
           penalty_reason: string | null
           pet_ids: string[]
           platform_fee: number
+          promo_code: string | null
+          promo_discount_amount: number | null
           requires_daily_reports: boolean
           service_type: Database["public"]["Enums"]["service_type"]
           sitter_id: string
@@ -62,6 +64,8 @@ export type Database = {
           penalty_reason?: string | null
           pet_ids: string[]
           platform_fee?: number
+          promo_code?: string | null
+          promo_discount_amount?: number | null
           requires_daily_reports?: boolean
           service_type: Database["public"]["Enums"]["service_type"]
           sitter_id: string
@@ -92,6 +96,8 @@ export type Database = {
           penalty_reason?: string | null
           pet_ids?: string[]
           platform_fee?: number
+          promo_code?: string | null
+          promo_discount_amount?: number | null
           requires_daily_reports?: boolean
           service_type?: Database["public"]["Enums"]["service_type"]
           sitter_id?: string
@@ -689,6 +695,54 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_codes: {
+        Row: {
+          applies_to: string
+          code: string
+          created_at: string | null
+          current_uses: number | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          updated_at: string | null
+          valid_from: string
+          valid_until: string
+        }
+        Insert: {
+          applies_to: string
+          code: string
+          created_at?: string | null
+          current_uses?: number | null
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          updated_at?: string | null
+          valid_from?: string
+          valid_until: string
+        }
+        Update: {
+          applies_to?: string
+          code?: string
+          created_at?: string | null
+          current_uses?: number | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          updated_at?: string | null
+          valid_from?: string
+          valid_until?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           booking_id: string
@@ -1235,6 +1289,10 @@ export type Database = {
           verification_status: Database["public"]["Enums"]["verification_status"]
         }
         Returns: undefined
+      }
+      validate_promo_code: {
+        Args: { p_code: string; p_platform_fee: number }
+        Returns: Json
       }
     }
     Enums: {

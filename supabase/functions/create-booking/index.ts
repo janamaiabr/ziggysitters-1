@@ -17,6 +17,7 @@ interface BookingRequest {
   specialInstructions?: string;
   totalAmount: number;
   requiresDailyReports?: boolean;
+  promoCode?: string;
 }
 
 const logStep = (step: string, details?: any) => {
@@ -304,6 +305,53 @@ serve(async (req) => {
       enabled: sitterProfile.stripe_account_enabled 
     });
 
+    // Calculate platform fee and apply promo code if provided
+    let basePlatformFee = Math.round(bookingData.totalAmount * 0.10 * 100) / 100; // 10% platform fee (GST inclusive)
+    let promoDiscountAmount = 0;
+    let appliedPromoCode = null;
+    
+    if (bookingData.promoCode) {
+      logStep("Validating promo code", { code: bookingData.promoCode });
+      
+      // Validate and apply promo code
+      const { data: promoResult, error: promoError } = await supabaseClient
+        .rpc('validate_promo_code', {
+          p_code: bookingData.promoCode.toUpperCase(),
+          p_platform_fee: basePlatformFee
+        });
+      
+      if (promoError) {
+        logStep("Promo code validation error", { error: promoError });
+        throw new Error(`Failed to validate promo code: ${promoError.message}`);
+      }
+      
+      if (promoResult && promoResult.valid) {
+        promoDiscountAmount = Number(promoResult.discount_amount);
+        appliedPromoCode = bookingData.promoCode.toUpperCase();
+        
+        // Increment promo code usage
+        const { error: updateError } = await supabaseClient
+          .from('promo_codes')
+          .update({ current_uses: supabaseClient.raw('current_uses + 1') })
+          .eq('code', appliedPromoCode);
+        
+        if (updateError) {
+          logStep("Failed to increment promo usage", { error: updateError });
+        }
+        
+        logStep("Promo code applied", { 
+          code: appliedPromoCode, 
+          originalFee: basePlatformFee,
+          discount: promoDiscountAmount,
+          newFee: basePlatformFee - promoDiscountAmount
+        });
+      } else {
+        throw new Error(promoResult?.error || 'Invalid promo code');
+      }
+    }
+    
+    const finalPlatformFee = Math.max(0, basePlatformFee - promoDiscountAmount);
+
     // Calculate daily reports required (only if owner explicitly requested them)
     const requiresDailyReports = bookingData.requiresDailyReports === true; // Default to false
     let dailyReportsRequired = 0;
@@ -324,7 +372,9 @@ serve(async (req) => {
         pet_ids: bookingData.petIds,
         special_instructions: bookingData.specialInstructions,
         total_amount: bookingData.totalAmount,
-        platform_fee: Math.round(bookingData.totalAmount * 0.10 * 100) / 100, // 10% platform fee (GST inclusive)
+        platform_fee: finalPlatformFee,
+        promo_code: appliedPromoCode,
+        promo_discount_amount: promoDiscountAmount,
         status: 'pending',
         payment_status: 'pending',
         requires_daily_reports: requiresDailyReports,

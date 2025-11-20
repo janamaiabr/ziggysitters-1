@@ -74,6 +74,10 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [requiresDailyReports, setRequiresDailyReports] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoError, setPromoError] = useState('');
+  const [checkingPromo, setCheckingPromo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
@@ -355,6 +359,54 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     return 0;
   };
 
+  // Cost calculations
+  const total = calculateTotal();
+  const serviceCostExGST = total / 1.15;
+  const gstAmount = total - serviceCostExGST;
+  const platformFee = serviceCostExGST * 0.10;
+  const platformFeeGST = platformFee * 0.15;
+  const platformFeeIncGST = platformFee + platformFeeGST;
+  const discountedPlatformFee = Math.max(0, platformFeeIncGST - promoDiscount);
+  const grandTotal = total + discountedPlatformFee;
+  
+  // Function to check promo code
+  const checkPromoCode = async () => {
+    if (!promoCode.trim()) {
+      setPromoError('');
+      setPromoDiscount(0);
+      return;
+    }
+    
+    setCheckingPromo(true);
+    setPromoError('');
+    
+    try {
+      const { data, error } = await supabase.rpc('validate_promo_code', {
+        p_code: promoCode.toUpperCase(),
+        p_platform_fee: platformFeeIncGST
+      });
+      
+      if (error) throw error;
+      
+      const promoResult = data as any;
+      if (promoResult && promoResult.valid) {
+        setPromoDiscount(Number(promoResult.discount_amount));
+        toast({
+          title: '🎉 Promo Code Applied!',
+          description: `You saved $${Number(promoResult.discount_amount).toFixed(2)} on platform fees!`
+        });
+      } else {
+        setPromoError(promoResult?.error || 'Invalid promo code');
+        setPromoDiscount(0);
+      }
+    } catch (error: any) {
+      setPromoError('Failed to validate promo code');
+      setPromoDiscount(0);
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
+
   const handleBooking = async () => {
     if (!user) {
       navigate('/auth');
@@ -471,7 +523,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         petIds: selectedPetIds,
         specialInstructions,
         totalAmount: total,
-        requiresDailyReports: allowsDailyReports ? requiresDailyReports : false
+        requiresDailyReports: allowsDailyReports ? requiresDailyReports : false,
+        promoCode: promoCode ? promoCode.toUpperCase() : undefined
       };
       
       // Add date fields based on service type
@@ -630,21 +683,6 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     resetForm();
     onClose();
   };
-
-  const total = calculateTotal();
-  
-  // GST is included in the price (15% GST in NZ)
-  // So if total is $100, the GST component is $13.04 (100/1.15 * 0.15)
-  const serviceCostExGST = total / 1.15;
-  const gstAmount = total - serviceCostExGST;
-  
-  // Platform fee is 10% of the service cost (ex GST)
-  const platformFee = serviceCostExGST * 0.1;
-  const platformFeeGST = platformFee * 0.15;
-  const platformFeeIncGST = platformFee + platformFeeGST;
-  
-  // Grand total = service cost (inc GST) + platform fee (inc GST)
-  const grandTotal = total + platformFeeIncGST;
 
   // Debug render cycles
   console.log(`=== BookingDialog render ===`);
@@ -1174,6 +1212,47 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             </div>
           </div>
 
+          {/* Promo Code Section */}
+          <Card className="border-dashed border-2 border-primary/30 bg-primary/5">
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">🎉 Have a Promo Code?</label>
+                  {promoDiscount > 0 && (
+                    <Badge variant="default" className="bg-green-600">Applied!</Badge>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter code (e.g., BLACKFRIDAY50)"
+                    value={promoCode}
+                    onChange={(e) => {
+                      setPromoCode(e.target.value.toUpperCase());
+                      setPromoError('');
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    onClick={checkPromoCode}
+                    disabled={!promoCode.trim() || checkingPromo}
+                    variant="outline"
+                  >
+                    {checkingPromo ? 'Checking...' : 'Apply'}
+                  </Button>
+                </div>
+                {promoError && (
+                  <p className="text-sm text-destructive">{promoError}</p>
+                )}
+                {promoDiscount > 0 && (
+                  <p className="text-sm text-green-600 font-medium">
+                    🎊 You're saving ${promoDiscount.toFixed(2)} on platform fees!
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Booking Summary */}
           {total > 0 && (
             <Card>
@@ -1303,8 +1382,23 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                 
                 <div className="flex justify-between text-sm">
                   <span>Platform fee (10%)</span>
-                  <span>${platformFeeIncGST.toFixed(2)}</span>
+                  <span className={promoDiscount > 0 ? 'line-through text-muted-foreground' : ''}>
+                    ${platformFeeIncGST.toFixed(2)}
+                  </span>
                 </div>
+                
+                {promoDiscount > 0 && (
+                  <>
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Promo Discount</span>
+                      <span>-${promoDiscount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-medium text-green-600">
+                      <span>Platform fee after discount</span>
+                      <span>${discountedPlatformFee.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
                 
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Sitter receives (90%)</span>
