@@ -8,10 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send, StickyNote, Award } from 'lucide-react';
+import { Shield, ArrowLeft, MapPin, Phone, Mail, Calendar, FileText, CheckCircle, XCircle, User, Star, CreditCard, Send, StickyNote, Award, MessageSquare } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
 type UserProfile = {
   id: string;
@@ -61,6 +63,10 @@ export default function AdminUserDetails() {
   const [blueCardUrl, setBlueCardUrl] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState<string>('');
   const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
@@ -447,6 +453,68 @@ export default function AdminUserDetails() {
     }
   };
 
+  const handleSendCustomEmail = async () => {
+    if (!profile || !emailSubject.trim() || !emailMessage.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in both subject and message",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSendingEmail(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: adminProfile } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('user_id', user?.id)
+        .single();
+
+      const { error } = await supabase.functions.invoke('send-admin-custom-email', {
+        body: {
+          recipient_email: profile.email,
+          recipient_name: profile.first_name,
+          subject: emailSubject,
+          message: emailMessage,
+          admin_name: adminProfile ? `${adminProfile.first_name} ${adminProfile.last_name}` : 'Admin'
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email Sent!",
+        description: `Custom email sent to ${profile.email}`,
+      });
+
+      setShowEmailDialog(false);
+      setEmailSubject('');
+      setEmailMessage('');
+    } catch (error) {
+      console.error('Error sending custom email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send email",
+        variant: "destructive"
+      });
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const openEmailDialog = (template?: { subject: string; message: string }) => {
+    if (template) {
+      setEmailSubject(template.subject);
+      setEmailMessage(template.message);
+    } else {
+      setEmailSubject('');
+      setEmailMessage('');
+    }
+    setShowEmailDialog(true);
+  };
+
   if (loading || !isAdmin) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -537,6 +605,14 @@ export default function AdminUserDetails() {
             {/* Action Buttons for Sitters */}
             {profile.role === 'pet_sitter' && (
               <div className="flex gap-2 flex-wrap">
+                <Button 
+                  variant="outline"
+                  onClick={() => openEmailDialog()}
+                  className="flex items-center"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Send Email
+                </Button>
                 {profile.verification_status !== 'verified' && (
                   <>
                     <Button 
@@ -569,6 +645,17 @@ export default function AdminUserDetails() {
                   </Button>
                 )}
               </div>
+            )}
+            {/* Action Buttons for Pet Owners */}
+            {profile.role === 'pet_owner' && (
+              <Button 
+                variant="outline"
+                onClick={() => openEmailDialog()}
+                className="flex items-center"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Send Email
+              </Button>
             )}
           </div>
         </div>
@@ -885,6 +972,17 @@ export default function AdminUserDetails() {
                   </div>
                   <div className="flex gap-2">
                     <Button
+                      onClick={() => openEmailDialog({
+                        subject: 'Document Verification Required',
+                        message: `Hi ${profile.first_name},\n\nWe've reviewed your submitted ID document and need some additional information:\n\n[Please specify what's needed - e.g., clearer photo, different angle, matching name, etc.]\n\nOnce you've uploaded the updated document, please let us know and we'll review it promptly.\n\nThank you for your understanding!`
+                      })}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Request New Document
+                    </Button>
+                    <Button
                       onClick={() => updateDocumentVerification(true, 'verified')}
                       variant="default"
                       size="sm"
@@ -1075,6 +1173,52 @@ export default function AdminUserDetails() {
           </TabsContent>
         )}
       </Tabs>
+
+      {/* Custom Email Dialog */}
+      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Send Email to {profile.first_name} {profile.last_name}</DialogTitle>
+            <DialogDescription>
+              Compose a custom email to this user. The email will be sent from the ZiggySitters admin team.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="email-subject">Subject</Label>
+              <Input
+                id="email-subject"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="e.g., Document Verification Required"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="email-message">Message</Label>
+              <Textarea
+                id="email-message"
+                value={emailMessage}
+                onChange={(e) => setEmailMessage(e.target.value)}
+                placeholder="Type your message here..."
+                className="mt-1 min-h-[200px]"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                This will be sent to: {profile.email}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEmailDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSendCustomEmail} disabled={sendingEmail}>
+              <Send className="h-4 w-4 mr-2" />
+              {sendingEmail ? 'Sending...' : 'Send Email'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
