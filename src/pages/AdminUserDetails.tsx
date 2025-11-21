@@ -34,7 +34,7 @@ type UserProfile = {
   total_reviews: number | null;
   background_check_verified: boolean | null;
   verification_status: 'pending' | 'verified' | 'rejected' | null;
-  id_document_url?: string | null;
+  id_document_urls?: string[] | null;
   blue_card_document_url?: string | null;
   verification_documents_uploaded_at?: string | null;
   created_at: string;
@@ -59,7 +59,7 @@ export default function AdminUserDetails() {
   const [pets, setPets] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
-  const [idDocUrl, setIdDocUrl] = useState<string | null>(null);
+  const [idDocUrls, setIdDocUrls] = useState<string[]>([]);
   const [blueCardUrl, setBlueCardUrl] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState<string>('');
   const [isSavingNotes, setIsSavingNotes] = useState(false);
@@ -122,26 +122,32 @@ export default function AdminUserDetails() {
       setAdminNotes(data.admin_notes || '');
 
       // Clear or set signed URLs for documents
-      if (data.id_document_url) {
-        // Extract filename from the full URL path
-        const fileName = data.id_document_url.includes('/verification-docs/')
-          ? data.id_document_url.split('/verification-docs/')[1].split('?')[0]
-          : data.id_document_url.split('/').pop()?.split('?')[0];
-        
-        if (fileName) {
-          const { data: signedData, error: signError } = await supabase.storage
-            .from('verification-docs')
-            .createSignedUrl(fileName, 3600);
-          if (signedData && !signError) {
-            setIdDocUrl(signedData.signedUrl);
-          } else {
-            console.error('Error creating signed URL for ID doc:', signError);
-            setIdDocUrl(null);
-          }
-        }
+      if (data.id_document_urls && data.id_document_urls.length > 0) {
+        // Process multiple ID documents
+        const signedUrls = await Promise.all(
+          data.id_document_urls.map(async (docUrl) => {
+            const fileName = docUrl.includes('/verification-docs/')
+              ? docUrl.split('/verification-docs/')[1].split('?')[0]
+              : docUrl.split('/').pop()?.split('?')[0];
+            
+            if (fileName) {
+              const { data: signedData, error: signError } = await supabase.storage
+                .from('verification-docs')
+                .createSignedUrl(fileName, 3600);
+              
+              if (signedData && !signError) {
+                return signedData.signedUrl;
+              } else {
+                console.error('Error creating signed URL for ID doc:', signError);
+                return null;
+              }
+            }
+            return null;
+          })
+        );
+        setIdDocUrls(signedUrls.filter((url): url is string => url !== null));
       } else {
-        // Clear state if no document URL exists
-        setIdDocUrl(null);
+        setIdDocUrls([]);
       }
 
       if (data.blue_card_document_url) {
@@ -354,11 +360,13 @@ export default function AdminUserDetails() {
           try {
             const filesToDelete: string[] = [];
             
-            if (profile.id_document_url) {
-              const fileName = profile.id_document_url.includes('/verification-docs/')
-                ? profile.id_document_url.split('/verification-docs/')[1].split('?')[0]
-                : profile.id_document_url.split('/').pop()?.split('?')[0];
-              if (fileName) filesToDelete.push(fileName);
+            if (profile.id_document_urls && profile.id_document_urls.length > 0) {
+              profile.id_document_urls.forEach((docUrl) => {
+                const fileName = docUrl.includes('/verification-docs/')
+                  ? docUrl.split('/verification-docs/')[1].split('?')[0]
+                  : docUrl.split('/').pop()?.split('?')[0];
+                if (fileName) filesToDelete.push(fileName);
+              });
             }
             
             if (profile.blue_card_document_url) {
@@ -375,7 +383,7 @@ export default function AdminUserDetails() {
               await supabase
                 .from('profiles')
                 .update({ 
-                  id_document_url: null,
+                  id_document_urls: [],
                   blue_card_document_url: null
                   // NOTE: verification_documents_uploaded_at is intentionally NOT cleared
                   // so we have a record of when documents were submitted
@@ -1007,25 +1015,28 @@ export default function AdminUserDetails() {
 
                 <div>
                   <label className="text-sm font-medium text-muted-foreground block mb-2">
-                    ID Document <Badge variant="destructive" className="ml-2">Required</Badge>
+                    ID Documents <Badge variant="destructive" className="ml-2">Required</Badge>
                   </label>
-                    {idDocUrl ? (
-                      <div className="space-y-2">
+                  {idDocUrls.length > 0 ? (
+                    <div className="space-y-2">
+                      {idDocUrls.map((url, index) => (
                         <a 
-                          href={idDocUrl} 
+                          key={index}
+                          href={url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors"
+                          className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors mr-2"
                         >
                           <FileText className="w-4 h-4 mr-2" />
-                          View ID Document
+                          View ID Document {index + 1}
                         </a>
-                        <p className="text-xs text-muted-foreground">This link is valid for 1 hour</p>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">Not uploaded</p>
-                    )}
-                  </div>
+                      ))}
+                      <p className="text-xs text-muted-foreground">These links are valid for 1 hour</p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Not uploaded</p>
+                  )}
+                </div>
                   
                   {profile.verification_documents_uploaded_at && (
                     <>

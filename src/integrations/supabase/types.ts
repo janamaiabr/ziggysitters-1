@@ -589,6 +589,7 @@ export type Database = {
           golden_badge_approved_by: string | null
           id: string
           id_document_url: string | null
+          id_document_urls: string[] | null
           is_test_account: boolean
           is_verified: boolean | null
           last_name: string
@@ -629,6 +630,7 @@ export type Database = {
           golden_badge_approved_by?: string | null
           id?: string
           id_document_url?: string | null
+          id_document_urls?: string[] | null
           is_test_account?: boolean
           is_verified?: boolean | null
           last_name: string
@@ -669,6 +671,7 @@ export type Database = {
           golden_badge_approved_by?: string | null
           id?: string
           id_document_url?: string | null
+          id_document_urls?: string[] | null
           is_test_account?: boolean
           is_verified?: boolean | null
           last_name?: string
