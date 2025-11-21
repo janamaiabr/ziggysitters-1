@@ -82,7 +82,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   const [newUnavailableEnd, setNewUnavailableEnd] = useState('');
   
   // Step 4: Verification docs
-  const [idDocumentUrl, setIdDocumentUrl] = useState<string>(savedData.idDocumentUrl || '');
+  const [idDocumentUrls, setIdDocumentUrls] = useState<string[]>(savedData.idDocumentUrls || []);
   const [blueCardUrl, setBlueCardUrl] = useState<string>(savedData.blueCardUrl || '');
   
   // Step 5: Payment setup flag
@@ -103,11 +103,11 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       allowsPuppies,
       allowsSeniorPets,
       unavailableDates,
-      idDocumentUrl,
+      idDocumentUrls,
       blueCardUrl,
       paymentSetupCompleted
     };
-    localStorage.setItem('sitter_onboarding_data', JSON.stringify(dataToSave));
+        localStorage.setItem('sitter_onboarding_data', JSON.stringify(dataToSave));
     console.log('Saved to localStorage. Services count:', services.length);
     if (services.length > 0) {
       console.log('Service rates:', services.map(s => ({ 
@@ -116,7 +116,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         daily: s.daily_rate 
       })));
     }
-  }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrl, blueCardUrl, paymentSetupCompleted]);
+  }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrls, blueCardUrl, paymentSetupCompleted]);
   
   // Load existing data from database on mount (only if not already in state)
   useEffect(() => {
@@ -129,7 +129,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         // Load profile data - only set if current state is empty
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('bio, id_document_url, blue_card_document_url')
+          .select('bio, id_document_urls, blue_card_document_url')
           .eq('id', profileId)
           .single();
         
@@ -137,7 +137,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         
         if (profileData) {
           if (profileData.bio && !bio) setBio(profileData.bio);
-          if (profileData.id_document_url && !idDocumentUrl) setIdDocumentUrl(profileData.id_document_url);
+          if (profileData.id_document_urls && profileData.id_document_urls.length > 0 && idDocumentUrls.length === 0) {
+            setIdDocumentUrls(profileData.id_document_urls);
+          }
           if (profileData.blue_card_document_url && !blueCardUrl) setBlueCardUrl(profileData.blue_card_document_url);
         }
         
@@ -281,8 +283,34 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           title: "Portfolio photos uploaded!",
           description: `${uploadedUrls.length} photos added.`,
         });
+      } else if (type === 'id') {
+        // Handle multiple ID document uploads
+        const uploadPromises = Array.from(files).map(async (file, index) => {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${userId}/id-documents/${Date.now()}-${index}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('verification-docs')
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('verification-docs')
+            .getPublicUrl(fileName);
+
+          return publicUrl;
+        });
+
+        const uploadedUrls = await Promise.all(uploadPromises);
+        setIdDocumentUrls(prev => [...prev, ...uploadedUrls]);
+        
+        toast({
+          title: "ID documents uploaded!",
+          description: `${uploadedUrls.length} document(s) added.`,
+        });
       } else {
-        // Handle document uploads
+        // Handle single blue card upload
         const file = files[0];
         const fileExt = file.name.split('.').pop();
         const fileName = `${userId}-${type}.${fileExt}`;
@@ -297,14 +325,10 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           .from('verification-docs')
           .getPublicUrl(fileName);
 
-        if (type === 'id') {
-          setIdDocumentUrl(publicUrl);
-        } else if (type === 'blue_card') {
-          setBlueCardUrl(publicUrl);
-        }
+        setBlueCardUrl(publicUrl);
         
         toast({
-          title: `${type === 'id' ? 'ID' : 'Police Vet'} uploaded!`,
+          title: "Police Vet uploaded!",
           description: "Document uploaded successfully.",
         });
       }
@@ -347,9 +371,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         .from('profiles')
         .update({ 
           bio,
-          id_document_url: idDocumentUrl,
+          id_document_urls: idDocumentUrls,
           blue_card_document_url: blueCardUrl,
-          verification_documents_uploaded_at: (idDocumentUrl || blueCardUrl) ? new Date().toISOString() : null
+          verification_documents_uploaded_at: (idDocumentUrls.length > 0 || blueCardUrl) ? new Date().toISOString() : null
         })
         .eq('user_id', userId);
 
@@ -581,7 +605,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       return;
     }
 
-    if (!idDocumentUrl && !blueCardUrl) {
+    if (idDocumentUrls.length === 0 && !blueCardUrl) {
       toast({
         title: "Documents required",
         description: "Please upload at least one verification document.",
@@ -632,7 +656,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         await supabase.functions.invoke('send-verification-request-email', {
           body: {
             user_id: userId,
-            documents_uploaded: !!(idDocumentUrl || blueCardUrl)
+            documents_uploaded: !!(idDocumentUrls.length > 0 || blueCardUrl)
           }
         });
       } catch (error) {
@@ -673,7 +697,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         });
       }
       case 3: return true; // Calendar is optional
-      case 4: return idDocumentUrl || blueCardUrl;
+      case 4: return idDocumentUrls.length > 0 || blueCardUrl;
       case 5: return true; // Payment can be done later
       default: return false;
     }
@@ -1175,14 +1199,28 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                 <Input
                   type="file"
                   accept="image/*,.pdf"
+                  multiple
                   onChange={(e) => handleFileUpload(e.target.files, 'id')}
                   id="id-document"
                   className="cursor-pointer"
                 />
-                {idDocumentUrl && (
-                  <div className="flex items-center gap-2 text-sm text-green-600">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>ID document uploaded</span>
+                {idDocumentUrls.length > 0 && (
+                  <div className="space-y-2">
+                    {idDocumentUrls.map((url, index) => (
+                      <div key={index} className="flex items-center justify-between gap-2 p-2 bg-muted/50 rounded-md">
+                        <div className="flex items-center gap-2 text-sm text-green-600">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>ID document {index + 1}</span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIdDocumentUrls(prev => prev.filter((_, i) => i !== index))}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
