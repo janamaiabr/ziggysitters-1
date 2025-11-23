@@ -44,6 +44,13 @@ interface EmailTemplate {
 
 const campaigns: Campaign[] = [
   {
+    id: 'black_friday_promo',
+    name: 'Black Friday Promo Campaign',
+    description: 'Send Black Friday 50% off promo to all subscribed users (BLACKFRIDAY50)',
+    edgeFunction: 'send-black-friday-promo',
+    targetAudience: 'All users subscribed to marketing emails',
+  },
+  {
     id: 'launch_announcement',
     name: 'Platform Launch Announcement',
     description: 'Send official launch announcement to all users',
