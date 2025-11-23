@@ -42,7 +42,7 @@ serve(async (req) => {
       const isSitter = profile.role === "pet_sitter";
 
       const subject = isOwner 
-        ? "🎉 Black Friday Special: 50% Off Booking Fees!" 
+        ? "Welcome to Ziggysitters — Black Friday Treat ✨" 
         : "🎉 Black Friday: Help Pet Parents Save 50%!";
 
       const html = `
@@ -66,34 +66,38 @@ serve(async (req) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1>🎉 Black Friday is Here!</h1>
-                <p style="font-size: 18px; margin: 10px 0 0 0;">Biggest Savings of the Year</p>
+                <h1>Welcome to Ziggysitters ✨</h1>
+                <p style="font-size: 18px; margin: 10px 0 0 0;">Black Friday Treat</p>
               </div>
               <div class="content">
                 <p>Hi ${profile.first_name},</p>
                 
                 ${isOwner ? `
-                  <p>This Black Friday, we're making it easier than ever to book trusted pet care! 🐾</p>
+                  <p>Hi Ziggysitters community,</p>
                   
-                  <h2 style="color: #667eea;">Save 50% on Platform Fees</h2>
-                  <p>Use our exclusive Black Friday code to get <span class="highlight">50% OFF</span> our platform booking fee. That means more savings when you book amazing sitters!</p>
+                  <p>To welcome you into our growing Auckland community, we're sharing a special Black Friday offer that's all about care — the heart of everything we do.</p>
+                  
+                  <h2 style="color: #667eea;">🐾 Enjoy 50% off Ziggy fees on any new booking!</h2>
+                  <p>Book and pay for your Ziggysitters booking before midnight 30 November and save 50% on platform fees using code <code style="background: #f7fafc; padding: 2px 8px; border-radius: 4px; color: #667eea; font-weight: bold;">BLACKFRIDAY50</code></p>
+                  
+                  <p>It's our way of saying thanks for joining us early and helping shape a caring, trusted space for pets and the people who love them.</p>
+                  
+                  <p>If you've been thinking about lining up a holiday sit or planning a weekend away, now's the perfect time to lock in someone wonderful to mind your furry family member.</p>
                   
                   <div class="promo-code">
-                    <p style="margin: 0 0 10px 0; font-size: 16px;">Your Black Friday Code:</p>
+                    <p style="margin: 0 0 10px 0; font-size: 16px;">Your Welcome Code:</p>
                     <code>BLACKFRIDAY50</code>
-                    <p style="margin: 10px 0 0 0; font-size: 14px; color: #718096;">Valid through November 30th</p>
+                    <p style="margin: 10px 0 0 0; font-size: 14px; color: #718096;">Valid until midnight 30 November</p>
                   </div>
                   
-                  <p><strong>How to use:</strong></p>
-                  <ul>
-                    <li>Browse and select your perfect sitter</li>
-                    <li>Enter <code>BLACKFRIDAY50</code> at checkout</li>
-                    <li>Enjoy 50% off the platform fee!</li>
-                  </ul>
+                  <p style="font-style: italic; color: #718096;">No codes, no fuss — just a warm welcome and a feel-good deal.</p>
                   
                   <div style="text-align: center;">
                     <a href="https://ziggysitters.lovable.app/find-sitters" class="cta">Find Your Perfect Sitter</a>
                   </div>
+                  
+                  <p style="margin-top: 30px;">With thanks and tail wags,</p>
+                  <p><strong>The Ziggysitters Team 🐶✨</strong></p>
                 ` : isSitter ? `
                   <p>Great news! We're running a Black Friday promotion that will help you get more bookings! 🐾</p>
                   
