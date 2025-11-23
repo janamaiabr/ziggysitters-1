@@ -19,6 +19,8 @@ interface Campaign {
   description: string;
   edgeFunction: string;
   targetAudience: string;
+  hasPreview?: boolean;
+  userTypes?: string[];
 }
 
 interface Subscription {
@@ -49,6 +51,8 @@ const campaigns: Campaign[] = [
     description: 'Send Black Friday 50% off promo to all subscribed users (BLACKFRIDAY50)',
     edgeFunction: 'send-black-friday-promo',
     targetAudience: 'All users subscribed to marketing emails',
+    hasPreview: true,
+    userTypes: ['pet_owner', 'pet_sitter'],
   },
   {
     id: 'launch_announcement',
@@ -134,6 +138,10 @@ export default function AdminEmailManagement() {
   });
   const [loading, setLoading] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<EmailTemplate | null>(null);
+  const [previewHtml, setPreviewHtml] = useState<string>('');
+  const [loadingPreview, setLoadingPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewUserType, setPreviewUserType] = useState<string>('pet_owner');
 
   useEffect(() => {
     fetchSubscriptions();
@@ -229,6 +237,30 @@ export default function AdminEmailManagement() {
     }
   };
 
+  const handlePreviewEmail = async (campaign: Campaign, userType: string) => {
+    setLoadingPreview(true);
+    setPreviewUserType(userType);
+    try {
+      const { data, error } = await supabase.functions.invoke('preview-email', {
+        body: { campaign: campaign.id, userType }
+      });
+
+      if (error) throw error;
+
+      setPreviewHtml(data.html);
+      setShowPreview(true);
+    } catch (error: any) {
+      console.error('Error loading preview:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load email preview',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoadingPreview(false);
+    }
+  };
+
   const exportToCSV = () => {
     const marketingSubs = subscriptions.filter(s => s.marketing_emails);
     const csvContent = [
@@ -279,20 +311,37 @@ export default function AdminEmailManagement() {
                 <CardDescription>{campaign.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1">
                     <p className="text-sm text-muted-foreground">
                       <Users className="h-4 w-4 inline mr-1" />
                       Target: {campaign.targetAudience}
                     </p>
                   </div>
-                  <Button
-                    onClick={() => handleSendCampaign(campaign)}
-                    disabled={sendingCampaign === campaign.id}
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    {sendingCampaign === campaign.id ? 'Sending...' : 'Send Campaign'}
-                  </Button>
+                  <div className="flex gap-2">
+                    {campaign.hasPreview && campaign.userTypes && (
+                      <div className="flex gap-2">
+                        {campaign.userTypes.map((userType) => (
+                          <Button
+                            key={userType}
+                            variant="outline"
+                            onClick={() => handlePreviewEmail(campaign, userType)}
+                            disabled={loadingPreview}
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            Preview {userType === 'pet_owner' ? 'Owner' : 'Sitter'}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                    <Button
+                      onClick={() => handleSendCampaign(campaign)}
+                      disabled={sendingCampaign === campaign.id}
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      {sendingCampaign === campaign.id ? 'Sending...' : 'Send Campaign'}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -443,7 +492,28 @@ export default function AdminEmailManagement() {
         </TabsContent>
       </Tabs>
 
-      {/* Preview Dialog */}
+      {/* Email Preview Dialog */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>
+              Email Preview - {previewUserType === 'pet_owner' ? 'Pet Owner' : 'Sitter'} Version
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto border rounded-lg bg-gray-50">
+            {previewHtml && (
+              <iframe
+                srcDoc={previewHtml}
+                className="w-full h-full min-h-[600px]"
+                title="Email Preview"
+                sandbox="allow-same-origin"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Template Info Dialog */}
       <Dialog open={!!previewTemplate} onOpenChange={() => setPreviewTemplate(null)}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-auto">
           <DialogHeader>
