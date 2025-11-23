@@ -121,54 +121,83 @@ export default function AdminUserDetails() {
       setProfile(data);
       setAdminNotes(data.admin_notes || '');
 
-      // Clear or set signed URLs for documents
+      // Generate signed URLs for ID documents
       if (data.id_document_urls && data.id_document_urls.length > 0) {
-        // Process multiple ID documents
+        console.log('Processing ID document URLs:', data.id_document_urls);
         const signedUrls = await Promise.all(
-          data.id_document_urls.map(async (docUrl) => {
-            const fileName = docUrl.includes('/verification-docs/')
-              ? docUrl.split('/verification-docs/')[1].split('?')[0]
-              : docUrl.split('/').pop()?.split('?')[0];
-            
-            if (fileName) {
+          data.id_document_urls.map(async (docUrl, index) => {
+            try {
+              // Extract filename - handle both full URLs and just filenames
+              let fileName = docUrl;
+              if (docUrl.includes('/')) {
+                const parts = docUrl.split('/');
+                fileName = parts[parts.length - 1];
+              }
+              // Remove query params if present
+              fileName = fileName.split('?')[0];
+              
+              console.log(`Creating signed URL for document ${index + 1}:`, fileName);
+              
               const { data: signedData, error: signError } = await supabase.storage
                 .from('verification-docs')
                 .createSignedUrl(fileName, 3600);
               
-              if (signedData && !signError) {
-                return signedData.signedUrl;
-              } else {
-                console.error('Error creating signed URL for ID doc:', signError);
+              if (signError) {
+                console.error(`Error creating signed URL for document ${index + 1}:`, signError);
                 return null;
               }
+              
+              if (signedData?.signedUrl) {
+                console.log(`Successfully created signed URL for document ${index + 1}`);
+                return signedData.signedUrl;
+              }
+              
+              return null;
+            } catch (err) {
+              console.error(`Exception processing document ${index + 1}:`, err);
+              return null;
             }
-            return null;
           })
         );
-        setIdDocUrls(signedUrls.filter((url): url is string => url !== null));
+        const validUrls = signedUrls.filter((url): url is string => url !== null);
+        console.log(`Generated ${validUrls.length} valid signed URLs out of ${data.id_document_urls.length}`);
+        setIdDocUrls(validUrls);
       } else {
+        console.log('No ID document URLs found');
         setIdDocUrls([]);
       }
 
+      // Generate signed URL for police vetting document
       if (data.blue_card_document_url) {
-        // Extract filename from the full URL path
-        const fileName = data.blue_card_document_url.includes('/verification-docs/')
-          ? data.blue_card_document_url.split('/verification-docs/')[1].split('?')[0]
-          : data.blue_card_document_url.split('/').pop()?.split('?')[0];
-        
-        if (fileName) {
+        try {
+          let fileName = data.blue_card_document_url;
+          if (fileName.includes('/')) {
+            const parts = fileName.split('/');
+            fileName = parts[parts.length - 1];
+          }
+          fileName = fileName.split('?')[0];
+          
+          console.log('Creating signed URL for police vetting doc:', fileName);
+          
           const { data: signedData, error: signError } = await supabase.storage
             .from('verification-docs')
             .createSignedUrl(fileName, 3600);
-          if (signedData && !signError) {
-            setBlueCardUrl(signedData.signedUrl);
-          } else {
+          
+          if (signError) {
             console.error('Error creating signed URL for police vet doc:', signError);
             setBlueCardUrl(null);
+          } else if (signedData?.signedUrl) {
+            console.log('Successfully created signed URL for police vetting doc');
+            setBlueCardUrl(signedData.signedUrl);
+          } else {
+            setBlueCardUrl(null);
           }
+        } catch (err) {
+          console.error('Exception processing police vetting doc:', err);
+          setBlueCardUrl(null);
         }
       } else {
-        // Clear state if no document URL exists
+        console.log('No police vetting document URL found');
         setBlueCardUrl(null);
       }
 
@@ -1014,27 +1043,68 @@ export default function AdminUserDetails() {
                 <Separator />
 
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground block mb-2">
-                    ID Documents <Badge variant="destructive" className="ml-2">Required</Badge>
-                  </label>
-                  {idDocUrls.length > 0 ? (
-                    <div className="space-y-2">
-                      {idDocUrls.map((url, index) => (
-                        <a 
-                          key={index}
-                          href={url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-3 py-2 bg-blue-50 border border-blue-200 rounded-md text-blue-700 hover:bg-blue-100 transition-colors mr-2"
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-muted-foreground">
+                      ID Documents <Badge variant="destructive" className="ml-2">Required</Badge>
+                    </label>
+                    {profile.id_document_urls && profile.id_document_urls.length > 0 && (
+                      <Button
+                        onClick={fetchUserProfile}
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs"
+                      >
+                        Refresh Documents
+                      </Button>
+                    )}
+                  </div>
+                  {profile.id_document_urls && profile.id_document_urls.length > 0 ? (
+                    idDocUrls.length > 0 ? (
+                      <div className="space-y-2">
+                        {idDocUrls.map((url, index) => (
+                          <a 
+                            key={index}
+                            href={url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-3 py-2 bg-primary/10 border border-primary/20 rounded-md text-primary hover:bg-primary/20 transition-colors mr-2 mb-2"
+                          >
+                            <FileText className="w-4 h-4 mr-2" />
+                            View ID Document {index + 1}
+                          </a>
+                        ))}
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Signed links valid for 1 hour • Click "Refresh Documents" if links expire
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                        <p className="text-sm text-yellow-800">
+                          Documents uploaded but failed to generate preview links. Check browser console.
+                        </p>
+                        <Button
+                          onClick={fetchUserProfile}
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
                         >
-                          <FileText className="w-4 h-4 mr-2" />
-                          View ID Document {index + 1}
-                        </a>
-                      ))}
-                      <p className="text-xs text-muted-foreground">These links are valid for 1 hour</p>
-                    </div>
+                          Retry Loading Documents
+                        </Button>
+                      </div>
+                    )
                   ) : (
-                    <p className="text-sm text-muted-foreground">Not uploaded</p>
+                    <div className="p-4 bg-muted rounded-lg border-2 border-dashed">
+                      <p className="text-sm font-medium mb-2">⚠️ No documents uploaded</p>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        This sitter needs to upload ID documents before verification can proceed. 
+                        Use the "Request New Document" button above to send them a reminder email.
+                      </p>
+                      {!profile.verification_documents_uploaded_at && (
+                        <Badge variant="outline" className="text-xs">
+                          Never uploaded
+                        </Badge>
+                      )}
+                    </div>
                   )}
                 </div>
                   
