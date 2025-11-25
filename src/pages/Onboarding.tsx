@@ -403,13 +403,12 @@ export default function Onboarding() {
       localStorage.removeItem('onboarding_data');
       localStorage.removeItem('onboarding_step');
 
-      toast({
-        title: "Profile completed!",
-        description: "Welcome to ZiggySitters! Your profile has been set up successfully.",
-      });
-
-      // Navigate immediately - context state is already updated
-      navigate('/onboarding-complete', { replace: true });
+      // For pet owners, skip the completion page and go straight to search
+      if (profile?.role === 'pet_owner') {
+        navigate('/find-sitters', { replace: true });
+      } else {
+        navigate('/onboarding-complete', { replace: true });
+      }
     } catch (error: any) {
       console.error('Error in handleOnboardingComplete:', error);
       toast({
