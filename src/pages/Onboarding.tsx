@@ -480,9 +480,9 @@ export default function Onboarding() {
       return;
     }
     
-    // Pet owners skip basic info and go straight to quick start
+    // Pet owners skip basic info and go straight to quick start (step 2 for them)
     if (step === 1 && data.role === 'pet_owner') {
-      setStep(3);
+      setStep(2);
       return;
     }
     
@@ -719,16 +719,17 @@ export default function Onboarding() {
 
   const getTotalSteps = () => {
     if (data.role === 'pet_sitter') return 7; // User type + Basic info + 5 sitter steps
-    if (data.role === 'pet_owner') return 3; // User type + Basic info + Pets
+    if (data.role === 'pet_owner') return 2; // User type + QuickStart (skip basic info)
     return 2;
   };
 
   const getStepTitle = () => {
     if (step === 1) return 'Choose Your Role';
-    if (step === 2) return 'Basic Information';
+    if (step === 2 && data.role !== 'pet_owner') return 'Basic Information';
     if (data.role === 'pet_owner') {
-      if (step === 3) return 'Your Pets';
-    } else if (data.role === 'pet_sitter') {
+      if (step === 2 || step === 3) return 'Meet Your Pet';
+    }
+    if (data.role === 'pet_sitter') {
       // Steps 3-7 are handled by ImprovedSitterOnboarding
       const sitterSteps = ['Experience', 'Services & Pricing', 'Calendar', 'Verification', 'Payment Setup'];
       if (step >= 3 && step <= 7) {
@@ -762,33 +763,37 @@ export default function Onboarding() {
                   <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>Welcome to ZiggySitters</h1>
                 </div>
                 
-                {/* Progress indicator */}
-                <div className="flex justify-center mb-6">
-                  <div className="flex space-x-2">
-                    {Array.from({ length: totalSteps }, (_, i) => (
-                      <div
-                        key={i}
-                        className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'} rounded-full ${
-                          i + 1 <= step ? 'bg-primary' : 'bg-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-                
-                <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
-                  Step {step} of {totalSteps}: {getStepTitle()}
-                </CardTitle>
+                {/* Progress indicator - hide for pet owners at step 2 */}
+                {!(data.role === 'pet_owner' && step >= 2) && (
+                  <>
+                    <div className="flex justify-center mb-6">
+                      <div className="flex space-x-2">
+                        {Array.from({ length: totalSteps }, (_, i) => (
+                          <div
+                            key={i}
+                            className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'} rounded-full ${
+                              i + 1 <= step ? 'bg-primary' : 'bg-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
+                      Step {step} of {totalSteps}: {getStepTitle()}
+                    </CardTitle>
+                  </>
+                )}
               </CardHeader>
               
               <CardContent className={isMobile ? 'p-4' : 'p-6'}>
                 {step === 1 && renderRoleSelection()}
-                {step === 2 && renderBasicInfo()}
-                {step >= 3 && renderRoleSpecificOnboarding()}
+                {step === 2 && data.role !== 'pet_owner' && renderBasicInfo()}
+                {((step === 2 && data.role === 'pet_owner') || step >= 3) && renderRoleSpecificOnboarding()}
               </CardContent>
               
-              {/* Navigation buttons */}
-              {step <= 2 && (
+              {/* Navigation buttons - hide for pet owners after step 1 */}
+              {step <= 2 && !(data.role === 'pet_owner' && step >= 2) && (
                 <div className={`flex justify-between ${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
                   <Button
                     variant="outline"
