@@ -74,6 +74,14 @@ export default function Onboarding() {
     localStorage.setItem('onboarding_step', step.toString());
   }, [step]);
 
+  // CRITICAL: Force pet owners to skip step 2 if they somehow land on it
+  useEffect(() => {
+    if (data.role === 'pet_owner' && step === 2) {
+      console.log('Pet owner detected on step 2 - keeping them here for QuickStart');
+      // Step 2 for pet owners IS the QuickStart form, so we keep them here
+    }
+  }, [step, data.role]);
+
   // Stripe returns are now handled in Profile.tsx payments tab
   // No need to handle them here anymore
 
@@ -787,6 +795,13 @@ export default function Onboarding() {
               </CardHeader>
               
               <CardContent className={isMobile ? 'p-4' : 'p-6'}>
+                {(() => {
+                  console.log('=== ONBOARDING RENDER DEBUG ===');
+                  console.log('Current step:', step);
+                  console.log('Current role:', data.role);
+                  console.log('Should show QuickStart:', step === 2 && data.role === 'pet_owner');
+                  return null;
+                })()}
                 {step === 1 && renderRoleSelection()}
                 {step === 2 && data.role !== 'pet_owner' && renderBasicInfo()}
                 {((step === 2 && data.role === 'pet_owner') || step >= 3) && renderRoleSpecificOnboarding()}
