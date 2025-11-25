@@ -17,6 +17,7 @@ interface QuickStartPetOwnerProps {
 export default function QuickStartPetOwner({ profileId, userId, onComplete }: QuickStartPetOwnerProps) {
   const [petName, setPetName] = useState('');
   const [petSpecies, setPetSpecies] = useState('');
+  const [suburb, setSuburb] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -39,6 +40,15 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
       return;
     }
 
+    if (!suburb.trim()) {
+      toast({
+        title: "Suburb required",
+        description: "We need your suburb to find sitters nearby! 📍",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -55,10 +65,14 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
 
       if (petError) throw petError;
 
-      // Mark onboarding as completed
+      // Update profile with suburb and mark onboarding as completed
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ onboarding_completed: true })
+        .update({ 
+          suburb: suburb.trim(),
+          city: 'Auckland',
+          onboarding_completed: true 
+        })
         .eq('id', profileId);
 
       if (profileError) throw profileError;
@@ -156,6 +170,20 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
                 <SelectItem value="other" className="text-lg py-3">✨ Other</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="suburb" className="text-lg font-semibold flex items-center gap-2">
+              <span className="text-2xl">📍</span>
+              Where are you? <span className="text-pink-500">*</span>
+            </Label>
+            <Input
+              id="suburb"
+              placeholder="e.g., Ponsonby, Parnell, Mt Eden..."
+              value={suburb}
+              onChange={(e) => setSuburb(e.target.value)}
+              className="h-14 text-lg border-2 border-purple-200 dark:border-purple-800 focus:border-purple-400 dark:focus:border-purple-600 bg-white/80 dark:bg-gray-900/80 backdrop-blur"
+            />
           </div>
 
           <div className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border-2 border-purple-200 dark:border-purple-800 rounded-xl p-5">
