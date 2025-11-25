@@ -9,7 +9,8 @@ import {
   DollarSign,
   Settings,
   Eye,
-  RefreshCw
+  RefreshCw,
+  BarChart3
 } from "lucide-react";
 
 const navItems = [
@@ -17,6 +18,11 @@ const navItems = [
     title: "Dashboard",
     href: "/admin-dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Search Analytics",
+    href: "/admin/search-analytics",
+    icon: BarChart3,
   },
   {
     title: "Bulk Email Campaigns",
