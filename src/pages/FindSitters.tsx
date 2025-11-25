@@ -13,6 +13,7 @@ import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { metaPixel } from '@/lib/metaPixel';
+import { useSearchTracking } from '@/hooks/useSearchTracking';
 
 // No more mock data - using real database profiles
 
@@ -20,6 +21,7 @@ export default function FindSitters() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isMobile = useIsMobile();
+  const { trackSearch, trackSitterClick } = useSearchTracking();
   const [location, setLocation] = useState(searchParams.get('location') || '');
   const [selectedDate, setSelectedDate] = useState<Date>(
     searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined
@@ -244,7 +246,16 @@ export default function FindSitters() {
     setFilteredSitters(filtered);
     setSearchPerformed(true);
 
-    // Track search event
+    // Track search event for retargeting
+    trackSearch({
+      suburb: location,
+      city: 'Auckland', // Default city for NZ
+      serviceType: serviceType,
+      petSpecies: petType ? [petType] : undefined,
+      resultsCount: filtered.length,
+    });
+
+    // Track search event for Meta Pixel
     metaPixel.trackSearch(location || serviceType || 'pet sitter');
 
     // Update URL with search parameters
@@ -580,6 +591,9 @@ export default function FindSitters() {
                       <Button 
                         className="w-full"
                         onClick={() => {
+                          // Track sitter click for retargeting
+                          trackSitterClick(sitter.id);
+                          
                           const params = new URLSearchParams({ booking: 'true' });
                           if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
                           if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);

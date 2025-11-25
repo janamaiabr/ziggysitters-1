@@ -78,6 +78,17 @@ const navSections = [
     ],
   },
   {
+    label: 'Analytics',
+    items: [
+      {
+        title: 'Search Analytics',
+        href: '/admin/search-analytics',
+        icon: Eye,
+        description: 'View search behavior and retargeting data',
+      },
+    ],
+  },
+  {
     label: 'Financial',
     items: [
       {

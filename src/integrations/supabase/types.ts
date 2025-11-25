@@ -829,6 +829,57 @@ export type Database = {
           },
         ]
       }
+      search_events: {
+        Row: {
+          city: string | null
+          clicked_sitter_ids: string[] | null
+          created_at: string
+          id: string
+          pet_size: string[] | null
+          pet_species: string[] | null
+          referrer: string | null
+          results_count: number | null
+          search_timestamp: string
+          service_type: string | null
+          session_id: string
+          suburb: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          city?: string | null
+          clicked_sitter_ids?: string[] | null
+          created_at?: string
+          id?: string
+          pet_size?: string[] | null
+          pet_species?: string[] | null
+          referrer?: string | null
+          results_count?: number | null
+          search_timestamp?: string
+          service_type?: string | null
+          session_id: string
+          suburb?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          city?: string | null
+          clicked_sitter_ids?: string[] | null
+          created_at?: string
+          id?: string
+          pet_size?: string[] | null
+          pet_species?: string[] | null
+          referrer?: string | null
+          results_count?: number | null
+          search_timestamp?: string
+          service_type?: string | null
+          session_id?: string
+          suburb?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       sitter_availability: {
         Row: {
           created_at: string
