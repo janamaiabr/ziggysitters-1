@@ -480,6 +480,13 @@ export default function Onboarding() {
       });
       return;
     }
+    
+    // Pet owners skip basic info and go straight to quick start
+    if (step === 1 && data.role === 'pet_owner') {
+      setStep(3);
+      return;
+    }
+    
     if (step === 2) {
       saveBasicProfile();
       return;
