@@ -795,7 +795,7 @@ export default function Onboarding() {
                 )}
               </CardHeader>
               
-              <CardContent className={isMobile ? 'p-4' : 'p-6'}>
+              <CardContent className={data.role === 'pet_owner' && step >= 2 ? 'p-0' : (isMobile ? 'p-4' : 'p-6')}>
                 {step === 1 && renderRoleSelection()}
                 {step === 2 && data.role === 'pet_sitter' && renderBasicInfo()}
                 {step === 2 && data.role === 'pet_owner' && renderRoleSpecificOnboarding()}
