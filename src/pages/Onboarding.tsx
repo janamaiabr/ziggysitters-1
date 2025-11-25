@@ -48,7 +48,6 @@ export default function Onboarding() {
   const [showTerms, setShowTerms] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const [onboardingChoice, setOnboardingChoice] = useState<'quick' | 'full' | null>(null);
   const [data, setData] = useState<OnboardingData>(() => {
     // Try to load from localStorage first
     const saved = localStorage.getItem('onboarding_data');
@@ -678,90 +677,7 @@ export default function Onboarding() {
     if (!data.role) return null;
 
     if (data.role === 'pet_owner') {
-      // Show choice screen first
-      if (!onboardingChoice) {
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="text-center space-y-3">
-              <h3 className="text-2xl font-bold">Choose Your Setup</h3>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                Select how you'd like to get started
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-4 mt-6">
-              <Card 
-                className="cursor-pointer border-2 hover:border-primary hover:shadow-lg transition-all"
-                onClick={() => setOnboardingChoice('quick')}
-              >
-                <CardContent className="pt-6 space-y-4">
-                  <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-3">
-                      <span className="text-3xl">⚡</span>
-                    </div>
-                    <h4 className="font-bold text-xl mb-2">Quick Start</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Book a sitter in 30 seconds
-                    </p>
-                    <div className="space-y-2 text-left">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-green-500">✓</span>
-                        <span>Just pet name & type</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-green-500">✓</span>
-                        <span>Book immediately</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-green-500">✓</span>
-                        <span>Add details anytime</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card 
-                className="cursor-pointer border-2 hover:border-primary hover:shadow-lg transition-all"
-                onClick={() => setOnboardingChoice('full')}
-              >
-                <CardContent className="pt-6 space-y-4">
-                  <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-full mb-3">
-                      <span className="text-3xl">📋</span>
-                    </div>
-                    <h4 className="font-bold text-xl mb-2">Complete Profile</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Full setup with all details
-                    </p>
-                    <div className="space-y-2 text-left">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-blue-500">✓</span>
-                        <span>Pet photos & breed</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-blue-500">✓</span>
-                        <span>Medical info & traits</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-blue-500">✓</span>
-                        <span>Feeding & care details</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        );
-      }
-      
-      // Show chosen onboarding flow
-      if (onboardingChoice === 'quick') {
-        return <QuickStartPetOwner profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
-      } else {
-        return <ImprovedPetOwnerOnboarding profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
-      }
+      return <QuickStartPetOwner profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
     }
     
     if (data.role === 'pet_sitter') {
