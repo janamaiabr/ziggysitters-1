@@ -488,16 +488,19 @@ export default function Onboarding() {
       return;
     }
     
-    // Pet owners skip basic info and go straight to quick start (step 2 for them)
+    // CRITICAL: Pet owners skip basic info entirely - go straight to QuickStart
     if (step === 1 && data.role === 'pet_owner') {
+      console.log('Pet owner selected - jumping to step 2 (QuickStart)');
       setStep(2);
       return;
     }
     
-    if (step === 2) {
+    // Only sitters need to save basic profile
+    if (step === 2 && data.role === 'pet_sitter') {
       saveBasicProfile();
       return;
     }
+    
     setStep(step + 1);
   };
 
@@ -733,10 +736,8 @@ export default function Onboarding() {
 
   const getStepTitle = () => {
     if (step === 1) return 'Choose Your Role';
-    if (step === 2 && data.role !== 'pet_owner') return 'Basic Information';
-    if (data.role === 'pet_owner') {
-      if (step === 2 || step === 3) return 'Meet Your Pet';
-    }
+    if (data.role === 'pet_owner' && step === 2) return 'Meet Your Pet';
+    if (data.role === 'pet_sitter' && step === 2) return 'Basic Information';
     if (data.role === 'pet_sitter') {
       // Steps 3-7 are handled by ImprovedSitterOnboarding
       const sitterSteps = ['Experience', 'Services & Pricing', 'Calendar', 'Verification', 'Payment Setup'];
@@ -795,16 +796,10 @@ export default function Onboarding() {
               </CardHeader>
               
               <CardContent className={isMobile ? 'p-4' : 'p-6'}>
-                {(() => {
-                  console.log('=== ONBOARDING RENDER DEBUG ===');
-                  console.log('Current step:', step);
-                  console.log('Current role:', data.role);
-                  console.log('Should show QuickStart:', step === 2 && data.role === 'pet_owner');
-                  return null;
-                })()}
                 {step === 1 && renderRoleSelection()}
-                {step === 2 && data.role !== 'pet_owner' && renderBasicInfo()}
-                {((step === 2 && data.role === 'pet_owner') || step >= 3) && renderRoleSpecificOnboarding()}
+                {step === 2 && data.role === 'pet_sitter' && renderBasicInfo()}
+                {step === 2 && data.role === 'pet_owner' && renderRoleSpecificOnboarding()}
+                {step >= 3 && data.role === 'pet_sitter' && renderRoleSpecificOnboarding()}
               </CardContent>
               
               {/* Navigation buttons - hide for pet owners after step 1 */}
