@@ -69,7 +69,7 @@ export default function BlackFridayLanding() {
                   </Button>
                 </Link>
                 <Link to="/how-it-works">
-                  <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold border-2 border-white text-white hover:bg-white/10">
+                  <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold bg-white text-zinc-900 border-2 border-white hover:bg-zinc-100">
                     How It Works
                   </Button>
                 </Link>
