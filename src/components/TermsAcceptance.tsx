@@ -23,7 +23,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onDecline(); }}>
-      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl h-[80vh] flex flex-col border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative bg-background" onInteractOutside={(e) => e.preventDefault()}>
         {/* Decorative Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 opacity-60 -z-10"></div>
         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 -z-10"></div>
@@ -38,7 +38,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 min-h-0 max-h-[50vh] p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur">
+        <ScrollArea className="flex-1 min-h-0 p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur">
           <div className="space-y-4 text-sm">
             <p>
               <strong>Last updated:</strong> 15 October 2025
