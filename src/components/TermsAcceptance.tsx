@@ -23,12 +23,22 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onDecline(); }}>
-      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative" onInteractOutside={(e) => e.preventDefault()}>
+        {/* Decorative Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 opacity-60 -z-10"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 -z-10"></div>
+        
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Terms of Service Agreement</DialogTitle>
+          <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+            <span className="text-3xl">📋</span>
+            <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Terms of Service Agreement
+            </span>
+          </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 min-h-0 max-h-[50vh] p-4">
+        <ScrollArea className="flex-1 min-h-0 max-h-[50vh] p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur">
           <div className="space-y-4 text-sm">
             <p>
               <strong>Last updated:</strong> 15 October 2025
@@ -94,19 +104,19 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
           </div>
         </ScrollArea>
 
-        <div className="space-y-4 pt-4 border-t flex-shrink-0">
-          <div className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
+        <div className="space-y-4 pt-4 border-t border-purple-200 dark:border-purple-800 flex-shrink-0">
+          <div className="flex items-start space-x-3 p-4 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 rounded-xl border-2 border-purple-300 dark:border-purple-700">
             <Checkbox 
               id="accept-terms"
               checked={accepted}
               onCheckedChange={(checked) => setAccepted(checked === true)}
-              className="mt-0.5 flex-shrink-0"
+              className="mt-0.5 flex-shrink-0 border-purple-500 data-[state=checked]:bg-purple-500"
             />
             <label 
               htmlFor="accept-terms" 
-              className="text-sm leading-relaxed font-medium cursor-pointer flex-1"
+              className="text-sm leading-relaxed font-bold cursor-pointer flex-1"
             >
-              I have read the Terms of Service and agree to them
+              ✅ I have read the Terms of Service and agree to them
             </label>
           </div>
 
@@ -114,16 +124,16 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
             <Button 
               variant="outline" 
               onClick={onDecline}
-              className="flex-1"
+              className="flex-1 h-12 border-2 border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/20"
             >
               Decline
             </Button>
             <Button 
               onClick={handleAccept}
               disabled={!accepted}
-              className="flex-1"
+              className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Accept & Continue
+              Accept & Continue ✨
             </Button>
           </div>
 
@@ -133,9 +143,9 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
                 e.stopPropagation();
                 window.open('/terms-of-service', '_blank');
               }} 
-              className="underline hover:no-underline"
+              className="underline hover:no-underline font-semibold text-purple-600 dark:text-purple-400"
             >
-              View full Terms of Service
+              📄 View full Terms of Service
             </button>
           </p>
         </div>

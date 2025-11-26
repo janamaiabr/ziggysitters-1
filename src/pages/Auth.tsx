@@ -218,21 +218,21 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 overflow-hidden">
       {/* Cute floating animations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💖</div>
+        <div className="absolute top-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💜</div>
         <div className="absolute top-32 right-1/4 text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐾</div>
         <div className="absolute top-40 left-1/3 text-3xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>✨</div>
         <div className="absolute bottom-32 right-1/3 text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>🎉</div>
-        <div className="absolute bottom-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>💝</div>
+        <div className="absolute bottom-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>💙</div>
       </div>
 
       {/* Playful background blobs */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-300 dark:bg-indigo-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
       </div>
 
       <div className="w-full max-w-xl relative z-10 space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-700">
@@ -246,7 +246,7 @@ export default function Auth() {
           </div>
 
           <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent animate-in slide-in-from-top-4 duration-500">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent animate-in slide-in-from-top-4 duration-500">
               Welcome to ZiggySitters! 🎉
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto animate-in fade-in duration-700" style={{ animationDelay: '200ms' }}>
@@ -257,9 +257,9 @@ export default function Auth() {
           {/* Feature badges with emojis */}
           <div className="flex flex-wrap justify-center gap-2 md:gap-3 animate-in fade-in duration-700" style={{ animationDelay: '300ms' }}>
             {[
-              { emoji: "🛡️", text: "Verified Sitters", gradient: "from-blue-400 to-blue-600" },
-              { emoji: "💝", text: "Happy Pets", gradient: "from-pink-400 to-pink-600" },
-              { emoji: "✨", text: "Daily Updates", gradient: "from-purple-400 to-purple-600" }
+              { emoji: "🛡️", text: "Verified Sitters", gradient: "from-blue-500 to-indigo-600" },
+              { emoji: "💜", text: "Happy Pets", gradient: "from-purple-500 to-purple-600" },
+              { emoji: "✨", text: "Daily Updates", gradient: "from-indigo-500 to-blue-600" }
             ].map((item, idx) => (
               <div 
                 key={idx} 
@@ -274,14 +274,14 @@ export default function Auth() {
 
         <Card className="border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative transform transition-all hover:scale-[1.01] animate-scale-in">
           {/* Super Decorative Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 opacity-60"></div>
-          <div className="absolute top-0 right-0 w-40 h-40 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 opacity-60"></div>
+          <div className="absolute top-0 right-0 w-40 h-40 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
 
           <CardHeader className="space-y-4 pb-6 relative">
             <CardTitle className="flex items-center justify-center gap-3 text-3xl">
               <span className="text-4xl animate-bounce">🐾</span>
-              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 Get Started
               </span>
               <span className="text-4xl animate-bounce" style={{ animationDelay: '0.3s' }}>🐾</span>
@@ -289,16 +289,16 @@ export default function Auth() {
           </CardHeader>
           <CardContent className="space-y-6 relative">
             <Tabs defaultValue={defaultTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 p-1.5 h-auto">
+              <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 p-1.5 h-auto">
                 <TabsTrigger 
                   value="signin" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white py-3 text-base font-bold transition-all hover:scale-105"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white py-3 text-base font-bold transition-all hover:scale-105"
                 >
                   Sign In ✨
                 </TabsTrigger>
                 <TabsTrigger 
                   value="signup" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-500 data-[state=active]:text-white py-3 text-base font-bold transition-all hover:scale-105"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white py-3 text-base font-bold transition-all hover:scale-105"
                 >
                   Sign Up 🎉
                 </TabsTrigger>
@@ -351,7 +351,7 @@ export default function Auth() {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full h-16 text-xl gap-3 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 hover:from-purple-600 hover:via-pink-600 hover:to-purple-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105" 
+                    className="w-full h-16 text-xl gap-3 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105" 
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -361,7 +361,7 @@ export default function Auth() {
                       </>
                     ) : (
                       <>
-                        Sign In <Heart className="h-6 w-6 animate-pulse" fill="currentColor" />
+                        Sign In <Sparkles className="h-6 w-6 animate-pulse" />
                       </>
                     )}
                   </Button>
@@ -392,7 +392,7 @@ export default function Auth() {
                         placeholder="John"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className="h-12 border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
+                        className="h-12 border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                       />
                     </div>
@@ -408,7 +408,7 @@ export default function Auth() {
                         placeholder="Doe"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className="h-12 border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
+                        className="h-12 border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                       />
                     </div>
@@ -418,16 +418,16 @@ export default function Auth() {
                       <span className="text-2xl">📧</span>
                       Email
                     </Label>
-                    <Input
-                      id="signup-email"
-                      name="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="h-14 text-lg border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
-                      required
-                    />
+                      <Input
+                        id="signup-email"
+                        name="email"
+                        type="email"
+                        placeholder="your.email@example.com"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="h-14 text-lg border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
+                        required
+                      />
                   </div>
                   <div className="space-y-3">
                     <Label htmlFor="signup-password" className="text-lg font-bold flex items-center gap-2">
@@ -442,7 +442,7 @@ export default function Auth() {
                         placeholder="Create a strong password (min 6 characters)"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className="h-14 text-lg border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
+                        className="h-14 text-lg border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                         minLength={6}
                       />
@@ -463,9 +463,9 @@ export default function Auth() {
                     )}
                   </div>
 
-                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 border-2 border-pink-300 dark:border-pink-700 rounded-2xl p-4">
-                    <p className="text-sm font-medium text-pink-900 dark:text-pink-100 flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5 text-pink-500 animate-pulse" />
+                  <div className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 border-2 border-purple-300 dark:border-purple-700 rounded-2xl p-4">
+                    <p className="text-sm font-medium text-purple-900 dark:text-purple-100 flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5 text-purple-500 animate-pulse" />
                       <span>
                         Join thousands of happy pet parents finding trusted sitters! 🎉
                       </span>
@@ -474,7 +474,7 @@ export default function Auth() {
 
                   <Button 
                     type="submit" 
-                    className="w-full h-16 text-xl gap-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105" 
+                    className="w-full h-16 text-xl gap-3 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105" 
                     disabled={isLoading || (formData.password && formData.password.length < 6)}
                   >
                     {isLoading ? (
@@ -502,7 +502,7 @@ export default function Auth() {
                 <Link to="/privacy-policy" className="text-purple-600 dark:text-purple-400 hover:underline font-semibold">
                   Privacy Policy
                 </Link>
-                . 💝
+                . 💜
               </p>
             </div>
           </CardContent>
