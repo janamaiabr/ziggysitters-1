@@ -97,7 +97,7 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "ZiggySitters",
-    "description": "Professional pet sitting services in Auckland with optional daily photo updates and detailed reports - choose your level of communication.",
+    "description": "Professional pet sitting services in Auckland and Hamilton with optional daily photo updates and detailed reports - choose your level of communication.",
     "url": "https://ziggysitters.com",
     "telephone": "+64-9-XXX-XXXX",
     "address": {
@@ -105,7 +105,7 @@ const Index = () => {
       "addressLocality": "Auckland",
       "addressCountry": "New Zealand"
     },
-    "areaServed": "Auckland, New Zealand",
+    "areaServed": ["Auckland, New Zealand", "Hamilton, New Zealand"],
     "serviceType": ["Pet Sitting", "Pet Care", "Daily Reports", "Drop-in Visits"],
     "aggregateRating": {
       "@type": "AggregateRating",
@@ -117,9 +117,9 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="ZiggySitters - Pet Sitters with Optional Daily Photo Updates | Auckland"
-        description="Find trusted pet sitters in Auckland who can send daily photo updates when you request them. Choose your level of communication - accountability guaranteed when you do. Book verified pet care today."
-        keywords="pet sitters Auckland, daily pet reports, pet sitting with photos, verified pet care, cat sitting, pet care updates, drop-in visits"
+        title="ZiggySitters - Pet Sitters with Optional Daily Photo Updates | Auckland & Hamilton"
+        description="Find trusted pet sitters in Auckland and Hamilton who can send daily photo updates when you request them. Choose your level of communication - accountability guaranteed when you do. Book verified pet care today."
+        keywords="pet sitters Auckland, pet sitters Hamilton, daily pet reports, pet sitting with photos, verified pet care, cat sitting, pet care updates, drop-in visits"
         canonical="/"
         structuredData={structuredData}
       />
@@ -127,7 +127,7 @@ const Index = () => {
       {/* Launch Location Notice - Visible for all users */}
       <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
         <p className="text-sm md:text-base font-medium">
-          📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
+          📍 Currently serving Auckland and Hamilton, New Zealand. Expanding to more cities soon!
         </p>
       </div>
 
@@ -184,7 +184,7 @@ const Index = () => {
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Top-rated Sitters in Auckland</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Top-rated Sitters in Auckland & Hamilton</h2>
             <p className="text-base md:text-lg text-muted-foreground">
               Meet some of our verified, experienced pet care professionals
             </p>
