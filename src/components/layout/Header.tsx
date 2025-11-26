@@ -84,6 +84,9 @@ export default function Header() {
           <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">
             Blog
           </Link>
+          <Link to="/christmas" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+            🎄 Christmas
+          </Link>
           {user && profile?.role === 'pet_sitter' && (
             <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1.5">
               <CalendarIcon className="h-4 w-4" />
@@ -190,6 +193,9 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
                       </Button>
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/christmas')}>
+                        🎄 Christmas
+                      </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/profile')}>
                         <User className="mr-2 h-4 w-4" />
                         Profile
@@ -238,6 +244,9 @@ export default function Header() {
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/christmas')}>
+                        🎄 Christmas
                       </Button>
                     </div>
                     <div className="space-y-3 pt-4 border-t">
