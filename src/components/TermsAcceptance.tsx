@@ -22,7 +22,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onDecline(); }}>
-      <DialogContent className="max-w-2xl flex flex-col border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative bg-background" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl flex flex-col border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative bg-background top-[40%] sm:top-[35%]" onInteractOutside={(e) => e.preventDefault()}>
         {/* Decorative Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 opacity-60 -z-10"></div>
         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 -z-10"></div>
