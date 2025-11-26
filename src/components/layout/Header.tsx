@@ -115,23 +115,17 @@ export default function Header() {
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  {profile?.role === 'pet_sitter' && (
-                    <DropdownMenuItem onClick={() => navigate('/calendar')}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      My Calendar
-                    </DropdownMenuItem>
-                  )}
-                  {!isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate('/bookings')}>
-                      <Settings className="mr-2 h-4 w-4" />
-                      My Bookings
-                    </DropdownMenuItem>
-                  )}
                   {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate('/admin-dashboard')}>
-                      <Shield className="mr-2 h-4 w-4" />
-                      Admin Dashboard
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem onClick={() => navigate('/admin-dashboard')}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate('/admin/search-analytics')}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        Search Analytics
+                      </DropdownMenuItem>
+                    </>
                   )}
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -213,10 +207,16 @@ export default function Header() {
                         </Button>
                       )}
                       {isAdmin && (
-                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin-dashboard')}>
-                          <Shield className="mr-2 h-4 w-4" />
-                          Admin Dashboard
-                        </Button>
+                        <>
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin-dashboard')}>
+                            <Shield className="mr-2 h-4 w-4" />
+                            Admin Dashboard
+                          </Button>
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin/search-analytics')}>
+                            <Shield className="mr-2 h-4 w-4" />
+                            Search Analytics
+                          </Button>
+                        </>
                       )}
                       <Button variant="ghost" className="w-full justify-start text-red-600" onClick={handleSignOut}>
                         <LogOut className="mr-2 h-4 w-4" />
