@@ -12,7 +12,7 @@ export default function BlackFridayLanding() {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Black Friday Pet Sitting Sale | ZiggySitters"
-        description="Black Friday exclusive: Save 25% on all pet sitting bookings. Limited time offer on trusted, verified pet sitters."
+        description="Black Friday exclusive: Save 50% on all pet sitting bookings. Limited time offer on trusted, verified pet sitters."
         canonical="/black-friday"
       />
 
@@ -49,7 +49,7 @@ export default function BlackFridayLanding() {
 
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6">
                 <span className="text-yellow-400">
-                  Save 25% on Pet Sitting
+                  Save 50% on Pet Sitting
                 </span>
                 <br />
                 <span className="text-white">
@@ -63,9 +63,9 @@ export default function BlackFridayLanding() {
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link to="/find-sitters?promo=BLACKFRIDAY">
+                <Link to="/find-sitters?promo=BLACKFRIDAY50">
                   <Button size="lg" className="h-14 px-8 text-lg font-bold bg-yellow-400 text-zinc-900 hover:bg-yellow-500 shadow-2xl">
-                    🏷️ Claim Your 25% Off
+                    🏷️ Claim Your 50% Off
                   </Button>
                 </Link>
                 <Link to="/how-it-works">
@@ -76,7 +76,7 @@ export default function BlackFridayLanding() {
               </div>
 
               <p className="text-sm text-zinc-300 mt-6">
-                ⚡ <strong>Use code BLACKFRIDAY</strong> at checkout. Offer valid until December 2nd.
+                ⚡ <strong>Use code BLACKFRIDAY50</strong> at checkout. Offer valid until November 30th.
               </p>
             </div>
           </div>
@@ -120,8 +120,8 @@ export default function BlackFridayLanding() {
               {[
                 {
                   emoji: "💰",
-                  title: "25% Off Everything",
-                  desc: "Not just select services - save 25% on all pet sitting bookings made this Black Friday. House sitting, drop-ins, everything is on sale."
+                  title: "50% Off Everything",
+                  desc: "Not just select services - save 50% on all pet sitting bookings made this Black Friday. House sitting, drop-ins, everything is on sale."
                 },
                 {
                   emoji: "⭐",
@@ -152,7 +152,7 @@ export default function BlackFridayLanding() {
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              What Your Pet Gets <span className="text-yellow-700">(Now 25% Off!)</span>
+              What Your Pet Gets <span className="text-yellow-700">(Now 50% Off!)</span>
             </h2>
             <p className="text-center text-muted-foreground mb-12 text-lg">
               Premium pet care without the premium price tag
@@ -185,7 +185,7 @@ export default function BlackFridayLanding() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              How to Claim Your <span className="text-yellow-600">25% Discount</span>
+              How to Claim Your <span className="text-yellow-600">50% Discount</span>
             </h2>
             <p className="text-center text-muted-foreground mb-12 text-lg">
               Three simple steps to massive savings
@@ -205,8 +205,8 @@ export default function BlackFridayLanding() {
                 },
                 {
                   num: "3",
-                  title: "Use Code BLACKFRIDAY",
-                  desc: "Once your sitter accepts, enter code BLACKFRIDAY at checkout to claim your 25% discount. That's it - you've just saved big on premium pet care!"
+                  title: "Use Code BLACKFRIDAY50",
+                  desc: "Once your sitter accepts, enter code BLACKFRIDAY50 at checkout to claim your 50% discount. That's it - you've just saved big on premium pet care!"
                 }
               ].map((step) => (
                 <div key={step.num} className="flex gap-6 items-start">
@@ -299,7 +299,7 @@ export default function BlackFridayLanding() {
               {[
                 {
                   q: "When does this Black Friday sale end?",
-                  a: "The 25% discount is valid until December 2nd at midnight. After that, regular pricing returns. Book now to lock in these savings for any future dates!"
+                  a: "The 50% discount is valid until November 30th at midnight. After that, regular pricing returns. Book now to lock in these savings for any future dates!"
                 },
                 {
                   q: "Can I use the discount for any dates?",
@@ -307,11 +307,11 @@ export default function BlackFridayLanding() {
                 },
                 {
                   q: "Is there a minimum booking required?",
-                  a: "No minimum! Whether you need a quick drop-in visit or two weeks of house sitting, the 25% discount applies to all bookings made during this sale."
+                  a: "No minimum! Whether you need a quick drop-in visit or two weeks of house sitting, the 50% discount applies to all bookings made during this sale."
                 },
                 {
                   q: "Do I need to pay upfront to claim the discount?",
-                  a: "You only pay once your sitter accepts your booking request. Enter the code BLACKFRIDAY at checkout to apply your 25% discount automatically."
+                  a: "You only pay once your sitter accepts your booking request. Enter the code BLACKFRIDAY50 at checkout to apply your 50% discount automatically."
                 },
                 {
                   q: "Can I combine this with other offers?",
@@ -351,22 +351,22 @@ export default function BlackFridayLanding() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-              Don&apos;t Miss Out on 25% Off Premium Pet Care
+              Don&apos;t Miss Out on 50% Off Premium Pet Care
             </h2>
 
             <p className="text-xl text-zinc-200 mb-10 max-w-2xl mx-auto">
-              This Black Friday deal ends December 2nd. Book now and save big on verified, 
+              This Black Friday deal ends November 30th. Book now and save big on verified, 
               trusted pet sitters for any future dates. Your pets deserve the best!
             </p>
 
-            <Link to="/find-sitters?promo=BLACKFRIDAY">
+            <Link to="/find-sitters?promo=BLACKFRIDAY50">
               <Button size="lg" className="h-16 px-10 text-xl font-bold bg-yellow-400 text-zinc-900 hover:bg-yellow-500 shadow-2xl">
                 🏷️ Claim Your Black Friday Discount Now
               </Button>
             </Link>
 
             <p className="text-sm text-zinc-300 mt-6">
-              Use code <span className="font-bold text-yellow-400">BLACKFRIDAY</span> at checkout
+              Use code <span className="font-bold text-yellow-400">BLACKFRIDAY50</span> at checkout
             </p>
           </div>
         </div>
