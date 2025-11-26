@@ -48,6 +48,7 @@ export default function Onboarding() {
   const [showTerms, setShowTerms] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [hasAcceptedTermsLocally, setHasAcceptedTermsLocally] = useState(false);
   const [data, setData] = useState<OnboardingData>(() => {
     // Try to load from localStorage first
     const saved = localStorage.getItem('onboarding_data');
@@ -175,10 +176,10 @@ export default function Onboarding() {
         if (!error && profile) {
           // Check if user has already accepted terms in the database
           const hasAcceptedTerms = profile.terms_accepted === true;
-          setTermsChecked(hasAcceptedTerms);
+          setTermsChecked(hasAcceptedTerms || hasAcceptedTermsLocally);
           
           // For existing users who already accepted terms, clear any stale localStorage
-          if (hasAcceptedTerms) {
+          if (hasAcceptedTerms || hasAcceptedTermsLocally) {
             const savedStep = localStorage.getItem('onboarding_step');
             if (savedStep === '0') {
               console.log('Existing user with accepted terms - clearing stale step 0');
@@ -217,12 +218,12 @@ export default function Onboarding() {
           // If no profile exists, check if terms were just accepted during signup
           const termsAcceptedDuringSignup = localStorage.getItem('terms_accepted_during_signup') === 'true';
           
-          if (!termsAcceptedDuringSignup && !showTerms) {
+          if (!termsAcceptedDuringSignup && !showTerms && !hasAcceptedTermsLocally) {
             setShowTerms(true);
             setStep(0);
             localStorage.setItem('onboarding_step', '0');
           }
-          
+
           // Always pre-fill names from user metadata if available
           setData(prev => ({
             ...prev,
@@ -239,7 +240,7 @@ export default function Onboarding() {
     };
 
     fetchExistingProfile();
-  }, [user, navigate, initialLoadComplete, showTerms, step]);
+  }, [user, navigate, initialLoadComplete, showTerms, step, hasAcceptedTermsLocally]);
 
   const handleRoleSelection = (role: UserRole) => {
     setData(prev => ({ ...prev, role }));
@@ -279,6 +280,7 @@ export default function Onboarding() {
 
       setShowTerms(false);
       setTermsChecked(true);
+      setHasAcceptedTermsLocally(true);
       setStep(1); // Move to role selection
       localStorage.setItem('onboarding_step', '1');
       
