@@ -691,9 +691,11 @@ export default function Onboarding() {
   };
 
   const renderRoleSpecificOnboarding = () => {
+    console.log('[Onboarding] renderRoleSpecificOnboarding', { step, role: data.role, profileId: profile?.id, userId: user?.id });
     if (!data.role) return null;
 
     if (data.role === 'pet_owner') {
+      console.log('[Onboarding] Rendering QuickStartPetOwner for pet_owner');
       return <QuickStartPetOwner profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
     }
     
