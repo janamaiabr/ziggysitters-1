@@ -57,6 +57,7 @@ import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 import SendTestEmail from "./pages/SendTestEmail";
 import AdminStripeReset from "./pages/AdminStripeReset";
 import ChristmasLanding from "./pages/ChristmasLanding";
+import BlackFridayLanding from "./pages/BlackFridayLanding";
 import AdminDocumentFix from "./pages/AdminDocumentFix";
 import AdminEmailManagement from "./pages/AdminEmailManagement";
 import AdminLayout from "./pages/AdminLayout";
@@ -239,6 +240,7 @@ function AppContent() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/daily-reports-info" element={<DailyReportsInfo />} />
             <Route path="/christmas" element={<ChristmasLanding />} />
+            <Route path="/black-friday" element={<BlackFridayLanding />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
