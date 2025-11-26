@@ -13,11 +13,11 @@ export default function Footer() {
               <img src={logoSvg} alt="ZiggySitters" className="h-6 md:h-8 w-auto filter brightness-0 invert" />
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Connecting pet owners with trusted, verified pet sitters in Auckland and beyond.
+              Connecting pet owners with trusted, verified pet sitters in Auckland, Hamilton and beyond.
             </p>
             <div className="flex items-center space-x-2 text-sm text-gray-300">
               <MapPin className="w-4 h-4" />
-              <span>Auckland, New Zealand</span>
+              <span>Auckland & Hamilton, New Zealand</span>
             </div>
           </div>
 
