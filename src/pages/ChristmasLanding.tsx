@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, Star, Shield, Heart, Camera, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function ChristmasLanding() {
+  const isMobile = useIsMobile();
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
@@ -15,14 +18,16 @@ export default function ChristmasLanding() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-red-50 to-emerald-50 dark:from-red-950/30 dark:to-emerald-950/30">
-        {/* Festive floating emojis */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-10 left-10 text-5xl animate-bounce" style={{ animationDuration: '2s' }}>🎄</div>
-          <div className="absolute top-20 right-12 text-4xl animate-bounce" style={{ animationDelay: "0.4s", animationDuration: '2.5s' }}>🎁</div>
-          <div className="absolute bottom-24 left-1/4 text-4xl animate-bounce" style={{ animationDelay: "0.8s", animationDuration: '3s' }}>🐾</div>
-          <div className="absolute bottom-20 right-1/4 text-5xl animate-bounce" style={{ animationDelay: "1.2s", animationDuration: '2.8s' }}>⭐</div>
-          <div className="absolute top-1/2 right-10 text-3xl animate-bounce" style={{ animationDelay: "1.6s", animationDuration: '2.3s' }}>❄️</div>
-        </div>
+        {/* Festive floating emojis - only animate on desktop */}
+        {!isMobile && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-10 left-10 text-5xl animate-bounce" style={{ animationDuration: '2s' }}>🎄</div>
+            <div className="absolute top-20 right-12 text-4xl animate-bounce" style={{ animationDelay: "0.4s", animationDuration: '2.5s' }}>🎁</div>
+            <div className="absolute bottom-24 left-1/4 text-4xl animate-bounce" style={{ animationDelay: "0.8s", animationDuration: '3s' }}>🐾</div>
+            <div className="absolute bottom-20 right-1/4 text-5xl animate-bounce" style={{ animationDelay: "1.2s", animationDuration: '2.8s' }}>⭐</div>
+            <div className="absolute top-1/2 right-10 text-3xl animate-bounce" style={{ animationDelay: "1.6s", animationDuration: '2.3s' }}>❄️</div>
+          </div>
+        )}
 
         {/* Soft festive blobs */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -36,7 +41,7 @@ export default function ChristmasLanding() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 rounded-full bg-red-100 dark:bg-red-900/30 px-4 py-2 text-sm font-semibold shadow-sm mb-6 border-2 border-red-300 dark:border-red-800">
                 <span>🎅 Christmas bookings now open</span>
-                <span className="text-xs rounded-full bg-red-600 text-white px-2 py-0.5 font-bold animate-pulse">
+                <span className={`text-xs rounded-full bg-red-600 text-white px-2 py-0.5 font-bold ${!isMobile ? 'animate-pulse' : ''}`}>
                   Limited spots!
                 </span>
               </div>
