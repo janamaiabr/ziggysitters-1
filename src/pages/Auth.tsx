@@ -218,80 +218,115 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-accent via-background to-secondary/10 overflow-hidden">
-      {/* Playful background blobs - matching hero */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-80 h-80 bg-secondary/5 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
+    <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 overflow-hidden">
+      {/* Cute floating animations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💖</div>
+        <div className="absolute top-32 right-1/4 text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐾</div>
+        <div className="absolute top-40 left-1/3 text-3xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>✨</div>
+        <div className="absolute bottom-32 right-1/3 text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>🎉</div>
+        <div className="absolute bottom-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>💝</div>
       </div>
 
-      <div className="w-full max-w-xl relative z-10">
-        <div className="text-center mb-6 md:mb-8 animate-fade-in">
-          {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 md:px-5 md:py-2.5 shadow-lg mb-4 md:mb-6">
-            <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            <span className="text-xs md:text-sm font-bold text-primary">Trusted by 10,000+ Pet Parents</span>
+      {/* Playful background blobs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+      </div>
+
+      <div className="w-full max-w-xl relative z-10 space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-700">
+        {/* Cute header section */}
+        <div className="text-center space-y-6 relative">
+          <div className="relative inline-block">
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-full blur-3xl opacity-40 animate-pulse"></div>
+            <div className="relative inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 rounded-full shadow-2xl animate-bounce" style={{ animationDuration: '1.5s' }}>
+              <Heart className="h-10 w-10 md:h-12 md:w-12 text-pink-500 dark:text-pink-400" fill="currentColor" />
+            </div>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 md:mb-4 leading-tight px-4">
-            <span className="block">Join Our</span>
-            <span className="block relative inline-block my-1">
-              <span className="relative z-10">Pet-Loving</span>
-              <span className="absolute bottom-0 md:bottom-1 left-0 w-full h-2 md:h-3 lg:h-4 bg-primary/20 -rotate-1"></span>
-            </span>
-            <span className="block">Community</span>
-          </h1>
-          
-          <p className="text-muted-foreground text-sm md:text-base lg:text-lg mb-4 md:mb-6 px-4">
-            Connect with verified pet sitters who treat your furry friends like family
-          </p>
+          <div className="space-y-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent animate-in slide-in-from-top-4 duration-500">
+              Welcome to ZiggySitters! 🎉
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto animate-in fade-in duration-700" style={{ animationDelay: '200ms' }}>
+              Join our pawsome community today! 🐾
+            </p>
+          </div>
 
-          {/* Feature badges */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4 md:mb-6 px-4">
+          {/* Feature badges with emojis */}
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 animate-in fade-in duration-700" style={{ animationDelay: '300ms' }}>
             {[
-              { icon: Shield, text: "Verified Sitters", color: "bg-blue-50 text-blue-600 border-blue-200" },
-              { icon: Heart, text: "Happy Pets", color: "bg-pink-50 text-pink-600 border-pink-200" },
-              { icon: Sparkles, text: "Daily Updates", color: "bg-yellow-50 text-yellow-600 border-yellow-200" }
+              { emoji: "🛡️", text: "Verified Sitters", gradient: "from-blue-400 to-blue-600" },
+              { emoji: "💝", text: "Happy Pets", gradient: "from-pink-400 to-pink-600" },
+              { emoji: "✨", text: "Daily Updates", gradient: "from-purple-400 to-purple-600" }
             ].map((item, idx) => (
               <div 
                 key={idx} 
-                className={`flex items-center gap-1.5 md:gap-2 ${item.color} rounded-full px-2.5 py-1.5 md:px-4 md:py-2 shadow-sm border-2 font-semibold text-xs md:text-sm hover:scale-105 transition-transform`}
+                className={`flex items-center gap-2 bg-gradient-to-r ${item.gradient} text-white rounded-full px-4 py-2 shadow-lg font-bold text-sm hover:scale-110 transition-transform cursor-default`}
               >
-                <item.icon className="w-3 h-3 md:w-4 md:h-4" />
+                <span className="text-lg">{item.emoji}</span>
                 <span>{item.text}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <Card className="shadow-[var(--shadow-hover)] border-border/50 backdrop-blur-sm animate-scale-in">
-          <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-2xl text-center font-bold">Get Started</CardTitle>
+        <Card className="border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative transform transition-all hover:scale-[1.01] animate-scale-in">
+          {/* Super Decorative Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 opacity-60"></div>
+          <div className="absolute top-0 right-0 w-40 h-40 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+          <CardHeader className="space-y-4 pb-6 relative">
+            <CardTitle className="flex items-center justify-center gap-3 text-3xl">
+              <span className="text-4xl animate-bounce">🐾</span>
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Get Started
+              </span>
+              <span className="text-4xl animate-bounce" style={{ animationDelay: '0.3s' }}>🐾</span>
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6 relative">
             <Tabs defaultValue={defaultTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-muted/50 p-1">
-                <TabsTrigger value="signin" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign In</TabsTrigger>
-                <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 p-1.5 h-auto">
+                <TabsTrigger 
+                  value="signin" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white py-3 text-base font-bold transition-all hover:scale-105"
+                >
+                  Sign In ✨
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="signup" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-500 data-[state=active]:text-white py-3 text-base font-bold transition-all hover:scale-105"
+                >
+                  Sign Up 🎉
+                </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+              <TabsContent value="signin" className="space-y-6 animate-in fade-in slide-in-from-left duration-500">
+                <form onSubmit={handleSignIn} className="space-y-5">
+                  <div className="space-y-3">
+                    <Label htmlFor="signin-email" className="text-lg font-bold flex items-center gap-2">
+                      <span className="text-2xl">📧</span>
+                      Email
+                    </Label>
                     <Input
                       id="signin-email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="your.email@example.com"
                       value={formData.email}
                       onChange={handleInputChange}
+                      className="h-14 text-lg border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="signin-password" className="text-lg font-bold flex items-center gap-2">
+                      <span className="text-2xl">🔐</span>
+                      Password
+                    </Label>
                     <div className="relative">
                       <Input
                         id="signin-password"
@@ -300,84 +335,114 @@ export default function Auth() {
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleInputChange}
+                        className="h-14 text-lg border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-10 px-3 hover:bg-transparent"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </Button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]" disabled={isLoading}>
-                    {isLoading ? "Signing In..." : "Sign In"}
+                  <Button 
+                    type="submit" 
+                    className="w-full h-16 text-xl gap-3 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 hover:from-purple-600 hover:via-pink-600 hover:to-purple-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-3 border-white border-t-transparent"></div>
+                        Signing In...
+                      </>
+                    ) : (
+                      <>
+                        Sign In <Heart className="h-6 w-6 animate-pulse" fill="currentColor" />
+                      </>
+                    )}
                   </Button>
                   
                   <div className="text-center">
                     <Link 
                       to="/forgot-password" 
-                      className="text-sm text-primary hover:underline"
+                      className="text-base text-purple-600 dark:text-purple-400 hover:underline font-semibold"
                     >
-                      Forgot your password?
+                      Forgot your password? 🤔
                     </Link>
                   </div>
                 </form>
               </TabsContent>
               
-              <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={handleSignUp} className="space-y-4">
+              <TabsContent value="signup" className="space-y-6 animate-in fade-in slide-in-from-right duration-500">
+                <form onSubmit={handleSignUp} className="space-y-5">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-firstName">First Name</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="signup-firstName" className="text-base font-bold flex items-center gap-1">
+                        <span className="text-xl">👤</span>
+                        First Name
+                      </Label>
                       <Input
                         id="signup-firstName"
                         name="firstName"
                         type="text"
-                        placeholder="Your first name"
+                        placeholder="John"
                         value={formData.firstName}
                         onChange={handleInputChange}
+                        className="h-12 border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-lastName">Last Name</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="signup-lastName" className="text-base font-bold flex items-center gap-1">
+                        <span className="text-xl">👤</span>
+                        Last Name
+                      </Label>
                       <Input
                         id="signup-lastName"
                         name="lastName"
                         type="text"
-                        placeholder="Your last name"
+                        placeholder="Doe"
                         value={formData.lastName}
                         onChange={handleInputChange}
+                        className="h-12 border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="signup-email" className="text-lg font-bold flex items-center gap-2">
+                      <span className="text-2xl">📧</span>
+                      Email
+                    </Label>
                     <Input
                       id="signup-email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="your.email@example.com"
                       value={formData.email}
                       onChange={handleInputChange}
+                      className="h-14 text-lg border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="signup-password" className="text-lg font-bold flex items-center gap-2">
+                      <span className="text-2xl">🔐</span>
+                      Password
+                    </Label>
                     <div className="relative">
                       <Input
                         id="signup-password"
                         name="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Create a password (min 6 characters)"
+                        placeholder="Create a strong password (min 6 characters)"
                         value={formData.password}
                         onChange={handleInputChange}
+                        className="h-14 text-lg border-2 border-pink-300 dark:border-pink-700 focus:border-pink-500 dark:focus:border-pink-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all hover:shadow-lg"
                         required
                         minLength={6}
                       />
@@ -385,29 +450,60 @@ export default function Auth() {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-10 px-3 hover:bg-transparent"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </Button>
                     </div>
                     {formData.password && formData.password.length > 0 && formData.password.length < 6 && (
-                      <p className="text-sm text-destructive">Password must be at least 6 characters</p>
+                      <p className="text-sm text-red-500 font-semibold flex items-center gap-1">
+                        ⚠️ Password must be at least 6 characters
+                      </p>
                     )}
                   </div>
+
+                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 border-2 border-pink-300 dark:border-pink-700 rounded-2xl p-4">
+                    <p className="text-sm font-medium text-pink-900 dark:text-pink-100 flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5 text-pink-500 animate-pulse" />
+                      <span>
+                        Join thousands of happy pet parents finding trusted sitters! 🎉
+                      </span>
+                    </p>
+                  </div>
+
                   <Button 
                     type="submit" 
-                    className="w-full shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]" 
+                    className="w-full h-16 text-xl gap-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105" 
                     disabled={isLoading || (formData.password && formData.password.length < 6)}
                   >
-                    {isLoading ? "Creating Account..." : "Create Account"}
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-3 border-white border-t-transparent"></div>
+                        Creating Account...
+                      </>
+                    ) : (
+                      <>
+                        Create Account <Sparkles className="h-6 w-6 animate-pulse" />
+                      </>
+                    )}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
 
-            <div className="mt-6 pt-4 border-t border-border/50 text-center text-sm text-muted-foreground">
-              <p>By continuing, you agree to our <Link to="/terms-of-service" className="text-primary hover:underline">Terms of Service</Link> and <Link to="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>.</p>
+            <div className="mt-6 pt-4 border-t border-purple-200 dark:border-purple-800 text-center text-sm">
+              <p className="text-muted-foreground">
+                By continuing, you agree to our{' '}
+                <Link to="/terms-of-service" className="text-purple-600 dark:text-purple-400 hover:underline font-semibold">
+                  Terms of Service
+                </Link>
+                {' '}and{' '}
+                <Link to="/privacy-policy" className="text-purple-600 dark:text-purple-400 hover:underline font-semibold">
+                  Privacy Policy
+                </Link>
+                . 💝
+              </p>
             </div>
           </CardContent>
         </Card>
