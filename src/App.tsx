@@ -56,6 +56,7 @@ import SitterServiceTests from "./pages/SitterServiceTests";
 import PayoutAutomationTests from "./pages/PayoutAutomationTests";
 import SendTestEmail from "./pages/SendTestEmail";
 import AdminStripeReset from "./pages/AdminStripeReset";
+import ChristmasLanding from "./pages/ChristmasLanding";
 import AdminDocumentFix from "./pages/AdminDocumentFix";
 import AdminEmailManagement from "./pages/AdminEmailManagement";
 import AdminLayout from "./pages/AdminLayout";
@@ -237,6 +238,7 @@ function AppContent() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/daily-reports-info" element={<DailyReportsInfo />} />
+            <Route path="/christmas" element={<ChristmasLanding />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
