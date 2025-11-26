@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
 
 interface TermsAcceptanceProps {
@@ -38,7 +37,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 min-h-0 p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur">
           <div className="space-y-4 text-sm">
             <p>
               <strong>Last updated:</strong> 15 October 2025
@@ -102,7 +101,7 @@ export default function TermsAcceptance({ isOpen, onAccept, onDecline }: TermsAc
               </p>
             </section>
           </div>
-        </ScrollArea>
+        </div>
 
         <div className="space-y-4 pt-4 border-t border-purple-200 dark:border-purple-800 flex-shrink-0">
           <div className="flex items-start space-x-3 p-4 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 rounded-xl border-2 border-purple-300 dark:border-purple-700">
