@@ -514,58 +514,100 @@ export default function Onboarding() {
   }
 
   const renderRoleSelection = () => (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">How would you like to use ZiggySitters?</h2>
-        <p className="text-muted-foreground">Choose your role to customize your experience</p>
+    <div className="space-y-8 max-w-3xl mx-auto">
+      <div className="text-center space-y-3">
+        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          How would you like to use ZiggySitters?
+        </h2>
+        <p className="text-base md:text-lg text-muted-foreground">
+          Choose your role to customize your experience
+        </p>
       </div>
       
-      <div className="grid gap-4">
-        <Card 
-          className={`cursor-pointer transition-all hover:shadow-md ${data.role === 'pet_owner' ? 'ring-2 ring-primary' : ''}`}
+      <div className="grid gap-5">
+        <div 
+          className={`relative cursor-pointer transition-all duration-300 transform hover:scale-[1.02] ${
+            data.role === 'pet_owner' ? 'ring-4 ring-purple-400 shadow-2xl' : 'hover:shadow-xl'
+          }`}
           onClick={() => handleRoleSelection('pet_owner')}
         >
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <Heart className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold">Pet Owner</h3>
-                <p className="text-sm text-muted-foreground">Find trusted sitters for your beloved pets</p>
-              </div>
-              <RadioGroup value={data.role || ''}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="pet_owner" id="pet_owner" />
+          <Card className="border-2 border-purple-200 dark:border-purple-800 overflow-hidden bg-gradient-to-br from-purple-50 via-background to-blue-50 dark:from-purple-950/20 dark:via-background dark:to-blue-950/20">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex items-center gap-5">
+                <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Heart className="w-8 h-8 md:w-10 md:h-10 text-white" fill="currentColor" />
                 </div>
-              </RadioGroup>
-            </div>
-          </CardContent>
-        </Card>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 flex items-center gap-2">
+                    Pet Owner
+                    <span className="text-2xl">💜</span>
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Find trusted sitters for your beloved pets
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <RadioGroup value={data.role || ''}>
+                    <div className="flex items-center">
+                      <RadioGroupItem 
+                        value="pet_owner" 
+                        id="pet_owner" 
+                        className="h-6 w-6 border-2 border-purple-500 data-[state=checked]:bg-purple-500"
+                      />
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-        <Card 
-          className={`cursor-pointer transition-all hover:shadow-md ${data.role === 'pet_sitter' ? 'ring-2 ring-primary' : ''}`}
+        <div 
+          className={`relative cursor-pointer transition-all duration-300 transform hover:scale-[1.02] ${
+            data.role === 'pet_sitter' ? 'ring-4 ring-blue-400 shadow-2xl' : 'hover:shadow-xl'
+          }`}
           onClick={() => handleRoleSelection('pet_sitter')}
         >
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <UserCheck className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold">Pet Sitter</h3>
-                <p className="text-sm text-muted-foreground">Offer pet sitting services and earn money</p>
-              </div>
-              <RadioGroup value={data.role || ''}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="pet_sitter" id="pet_sitter" />
+          <Card className="border-2 border-blue-200 dark:border-blue-800 overflow-hidden bg-gradient-to-br from-blue-50 via-background to-indigo-50 dark:from-blue-950/20 dark:via-background dark:to-indigo-950/20">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex items-center gap-5">
+                <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <UserCheck className="w-8 h-8 md:w-10 md:h-10 text-white" />
                 </div>
-              </RadioGroup>
-            </div>
-          </CardContent>
-        </Card>
-
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 flex items-center gap-2">
+                    Pet Sitter
+                    <span className="text-2xl">✨</span>
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Offer pet sitting services and earn money
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <RadioGroup value={data.role || ''}>
+                    <div className="flex items-center">
+                      <RadioGroupItem 
+                        value="pet_sitter" 
+                        id="pet_sitter"
+                        className="h-6 w-6 border-2 border-blue-500 data-[state=checked]:bg-blue-500"
+                      />
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+
+      {data.role && (
+        <div className="text-center mt-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+            <span className="text-lg">👍</span>
+            Great choice! Click Next to continue
+          </p>
+        </div>
+      )}
     </div>
   );
 
@@ -766,74 +808,93 @@ export default function Onboarding() {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 ${isMobile ? 'p-4' : 'py-12'}`}>
-      <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
-        <div className={`max-w-${isMobile ? 'full' : '4xl'} mx-auto`}>
-          <Card className="shadow-2xl border-border/50">
-              <CardHeader className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  <PawPrint className="w-8 h-8 text-primary mr-2" />
-                  <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>Welcome to ZiggySitters</h1>
+    <div className="min-h-screen relative bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 overflow-hidden py-8 md:py-12 px-4">
+      {/* Cute floating animations - only show on step 1 */}
+      {step === 1 && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-1/4 text-4xl md:text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💜</div>
+          <div className="absolute top-32 right-1/4 text-3xl md:text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐾</div>
+          <div className="absolute bottom-32 right-1/3 text-3xl md:text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>🎉</div>
+          <div className="absolute bottom-20 left-1/4 text-4xl md:text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>💙</div>
+        </div>
+      )}
+
+      {/* Playful background blobs */}
+      <div className="absolute inset-0 overflow-hidden -z-10">
+        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="container mx-auto max-w-5xl relative z-10">
+        <Card className="shadow-2xl border-2 border-purple-200 dark:border-purple-800 bg-background/95 backdrop-blur">
+          <CardHeader className="text-center space-y-4 pb-6">
+            <div className="flex items-center justify-center gap-3">
+              <PawPrint className="w-8 h-8 text-primary animate-bounce" />
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Welcome to ZiggySitters!
+              </h1>
+              <span className="text-2xl animate-bounce" style={{ animationDelay: '0.3s' }}>🎉</span>
+            </div>
+                
+            {/* Progress indicator - hide for pet owners at step 2 */}
+            {!(data.role === 'pet_owner' && step >= 2) && (
+              <>
+                <div className="flex justify-center mb-4">
+                  <div className="flex gap-2">
+                    {Array.from({ length: totalSteps }, (_, i) => (
+                      <div
+                        key={i}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          i + 1 <= step 
+                            ? 'bg-gradient-to-r from-purple-500 to-blue-500 scale-110' 
+                            : 'bg-gray-300 dark:bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
                 
-                {/* Progress indicator - hide for pet owners at step 2 */}
-                {!(data.role === 'pet_owner' && step >= 2) && (
-                  <>
-                    <div className="flex justify-center mb-6">
-                      <div className="flex space-x-2">
-                        {Array.from({ length: totalSteps }, (_, i) => (
-                          <div
-                            key={i}
-                            className={`${isMobile ? 'w-2 h-2' : 'w-3 h-3'} rounded-full ${
-                              i + 1 <= step ? 'bg-primary' : 'bg-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
-                      Step {step} of {totalSteps}: {getStepTitle()}
-                    </CardTitle>
-                  </>
-                )}
-              </CardHeader>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  Step {step} of {totalSteps}: {getStepTitle()}
+                </p>
+              </>
+            )}
+          </CardHeader>
               
-              <CardContent className={data.role === 'pet_owner' && step >= 2 ? 'p-0' : (isMobile ? 'p-4' : 'p-6')}>
-                {step === 1 && renderRoleSelection()}
-                {step === 2 && data.role === 'pet_sitter' && renderBasicInfo()}
-                {step === 2 && data.role === 'pet_owner' && renderRoleSpecificOnboarding()}
-                {step >= 3 && data.role === 'pet_sitter' && renderRoleSpecificOnboarding()}
-              </CardContent>
+          <CardContent className={data.role === 'pet_owner' && step >= 2 ? 'p-0' : 'p-6 md:p-8'}>
+            {step === 1 && renderRoleSelection()}
+            {step === 2 && data.role === 'pet_sitter' && renderBasicInfo()}
+            {step === 2 && data.role === 'pet_owner' && renderRoleSpecificOnboarding()}
+            {step >= 3 && data.role === 'pet_sitter' && renderRoleSpecificOnboarding()}
+          </CardContent>
+          
+          {/* Navigation buttons - hide for pet owners after step 1 */}
+          {step <= 2 && !(data.role === 'pet_owner' && step >= 2) && (
+            <div className="flex justify-between gap-4 px-6 pb-6 pt-0">
+              <Button
+                variant="outline"
+                onClick={prevStep}
+                disabled={step === 1}
+                className="px-6 border-2 border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+              >
+                Previous
+              </Button>
               
-              {/* Navigation buttons - hide for pet owners after step 1 */}
-              {step <= 2 && !(data.role === 'pet_owner' && step >= 2) && (
-                <div className={`flex justify-between ${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
-                  <Button
-                    variant="outline"
-                    onClick={prevStep}
-                    disabled={step === 1}
-                    className={isMobile ? 'px-4' : 'px-6'}
-                  >
-                    Previous
-                  </Button>
-                  
-                  <Button
-                    onClick={nextStep}
-                    disabled={
-                      isLoading ||
-                      (step === 1 && !data.role) ||
-                      (step === 2 && (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb))
-                    }
-                    className={isMobile ? 'px-4' : 'px-6'}
-                  >
-                    {step === 2 ? 'Save & Continue' : 'Next'}
-                  </Button>
-                </div>
-              )}
-            </Card>
-          </div>
-        </div>
+              <Button
+                onClick={nextStep}
+                disabled={
+                  isLoading ||
+                  (step === 1 && !data.role) ||
+                  (step === 2 && (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb))
+                }
+                className="px-6 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 hover:from-purple-600 hover:via-blue-600 hover:to-indigo-600 shadow-lg"
+              >
+                {step === 2 ? 'Save & Continue ✨' : 'Next 🎉'}
+              </Button>
+            </div>
+          )}
+        </Card>
       </div>
+    </div>
   );
 }
