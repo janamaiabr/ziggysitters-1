@@ -22,7 +22,7 @@ serve(async (req) => {
 
     console.log(`[MANUAL-NOTIFICATION] Processing booking: ${booking_reference}`);
 
-    // Get booking details
+    // Get booking details with sitter's Stripe status
     const { data: booking, error: bookingError } = await supabaseClient
       .from('bookings')
       .select(`
@@ -33,7 +33,14 @@ serve(async (req) => {
         end_date,
         total_amount,
         owner:profiles!bookings_owner_id_fkey(first_name, last_name),
-        sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name)
+        sitter:profiles!bookings_sitter_id_fkey(
+          email, 
+          first_name, 
+          last_name,
+          stripe_account_id,
+          stripe_account_enabled,
+          stripe_onboarding_completed
+        )
       `)
       .eq('booking_reference', booking_reference)
       .maybeSingle();
@@ -46,10 +53,22 @@ serve(async (req) => {
       throw new Error(`Booking not found: ${booking_reference}`);
     }
 
-    console.log(`[MANUAL-NOTIFICATION] Found booking, sending notification to ${booking.sitter.email}`);
+    console.log(`[MANUAL-NOTIFICATION] Found booking, checking sitter Stripe status`);
 
-    // Invoke send-booking-notification
-    const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-booking-notification', {
+    // Check if sitter has Stripe setup completed
+    const hasStripeSetup = booking.sitter.stripe_account_id && 
+                          booking.sitter.stripe_account_enabled;
+
+    // Determine which notification function to use
+    const notificationFunction = hasStripeSetup 
+      ? 'send-booking-notification' 
+      : 'send-booking-notification-no-stripe';
+
+    console.log(`[MANUAL-NOTIFICATION] Using ${notificationFunction} for ${booking.sitter.email}`);
+    console.log(`[MANUAL-NOTIFICATION] Stripe status: accountId=${booking.sitter.stripe_account_id}, enabled=${booking.sitter.stripe_account_enabled}`);
+
+    // Invoke the appropriate notification function
+    const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke(notificationFunction, {
       body: {
         booking_id: booking.id,
         sitter_email: booking.sitter.email,
@@ -72,7 +91,8 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: `Notification sent to ${booking.sitter.email}`,
+      message: `${hasStripeSetup ? 'Standard' : 'Stripe setup required'} notification sent to ${booking.sitter.email}`,
+      notification_type: notificationFunction,
       emailResult 
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
