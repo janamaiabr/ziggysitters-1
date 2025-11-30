@@ -389,6 +389,26 @@ export default function Bookings() {
             total_amount: acceptedBooking.total_amount
           }
         });
+        
+        // Send admin status update notification
+        await supabase.functions.invoke('send-admin-status-update', {
+          body: {
+            booking_reference: acceptedBooking.booking_reference,
+            old_status: 'pending',
+            new_status: 'awaiting_payment',
+            owner_name: `${acceptedBooking.owner.first_name} ${acceptedBooking.owner.last_name}`,
+            owner_email: acceptedBooking.owner.email,
+            sitter_name: `${profile.first_name} ${profile.last_name}`,
+            sitter_email: profile.email,
+            service_type: acceptedBooking.service_type,
+            start_date: acceptedBooking.start_date,
+            end_date: acceptedBooking.end_date,
+            total_amount: acceptedBooking.total_amount,
+            platform_fee: acceptedBooking.platform_fee,
+            payment_status: 'pending',
+            additional_info: `Sitter ${profile.first_name} ${profile.last_name} has accepted the booking. Waiting for pet owner to complete payment.`
+          }
+        }).catch(err => console.error('Admin notification failed:', err));
       }
 
       toast({
@@ -432,6 +452,25 @@ export default function Bookings() {
           total_amount: booking.total_amount
         }
       });
+      
+      // Send admin status update
+      await supabase.functions.invoke('send-admin-status-update', {
+        body: {
+          booking_reference: booking.booking_reference,
+          old_status: 'pending',
+          new_status: 'declined',
+          owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+          owner_email: booking.owner.email,
+          sitter_name: `${profile.first_name} ${profile.last_name}`,
+          sitter_email: profile.email,
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date,
+          total_amount: booking.total_amount,
+          platform_fee: booking.platform_fee,
+          additional_info: `Booking declined by sitter ${profile.first_name} ${profile.last_name}.`
+        }
+      }).catch(err => console.error('Admin notification failed:', err));
 
       toast({
         title: "Booking Declined",

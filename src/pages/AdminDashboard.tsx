@@ -17,6 +17,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import PayoutsTab from '@/components/admin/PayoutsTab';
+import BookingTracker from '@/components/admin/BookingTracker';
 
 // Use the safe public sitter profiles type that doesn't expose sensitive data
 type PublicSitterProfile = {
@@ -372,8 +373,12 @@ export default function AdminDashboard() {
           <p className="text-gray-600">Manage pet sitter applications and verifications</p>
         </div>
 
-      <Tabs defaultValue="all-users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+      <Tabs defaultValue="bookings" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="bookings" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Bookings
+          </TabsTrigger>
           <TabsTrigger value="all-users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             All Users ({allUsers.length})
@@ -399,6 +404,10 @@ export default function AdminDashboard() {
             Marketing
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="bookings">
+          <BookingTracker />
+        </TabsContent>
 
         <TabsContent value="all-users">
           <Card>
