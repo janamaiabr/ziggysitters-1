@@ -347,6 +347,20 @@ export default function Profile() {
     }
   };
 
+  // Phone validation function for New Zealand numbers
+  const validateNZPhone = (phone: string): boolean => {
+    // Remove spaces, hyphens, and parentheses
+    const cleaned = phone.replace(/[\s\-()]/g, '');
+    
+    // NZ mobile: 02x xxx xxxx or +6421/22/27/28/29 followed by 6-8 digits
+    const nzMobileRegex = /^(?:\+?64|0)2[1-9]\d{6,8}$/;
+    
+    // NZ landline: 0x xxx xxxx (3-9 area codes)
+    const nzLandlineRegex = /^(?:\+?64|0)[3-9]\d{7,9}$/;
+    
+    return nzMobileRegex.test(cleaned) || nzLandlineRegex.test(cleaned);
+  };
+
   const handleSaveProfile = async () => {
     if (!profile) return;
 
@@ -376,6 +390,16 @@ export default function Profile() {
       toast({
         title: "Invalid email",
         description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate phone number for sitters
+    if (profile.role === 'pet_sitter' && editData.phone && !validateNZPhone(editData.phone)) {
+      toast({
+        title: "Invalid phone number",
+        description: "Please enter a valid New Zealand phone number (e.g., 021 123 4567 or +64 21 123 4567).",
         variant: "destructive",
       });
       return;
@@ -1162,8 +1186,16 @@ export default function Profile() {
                             value={editData.phone}
                             onChange={(e) => setEditData({...editData, phone: e.target.value})}
                             required
-                            placeholder="Required"
+                            placeholder="e.g., 021 123 4567 or +64 21 123 4567"
+                            className={profile?.role === 'pet_sitter' && editData.phone && !validateNZPhone(editData.phone) ? 'border-destructive' : ''}
                           />
+                          {profile?.role === 'pet_sitter' && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {editData.phone && !validateNZPhone(editData.phone) 
+                                ? '⚠️ Please enter a valid NZ phone number' 
+                                : 'Valid NZ mobile or landline number required'}
+                            </p>
+                          )}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
