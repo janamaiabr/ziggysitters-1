@@ -17,6 +17,20 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/contexts/ProfileContext';
 
+// Phone validation function for New Zealand numbers
+const validateNZPhone = (phone: string): boolean => {
+  // Remove spaces, hyphens, and parentheses
+  const cleaned = phone.replace(/[\s\-()]/g, '');
+  
+  // NZ mobile: 02x xxx xxxx or +6421/22/27/28/29 followed by 6-8 digits
+  const nzMobileRegex = /^(?:\+?64|0)2[1-9]\d{6,8}$/;
+  
+  // NZ landline: 0x xxx xxxx (3-9 area codes)
+  const nzLandlineRegex = /^(?:\+?64|0)[3-9]\d{7,9}$/;
+  
+  return nzMobileRegex.test(cleaned) || nzLandlineRegex.test(cleaned);
+};
+
 type UserRole = 'pet_owner' | 'pet_sitter';
 
 interface OnboardingData {
@@ -343,6 +357,28 @@ export default function Onboarding() {
       console.log('=== Saving basic profile ===');
       console.log('user?.id:', user?.id);
       
+      // Validate required fields
+      if (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb) {
+        toast({
+          title: "Missing required fields",
+          description: "Please fill in all required fields (marked with *).",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate phone number for sitters
+      if (data.role === 'pet_sitter' && !validateNZPhone(data.phone)) {
+        toast({
+          title: "Invalid phone number",
+          description: "Please enter a valid New Zealand phone number (e.g., 021 123 4567 or +64 21 123 4567).",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       // Update profile with basic info
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -664,11 +700,19 @@ export default function Onboarding() {
             <Input
               id="phone"
               type="tel"
-              placeholder="Your mobile number"
+              placeholder="e.g., 021 123 4567 or +64 21 123 4567"
               value={data.phone || ''}
               onChange={(e) => handleInputChange('phone', e.target.value)}
               required
+              className={data.role === 'pet_sitter' && data.phone && !validateNZPhone(data.phone) ? 'border-destructive' : ''}
             />
+            {data.role === 'pet_sitter' && (
+              <p className="text-xs text-muted-foreground mt-1">
+                {data.phone && !validateNZPhone(data.phone) 
+                  ? '⚠️ Please enter a valid NZ phone number' 
+                  : 'Valid NZ mobile or landline number required'}
+              </p>
+            )}
           </div>
         <div className="space-y-2">
           <Label htmlFor="postal_code">Postcode</Label>

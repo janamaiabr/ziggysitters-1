@@ -13,6 +13,41 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format, eachDayOfInterval, parseISO } from 'date-fns';
 
+// Phone validation function for New Zealand numbers
+const validateNZPhone = (phone: string): boolean => {
+  // Remove spaces, hyphens, and parentheses
+  const cleaned = phone.replace(/[\s\-()]/g, '');
+  
+  // NZ mobile: 02x xxx xxxx or +6421/22/27/28/29 followed by 6-8 digits
+  const nzMobileRegex = /^(?:\+?64|0)2[1-9]\d{6,8}$/;
+  
+  // NZ landline: 0x xxx xxxx (3-9 area codes)
+  const nzLandlineRegex = /^(?:\+?64|0)[3-9]\d{7,9}$/;
+  
+  return nzMobileRegex.test(cleaned) || nzLandlineRegex.test(cleaned);
+};
+
+const formatNZPhone = (phone: string): string => {
+  // Remove all non-numeric characters except +
+  const cleaned = phone.replace(/[^\d+]/g, '');
+  
+  // If it starts with +64, format as +64 xx xxx xxxx
+  if (cleaned.startsWith('+64')) {
+    const digits = cleaned.substring(3);
+    if (digits.length >= 2) {
+      return `+64 ${digits.substring(0, 2)} ${digits.substring(2, 5)} ${digits.substring(5)}`.trim();
+    }
+    return cleaned;
+  }
+  
+  // If it starts with 0, format as 0xx xxx xxxx
+  if (cleaned.startsWith('0') && cleaned.length >= 3) {
+    return `${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6)}`.trim();
+  }
+  
+  return cleaned;
+};
+
 interface Service {
   service_type: 'drop_in_visits' | 'pet_sitting_owners_home' | 'pet_sitting_sitters_home';
   hourly_rate?: number;
