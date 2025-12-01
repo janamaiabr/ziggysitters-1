@@ -552,6 +552,44 @@ export default function AdminUserDetails() {
     setShowEmailDialog(true);
   };
 
+  const handleResetStripeAccount = async () => {
+    if (!profile) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to reset ${profile.first_name}'s Stripe account? This will allow them to re-connect their Stripe account.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          stripe_account_id: null,
+          stripe_account_enabled: false,
+          stripe_onboarding_completed: false
+        })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Stripe account has been reset. User can now reconnect their account.",
+      });
+
+      // Refresh profile to show updated status
+      fetchUserProfile();
+    } catch (error) {
+      console.error('Error resetting Stripe account:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reset Stripe account",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading || !isAdmin) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -799,19 +837,32 @@ export default function AdminUserDetails() {
                   Payment Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Stripe Account</label>
-                  <p className="text-sm">{profile.stripe_account_id || 'Not connected'}</p>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Stripe Account</label>
+                    <p className="text-sm">{profile.stripe_account_id || 'Not connected'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Account Enabled</label>
+                    <p className="text-sm">{profile.stripe_account_enabled ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Onboarding Completed</label>
+                    <p className="text-sm">{profile.stripe_onboarding_completed ? 'Yes' : 'No'}</p>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Account Enabled</label>
-                  <p className="text-sm">{profile.stripe_account_enabled ? 'Yes' : 'No'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Onboarding Completed</label>
-                  <p className="text-sm">{profile.stripe_onboarding_completed ? 'Yes' : 'No'}</p>
-                </div>
+                <Button 
+                  variant="destructive"
+                  onClick={handleResetStripeAccount}
+                  className="w-full"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Reset Stripe Account
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Use this if the user is experiencing issues connecting their Stripe account (e.g., "email already exists" error). After reset, they can re-onboard from their profile page.
+                </p>
               </CardContent>
             </Card>
           )}
