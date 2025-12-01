@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2, StickyNote, Star } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, MapPin, FileText, Users, Eye, Rocket, Mail, Trash2, StickyNote, Star, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,6 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import BookingTracker from '@/components/admin/BookingTracker';
 
@@ -62,6 +63,7 @@ export default function AdminDashboard() {
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [documentFilter, setDocumentFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   
   // Admin notes dialog
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
@@ -345,6 +347,18 @@ export default function AdminDashboard() {
   
   // Apply filters to all users
   const filteredUsers = allUsers.filter(user => {
+    // Search filter - check name, email, phone
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+      const email = user.email?.toLowerCase() || '';
+      const phone = user.phone?.toLowerCase() || '';
+      
+      if (!fullName.includes(query) && !email.includes(query) && !phone.includes(query)) {
+        return false;
+      }
+    }
+    
     // Role filter
     if (roleFilter !== 'all' && user.role !== roleFilter) return false;
     
@@ -414,8 +428,22 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle>All Platform Users</CardTitle>
               
-              {/* Filters */}
+              {/* Search and Filters */}
               <div className="flex flex-wrap gap-4 mt-4 items-end">
+                <div className="flex-1 min-w-[250px]">
+                  <Label htmlFor="search-query" className="text-sm font-medium mb-2 block">Search</Label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="search-query"
+                      placeholder="Search by name, email, or phone..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                
                 <div className="flex-1 min-w-[200px]">
                   <Label htmlFor="role-filter" className="text-sm font-medium mb-2 block">Role</Label>
                   <Select value={roleFilter} onValueChange={setRoleFilter}>
