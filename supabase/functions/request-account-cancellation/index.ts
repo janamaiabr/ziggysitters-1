@@ -25,6 +25,26 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Account cancellation request received:', { userId, userEmail, userName });
 
+    // Create Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.39.3');
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Store cancellation request in database
+    const { error: dbError } = await supabase
+      .from('account_cancellation_requests')
+      .insert({
+        user_id: userId,
+        email: userEmail,
+        user_name: userName,
+        reason: reason
+      });
+
+    if (dbError) {
+      console.error('Error storing cancellation request:', dbError);
+    }
+
     // Send notification to admin
     const adminEmailResponse = await resend.emails.send({
       from: "PetBNB <noreply@petbnb.co.nz>",

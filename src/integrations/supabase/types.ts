@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_cancellation_requests: {
+        Row: {
+          email: string
+          id: string
+          processed: boolean | null
+          processed_at: string | null
+          processed_by: string | null
+          reason: string
+          requested_at: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          processed?: boolean | null
+          processed_at?: string | null
+          processed_by?: string | null
+          reason: string
+          requested_at?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          processed?: boolean | null
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string
+          requested_at?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           booking_reference: string | null
@@ -228,6 +264,42 @@ export type Database = {
           updated_at?: string
           viewed_at?: string | null
           viewed_by_owner?: boolean | null
+        }
+        Relationships: []
+      }
+      deleted_users: {
+        Row: {
+          cancellation_reason: string | null
+          created_at: string
+          deleted_at: string
+          deleted_by_admin: string | null
+          email: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cancellation_reason?: string | null
+          created_at?: string
+          deleted_at?: string
+          deleted_by_admin?: string | null
+          email: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cancellation_reason?: string | null
+          created_at?: string
+          deleted_at?: string
+          deleted_by_admin?: string | null
+          email?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
