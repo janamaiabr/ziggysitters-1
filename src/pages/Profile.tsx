@@ -13,8 +13,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle, Settings, UserX } from 'lucide-react';
 import { format } from 'date-fns';
 import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 import PetsManagement from '@/components/PetsManagement';
@@ -47,6 +49,9 @@ export default function Profile() {
   } | null>(null);
   const [checkingStripe, setCheckingStripe] = useState(false);
   const [connectingStripe, setConnectingStripe] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [submittingCancel, setSubmittingCancel] = useState(false);
 
   // Handle URL tab parameter on mount
   useEffect(() => {
@@ -872,6 +877,48 @@ export default function Profile() {
     }
   };
 
+  const handleCancelAccount = async () => {
+    if (!cancelReason.trim()) {
+      toast({
+        title: "Reason Required",
+        description: "Please provide a reason for cancelling your account.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSubmittingCancel(true);
+    try {
+      const { error } = await supabase.functions.invoke('request-account-cancellation', {
+        body: {
+          userId: user?.id,
+          userEmail: profile?.email,
+          userName: `${profile?.first_name} ${profile?.last_name}`,
+          reason: cancelReason
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Cancellation Request Submitted",
+        description: "Your account cancellation request has been submitted. Our team will contact you within 24-48 hours.",
+      });
+
+      setShowCancelDialog(false);
+      setCancelReason('');
+    } catch (error: any) {
+      console.error('Error submitting cancellation request:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit cancellation request.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmittingCancel(false);
+    }
+  };
+
   const handleProfilePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !profile) return;
@@ -1075,7 +1122,7 @@ export default function Profile() {
 
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-4' : profile.is_verified ? 'grid-cols-6' : 'grid-cols-7'}`}>
+          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-5' : profile.is_verified ? 'grid-cols-7' : 'grid-cols-8'}`}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             {profile.role === 'pet_owner' && (
               <>
@@ -1099,6 +1146,7 @@ export default function Profile() {
                 )}
               </>
             )}
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -1930,6 +1978,107 @@ export default function Profile() {
               <SitterDailyReports />
             </TabsContent>
           )}
+
+          {/* Account Settings Tab */}
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Settings className="mr-2 h-5 w-5" />
+                  Account Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Account Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Account Information</h3>
+                  <div className="grid gap-3 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Email:</span>
+                      <span className="ml-2 font-medium">{profile.email}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Account Type:</span>
+                      <span className="ml-2 font-medium capitalize">{profile.role.replace('_', ' ')}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Member Since:</span>
+                      <span className="ml-2 font-medium">{format(new Date(profile.created_at), 'MMMM d, yyyy')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Danger Zone */}
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold text-destructive mb-4">Danger Zone</h3>
+                  <Card className="border-destructive">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-semibold mb-2">Cancel Account</h4>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Request to permanently delete your account and all associated data. 
+                            This action cannot be undone. Our team will review your request and contact you within 24-48 hours.
+                          </p>
+                        </div>
+                      </div>
+                      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive">
+                            <UserX className="w-4 h-4 mr-2" />
+                            Request Account Cancellation
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Request Account Cancellation</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              We're sorry to see you go. Please tell us why you're cancelling your account so we can improve our service.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <div className="py-4">
+                            <Label htmlFor="cancel-reason" className="mb-2 block">
+                              Reason for cancellation <span className="text-destructive">*</span>
+                            </Label>
+                            <Textarea
+                              id="cancel-reason"
+                              placeholder="Please tell us why you're cancelling..."
+                              value={cancelReason}
+                              onChange={(e) => setCancelReason(e.target.value)}
+                              rows={4}
+                              className="resize-none"
+                            />
+                            <p className="text-xs text-muted-foreground mt-2">
+                              A detailed explanation helps us understand and improve our platform.
+                            </p>
+                          </div>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setCancelReason('')}>
+                              Keep My Account
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleCancelAccount}
+                              disabled={submittingCancel || !cancelReason.trim()}
+                              className="bg-destructive hover:bg-destructive/90"
+                            >
+                              {submittingCancel ? (
+                                <>
+                                  <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                  Submitting...
+                                </>
+                              ) : (
+                                'Submit Cancellation Request'
+                              )}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
