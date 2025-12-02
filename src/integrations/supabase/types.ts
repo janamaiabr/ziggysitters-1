@@ -1275,6 +1275,7 @@ export type Database = {
           city: string | null
           created_at: string | null
           first_name: string | null
+          golden_badge_approved: boolean | null
           id: string | null
           is_verified: boolean | null
           last_name: string | null
@@ -1291,6 +1292,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           first_name?: string | null
+          golden_badge_approved?: boolean | null
           id?: string | null
           is_verified?: boolean | null
           last_name?: string | null
@@ -1307,6 +1309,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           first_name?: string | null
+          golden_badge_approved?: boolean | null
           id?: string | null
           is_verified?: boolean | null
           last_name?: string | null

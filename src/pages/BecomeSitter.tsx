@@ -43,18 +43,18 @@ const steps = [
   },
   {
     step: 2,
-    title: 'Get Verified',
-    description: 'Upload your ID (required) and Police Vet check (optional gold badge)'
+    title: 'Start Earning Immediately',
+    description: 'Set services and rates - you\'re bookable right away!'
   },
   {
     step: 3,
-    title: 'Set Your Services',
-    description: 'Choose what services to offer and set your rates'
+    title: 'Get Verified (Optional)',
+    description: 'Upload ID for verified badge, or police vet for gold star'
   },
   {
     step: 4,
-    title: 'Start Earning',
-    description: 'Receive booking requests and start caring for pets'
+    title: 'Build Your Reputation',
+    description: 'Complete bookings, earn reviews, and gain trust badges'
   }
 ];
 

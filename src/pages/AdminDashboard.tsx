@@ -388,10 +388,14 @@ export default function AdminDashboard() {
         </div>
 
       <Tabs defaultValue="bookings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="bookings" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Bookings
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Documents
           </TabsTrigger>
           <TabsTrigger value="all-users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
@@ -421,6 +425,65 @@ export default function AdminDashboard() {
 
         <TabsContent value="bookings">
           <BookingTracker />
+        </TabsContent>
+
+        <TabsContent value="documents">
+          <Card>
+            <CardHeader>
+              <CardTitle>Document Review Quick Access</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                Review and approve sitter verification documents (ID verification and police vet checks for gold star badges).
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <Shield className="h-12 w-12 mx-auto mb-3 text-blue-600" />
+                      <h3 className="font-semibold mb-2">ID Verification</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {pendingSitters.length} pending
+                      </p>
+                      <Button onClick={() => navigate('/admin/documents')}>
+                        Review Now
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <Star className="h-12 w-12 mx-auto mb-3 text-yellow-500" />
+                      <h3 className="font-semibold mb-2">Gold Star Badge</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Police vet checks
+                      </p>
+                      <Button onClick={() => navigate('/admin/documents')}>
+                        Review Now
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-600" />
+                      <h3 className="font-semibold mb-2">Approved</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {approvedSitters.length} sitters
+                      </p>
+                      <Button variant="outline" onClick={() => navigate('/admin/documents')}>
+                        View All
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="all-users">

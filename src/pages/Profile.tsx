@@ -309,19 +309,20 @@ export default function Profile() {
 
       if (updateError) throw updateError;
 
-      // Send verification request email when documents are uploaded
+      // Send admin notification about document upload
       try {
-        await supabase.functions.invoke('send-verification-request-email', {
+        const documentType = type === 'id' ? 'id_verification' : 'vet_check';
+        await supabase.functions.invoke('send-sitter-document-notification', {
           body: {
-            user_name: `${profile.first_name} ${profile.last_name}`,
-            user_email: profile.email,
-            user_id: profile.id,
-            documents_uploaded: true
+            sitter_id: profile.id,
+            document_type: documentType,
+            sitter_name: `${profile.first_name} ${profile.last_name}`,
+            sitter_email: profile.email
           }
         });
       } catch (emailError) {
-        console.error('Error sending verification email:', emailError);
-        // Don't fail the whole operation if email fails
+        console.error('Error sending document notification:', emailError);
+        // Don't block upload if notification fails
       }
 
       toast({

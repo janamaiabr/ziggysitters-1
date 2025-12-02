@@ -53,6 +53,12 @@ const navSections = [
         description: 'View and manage all users, verify sitters, and edit profiles',
       },
       {
+        title: 'Document Review',
+        href: '/admin/documents',
+        icon: ShieldCheck,
+        description: 'Review and approve ID verifications and gold badges',
+      },
+      {
         title: 'Document Verification',
         href: '/admin/document-fix',
         icon: ShieldCheck,
