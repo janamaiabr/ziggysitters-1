@@ -478,34 +478,41 @@ export default function Onboarding() {
       });
 
       if (updateError) {
-        console.error('Error marking onboarding complete:', updateError);
-        toast({
-          title: "Error completing onboarding",
-          description: updateError.message || "Please try again.",
-          variant: "destructive",
-        });
-        return;
+        console.error('Error updating profile:', updateError);
+        throw updateError;
       }
 
-      console.log('Onboarding marked as complete in DB and context');
-      
-      // Clear localStorage after successful completion
-      localStorage.removeItem('onboarding_data');
+      // Send admin notification about new sitter completion
+      try {
+        console.log('Sending admin notification for new sitter');
+        await supabase.functions.invoke('send-welcome-email', {
+          body: {
+            user_id: user?.id,
+            user_email: user?.email,
+            user_name: `${profile?.first_name} ${profile?.last_name}`,
+            user_role: 'pet_sitter'
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending admin notification:', emailError);
+        // Don't block onboarding if email fails
+      }
+
+      console.log('Profile updated successfully, clearing localStorage');
       localStorage.removeItem('onboarding_step');
+      localStorage.removeItem('onboarding_data');
+      localStorage.removeItem('sitter_onboarding_data');
+      localStorage.removeItem('sitter_onboarding_step');
       
-      // Wait a brief moment for state to propagate
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      console.log('Showing success toast');
       toast({
         title: "Welcome to ZiggySitters!",
-        description: "Your sitter profile is set up! Our team will review and approve your profile within 1-2 business days.",
+        description: "Your sitter profile is live! You can now receive bookings. Upload ID to get verified badge.",
         duration: 5000,
       });
       
-      // Navigate to onboarding-pending-approval page
-      console.log('Navigating to /onboarding-pending-approval');
-      navigate('/onboarding-pending-approval', { replace: true });
+      // Navigate to profile page to show success
+      console.log('Navigating to /profile');
+      navigate('/profile', { replace: true });
     } catch (error: any) {
       console.error('Error in handleSitterOnboardingComplete:', error);
       toast({

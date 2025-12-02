@@ -23,6 +23,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 
 interface SitterData {
   id: string;
@@ -284,17 +285,10 @@ export default function SitterProfile() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <h1 className="text-3xl font-bold">{sitterData.display_name}</h1>
-                {sitterData.verified === true && (
-                  <Badge variant="secondary" className="text-xs">
-                    <Shield className="mr-1 h-3 w-3" />
-                    Verified
-                  </Badge>
-                )}
-                {sitterData.hasPoliceVet && (
-                  <Badge variant="default" className="text-xs bg-yellow-500">
-                    ⭐ Police Vet
-                  </Badge>
-                )}
+                <SitterVerificationBadge 
+                  isVerified={sitterData.verified || false}
+                  hasGoldenBadge={sitterData.hasPoliceVet || false}
+                />
               </div>
               
               <div className="flex items-center text-muted-foreground mb-4">

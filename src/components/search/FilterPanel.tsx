@@ -166,13 +166,16 @@ export default function FilterPanel({ isOpen, onClose, onApplyFilters, currentFi
       <Separator />
 
       {/* Additional Options */}
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="verified"
-          checked={verifiedOnly}
-          onCheckedChange={(checked) => setVerifiedOnly(checked === true)}
-        />
-        <Label htmlFor="verified" className="text-sm">Verified sitters only</Label>
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Trust Level</Label>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="verified"
+            checked={verifiedOnly}
+            onCheckedChange={(checked) => setVerifiedOnly(checked === true)}
+          />
+          <Label htmlFor="verified" className="text-sm">ID verified or gold star only</Label>
+        </div>
       </div>
 
       {/* Active Filters */}

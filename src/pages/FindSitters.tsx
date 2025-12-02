@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Filter, Search, X, Home } from 'lucide-react';
+import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
@@ -43,7 +44,7 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch all verified pet sitters with golden badge status
+      // Fetch ALL sitters who have completed onboarding (regardless of verification status)
         const { data: sitterProfilesData, error: sitterProfilesError } = await supabase
           .from('public_sitters')
           .select('*');
@@ -534,11 +535,13 @@ export default function FindSitters() {
                           </div>
                         )}
                     </div>
-                    {sitter.verified && (
-                      <Badge className="absolute top-2 right-2 bg-green-500 text-white">
-                        Verified
-                      </Badge>
-                    )}
+                    <div className="absolute top-2 right-2">
+                      <SitterVerificationBadge 
+                        isVerified={sitter.verified}
+                        hasGoldenBadge={sitter.golden_badge}
+                        size="sm"
+                      />
+                    </div>
                   </div>
                   
                   <CardHeader className="pb-2">
@@ -676,11 +679,13 @@ export default function FindSitters() {
                           </div>
                         )}
                       </div>
-                      {sitter.verified && (
-                        <Badge className="absolute top-2 right-2 bg-green-500 text-white">
-                          Verified
-                        </Badge>
-                      )}
+                      <div className="absolute top-2 right-2">
+                        <SitterVerificationBadge 
+                          isVerified={sitter.verified}
+                          hasGoldenBadge={sitter.golden_badge}
+                          size="sm"
+                        />
+                      </div>
                     </div>
                     
                     <CardHeader className="pb-2">

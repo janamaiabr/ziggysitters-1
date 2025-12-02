@@ -23,6 +23,7 @@ import Bookings from "./pages/Bookings";
 import BookingDetails from "./pages/BookingDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUserDetails from "./pages/AdminUserDetails";
+import AdminDocumentReview from "./pages/AdminDocumentReview";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import DailyReports from "./pages/DailyReports";
@@ -196,6 +197,8 @@ function AppContent() {
             {/* Admin Routes - Wrapped in AdminLayout with Sidebar */}
             <Route element={<AdminLayout />}>
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/documents" element={<AdminDocumentReview />} />
               <Route path="/admin/user/:id" element={<AdminUserDetails />} />
               <Route path="/admin/email-management" element={<AdminEmailManagement />} />
               <Route path="/admin/promo-codes" element={<AdminPromoCodeManagement />} />

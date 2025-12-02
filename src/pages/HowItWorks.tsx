@@ -63,13 +63,13 @@ const forSitters = [
 const safetyFeatures = [
   {
     icon: Shield,
-    title: 'Profile Verification',
-    description: 'All sitters complete identity verification and profile validation'
+    title: 'Three Trust Levels',
+    description: 'New sitters, ID verified sitters, and gold star sitters (police vet check)'
   },
   {
     icon: UserCheck,
-    title: 'Identity Verification',
-    description: 'ID verification (i.e. passport or drivers licence) for all platform members'
+    title: 'Identity Verification Available',
+    description: 'Sitters can verify their ID to earn trust badges and stand out'
   },
   {
     icon: Star,
@@ -399,7 +399,7 @@ export default function HowItWorks() {
             {[
               {
                 question: 'How are pet sitters verified on ZiggySitters?',
-                answer: 'All pet sitters on ZiggySitters complete comprehensive identity verification including passport or driver\'s license validation, and profile validation before joining our platform. We verify their information and ensure they meet our safety and reliability standards.'
+                answer: 'ZiggySitters has three sitter trust levels: New sitters (can be booked immediately), ID Verified sitters (submitted and approved ID documents), and Gold Star sitters (completed police vet check). All levels can accept bookings.'
               },
               {
                 question: 'What happens if a pet sitter doesn\'t send daily updates when requested?',
