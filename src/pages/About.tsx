@@ -24,8 +24,8 @@ export default function About() {
     },
     {
       icon: Shield,
-      title: 'Safety First',
-      description: "Verified sitters and secure platform ensure your pet's safety and your peace of mind."
+      title: 'Trust & Safety',
+      description: "Three-tier verification system (New, ID Verified, Gold Star) and secure platform ensure your pet's safety."
     },
     {
       icon: Star,

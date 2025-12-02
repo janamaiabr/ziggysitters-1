@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Shield, Heart, Camera, DollarSign, CheckCircle, AlertCircle } from 'lucide-react';
+import { Shield, Heart, Camera, DollarSign, CheckCircle, AlertCircle, Star } from 'lucide-react';
 
 export default function FAQ() {
   const structuredData = {
@@ -34,7 +34,7 @@ export default function FAQ() {
         "name": "Are sitters insured and vetted?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "All sitters must complete verification including a police check, ID verification, and written references before accepting bookings. While sitters are encouraged to maintain their own public liability insurance, this is not mandatory. Each sitter's verification status is clearly displayed on their profile."
+          "text": "We have a three-tier verification system: New Sitters (recently joined), ID Verified (government ID approved), and Gold Star Verified (ID + police vet check). All sitters can accept bookings, and verification badges are clearly displayed. While sitters are encouraged to maintain their own public liability insurance, this is not mandatory. Each sitter's verification status is clearly displayed on their profile."
         }
       },
       {
@@ -176,19 +176,33 @@ export default function FAQ() {
             </div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="vetting">
-                <AccordionTrigger>How are sitters vetted?</AccordionTrigger>
+                <AccordionTrigger>How are sitters vetted and verified?</AccordionTrigger>
                 <AccordionContent>
-                  <p className="mb-3">All sitters must complete a comprehensive verification process before accepting bookings:</p>
-                  <ul className="list-disc ml-6 space-y-2">
-                    <li><strong>Police Check:</strong> Clear criminal background check from New Zealand Police</li>
-                    <li><strong>ID Verification:</strong> Government-issued photo ID (passport or driver's license)</li>
-                    <li><strong>Written References:</strong> References from previous pet owners or character references</li>
-                    <li><strong>Profile Review:</strong> Our team reviews all profiles before approval</li>
-                  </ul>
-                  <p className="mt-3 text-sm bg-blue-50 p-3 rounded-lg">
-                    <CheckCircle className="w-4 h-4 inline mr-1 text-primary" />
-                    Verified sitters display a blue checkmark badge on their profile.
-                  </p>
+                  <p className="mb-3">We have a three-tier verification system to help you choose the right level of trust for your pet:</p>
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="w-5 h-5 text-gray-500" />
+                        <strong>New Sitter</strong>
+                      </div>
+                      <p className="text-sm text-muted-foreground">Recently joined and completing their onboarding. Can accept bookings while working toward verification.</p>
+                    </div>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="w-5 h-5 text-blue-600" />
+                        <strong>ID Verified</strong>
+                      </div>
+                      <p className="text-sm text-muted-foreground">Has submitted government-issued photo ID (passport or driver's license) verified by our team.</p>
+                    </div>
+                    <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Star className="w-5 h-5 text-amber-500 fill-current" />
+                        <strong>Gold Star Verified</strong>
+                      </div>
+                      <p className="text-sm text-muted-foreground">Has completed both ID verification AND police vet check. Our highest trust level for maximum peace of mind.</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm font-medium">All sitters can accept bookings, giving you flexible options while encouraging them to achieve higher verification levels.</p>
                 </AccordionContent>
               </AccordionItem>
 
