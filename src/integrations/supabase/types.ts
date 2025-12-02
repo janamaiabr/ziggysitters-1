@@ -1392,6 +1392,26 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_public_sitters: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          bio: string
+          city: string
+          created_at: string
+          first_name: string
+          golden_badge_approved: boolean
+          id: string
+          is_verified: boolean
+          last_name: string
+          onboarding_completed: boolean
+          rating: number
+          response_rate: number
+          role: Database["public"]["Enums"]["user_role"]
+          suburb: string
+          total_reviews: number
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
