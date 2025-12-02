@@ -85,8 +85,9 @@ export default function SitterProfile() {
         }
       }, 100);
     } else if (shouldOpenBooking && !user) {
-      // Redirect to login if not logged in
-      navigate(`/auth?redirect=/sitter/${id}?booking=true`);
+      // Redirect to login if not logged in, preserving ALL URL parameters
+      const currentUrl = `/sitter/${id}?${searchParams.toString()}`;
+      navigate(`/auth?redirect=${encodeURIComponent(currentUrl)}`);
     }
   }, [searchParams, user, id, navigate]);
 
@@ -331,7 +332,13 @@ export default function SitterProfile() {
                 {!user && (
                   <Button 
                     size="lg"
-                    onClick={() => navigate(`/auth?redirect=/sitter/${id}?booking=true`)}
+                    onClick={() => {
+                      // Preserve all URL parameters when redirecting to auth
+                      const params = new URLSearchParams(searchParams);
+                      params.set('booking', 'true');
+                      const redirectUrl = `/sitter/${id}?${params.toString()}`;
+                      navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+                    }}
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     Book Now
