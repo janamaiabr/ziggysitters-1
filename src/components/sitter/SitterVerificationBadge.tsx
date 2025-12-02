@@ -77,8 +77,7 @@ export default function SitterVerificationBadge({
       <Tooltip>
         <TooltipTrigger asChild>
           <Badge 
-            variant="outline"
-            className={`border-gray-300 text-gray-600 ${sizeClasses[size]} inline-flex items-center gap-1.5`}
+            className={`bg-white/95 backdrop-blur-sm border-2 border-gray-300 text-gray-700 shadow-md ${sizeClasses[size]} inline-flex items-center gap-1.5`}
           >
             <Shield className={iconSizes[size]} />
             {showLabel && 'New Sitter'}
