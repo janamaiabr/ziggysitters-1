@@ -11,6 +11,7 @@ interface VerificationUpdateRequest {
   user_name: string;
   verification_status: 'verified' | 'rejected';
   rejection_reason?: string;
+  badge_type?: 'ID' | 'Gold Star';
 }
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
@@ -25,55 +26,57 @@ serve(async (req) => {
       user_email,
       user_name,
       verification_status,
-      rejection_reason
+      rejection_reason,
+      badge_type = 'ID'
     }: VerificationUpdateRequest = await req.json();
 
     const isApproved = verification_status === 'verified';
+    const statusText = isApproved ? 'Approved' : 'Not Approved';
     const subject = isApproved 
-      ? "🎉 Profile Approved - Welcome to Ziggy Sitters!"
-      : "Profile Verification Update";
+      ? `🎉 ${badge_type === 'Gold Star' ? 'Gold Star' : 'ID'} Verification Approved!`
+      : `${badge_type === 'Gold Star' ? 'Gold Star' : 'ID'} Verification Update`;
 
     const emailContent = isApproved ? `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h1 style="color: #16a34a; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-          🎉 Congratulations ${user_name}!
+          ${badge_type === 'Gold Star' ? '⭐' : '✅'} Congratulations ${user_name}!
         </h1>
         
-        <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #16a34a;">
-          <h2 style="color: #166534; margin-top: 0;">Your Profile Has Been Approved!</h2>
-          <p style="color: #15803d; font-size: 16px;">
-            Great news! Your pet sitter profile has been successfully verified and approved. 
-            You are now live on the Ziggy Sitters platform and can start receiving booking requests.
+        <div style="background-color: ${badge_type === 'Gold Star' ? '#fef3c7' : '#dbeafe'}; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${badge_type === 'Gold Star' ? '#f59e0b' : '#3b82f6'};">
+          <h2 style="color: ${badge_type === 'Gold Star' ? '#92400e' : '#1e40af'}; margin-top: 0;">Your ${badge_type} Verification Has Been Approved!</h2>
+          <p style="color: ${badge_type === 'Gold Star' ? '#78350f' : '#1e40af'}; font-size: 16px;">
+            ${badge_type === 'Gold Star' 
+              ? 'You now have our highest trust level - the Gold Star badge! This shows pet owners you\'ve completed both ID verification AND police vet check.' 
+              : 'You now have the blue "ID Verified" badge on your profile! Pet owners can see you\'re a verified sitter.'}
           </p>
         </div>
 
         <div style="background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
-          <h3 style="color: #1f2937; margin-top: 0;">What's Next?</h3>
+          <h3 style="color: #1f2937; margin-top: 0;">What This Means:</h3>
           <ul style="color: #4b5563; line-height: 1.6;">
-            <li>Your profile is now visible to pet owners searching for sitters</li>
-            <li>Make sure your availability calendar is up to date</li>
-            <li>Review your service offerings and pricing</li>
-            <li>Respond promptly to booking requests to maintain a high response rate</li>
+            <li>📈 Higher visibility in search results</li>
+            <li>💰 ${badge_type === 'Gold Star' ? 'Can charge premium rates' : 'More bookings from pet owners'}</li>
+            <li>🤝 Increased trust from pet owners</li>
+            <li>🏆 ${badge_type === 'Gold Star' ? 'Featured as a Gold Star sitter' : 'Stand out with your ID Verified badge'}</li>
           </ul>
+          ${badge_type === 'ID' ? `
+            <div style="background: #eff6ff; padding: 15px; border-radius: 6px; margin-top: 15px;">
+              <p style="margin: 0; color: #1e40af;"><strong>💡 Want to go further?</strong> Upload your police vet check to earn the prestigious Gold Star badge!</p>
+            </div>
+          ` : ''}
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
           <a href="https://ziggysitters.com/profile" 
              style="background-color: #16a34a; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; display: inline-block;">
-            Manage Your Profile
+            View Your Profile
           </a>
-        </div>
-
-        <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
-          <p style="margin: 0; color: #92400e; font-size: 14px;">
-            <strong>Tips for Success:</strong> Complete your profile with high-quality photos, detailed service descriptions, and competitive pricing to attract more bookings.
-          </p>
         </div>
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           <p style="color: #6b7280; font-size: 14px; margin: 0;">
-            Welcome to the Ziggy Sitters family!<br>
-            The Ziggy Sitters Team
+            ${badge_type === 'Gold Star' ? 'Welcome to our Gold Star family!' : 'Keep up the great work!'}<br>
+            The ZiggySitters Team
           </p>
         </div>
       </div>

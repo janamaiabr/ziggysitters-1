@@ -59,6 +59,12 @@ const navSections = [
         description: 'Review and approve ID verifications and gold badges',
       },
       {
+        title: 'Invite Unverified Sitters',
+        href: '/admin/invite-unverified-sitters',
+        icon: Mail,
+        description: 'Send invitations to unverified sitters to upload documents',
+      },
+      {
         title: 'Document Verification',
         href: '/admin/document-fix',
         icon: ShieldCheck,

@@ -445,9 +445,24 @@ export default function AdminDashboard() {
                       <p className="text-sm text-muted-foreground mb-4">
                         {pendingSitters.length} pending
                       </p>
-                      <Button onClick={() => navigate('/admin/documents')}>
-                        Review Now
-                      </Button>
+                    <Button onClick={() => navigate('/admin/documents')}>
+                      Review Now
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Mail className="h-12 w-12 mx-auto mb-3 text-purple-600" />
+                    <h3 className="font-semibold mb-2">Invite Unverified Sitters</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Send invitations to upload docs
+                    </p>
+                    <Button onClick={() => navigate('/admin/invite-unverified-sitters')} variant="outline">
+                      Send Invitations
+                    </Button>
                     </div>
                   </CardContent>
                 </Card>
