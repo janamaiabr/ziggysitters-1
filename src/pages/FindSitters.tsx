@@ -44,16 +44,15 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-      // Fetch ALL sitters (regardless of onboarding or verification status)
+        // Fetch ALL sitters (regardless of onboarding or verification status)
         const { data: sitterProfilesData, error: sitterProfilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, golden_badge_approved, onboarding_completed')
-          .eq('role', 'pet_sitter');
+          .from('public_sitters')
+          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, golden_badge_approved, onboarding_completed');
         
         const profilesData = sitterProfilesData;
         
-        console.log('Profiles data:', profilesData);
-        console.log('Profiles error:', sitterProfilesError);
+        console.log('Public sitters data:', profilesData);
+        console.log('Public sitters error:', sitterProfilesError);
         
         if (sitterProfilesError) {
           console.error('Error fetching profiles:', sitterProfilesError);
