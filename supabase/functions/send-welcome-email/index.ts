@@ -35,57 +35,63 @@ const handler = async (req: Request): Promise<Response> => {
       from: "ZiggySitters <welcome@ziggysitters.com>",
       to: [email],
       subject: "Welcome to ZiggySitters! 🐾",
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-            .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white !important; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>Welcome to ZiggySitters! 🎉</h1>
-            </div>
-            <div class="content">
-              <h2>Hi ${firstName}!</h2>
-              <p>Thank you for joining ZiggySitters, where pet lovers connect!</p>
-              <p>${roleMessage}</p>
-              <h3>Next Steps:</h3>
-              <ul>
-                ${role === 'pet_sitter' ? `
-                  <li>Complete your sitter profile</li>
-                  <li>Upload verification documents for approval</li>
-                  <li>Set your availability and rates</li>
-                  <li>Start receiving booking requests!</li>
-                ` : `
-                  <li>Complete your profile information</li>
-                  <li>Add your pet's details</li>
-                  <li>Browse available sitters in your area</li>
-                  <li>Book your first service!</li>
-                `}
-              </ul>
-              <center>
-                <a href="https://82b1d4df-49fa-4aed-8283-e8671c38c6b4.lovableproject.com/onboarding" class="button">
-                  Complete Your Profile
-                </a>
-              </center>
-              <p>If you have any questions, feel free to reach out to our support team.</p>
-              <p>Best regards,<br>The ZiggySitters Team</p>
-            </div>
-            <div class="footer">
-              <p>© 2025 ZiggySitters. All rights reserved.</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
+          html: `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <style>
+                  body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
+                  .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                  .header { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+                  .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+                  .badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; margin: 10px 5px; }
+                  .badge-new { background: #f3f4f6; color: #6b7280; border: 2px solid #d1d5db; }
+                  .btn { display: inline-block; padding: 12px 24px; background: #6366f1; color: white !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 10px 5px; }
+                  .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <div class="header">
+                    <h1 style="margin: 0; font-size: 32px;">🎉 Welcome to ZiggySitters!</h1>
+                    <p style="margin: 10px 0 0 0; opacity: 0.9; font-size: 18px;">You're now live on the platform</p>
+                  </div>
+                  
+                  <div class="content">
+                    <h2 style="color: #111827;">Hi ${profile.first_name}!</h2>
+                    <p style="color: #4b5563;">Congratulations on completing your onboarding! 🎊</p>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6366f1;">
+                      <p style="margin: 0; color: #4b5563;"><strong>Great news:</strong> Pet owners can now find and book you! Your profile is live with a "New Sitter" status.</p>
+                    </div>
+
+                    <div class="badge badge-new">🆕 New Sitter</div>
+
+                    <h3 style="color: #111827; margin-top: 30px;">Build Trust with Verification Badges:</h3>
+                    <ul style="color: #4b5563; line-height: 1.8;">
+                      <li>📤 <strong>Upload your ID</strong> to earn the blue "ID Verified" badge</li>
+                      <li>⭐ <strong>Submit a police vet check</strong> to earn the gold "Gold Star Verified" badge</li>
+                      <li>💰 <strong>Connect your bank account</strong> via Stripe to receive payments</li>
+                    </ul>
+
+                    <p style="color: #4b5563;">Verified sitters get more bookings and can charge higher rates!</p>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                      <a href="https://ziggysitters.com/profile?tab=verification" class="btn">Complete Verification</a>
+                    </div>
+
+                    <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                      <p style="color: #78350f; margin: 0;"><strong>Tip:</strong> You don't need a business number (NZBN) for Stripe - you're working as an individual through ZiggySitters.</p>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <p style="margin: 5px 0;">Questions? Contact us at hello@ziggysitters.com</p>
+                  </div>
+                </div>
+              </body>
+            </html>
+          `,
     });
 
     console.log("Welcome email sent successfully:", emailResponse);
