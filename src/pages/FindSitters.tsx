@@ -44,24 +44,13 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-      // Fetch ALL sitters who have completed onboarding (regardless of verification status)
+      // Fetch ALL sitters (regardless of onboarding or verification status)
         const { data: sitterProfilesData, error: sitterProfilesError } = await supabase
-          .from('public_sitters')
-          .select('*');
-        
-        // Also fetch golden badge status separately (requires different table)
-        const { data: goldenBadgeData } = await supabase
           .from('profiles')
-          .select('id, golden_badge_approved')
-          .eq('golden_badge_approved', true);
+          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, golden_badge_approved, onboarding_completed')
+          .eq('role', 'pet_sitter');
         
-        const goldenBadgeMap = new Map(goldenBadgeData?.map(p => [p.id, true]) || []);
-        
-        // Combine data
-        const profilesData = sitterProfilesData?.map(sitter => ({
-          ...sitter,
-          golden_badge_approved: goldenBadgeMap.has(sitter.id)
-        }));
+        const profilesData = sitterProfilesData;
         
         console.log('Profiles data:', profilesData);
         console.log('Profiles error:', sitterProfilesError);
