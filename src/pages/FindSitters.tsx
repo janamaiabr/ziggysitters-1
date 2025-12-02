@@ -38,16 +38,15 @@ export default function FindSitters() {
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [currentFilters, setCurrentFilters] = useState<any>(null);
 
-  // Load sitters from the secure database view
+  // Load sitters from the secure database function
   useEffect(() => {
     const fetchSitters = async () => {
       try {
         console.log('Fetching sitters...');
         
-        // Fetch ALL sitters (regardless of onboarding or verification status)
+        // Fetch ALL sitters using the security definer function (bypasses RLS)
         const { data: sitterProfilesData, error: sitterProfilesError } = await supabase
-          .from('public_sitters')
-          .select('id, first_name, last_name, suburb, city, bio, avatar_url, is_verified, golden_badge_approved, onboarding_completed');
+          .rpc('get_public_sitters');
         
         const profilesData = sitterProfilesData;
         
