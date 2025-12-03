@@ -126,14 +126,25 @@ export default function AdminUserDetails() {
       // Collect all document URLs from both singular and plural fields
       const allDocUrls: string[] = [];
       
-      // Check singular id_document_url field
-      if (data.id_document_url) {
-        allDocUrls.push(data.id_document_url);
+      // Debug: log raw data to see what fields exist
+      console.log('Raw profile data for documents:', {
+        id_document_url: (data as any).id_document_url,
+        id_document_urls: (data as any).id_document_urls,
+        blue_card_document_url: data.blue_card_document_url
+      });
+      
+      // Check singular id_document_url field (use bracket notation for safety)
+      const singularUrl = (data as any)['id_document_url'];
+      if (singularUrl && typeof singularUrl === 'string') {
+        console.log('Found singular id_document_url:', singularUrl);
+        allDocUrls.push(singularUrl);
       }
       
       // Check plural id_document_urls array
-      if (data.id_document_urls && data.id_document_urls.length > 0) {
-        allDocUrls.push(...data.id_document_urls);
+      const pluralUrls = data.id_document_urls;
+      if (pluralUrls && Array.isArray(pluralUrls) && pluralUrls.length > 0) {
+        console.log('Found plural id_document_urls:', pluralUrls);
+        allDocUrls.push(...pluralUrls);
       }
       
       if (allDocUrls.length > 0) {
