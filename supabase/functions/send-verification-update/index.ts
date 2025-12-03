@@ -59,12 +59,41 @@ serve(async (req) => {
             <li>🤝 Increased trust from pet owners</li>
             <li>🏆 ${badge_type === 'Gold Star' ? 'Featured as a Gold Star sitter' : 'Stand out with your ID Verified badge'}</li>
           </ul>
-          ${badge_type === 'ID' ? `
-            <div style="background: #eff6ff; padding: 15px; border-radius: 6px; margin-top: 15px;">
-              <p style="margin: 0; color: #1e40af;"><strong>💡 Want to go further?</strong> Upload your police vet check to earn the prestigious Gold Star badge!</p>
-            </div>
-          ` : ''}
         </div>
+
+        <!-- IMPORTANT: Connect Stripe Account -->
+        <div style="background-color: #f0fdf4; border: 2px solid #22c55e; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <h3 style="color: #166534; margin-top: 0;">💳 Next Step: Connect Your Stripe Account</h3>
+          <p style="color: #166534; font-size: 15px; margin-bottom: 15px;">
+            To receive payments from bookings, you need to connect your Stripe account. This is required before you can accept any bookings.
+          </p>
+          <div style="text-align: center;">
+            <a href="https://ziggysitters.com/profile?tab=payments" 
+               style="background-color: #6366f1; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; display: inline-block;">
+              Connect Stripe Account →
+            </a>
+          </div>
+        </div>
+
+        ${badge_type === 'ID' ? `
+        <!-- Police Vet Check Encouragement -->
+        <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <h3 style="color: #92400e; margin-top: 0;">⭐ Earn the Gold Star Badge!</h3>
+          <p style="color: #78350f; font-size: 15px; margin-bottom: 10px;">
+            Want to stand out even more? Complete a police vet check to earn our prestigious <strong>Gold Star badge</strong>. 
+            Gold Star sitters get:
+          </p>
+          <ul style="color: #78350f; line-height: 1.6; margin-bottom: 15px;">
+            <li>Priority placement in search results</li>
+            <li>Higher trust from pet owners</li>
+            <li>Ability to charge premium rates</li>
+          </ul>
+          <p style="color: #78350f; font-size: 14px;">
+            <strong>How to apply:</strong> Request your police vet check at <a href="https://www.police.govt.nz/advice-services/businesses-organisations/vetting-service" style="color: #92400e;">NZ Police Vetting Service</a>, 
+            then upload your certificate in your profile.
+          </p>
+        </div>
+        ` : ''}
 
         <div style="text-align: center; margin: 30px 0;">
           <a href="https://ziggysitters.com/profile" 
