@@ -320,15 +320,25 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         });
       } else if (type === 'id') {
         // Handle multiple ID document uploads
+        // IMPORTANT: filename must match RLS policy pattern: {userId}-{something}.ext
         const uploadPromises = Array.from(files).map(async (file, index) => {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${userId}/id-documents/${Date.now()}-${index}.${fileExt}`;
+          const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+          // Filename must start with userId followed by dash to match RLS policy
+          const fileName = `${userId}-id-${Date.now()}-${index}.${fileExt}`;
           
-          const { error: uploadError } = await supabase.storage
+          console.log(`Uploading ID document: ${fileName}`);
+          
+          const { error: uploadError, data } = await supabase.storage
             .from('verification-docs')
-            .upload(fileName, file);
+            .upload(fileName, file, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            throw uploadError;
+          }
 
           const { data: { publicUrl } } = supabase.storage
             .from('verification-docs')
@@ -368,9 +378,21 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         });
       }
     } catch (error: any) {
+      console.error('Document upload error:', error);
+      let errorMessage = error.message || 'Unknown error occurred';
+      
+      // Provide more helpful error messages
+      if (error.message?.includes('Policy')) {
+        errorMessage = 'Permission denied. Please try logging out and back in.';
+      } else if (error.message?.includes('size') || error.message?.includes('large')) {
+        errorMessage = 'File is too large. Please use an image under 5MB.';
+      } else if (error.message?.includes('type') || error.message?.includes('mime')) {
+        errorMessage = 'Invalid file type. Please upload a JPG, PNG, or PDF.';
+      }
+      
       toast({
         title: "Upload failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     }
