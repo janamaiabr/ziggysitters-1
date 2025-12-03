@@ -1118,7 +1118,7 @@ export default function AdminUserDetails() {
                     <label className="text-sm font-medium text-muted-foreground">
                       ID Documents <Badge variant="destructive" className="ml-2">Required</Badge>
                     </label>
-                    {profile.id_document_urls && profile.id_document_urls.length > 0 && (
+                    {idDocUrls.length > 0 && (
                       <Button
                         onClick={fetchUserProfile}
                         variant="ghost"
@@ -1129,40 +1129,24 @@ export default function AdminUserDetails() {
                       </Button>
                     )}
                   </div>
-                  {profile.id_document_urls && profile.id_document_urls.length > 0 ? (
-                    idDocUrls.length > 0 ? (
-                      <div className="space-y-2">
-                        {idDocUrls.map((url, index) => (
-                          <a 
-                            key={index}
-                            href={url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center px-3 py-2 bg-primary/10 border border-primary/20 rounded-md text-primary hover:bg-primary/20 transition-colors mr-2 mb-2"
-                          >
-                            <FileText className="w-4 h-4 mr-2" />
-                            View ID Document {index + 1}
-                          </a>
-                        ))}
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Click "Refresh Documents" if documents don't load
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-                        <p className="text-sm text-yellow-800">
-                          Documents uploaded but failed to generate preview links. Check browser console.
-                        </p>
-                        <Button
-                          onClick={fetchUserProfile}
-                          variant="outline"
-                          size="sm"
-                          className="mt-2"
+                  {idDocUrls.length > 0 ? (
+                    <div className="space-y-2">
+                      {idDocUrls.map((url, index) => (
+                        <a 
+                          key={index}
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center px-3 py-2 bg-primary/10 border border-primary/20 rounded-md text-primary hover:bg-primary/20 transition-colors mr-2 mb-2"
                         >
-                          Retry Loading Documents
-                        </Button>
-                      </div>
-                    )
+                          <FileText className="w-4 h-4 mr-2" />
+                          View ID Document {index + 1}
+                        </a>
+                      ))}
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Click "Refresh Documents" if documents don't load
+                      </p>
+                    </div>
                   ) : (
                     <div className="p-4 bg-muted rounded-lg border-2 border-dashed">
                       <p className="text-sm font-medium mb-2">⚠️ No documents uploaded</p>
