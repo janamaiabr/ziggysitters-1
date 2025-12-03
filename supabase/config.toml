@@ -84,3 +84,6 @@ verify_jwt = false
 [functions.send-golden-badge-invitation]
 verify_jwt = false
 
+[functions.send-verification-update]
+verify_jwt = false
+
