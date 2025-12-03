@@ -34,6 +34,7 @@ type UserProfile = {
   total_reviews: number | null;
   background_check_verified: boolean | null;
   verification_status: 'pending' | 'verified' | 'rejected' | null;
+  id_document_url?: string | null;
   id_document_urls?: string[] | null;
   blue_card_document_url?: string | null;
   verification_documents_uploaded_at?: string | null;
@@ -122,9 +123,22 @@ export default function AdminUserDetails() {
       setAdminNotes(data.admin_notes || '');
 
       // Generate public URLs for ID documents (bucket is now public)
+      // Collect all document URLs from both singular and plural fields
+      const allDocUrls: string[] = [];
+      
+      // Check singular id_document_url field
+      if (data.id_document_url) {
+        allDocUrls.push(data.id_document_url);
+      }
+      
+      // Check plural id_document_urls array
       if (data.id_document_urls && data.id_document_urls.length > 0) {
-        console.log('Processing ID document URLs:', data.id_document_urls);
-        const publicUrls = data.id_document_urls.map((docUrl, index) => {
+        allDocUrls.push(...data.id_document_urls);
+      }
+      
+      if (allDocUrls.length > 0) {
+        console.log('Processing ID document URLs:', allDocUrls);
+        const publicUrls = allDocUrls.map((docUrl, index) => {
           try {
             // If already a full URL, use it directly
             if (docUrl.startsWith('http')) {
@@ -156,7 +170,7 @@ export default function AdminUserDetails() {
           }
         });
         const validUrls = publicUrls.filter((url): url is string => url !== null);
-        console.log(`Generated ${validUrls.length} valid URLs out of ${data.id_document_urls.length}`);
+        console.log(`Generated ${validUrls.length} valid URLs out of ${allDocUrls.length}`);
         setIdDocUrls(validUrls);
       } else {
         console.log('No ID document URLs found');
