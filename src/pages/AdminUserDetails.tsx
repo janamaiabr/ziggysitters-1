@@ -121,76 +121,71 @@ export default function AdminUserDetails() {
       setProfile(data);
       setAdminNotes(data.admin_notes || '');
 
-      // Generate signed URLs for ID documents
+      // Generate public URLs for ID documents (bucket is now public)
       if (data.id_document_urls && data.id_document_urls.length > 0) {
         console.log('Processing ID document URLs:', data.id_document_urls);
-        const signedUrls = await Promise.all(
-          data.id_document_urls.map(async (docUrl, index) => {
-            try {
-              // Extract filename - handle both full URLs and just filenames
-              let fileName = docUrl;
-              if (docUrl.includes('/')) {
-                const parts = docUrl.split('/');
-                fileName = parts[parts.length - 1];
-              }
-              // Remove query params if present
-              fileName = fileName.split('?')[0];
-              
-              console.log(`Creating signed URL for document ${index + 1}:`, fileName);
-              
-              const { data: signedData, error: signError } = await supabase.storage
-                .from('verification-docs')
-                .createSignedUrl(fileName, 3600);
-              
-              if (signError) {
-                console.error(`Error creating signed URL for document ${index + 1}:`, signError);
-                return null;
-              }
-              
-              if (signedData?.signedUrl) {
-                console.log(`Successfully created signed URL for document ${index + 1}`);
-                return signedData.signedUrl;
-              }
-              
-              return null;
-            } catch (err) {
-              console.error(`Exception processing document ${index + 1}:`, err);
-              return null;
+        const publicUrls = data.id_document_urls.map((docUrl, index) => {
+          try {
+            // If already a full URL, use it directly
+            if (docUrl.startsWith('http')) {
+              console.log(`Document ${index + 1} already has full URL:`, docUrl);
+              return docUrl;
             }
-          })
-        );
-        const validUrls = signedUrls.filter((url): url is string => url !== null);
-        console.log(`Generated ${validUrls.length} valid signed URLs out of ${data.id_document_urls.length}`);
+            
+            // Extract filename - handle both paths and just filenames
+            let fileName = docUrl;
+            if (docUrl.includes('/')) {
+              const parts = docUrl.split('/');
+              fileName = parts[parts.length - 1];
+            }
+            // Remove query params if present
+            fileName = fileName.split('?')[0];
+            
+            console.log(`Creating public URL for document ${index + 1}:`, fileName);
+            
+            // Get public URL (bucket is now public)
+            const { data: urlData } = supabase.storage
+              .from('verification-docs')
+              .getPublicUrl(fileName);
+            
+            console.log(`Public URL for document ${index + 1}:`, urlData.publicUrl);
+            return urlData.publicUrl;
+          } catch (err) {
+            console.error(`Exception processing document ${index + 1}:`, err);
+            return null;
+          }
+        });
+        const validUrls = publicUrls.filter((url): url is string => url !== null);
+        console.log(`Generated ${validUrls.length} valid URLs out of ${data.id_document_urls.length}`);
         setIdDocUrls(validUrls);
       } else {
         console.log('No ID document URLs found');
         setIdDocUrls([]);
       }
 
-      // Generate signed URL for police vetting document
+      // Generate public URL for police vetting document (bucket is now public)
       if (data.blue_card_document_url) {
         try {
-          let fileName = data.blue_card_document_url;
-          if (fileName.includes('/')) {
-            const parts = fileName.split('/');
-            fileName = parts[parts.length - 1];
-          }
-          fileName = fileName.split('?')[0];
-          
-          console.log('Creating signed URL for police vetting doc:', fileName);
-          
-          const { data: signedData, error: signError } = await supabase.storage
-            .from('verification-docs')
-            .createSignedUrl(fileName, 3600);
-          
-          if (signError) {
-            console.error('Error creating signed URL for police vet doc:', signError);
-            setBlueCardUrl(null);
-          } else if (signedData?.signedUrl) {
-            console.log('Successfully created signed URL for police vetting doc');
-            setBlueCardUrl(signedData.signedUrl);
+          // If already a full URL, use it directly
+          if (data.blue_card_document_url.startsWith('http')) {
+            console.log('Police vet doc already has full URL:', data.blue_card_document_url);
+            setBlueCardUrl(data.blue_card_document_url);
           } else {
-            setBlueCardUrl(null);
+            let fileName = data.blue_card_document_url;
+            if (fileName.includes('/')) {
+              const parts = fileName.split('/');
+              fileName = parts[parts.length - 1];
+            }
+            fileName = fileName.split('?')[0];
+            
+            console.log('Creating public URL for police vetting doc:', fileName);
+            
+            const { data: urlData } = supabase.storage
+              .from('verification-docs')
+              .getPublicUrl(fileName);
+            
+            console.log('Public URL for police vetting doc:', urlData.publicUrl);
+            setBlueCardUrl(urlData.publicUrl);
           }
         } catch (err) {
           console.error('Exception processing police vetting doc:', err);
@@ -1125,7 +1120,7 @@ export default function AdminUserDetails() {
                           </a>
                         ))}
                         <p className="text-xs text-muted-foreground mt-2">
-                          Signed links valid for 1 hour • Click "Refresh Documents" if links expire
+                          Click "Refresh Documents" if documents don't load
                         </p>
                       </div>
                     ) : (
