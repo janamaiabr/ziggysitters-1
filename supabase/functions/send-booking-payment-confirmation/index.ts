@@ -157,7 +157,7 @@ const handler = async (req: Request): Promise<Response> => {
                         </div>
 
                         <div style="text-align: center; margin: 30px 0 20px;">
-                          <a href="${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.lovable.app') || 'https://ziggysitters.lovable.app'}/bookings" 
+                          <a href="https://www.ziggysitters.com/bookings" 
                              style="display: inline-block; background-color: #667eea; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 16px;">
                             View Booking Details
                           </a>

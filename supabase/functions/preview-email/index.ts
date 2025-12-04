@@ -67,7 +67,7 @@ serve(async (req) => {
                   <p style="font-style: italic; color: #718096;">No codes, no fuss — just a warm welcome and a feel-good deal.</p>
                   
                   <div style="text-align: center;">
-                    <a href="https://ziggysitters.lovable.app/find-sitters" class="cta">Find Your Perfect Sitter</a>
+                    <a href="https://www.ziggysitters.com/find-sitters" class="cta">Find Your Perfect Sitter</a>
                   </div>
                   
                   <p style="margin-top: 30px;">With thanks and tail wags,</p>
@@ -93,7 +93,7 @@ serve(async (req) => {
                   <p>Share this code with your clients and on social media to encourage more bookings during the holiday season!</p>
                   
                   <div style="text-align: center;">
-                    <a href="https://ziggysitters.lovable.app/calendar" class="cta">View Your Calendar</a>
+                    <a href="https://www.ziggysitters.com/calendar" class="cta">View Your Calendar</a>
                   </div>
                   
                   <p style="margin-top: 30px;">Happy booking!</p>
@@ -108,7 +108,7 @@ serve(async (req) => {
                   </div>
                   
                   <div style="text-align: center;">
-                    <a href="https://ziggysitters.lovable.app" class="cta">Visit ZiggySitters</a>
+                    <a href="https://www.ziggysitters.com" class="cta">Visit ZiggySitters</a>
                   </div>
                   
                   <p style="margin-top: 30px;">Happy booking!</p>
@@ -120,8 +120,8 @@ serve(async (req) => {
                 <p>ZiggySitters - Trusted Pet Care in New Zealand</p>
                 <p style="font-size: 12px; color: #a0aec0;">
                   You're receiving this because you're subscribed to marketing emails.<br>
-                  <a href="https://ziggysitters.lovable.app/profile" style="color: #667eea;">Manage email preferences</a> | 
-                  <a href="https://ziggysitters.lovable.app/profile" style="color: #667eea;">Unsubscribe</a>
+                  <a href="https://www.ziggysitters.com/profile" style="color: #667eea;">Manage email preferences</a> | 
+                  <a href="https://www.ziggysitters.com/profile" style="color: #667eea;">Unsubscribe</a>
                 </p>
               </div>
             </div>
