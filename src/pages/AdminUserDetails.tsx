@@ -402,51 +402,8 @@ export default function AdminUserDetails() {
       // Refresh profile to show updated status
       fetchUserProfile();
 
-      // Handle background tasks asynchronously (don't block UI)
-      if (isVerified && verificationStatus === 'verified') {
-        // Delete verification documents in background
-        (async () => {
-          try {
-            const filesToDelete: string[] = [];
-            
-            if (profile.id_document_urls && profile.id_document_urls.length > 0) {
-              profile.id_document_urls.forEach((docUrl) => {
-                const fileName = docUrl.includes('/verification-docs/')
-                  ? docUrl.split('/verification-docs/')[1].split('?')[0]
-                  : docUrl.split('/').pop()?.split('?')[0];
-                if (fileName) filesToDelete.push(fileName);
-              });
-            }
-            
-            if (profile.blue_card_document_url) {
-              const fileName = profile.blue_card_document_url.includes('/verification-docs/')
-                ? profile.blue_card_document_url.split('/verification-docs/')[1].split('?')[0]
-                : profile.blue_card_document_url.split('/').pop()?.split('?')[0];
-              if (fileName) filesToDelete.push(fileName);
-            }
-
-            if (filesToDelete.length > 0) {
-              await supabase.storage.from('verification-docs').remove(filesToDelete);
-              
-              // Clear document URLs from profile BUT KEEP the uploaded_at timestamp
-              await supabase
-                .from('profiles')
-                .update({ 
-                  id_document_urls: [],
-                  blue_card_document_url: null
-                  // NOTE: verification_documents_uploaded_at is intentionally NOT cleared
-                  // so we have a record of when documents were submitted
-                })
-                .eq('id', profile.id);
-              
-              // Refresh again after document deletion completes
-              fetchUserProfile();
-            }
-          } catch (deleteError) {
-            console.error('Error deleting verification documents:', deleteError);
-          }
-        })();
-      }
+      // NOTE: Documents are intentionally kept after approval for admin records
+      // They are no longer automatically deleted upon verification
 
       // Send verification email in background (non-blocking)
       supabase.functions.invoke('send-verification-update', {
