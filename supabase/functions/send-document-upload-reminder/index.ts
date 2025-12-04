@@ -23,7 +23,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Sending document upload reminder to ${sitterEmail}`);
 
-    const uploadUrl = "https://ziggysitters.lovable.app/onboarding";
+    const uploadUrl = "https://www.ziggysitters.com/onboarding";
 
     const emailResponse = await resend.emails.send({
       from: "ZiggySitters <onboarding@ziggysitters.com>",

@@ -660,17 +660,17 @@ export default function AdminDashboard() {
                             <div>
                               {user.id_document_url ? (
                                 <Badge variant="default" className="text-xs">ID ✓</Badge>
-                              ) : user.is_verified && user.verification_documents_uploaded_at ? (
+                              ) : user.is_verified ? (
                                 <Badge variant="secondary" className="text-xs">ID ✓ (Verified)</Badge>
                               ) : (
-                                <Badge variant="destructive" className="text-xs">ID ✗</Badge>
+                                <Badge variant="destructive" className="text-xs">No ID</Badge>
                               )}
                             </div>
                             <div>
                               {user.blue_card_document_url ? (
                                 <Badge variant="default" className="text-xs bg-yellow-500">Police Vet ⭐</Badge>
-                              ) : user.is_verified && user.verification_documents_uploaded_at ? (
-                                <Badge variant="secondary" className="text-xs">Police Vet ✓ (Verified)</Badge>
+                              ) : user.golden_badge_approved ? (
+                                <Badge variant="secondary" className="text-xs">Police Vet ✓</Badge>
                               ) : (
                                 <Badge variant="outline" className="text-xs">No Police Vet</Badge>
                               )}

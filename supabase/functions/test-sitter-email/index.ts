@@ -74,7 +74,7 @@ serve(async (req) => {
                 </div>
 
                 <p style="text-align: center;">
-                  <a href="https://ziggysitters.lovable.app/profile?tab=payments" class="button">Go to Payment Setup</a>
+                  <a href="https://www.ziggysitters.com/profile?tab=payments" class="button">Go to Payment Setup</a>
                 </p>
 
                 <h3>Why This Is Necessary:</h3>
@@ -263,7 +263,7 @@ serve(async (req) => {
                 </div>
 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://ziggysitters.lovable.app/onboarding" class="cta-button">
+                  <a href="https://www.ziggysitters.com/onboarding" class="cta-button">
                     Complete My Profile Now →
                   </a>
                 </div>
