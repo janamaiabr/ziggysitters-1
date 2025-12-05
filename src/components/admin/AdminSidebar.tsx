@@ -16,7 +16,8 @@ import {
   MailOpen,
   Wrench,
   AlertTriangle,
-  UserCog
+  UserCog,
+  Target
 } from 'lucide-react';
 import {
   Sidebar,
@@ -97,6 +98,12 @@ const navSections = [
         href: '/admin/search-analytics',
         icon: Eye,
         description: 'View search behavior and retargeting data',
+      },
+      {
+        title: 'Sitter Recruitment',
+        href: '/admin/sitter-recruitment',
+        icon: Target,
+        description: 'High-demand areas needing sitter coverage',
       },
     ],
   },
