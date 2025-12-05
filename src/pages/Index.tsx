@@ -15,6 +15,10 @@ import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
 // import HeroSectionV2 from '@/components/home/HeroSectionV2';
 // import HeroSectionOriginal from '@/components/home/HeroSectionOriginal';
+import HowItWorksSection from '@/components/home/HowItWorksSection';
+import TestimonialsSection from '@/components/home/TestimonialsSection';
+import TrustSignalsSection from '@/components/home/TrustSignalsSection';
+import ExitIntentPopup from '@/components/home/ExitIntentPopup';
 
 const Index = () => {
   const { user } = useAuth();
@@ -149,6 +153,9 @@ const Index = () => {
         checkOut={checkOut}
         setCheckOut={setCheckOut}
       />
+
+      {/* How It Works */}
+      <HowItWorksSection />
 
       {/* Popular Services */}
       <section className="py-12 md:py-20 bg-accent/5">
@@ -528,6 +535,15 @@ const Index = () => {
         </div>
       </section>
       </div>
+
+      {/* Trust Signals */}
+      <TrustSignalsSection />
+
+      {/* Testimonials */}
+      <TestimonialsSection />
+
+      {/* Exit Intent Popup */}
+      <ExitIntentPopup />
     </>
   );
 };
