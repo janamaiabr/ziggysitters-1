@@ -15,6 +15,7 @@ import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { metaPixel } from '@/lib/metaPixel';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
+import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 
 // No more mock data - using real database profiles
 
@@ -37,6 +38,24 @@ export default function FindSitters() {
   const [filteredSitters, setFilteredSitters] = useState<any[]>([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [currentFilters, setCurrentFilters] = useState<any>(null);
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
+
+  // Show email capture modal after search with delay
+  useEffect(() => {
+    if (searchPerformed && filteredSitters.length > 0) {
+      // Check if already shown this session
+      const alreadyShown = sessionStorage.getItem('emailCaptureShown');
+      if (alreadyShown) return;
+
+      // Show after 30 seconds of browsing
+      const timer = setTimeout(() => {
+        setShowEmailCapture(true);
+        sessionStorage.setItem('emailCaptureShown', 'true');
+      }, 30000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [searchPerformed, filteredSitters]);
 
   // Load sitters from the secure database function
   useEffect(() => {
@@ -761,6 +780,14 @@ export default function FindSitters() {
         onClose={() => setShowFilters(false)}
         onApplyFilters={handleApplyFilters}
         currentFilters={currentFilters}
+      />
+
+      {/* Email Capture Modal for Retargeting */}
+      <EmailCaptureModal
+        isOpen={showEmailCapture}
+        onClose={() => setShowEmailCapture(false)}
+        searchLocation={location}
+        searchServiceType={serviceType}
       />
     </>
   );

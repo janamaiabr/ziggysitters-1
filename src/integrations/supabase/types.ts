@@ -303,6 +303,45 @@ export type Database = {
         }
         Relationships: []
       }
+      email_captures: {
+        Row: {
+          created_at: string
+          email: string
+          email_count: number | null
+          id: string
+          last_email_sent_at: string | null
+          name: string | null
+          search_location: string | null
+          search_service_type: string | null
+          source: string | null
+          subscribed: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          email_count?: number | null
+          id?: string
+          last_email_sent_at?: string | null
+          name?: string | null
+          search_location?: string | null
+          search_service_type?: string | null
+          source?: string | null
+          subscribed?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          email_count?: number | null
+          id?: string
+          last_email_sent_at?: string | null
+          name?: string | null
+          search_location?: string | null
+          search_service_type?: string | null
+          source?: string | null
+          subscribed?: boolean | null
+        }
+        Relationships: []
+      }
       email_subscriptions: {
         Row: {
           booking_notifications: boolean | null
