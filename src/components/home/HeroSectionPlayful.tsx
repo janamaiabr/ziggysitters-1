@@ -5,6 +5,7 @@ import { Camera, Heart, Star, Search, Shield, Sparkles } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
 import petServicesImg from '@/assets/pet-services.jpg';
+import UrgencyIndicator from './UrgencyIndicator';
 
 interface HeroSectionPlayfulProps {
   location: string;
@@ -236,8 +237,13 @@ const HeroSectionPlayful = ({
             </div>
           </div>
 
+          {/* Urgency Indicators */}
+          <div className="mt-6 md:mt-8">
+            <UrgencyIndicator location={location} />
+          </div>
+
           {/* Social Proof - better mobile layout */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 md:gap-6 mt-6 md:mt-8 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 md:gap-6 mt-4 md:mt-6 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.5s' }}>
             <div className="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-md">
               <span className="font-bold text-foreground text-base md:text-lg">500+</span>
               <span className="text-xs md:text-sm">Happy Pet Owners 🎉</span>
