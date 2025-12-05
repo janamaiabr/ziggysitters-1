@@ -857,6 +857,97 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          created_at: string
+          first_booking_completed_at: string | null
+          id: string
+          referee_credit_amount: number | null
+          referee_credited_at: string | null
+          referral_code: string
+          referred_email: string | null
+          referred_user_id: string | null
+          referrer_credit_amount: number | null
+          referrer_credited_at: string | null
+          referrer_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          first_booking_completed_at?: string | null
+          id?: string
+          referee_credit_amount?: number | null
+          referee_credited_at?: string | null
+          referral_code: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_credit_amount?: number | null
+          referrer_credited_at?: string | null
+          referrer_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          first_booking_completed_at?: string | null
+          id?: string
+          referee_credit_amount?: number | null
+          referee_credited_at?: string | null
+          referral_code?: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_credit_amount?: number | null
+          referrer_credited_at?: string | null
+          referrer_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_user_id_fkey"
+            columns: ["referred_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referred_user_id_fkey"
+            columns: ["referred_user_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referred_user_id_fkey"
+            columns: ["referred_user_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           booking_id: string
@@ -1039,6 +1130,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sitter_leads: {
+        Row: {
+          city: string | null
+          converted_at: string | null
+          converted_to_user: boolean | null
+          created_at: string
+          email: string
+          experience_level: string | null
+          id: string
+          name: string
+          phone: string | null
+          services_interested: string[] | null
+          source: string | null
+          suburb: string | null
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          converted_at?: string | null
+          converted_to_user?: boolean | null
+          created_at?: string
+          email: string
+          experience_level?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          services_interested?: string[] | null
+          source?: string | null
+          suburb?: string | null
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          converted_at?: string | null
+          converted_to_user?: boolean | null
+          created_at?: string
+          email?: string
+          experience_level?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          services_interested?: string[] | null
+          source?: string | null
+          suburb?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       sitter_services: {
         Row: {

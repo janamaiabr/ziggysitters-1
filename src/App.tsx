@@ -17,6 +17,7 @@ import Welcome from "./pages/Welcome";
 import NotFound from "./pages/NotFound";
 import FindSitters from "./pages/FindSitters";
 import BecomeSitter from "./pages/BecomeSitter";
+import BecomeSitterSuburb from "./pages/BecomeSitterSuburb";
 import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
@@ -66,6 +67,7 @@ import AdminLayout from "./pages/AdminLayout";
 import AdminPromoCodeManagement from "./pages/AdminPromoCodeManagement";
 import AdminSearchAnalytics from "./pages/AdminSearchAnalytics";
 import AdminSitterRecruitment from "./pages/AdminSitterRecruitment";
+import AdminSitterLeads from "./pages/AdminSitterLeads";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
@@ -207,6 +209,7 @@ function AppContent() {
               <Route path="/admin/promo-codes" element={<AdminPromoCodeManagement />} />
               <Route path="/admin/search-analytics" element={<AdminSearchAnalytics />} />
               <Route path="/admin/sitter-recruitment" element={<AdminSitterRecruitment />} />
+              <Route path="/admin/sitter-leads" element={<AdminSitterLeads />} />
               <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
@@ -227,6 +230,7 @@ function AppContent() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
             <Route path="/500" element={<Error500 />} />
             <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
             <Route path="/test-payment" element={<PaymentTests />} />

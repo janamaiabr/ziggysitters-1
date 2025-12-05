@@ -105,6 +105,12 @@ const navSections = [
         icon: Target,
         description: 'High-demand areas needing sitter coverage',
       },
+      {
+        title: 'Sitter Leads',
+        href: '/admin/sitter-leads',
+        icon: Users,
+        description: 'People interested in becoming sitters',
+      },
     ],
   },
   {
