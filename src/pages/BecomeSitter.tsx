@@ -1,16 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { metaPixel } from '@/lib/metaPixel';
+import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight, MapPin } from 'lucide-react';
+import EarningsCalculator from '@/components/sitter-recruitment/EarningsCalculator';
+import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
 
 const benefits = [
   {
@@ -58,94 +53,20 @@ const steps = [
   }
 ];
 
+// High-demand suburbs for linking
+const HIGH_DEMAND_SUBURBS = [
+  { slug: 'grey-lynn', name: 'Grey Lynn', searches: 45 },
+  { slug: 'ponsonby', name: 'Ponsonby', searches: 52 },
+  { slug: 'mt-eden', name: 'Mt Eden', searches: 38 },
+  { slug: 'remuera', name: 'Remuera', searches: 48 },
+  { slug: 'herne-bay', name: 'Herne Bay', searches: 32 },
+  { slug: 'takapuna', name: 'Takapuna', searches: 41 },
+];
+
 export default function BecomeSitter() {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    location: '',
-    experience: '',
-    bio: '',
-    services: [],
-    hasYard: false,
-    petExperience: ''
-  });
-
-  const handleServiceToggle = (service: string) => {
-    setFormData(prev => ({
-      ...prev,
-      services: prev.services.includes(service)
-        ? prev.services.filter(s => s !== service)
-        : [...prev.services, service]
-    }));
-  };
-
-  const handleSubmitApplication = async () => {
-    // Validate required fields
-    if (!formData.name || !formData.email || !formData.phone || !formData.bio || !formData.petExperience) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields to submit your application.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (formData.services.length === 0) {
-      toast({
-        title: "Services Required",
-        description: "Please select at least one service you'd like to offer.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Simulate API call - replace with actual submission logic later
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Track lead submission
-      metaPixel.trackLead({ content_category: 'Become Sitter' });
-      
-      toast({
-        title: "Application Submitted!",
-        description: "Thank you for your application. We'll review it and get back to you within 48 hours.",
-      });
-
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        location: '',
-        experience: '',
-        bio: '',
-        services: [],
-        hasYard: false,
-        petExperience: ''
-      });
-
-      // Navigate to success page or home
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
-
-    } catch (error) {
-      console.error('Error submitting application:', error);
-      toast({
-        title: "Submission Failed",
-        description: "There was an error submitting your application. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get('ref');
 
   return (
     <>
@@ -314,21 +235,54 @@ export default function BecomeSitter() {
         </div>
       </div>
 
-      {/* Call to Action - Simplified */}
-      <div className="py-20 bg-accent/5">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">Ready to Start Earning?</h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Join our community of trusted pet sitters and start caring for pets in your area.
+      {/* Earnings Calculator + Lead Form Section */}
+      <div className="py-20 bg-accent/5" id="get-started">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">See What You Could Earn</h2>
+            <p className="text-lg text-muted-foreground">
+              Calculate your potential earnings and get started in minutes
             </p>
-            <Button 
-              size="lg" 
-              className="px-12"
-              onClick={() => navigate('/auth')}
-            >
-              Join Now
-            </Button>
+          </div>
+          
+          <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <EarningsCalculator />
+            <SitterLeadForm source={referralCode ? `referral_${referralCode}` : 'become_sitter_page'} />
+          </div>
+          
+          {referralCode && (
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              You were referred by a friend! You'll both get $20 credit when you complete your first booking.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* High Demand Suburbs */}
+      <div className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">Pet Sitters Needed in These Areas</h2>
+            <p className="text-muted-foreground">
+              These Auckland suburbs have high demand and need more sitters
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+            {HIGH_DEMAND_SUBURBS.map((suburb) => (
+              <Button
+                key={suburb.slug}
+                variant="outline"
+                className="group"
+                onClick={() => navigate(`/become-sitter/${suburb.slug}`)}
+              >
+                <MapPin className="w-4 h-4 mr-2 text-primary" />
+                {suburb.name}
+                <Badge variant="secondary" className="ml-2 text-xs">
+                  {suburb.searches}+/mo
+                </Badge>
+              </Button>
+            ))}
           </div>
         </div>
       </div>
