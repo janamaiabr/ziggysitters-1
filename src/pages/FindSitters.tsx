@@ -502,12 +502,12 @@ export default function FindSitters() {
               {filteredSitters.map((sitter) => (
                 <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
                   <div className="relative">
-                    <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                    <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden rounded-t-lg">
                       {sitter.image ? (
                         <img 
                           src={sitter.image} 
                           alt={`${sitter.name}'s profile`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover object-top"
                         />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
@@ -646,12 +646,12 @@ export default function FindSitters() {
                 {allSitters.slice(0, 6).map((sitter) => (
                   <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
                     <div className="relative">
-                      <div className="aspect-video bg-gray-100 relative overflow-hidden rounded-t-lg">
+                      <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden rounded-t-lg">
                         {sitter.image ? (
                           <img 
                             src={sitter.image} 
                             alt={`${sitter.name}'s profile`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover object-top"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
