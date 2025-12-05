@@ -102,17 +102,16 @@ export default function SitterProfile() {
       try {
         console.log('Fetching sitter with ID:', id);
         
-        // Fetch from public view for basic info
-        const { data, error } = await supabase
-          .from('public_sitter_profiles')
-          .select('*')
-          .eq('id', id)
-          .maybeSingle();
+        // Use RPC function for public access (works for anonymous users)
+        const { data: rpcData, error } = await supabase
+          .rpc('get_public_sitter_info', { sitter_id: id });
         
-        // Separately check for police vet badge (may require auth)
-        const { data: policeVetCheck } = await supabase
-          .from('profiles')
-          .select('blue_card_document_url')
+        const data = rpcData?.[0] || null;
+        
+        // Try to get golden badge status from public_sitters view
+        const { data: goldenBadgeData } = await supabase
+          .from('public_sitters')
+          .select('golden_badge_approved')
           .eq('id', id)
           .maybeSingle();
 
@@ -194,7 +193,7 @@ export default function SitterProfile() {
             ) : ['Dogs', 'Cats'],
           avatar: data.avatar_url,
           verified: data.is_verified,
-          hasPoliceVet: !!(policeVetCheck?.blue_card_document_url), // Gold badge
+          hasPoliceVet: !!(goldenBadgeData?.golden_badge_approved), // Gold badge
           
           bio: data.bio || 'Experienced pet care provider',
           experience: servicesData?.length > 0 ? 
