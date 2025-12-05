@@ -185,63 +185,53 @@ const HeroSectionPlayful = ({
                 <span className="ml-2">🔍</span>
               </h3>
               
-              <div className="flex flex-col gap-3">
-                {/* Location and Service - side by side on tablet+ */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-3">
-                  <SuburbAutocomplete
-                    value={location}
-                    onChange={setLocation}
-                    placeholder="Enter suburb 📍"
-                    className="h-12 border-2 border-purple-200 dark:border-purple-700 focus:border-purple-500"
-                  />
-                  
-                  <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="h-12 w-full lg:w-[200px] text-base border-2 border-purple-200 dark:border-purple-700">
-                      <SelectValue placeholder="Service type 🏠" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pet_sitting_sitters_home">At Sitter{"'"}s Home 🏡</SelectItem>
-                      <SelectItem value="pet_sitting_owners_home">At Your Home 🏠</SelectItem>
-                      <SelectItem value="drop_in_visits">Drop-in Visits 👋</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* All fields in one row on desktop, stacked on mobile */}
+              <div className="flex flex-col lg:flex-row gap-3">
+                <SuburbAutocomplete
+                  value={location}
+                  onChange={setLocation}
+                  placeholder="Enter suburb 📍"
+                  className="h-12 border-2 border-purple-200 dark:border-purple-700 focus:border-purple-500 lg:flex-1"
+                />
                 
-                {/* Dates and Search */}
-                <div className="grid grid-cols-2 sm:flex gap-3">
-                  <div className="relative">
-                    <Input 
-                      type="date"
-                      value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
-                      className="h-12 w-full text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
-                      min={new Date().toISOString().split('T')[0]}
-                      aria-label="Check-in date"
-                    />
-                  </div>
-                  
-                  <div className="relative">
-                    <Input 
-                      type="date"
-                      value={checkOut}
-                      onChange={(e) => setCheckOut(e.target.value)}
-                      className="h-12 w-full text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
-                      min={checkIn || new Date().toISOString().split('T')[0]}
-                      aria-label="Check-out date"
-                    />
-                  </div>
-                  
-                  <Button 
-                    size="lg" 
-                    className="col-span-2 sm:col-span-1 h-12 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-4 md:px-8 whitespace-nowrap bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
-                    onClick={handleSearch}
-                  >
-                    <Search className="mr-1.5 md:mr-2 h-4 w-4 md:h-5 md:w-5" />
-                    <span className="sm:hidden">Search</span>
-                    <span className="hidden sm:inline">Search Sitters</span>
-                    <Sparkles className="ml-1.5 md:ml-2 h-3 w-3 md:h-4 md:w-4" />
-                  </Button>
-                </div>
+                <Select value={serviceType} onValueChange={setServiceType}>
+                  <SelectTrigger className="h-12 w-full lg:w-[180px] text-base border-2 border-purple-200 dark:border-purple-700">
+                    <SelectValue placeholder="Service type 🏠" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pet_sitting_sitters_home">At Sitter{"'"}s Home 🏡</SelectItem>
+                    <SelectItem value="pet_sitting_owners_home">At Your Home 🏠</SelectItem>
+                    <SelectItem value="drop_in_visits">Drop-in Visits 👋</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Input 
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  className="h-12 w-full lg:w-[150px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
+                  min={new Date().toISOString().split('T')[0]}
+                  aria-label="Check-in date"
+                />
+                
+                <Input 
+                  type="date"
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                  className="h-12 w-full lg:w-[150px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
+                  min={checkIn || new Date().toISOString().split('T')[0]}
+                  aria-label="Check-out date"
+                />
+                
+                <Button 
+                  size="lg" 
+                  className="h-12 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-6 whitespace-nowrap bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
+                  onClick={handleSearch}
+                >
+                  <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                  Search Sitters
+                  <Sparkles className="ml-2 h-3 w-3 md:h-4 md:w-4" />
+                </Button>
               </div>
             </div>
           </div>
