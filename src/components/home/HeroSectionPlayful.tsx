@@ -82,7 +82,7 @@ const HeroSectionPlayful = ({
               <div className="space-y-4">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
                   <span className="block text-foreground">Never Wonder</span>
-                  <span className="block text-gradient-playful py-1">"How's My Pet?" 🤔</span>
+                  <span className="block text-gradient-playful py-1">"How's My Pet?"</span>
                   <span className="block text-foreground">Again!</span>
                 </h1>
                 
