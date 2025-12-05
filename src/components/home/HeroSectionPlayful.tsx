@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Camera, Heart, Star, Search, Shield, ChevronRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Camera, Heart, Star, Search, Shield, Award } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
 import petServicesImg from '@/assets/pet-services.jpg';
@@ -39,193 +40,210 @@ const HeroSectionPlayful = ({
   };
 
   return (
-    <section className="relative min-h-[92vh] flex items-center bg-background overflow-hidden">
-      {/* Subtle background elements */}
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-background">
+      {/* Luxury background pattern */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/[0.03] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/[0.03] rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+        {/* Subtle diagonal lines pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `repeating-linear-gradient(
+              45deg,
+              hsl(var(--foreground)) 0px,
+              hsl(var(--foreground)) 1px,
+              transparent 1px,
+              transparent 60px
+            )`
+          }}
+        />
+        {/* Warm gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/40 via-transparent to-primary/5" />
+        {/* Gold accent glow */}
+        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[100px]" />
       </div>
 
-      <div className="container mx-auto px-6 lg:px-8 py-16 md:py-24 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          {/* Charity badge */}
-          <div className="mb-8 animate-fade-in">
-            <span className="inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
-              <Heart className="w-4 h-4 text-primary fill-primary" />
-              5% of every booking donated to SPCA NZ
-            </span>
-          </div>
+      {/* SPCA Charity Badge - Top Left */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8 z-20 animate-fade-in">
+        <Badge className="bg-secondary text-secondary-foreground border-none px-5 py-2.5 text-sm font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 rounded-full">
+          <Heart className="w-4 h-4 fill-current" />
+          5% Donated to SPCA NZ
+        </Badge>
+      </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-            {/* Left - Content */}
+      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center mb-8 md:mb-12">
+            {/* Left side - Content */}
             <div className="space-y-8 animate-fade-in">
-              {/* Headline */}
-              <div className="space-y-5">
-                <h1 className="text-[3.25rem] md:text-[4rem] lg:text-[4.5rem] font-bold tracking-tight leading-[1.08]">
-                  <span className="text-foreground">Pet care you can </span>
-                  <span className="text-primary">actually</span>
-                  <span className="text-foreground"> trust</span>
+              {/* Luxury badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent border border-border rounded-full">
+                <Award className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-muted-foreground tracking-wide uppercase">Premium Pet Care</span>
+              </div>
+
+              {/* Main Headline */}
+              <div className="space-y-4">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
+                  <span className="block text-foreground">Never Wonder</span>
+                  <span className="block text-gradient-gold py-1">"How's My Pet?"</span>
+                  <span className="block text-foreground">Again.</span>
                 </h1>
                 
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg">
-                  Verified sitters who send daily photo updates. If they don't, they lose 15% of their pay. That's the ZiggySitters guarantee.
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
+                  Experience peace of mind with <span className="text-foreground font-medium">guaranteed daily updates</span>. Our sitters must deliver photo reports, or face a 15% payment reduction.
                 </p>
               </div>
 
-              {/* Feature pills */}
-              <div className="flex flex-wrap gap-3">
+              {/* Luxury Value Props */}
+              <div className="flex flex-wrap gap-4">
                 {[
-                  { icon: Camera, text: "Daily photo reports" },
-                  { icon: Shield, text: "ID verified" },
-                  { icon: Star, text: "4.9 rating" }
+                  { icon: Camera, text: "Daily Photo Reports" },
+                  { icon: Shield, text: "Verified Sitters" },
+                  { icon: Star, text: "4.9★ Excellence" }
                 ].map((item, idx) => (
                   <div 
                     key={idx} 
-                    className="flex items-center gap-2 bg-muted/50 rounded-full px-4 py-2.5 text-sm font-medium text-foreground"
+                    className="flex items-center gap-2.5 bg-card border border-border rounded-lg px-4 py-3 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300"
                   >
-                    <item.icon className="w-4 h-4 text-secondary" />
-                    {item.text}
+                    <item.icon className="w-5 h-5 text-primary" />
+                    <span className="font-medium text-foreground">{item.text}</span>
                   </div>
                 ))}
               </div>
-
-              {/* CTA for mobile */}
-              <div className="lg:hidden">
-                <Button 
-                  size="lg" 
-                  className="w-full h-14 text-base font-semibold rounded-xl"
-                  onClick={() => document.getElementById('search-card')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  Find a sitter
-                  <ChevronRight className="ml-1 w-5 h-5" />
-                </Button>
-              </div>
             </div>
 
-            {/* Right - Image */}
+            {/* Right side - Elegant Photo Display */}
             <div className="relative hidden lg:block animate-scale-in">
-              <div className="relative">
-                {/* Main image */}
-                <div className="relative rounded-3xl overflow-hidden shadow-[var(--shadow-primary)] aspect-[4/5]">
+              <div className="relative w-full h-[520px]">
+                {/* Main large photo with luxury frame */}
+                <div className="absolute top-0 right-0 w-[380px] h-[320px] rounded-2xl overflow-hidden shadow-[var(--shadow-hover)] border-luxury animate-float">
+                  <div className="absolute inset-0 bg-gradient-to-t from-secondary/20 to-transparent z-10" />
                   <img 
                     src={petServicesImg} 
-                    alt="Happy pet with their sitter" 
+                    alt="Happy pet with sitter" 
                     className="w-full h-full object-cover"
                   />
-                  {/* Subtle overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 via-transparent to-transparent" />
                 </div>
                 
-                {/* Floating stats card */}
-                <div className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-5 shadow-[var(--shadow-hover)] border border-border">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center">
-                      <Camera className="w-6 h-6 text-secondary" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-foreground">98%</p>
-                      <p className="text-sm text-muted-foreground">Report completion</p>
-                    </div>
-                  </div>
+                {/* Second photo with offset */}
+                <div className="absolute top-48 left-0 w-[320px] h-[260px] rounded-2xl overflow-hidden shadow-[var(--shadow-hover)] border-luxury" style={{ animationDelay: '2s' }}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-secondary/20 to-transparent z-10" />
+                  <img 
+                    src={petServicesImg} 
+                    alt="Pet sitting service" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
-                {/* Floating review card */}
-                <div className="absolute -top-4 -right-4 bg-card rounded-2xl px-5 py-4 shadow-[var(--shadow-hover)] border border-border">
-                  <div className="flex items-center gap-1 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
-                    ))}
+                {/* Decorative gold accent */}
+                <div className="absolute -bottom-4 right-20 w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 blur-2xl" />
+                
+                {/* Trust badge overlay */}
+                <div className="absolute bottom-8 right-8 bg-card/95 backdrop-blur-sm rounded-xl px-5 py-4 shadow-lg border border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">Fully Verified</p>
+                      <p className="text-xs text-muted-foreground">ID & Background Checked</p>
+                    </div>
                   </div>
-                  <p className="text-sm font-medium text-foreground">"Absolutely amazing!"</p>
-                  <p className="text-xs text-muted-foreground mt-1">— Sarah M.</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Search Card */}
-          <div id="search-card" className="mt-16 md:mt-20">
-            <div className="bg-card rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-[var(--shadow-hover)] border border-border max-w-4xl mx-auto">
-              <div className="flex flex-col lg:flex-row gap-4 items-stretch">
-                <div className="flex-1">
-                  <label className="text-sm font-medium text-foreground mb-2 block">Location</label>
-                  <SuburbAutocomplete
-                    value={location}
-                    onChange={setLocation}
-                    placeholder="Enter suburb or city"
-                    className="h-12"
-                  />
-                </div>
+          {/* Search Card - Luxury Design */}
+          <div className="w-full flex justify-center items-center">
+            <div className="bg-card rounded-2xl p-6 md:p-8 shadow-[var(--shadow-soft)] border border-border hover:shadow-[var(--shadow-hover)] transition-all duration-500 w-full max-w-4xl border-luxury">
+              <h3 className="text-xl md:text-2xl font-bold mb-5 text-center text-foreground">Find Your Perfect Sitter</h3>
+              
+              <div className="flex flex-col lg:flex-row gap-3 items-stretch">
+                <SuburbAutocomplete
+                  value={location}
+                  onChange={setLocation}
+                  placeholder="Enter suburb or city"
+                  className="h-12"
+                />
                 
-                <div className="lg:w-48">
-                  <label className="text-sm font-medium text-foreground mb-2 block">Service</label>
-                  <Select value={serviceType} onValueChange={setServiceType}>
-                    <SelectTrigger className="h-12 w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pet_sitting_sitters_home">At Sitter's Home</SelectItem>
-                      <SelectItem value="pet_sitting_owners_home">At Your Home</SelectItem>
-                      <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Select value={serviceType} onValueChange={setServiceType}>
+                  <SelectTrigger className="h-12 w-full lg:w-[200px] text-base">
+                    <SelectValue placeholder="Service type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pet_sitting_sitters_home">At Sitter's Home</SelectItem>
+                    <SelectItem value="pet_sitting_owners_home">At Your Home</SelectItem>
+                    <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
+                  </SelectContent>
+                </Select>
                 
-                <div className="lg:w-36">
-                  <label className="text-sm font-medium text-foreground mb-2 block">Check in</label>
+                <div className="relative w-full lg:w-[180px]">
                   <Input 
                     type="date"
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="h-12 w-full"
+                    className="h-12 w-full text-base [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
+                    style={{
+                      opacity: checkIn ? 1 : undefined
+                    }}
                     min={new Date().toISOString().split('T')[0]}
+                    aria-label="Check-in date"
                   />
+                  {!checkIn && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none">
+                      Check-in
+                    </span>
+                  )}
                 </div>
                 
-                <div className="lg:w-36">
-                  <label className="text-sm font-medium text-foreground mb-2 block">Check out</label>
+                <div className="relative w-full lg:w-[180px]">
                   <Input 
                     type="date"
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="h-12 w-full"
+                    className="h-12 w-full text-base [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
+                    style={{
+                      opacity: checkOut ? 1 : undefined
+                    }}
                     min={checkIn || new Date().toISOString().split('T')[0]}
+                    aria-label="Check-out date"
                   />
+                  {!checkOut && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none">
+                      Check-out
+                    </span>
+                  )}
                 </div>
                 
-                <div className="lg:self-end">
-                  <Button 
-                    size="lg" 
-                    className="w-full lg:w-auto h-12 px-8 font-semibold rounded-xl"
-                    onClick={handleSearch}
-                  >
-                    <Search className="mr-2 h-5 w-5" />
-                    Search
-                  </Button>
-                </div>
+                <Button 
+                  size="lg" 
+                  className="w-full lg:w-auto min-h-[48px] h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] px-8 whitespace-nowrap bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                  onClick={handleSearch}
+                >
+                  <Search className="mr-2 h-5 w-5" />
+                  Search Sitters
+                </Button>
               </div>
             </div>
           </div>
 
-          {/* Social proof */}
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 mt-12 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          {/* Social Proof */}
+          <div className="flex justify-center items-center gap-8 mt-8 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.5s' }}>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-foreground">500+</span>
-              <span>Happy pet owners</span>
+              <span className="font-semibold text-foreground text-lg">500+</span>
+              <span>Happy Pet Owners</span>
             </div>
-            <div className="w-px h-5 bg-border hidden sm:block" />
+            <div className="w-px h-6 bg-border" />
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-foreground">4.9</span>
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-primary text-primary" />
-                ))}
-              </div>
+              <span className="font-semibold text-foreground text-lg">98%</span>
+              <span>Report Completion</span>
             </div>
-            <div className="w-px h-5 bg-border hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-foreground">24/7</span>
-              <span>Support</span>
+            <div className="w-px h-6 bg-border hidden md:block" />
+            <div className="hidden md:flex items-center gap-2">
+              <span className="font-semibold text-foreground text-lg">24/7</span>
+              <span>Support Available</span>
             </div>
           </div>
         </div>
