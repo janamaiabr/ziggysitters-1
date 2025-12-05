@@ -1,0 +1,108 @@
+/* BACKUP: Blue/Teal Luxury Theme - December 2024
+   To restore: copy contents of :root and .dark to index.css
+*/
+
+:root {
+  /* LUXURY THEME - Original blue/teal with premium styling */
+  --background: 0 0% 100%;
+  --foreground: 210 24% 16%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 210 24% 16%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 24% 16%;
+
+  --primary: 207 89% 51%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 182 85% 39%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 210 20% 96%;
+  --muted-foreground: 210 16% 46%;
+
+  --accent: 207 40% 96%;
+  --accent-foreground: 207 89% 51%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 210 20% 90%;
+  --input: 210 20% 90%;
+  --ring: 207 89% 51%;
+  --success: 142 76% 36%;
+
+  /* Luxury gradient colors - blue/teal */
+  --gradient-primary: linear-gradient(135deg, hsl(207 89% 51%), hsl(182 85% 39%));
+  --gradient-secondary: linear-gradient(180deg, hsl(207 89% 96%), hsl(182 85% 94%));
+  --gradient-accent: linear-gradient(135deg, hsl(207 89% 51%), hsl(207 89% 65%));
+  --gradient-dark: linear-gradient(180deg, hsl(210 24% 12%), hsl(210 24% 16%));
+  
+  /* Luxury shadow colors */
+  --shadow-soft: 0 4px 24px hsl(207 89% 51% / 0.08);
+  --shadow-hover: 0 12px 40px hsl(207 89% 51% / 0.15);
+  --shadow-primary: 0 8px 32px hsl(207 89% 51% / 0.2);
+
+  --radius: 0.75rem;
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+.dark {
+  --background: 210 24% 8%;
+  --foreground: 210 20% 95%;
+
+  --card: 210 24% 10%;
+  --card-foreground: 210 20% 95%;
+
+  --popover: 210 24% 10%;
+  --popover-foreground: 210 20% 95%;
+
+  --primary: 207 89% 55%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 182 70% 45%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 210 20% 18%;
+  --muted-foreground: 210 16% 63%;
+
+  --accent: 210 20% 18%;
+  --accent-foreground: 207 89% 55%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 210 20% 18%;
+  --input: 210 20% 18%;
+  --ring: 207 89% 55%;
+  --success: 142 76% 36%;
+
+  /* Dark mode luxury gradients */
+  --gradient-primary: linear-gradient(135deg, hsl(207 89% 55%), hsl(182 70% 45%));
+  --gradient-secondary: linear-gradient(180deg, hsl(210 24% 10%), hsl(210 20% 15%));
+  --gradient-accent: linear-gradient(135deg, hsl(207 89% 55%), hsl(207 89% 40%));
+  --gradient-dark: linear-gradient(180deg, hsl(210 24% 6%), hsl(210 24% 10%));
+  
+  /* Dark mode luxury shadows */
+  --shadow-soft: 0 4px 24px hsl(0 0% 0% / 0.3);
+  --shadow-hover: 0 12px 40px hsl(0 0% 0% / 0.4);
+  --shadow-primary: 0 8px 32px hsl(207 89% 55% / 0.15);
+  
+  --sidebar-background: 210 24% 10%;
+  --sidebar-foreground: 210 20% 95%;
+  --sidebar-primary: 207 89% 55%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 20% 15%;
+  --sidebar-accent-foreground: 210 20% 95%;
+  --sidebar-border: 210 20% 18%;
+  --sidebar-ring: 207 89% 55%;
+}
