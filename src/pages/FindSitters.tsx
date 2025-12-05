@@ -16,6 +16,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { metaPixel } from '@/lib/metaPixel';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 import EmailCaptureModal from '@/components/home/EmailCaptureModal';
+import NoResultsSection from '@/components/search/NoResultsSection';
+import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 
 // No more mock data - using real database profiles
 
@@ -39,6 +41,7 @@ export default function FindSitters() {
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [currentFilters, setCurrentFilters] = useState<any>(null);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
+  const [nearbySitters, setNearbySitters] = useState<any[]>([]);
 
   // Show email capture modal after search with delay
   useEffect(() => {
@@ -250,6 +253,18 @@ export default function FindSitters() {
     }
 
     console.log('Filtered results:', filtered);
+    
+    // If no results, get nearby sitters (all sitters not matching exact location)
+    if (filtered.length === 0 && location) {
+      // Get sitters from other Auckland suburbs as "nearby"
+      const nearby = allSitters.filter(sitter => 
+        !sitter.location.toLowerCase().includes(location.toLowerCase())
+      ).slice(0, 6);
+      setNearbySitters(nearby);
+    } else {
+      setNearbySitters([]);
+    }
+    
     setFilteredSitters(filtered);
     setSearchPerformed(true);
 
@@ -515,138 +530,52 @@ export default function FindSitters() {
             </div>
           )}
 
-          {/* Sitter Cards Grid */}
+          {/* Sitter Cards Grid - Enhanced */}
           {searchPerformed && filteredSitters.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredSitters.map((sitter) => (
-                <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
-                  <div className="relative">
-                    <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden rounded-t-lg">
-                      {sitter.image ? (
-                        <img 
-                          src={sitter.image} 
-                          alt={`${sitter.name}'s profile`}
-                          className="w-full h-full object-cover object-top"
-                        />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                            <div className="text-center">
-                              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
-                                <span className="text-2xl font-bold text-primary">
-                                  {sitter.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-600 font-medium">{sitter.name}</p>
-                            </div>
-                          </div>
-                        )}
-                    </div>
-                    <div className="absolute top-2 right-2">
-                      <SitterVerificationBadge 
-                        isVerified={sitter.verified}
-                        hasGoldenBadge={sitter.golden_badge}
-                        size="sm"
-                      />
-                    </div>
-                  </div>
-                  
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage 
-                            src={sitter.image} 
-                            alt={sitter.name}
-                            className="object-cover"
-                          />
-                          <AvatarFallback className="bg-primary/20 text-primary font-semibold">
-                            {sitter.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{sitter.name}</CardTitle>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <MapPin className="w-3 h-3 mr-1" />
-                            {sitter.location}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-4 flex flex-col flex-grow">
-                    <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
-                    
-                    <div className="flex flex-wrap gap-1">
-                      {sitter.services.slice(0, 2).map((service) => (
-                        <Badge key={service} variant="outline" className="text-xs">
-                          {service}
-                        </Badge>
-                      ))}
-                      {sitter.services.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{sitter.services.length - 2} more
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center justify-between min-h-[24px]">
-                      <div className="text-sm text-muted-foreground">
-                        From <span className="font-semibold text-gray-900">${sitter.baseRate}/hr</span>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-auto pt-2">
-                      <Button 
-                        className="w-full"
-                        onClick={() => {
-                          // Track sitter click for retargeting
-                          trackSitterClick(sitter.id);
-                          
-                          const params = new URLSearchParams({ booking: 'true' });
-                          if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
-                          if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
-                          if (serviceType) params.set('serviceType', serviceType);
-                          navigate(`/sitter/${sitter.id}?${params.toString()}`);
-                        }}
-                      >
-                        View Profile & Book
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <EnhancedSitterCard
+                  key={sitter.id}
+                  sitter={sitter}
+                  onViewProfile={() => {
+                    trackSitterClick(sitter.id);
+                    const params = new URLSearchParams({ booking: 'true' });
+                    if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                    if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                    if (serviceType) params.set('serviceType', serviceType);
+                    navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                  }}
+                />
               ))}
             </div>
           )}
 
-          {/* No Results Found */}
+          {/* No Results Found - Enhanced */}
           {searchPerformed && filteredSitters.length === 0 && (
-            <div className="text-center py-12">
-              <div className="max-w-md mx-auto">
-                <div className="text-6xl mb-4">🐾</div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">No sitters found</h3>
-                <p className="text-gray-600 mb-6">
-                  We couldn't find any sitters matching your criteria. Try adjusting your search filters or expanding your search area.
-                </p>
-                <div className="space-y-2">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setLocation('');
-                      setServiceType('');
-                      setPetType('');
-                      setSelectedDate(undefined);
-                      setCheckOutDate(undefined);
-                      setCurrentFilters(null);
-                      setFilteredSitters(allSitters);
-                      setSearchPerformed(false);
-                    }}
-                  >
-                    Clear All Filters
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <NoResultsSection
+              searchLocation={location}
+              searchServiceType={serviceType}
+              nearbySitters={nearbySitters}
+              onClearFilters={() => {
+                setLocation('');
+                setServiceType('');
+                setPetType('');
+                setSelectedDate(undefined);
+                setCheckOutDate(undefined);
+                setCurrentFilters(null);
+                setFilteredSitters(allSitters);
+                setNearbySitters([]);
+                setSearchPerformed(false);
+              }}
+              onViewSitter={(sitterId) => {
+                trackSitterClick(sitterId);
+                const params = new URLSearchParams({ booking: 'true' });
+                if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                if (serviceType) params.set('serviceType', serviceType);
+                navigate(`/sitter/${sitterId}?${params.toString()}`);
+              }}
+            />
           )}
 
           {/* Default State - Show All Sitters */}
@@ -663,97 +592,17 @@ export default function FindSitters() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {allSitters.slice(0, 6).map((sitter) => (
-                  <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div className="relative">
-                      <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden rounded-t-lg">
-                        {sitter.image ? (
-                          <img 
-                            src={sitter.image} 
-                            alt={`${sitter.name}'s profile`}
-                            className="w-full h-full object-cover object-top"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                            <div className="text-center">
-                              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
-                                <span className="text-2xl font-bold text-primary">
-                                  {sitter.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-600 font-medium">{sitter.name}</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="absolute top-2 right-2">
-                        <SitterVerificationBadge 
-                          isVerified={sitter.verified}
-                          hasGoldenBadge={sitter.golden_badge}
-                          size="sm"
-                        />
-                      </div>
-                    </div>
-                    
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage 
-                              src={sitter.image} 
-                              alt={sitter.name}
-                              className="object-cover"
-                            />
-                            <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <CardTitle className="text-lg">{sitter.name}</CardTitle>
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              {sitter.location}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    
-                    <CardContent className="space-y-4 flex flex-col flex-grow">
-                      <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
-                      
-                      <div className="flex flex-wrap gap-1">
-                        {sitter.services.slice(0, 2).map((service) => (
-                          <Badge key={service} variant="outline" className="text-xs">
-                            {service}
-                          </Badge>
-                        ))}
-                        {sitter.services.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{sitter.services.length - 2} more
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center justify-between min-h-[24px]">
-                        <div className="text-sm text-muted-foreground">
-                          From <span className="font-semibold text-gray-900">${sitter.baseRate}/hr</span>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-auto pt-2">
-                        <Button 
-                          className="w-full"
-                          onClick={() => {
-                            const params = new URLSearchParams({ booking: 'true' });
-                            if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
-                            if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
-                            if (serviceType) params.set('serviceType', serviceType);
-                            navigate(`/sitter/${sitter.id}?${params.toString()}`);
-                          }}
-                        >
-                          View Profile & Book
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <EnhancedSitterCard
+                    key={sitter.id}
+                    sitter={sitter}
+                    onViewProfile={() => {
+                      const params = new URLSearchParams({ booking: 'true' });
+                      if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                      if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                      if (serviceType) params.set('serviceType', serviceType);
+                      navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                    }}
+                  />
                 ))}
               </div>
               
