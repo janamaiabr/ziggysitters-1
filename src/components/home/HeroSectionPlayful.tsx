@@ -82,15 +82,15 @@ const HeroSectionPlayful = ({
                 <span className="text-sm font-medium text-muted-foreground tracking-wide uppercase">Premium Pet Care</span>
               </div>
 
-              {/* Main Headline - Luxury Typography */}
+              {/* Main Headline */}
               <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-semibold tracking-tight leading-[1.1]">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
                   <span className="block text-foreground">Never Wonder</span>
                   <span className="block text-gradient-gold py-1">"How's My Pet?"</span>
                   <span className="block text-foreground">Again.</span>
                 </h1>
                 
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl font-body">
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
                   Experience peace of mind with <span className="text-foreground font-medium">guaranteed daily updates</span>. Our sitters must deliver photo reports, or face a 15% payment reduction.
                 </p>
               </div>
@@ -158,18 +158,18 @@ const HeroSectionPlayful = ({
           {/* Search Card - Luxury Design */}
           <div className="w-full flex justify-center items-center">
             <div className="bg-card rounded-2xl p-6 md:p-8 shadow-[var(--shadow-soft)] border border-border hover:shadow-[var(--shadow-hover)] transition-all duration-500 w-full max-w-4xl border-luxury">
-              <h3 className="text-xl md:text-2xl font-display font-semibold mb-5 text-center text-foreground">Find Your Perfect Sitter</h3>
+              <h3 className="text-xl md:text-2xl font-bold mb-5 text-center text-foreground">Find Your Perfect Sitter</h3>
               
               <div className="flex flex-col lg:flex-row gap-3 items-stretch">
                 <SuburbAutocomplete
                   value={location}
                   onChange={setLocation}
                   placeholder="Enter suburb or city"
-                  className="h-12 font-body"
+                  className="h-12"
                 />
                 
                 <Select value={serviceType} onValueChange={setServiceType}>
-                  <SelectTrigger className="h-12 w-full lg:w-[200px] text-base font-body">
+                  <SelectTrigger className="h-12 w-full lg:w-[200px] text-base">
                     <SelectValue placeholder="Service type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -184,7 +184,7 @@ const HeroSectionPlayful = ({
                     type="date"
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="h-12 w-full text-base font-body [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
+                    className="h-12 w-full text-base [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
                     style={{
                       opacity: checkIn ? 1 : undefined
                     }}
@@ -192,7 +192,7 @@ const HeroSectionPlayful = ({
                     aria-label="Check-in date"
                   />
                   {!checkIn && (
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none font-body">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none">
                       Check-in
                     </span>
                   )}
@@ -203,7 +203,7 @@ const HeroSectionPlayful = ({
                     type="date"
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="h-12 w-full text-base font-body [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
+                    className="h-12 w-full text-base [&::-webkit-datetime-edit]:opacity-0 [&::-webkit-datetime-edit]:focus:opacity-100 [&:not(:placeholder-shown)]:!opacity-100"
                     style={{
                       opacity: checkOut ? 1 : undefined
                     }}
@@ -211,7 +211,7 @@ const HeroSectionPlayful = ({
                     aria-label="Check-out date"
                   />
                   {!checkOut && (
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none font-body">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-base pointer-events-none select-none">
                       Check-out
                     </span>
                   )}
@@ -219,7 +219,7 @@ const HeroSectionPlayful = ({
                 
                 <Button 
                   size="lg" 
-                  className="w-full lg:w-auto min-h-[48px] h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] px-8 whitespace-nowrap bg-secondary hover:bg-secondary/90 text-secondary-foreground font-body"
+                  className="w-full lg:w-auto min-h-[48px] h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] px-8 whitespace-nowrap bg-secondary hover:bg-secondary/90 text-secondary-foreground"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-5 w-5" />

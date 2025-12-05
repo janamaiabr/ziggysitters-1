@@ -218,11 +218,11 @@ All colors MUST be HSL.
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Luxury Typography */
+  /* Clean Typography - DM Sans for all text */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     letter-spacing: -0.02em;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   /* Accessibility improvements */
@@ -344,7 +344,7 @@ All colors MUST be HSL.
 /* Utility classes */
 @layer utilities {
   .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
   }
 
   .font-body {
