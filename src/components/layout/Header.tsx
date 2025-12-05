@@ -65,33 +65,33 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b border-border">
-      <div className="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
+    <header className="bg-background/98 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 sticky top-0 z-50 border-b border-border/50">
+      <div className="container mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src={logoSvg} alt="ZiggySitters" className="h-6 md:h-8 w-auto" />
+          <img src={logoSvg} alt="ZiggySitters" className="h-7 md:h-9 w-auto" />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/find-sitters" className="text-sm font-medium hover:text-primary transition-colors">
+        <nav className="hidden md:flex items-center gap-8">
+          <Link to="/find-sitters" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Find Sitters
           </Link>
-          <Link to="/become-sitter" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link to="/become-sitter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Become a Sitter
           </Link>
-          <Link to="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link to="/how-it-works" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             How it Works
           </Link>
-          <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Blog
           </Link>
-          <Link to="/christmas" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+          <Link to="/christmas" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
             🎄 Christmas
           </Link>
-          <Link to="/black-friday" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+          <Link to="/black-friday" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
             🛍️ Black Friday
           </Link>
           {user && profile?.role === 'pet_sitter' && (
-            <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1.5">
+            <Link to="/calendar" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1.5">
               <CalendarIcon className="h-4 w-4" />
               Calendar
             </Link>
@@ -141,11 +141,11 @@ export default function Header() {
               </DropdownMenu>
             </div>
           ) : (
-            <div className="hidden md:flex gap-2">
-              <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')}>
+            <div className="hidden md:flex gap-3">
+              <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')} className="font-body font-medium">
                 Sign In
               </Button>
-              <Button onClick={() => navigate('/auth?tab=signup')}>
+              <Button onClick={() => navigate('/auth?tab=signup')} className="font-body font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-sm hover:shadow-md transition-all duration-200">
                 Get Started
               </Button>
             </div>

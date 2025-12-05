@@ -8,110 +8,111 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 210 24% 16%;
+    /* LUXURY THEME - Deep navy, champagne gold, warm ivory */
+    --background: 40 25% 97%;
+    --foreground: 220 30% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 210 24% 16%;
+    --card: 40 20% 99%;
+    --card-foreground: 220 30% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 24% 16%;
+    --popover: 40 20% 99%;
+    --popover-foreground: 220 30% 12%;
 
-    --primary: 207 89% 51%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 38 70% 50%;
+    --primary-foreground: 220 30% 8%;
 
-    --secondary: 182 85% 39%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 35% 20%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 210 16% 46%;
+    --muted: 40 15% 92%;
+    --muted-foreground: 220 15% 40%;
 
-    --accent: 0 0% 98%;
-    --accent-foreground: 207 89% 51%;
+    --accent: 38 60% 92%;
+    --accent-foreground: 220 30% 12%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 40 20% 98%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 207 89% 51%;
-    --success: 142 76% 36%;
+    --border: 40 15% 85%;
+    --input: 40 15% 88%;
+    --ring: 38 70% 50%;
+    --success: 142 55% 40%;
 
-    /* ZiggySitters gradient colors */
-    --gradient-primary: linear-gradient(135deg, hsl(207 89% 51%), hsl(182 85% 39%));
-    --gradient-secondary: linear-gradient(180deg, hsl(207 89% 91%), hsl(182 85% 85%));
+    /* Luxury gradient colors */
+    --gradient-primary: linear-gradient(135deg, hsl(38 70% 50%), hsl(38 80% 65%));
+    --gradient-secondary: linear-gradient(180deg, hsl(40 25% 97%), hsl(40 15% 92%));
+    --gradient-gold: linear-gradient(135deg, hsl(38 70% 50%), hsl(45 75% 60%));
+    --gradient-dark: linear-gradient(180deg, hsl(220 35% 15%), hsl(220 35% 20%));
     
-    /* Shadow colors */
-    --shadow-soft: 0 4px 20px hsl(207 89% 51% / 0.1);
-    --shadow-hover: 0 8px 30px hsl(207 89% 51% / 0.15);
+    /* Luxury shadow colors */
+    --shadow-soft: 0 4px 24px hsl(220 30% 12% / 0.06);
+    --shadow-hover: 0 12px 40px hsl(220 30% 12% / 0.12);
+    --shadow-gold: 0 8px 32px hsl(38 70% 50% / 0.2);
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 40 20% 99%;
+    --sidebar-foreground: 220 30% 12%;
+    --sidebar-primary: 220 35% 20%;
+    --sidebar-primary-foreground: 40 20% 98%;
+    --sidebar-accent: 40 15% 94%;
+    --sidebar-accent-foreground: 220 30% 12%;
+    --sidebar-border: 40 15% 88%;
+    --sidebar-ring: 38 70% 50%;
   }
 
   .dark {
-    --background: 210 24% 8%;
-    --foreground: 46 37% 94%;
+    --background: 220 30% 8%;
+    --foreground: 40 20% 95%;
 
-    --card: 210 24% 10%;
-    --card-foreground: 46 37% 94%;
+    --card: 220 30% 10%;
+    --card-foreground: 40 20% 95%;
 
-    --popover: 210 24% 10%;
-    --popover-foreground: 46 37% 94%;
+    --popover: 220 30% 10%;
+    --popover-foreground: 40 20% 95%;
 
-    --primary: 142 76% 36%;
-    --primary-foreground: 355 25% 95%;
+    --primary: 38 70% 55%;
+    --primary-foreground: 220 30% 8%;
 
-    --secondary: 210 20% 18%;
-    --secondary-foreground: 46 37% 94%;
+    --secondary: 220 25% 18%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 210 20% 18%;
-    --muted-foreground: 210 16% 63%;
+    --muted: 220 25% 15%;
+    --muted-foreground: 40 10% 60%;
 
-    --accent: 210 20% 18%;
-    --accent-foreground: 46 37% 94%;
+    --accent: 220 25% 15%;
+    --accent-foreground: 40 20% 95%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 55% 45%;
+    --destructive-foreground: 40 20% 98%;
 
-    --border: 210 20% 18%;
-    --input: 210 20% 18%;
-    --ring: 142 76% 36%;
-    --success: 142 76% 36%;
+    --border: 220 25% 18%;
+    --input: 220 25% 18%;
+    --ring: 38 70% 55%;
+    --success: 142 55% 40%;
 
-    /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 40% 25%));
-    --gradient-secondary: linear-gradient(180deg, hsl(210 24% 10%), hsl(210 20% 18%));
+    /* Dark mode luxury gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(38 70% 55%), hsl(38 60% 40%));
+    --gradient-secondary: linear-gradient(180deg, hsl(220 30% 10%), hsl(220 25% 15%));
+    --gradient-gold: linear-gradient(135deg, hsl(38 70% 55%), hsl(45 65% 45%));
+    --gradient-dark: linear-gradient(180deg, hsl(220 30% 6%), hsl(220 30% 10%));
     
-    /* Dark mode shadows */
-    --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.3);
-    --shadow-hover: 0 8px 30px hsl(0 0% 0% / 0.4);
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Dark mode luxury shadows */
+    --shadow-soft: 0 4px 24px hsl(0 0% 0% / 0.3);
+    --shadow-hover: 0 12px 40px hsl(0 0% 0% / 0.4);
+    --shadow-gold: 0 8px 32px hsl(38 70% 55% / 0.15);
+    
+    --sidebar-background: 220 30% 10%;
+    --sidebar-foreground: 40 20% 95%;
+    --sidebar-primary: 38 70% 55%;
+    --sidebar-primary-foreground: 220 30% 8%;
+    --sidebar-accent: 220 25% 15%;
+    --sidebar-accent-foreground: 40 20% 95%;
+    --sidebar-border: 220 25% 18%;
+    --sidebar-ring: 38 70% 55%;
   }
 
-  /* Playful Theme - Inspired by warm, friendly pet brands */
+  /* Playful Theme - Inspired by warm, friendly pet brands (ORIGINAL) */
   .playful-theme {
     --background: 35 25% 97%;
     --foreground: 220 20% 15%;
@@ -152,6 +153,57 @@ All colors MUST be HSL.
 
     --radius: 1rem;
   }
+
+  /* Original Blue Theme */
+  .original-theme {
+    --background: 0 0% 100%;
+    --foreground: 210 24% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 24% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 24% 16%;
+
+    --primary: 207 89% 51%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 182 85% 39%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 210 16% 46%;
+
+    --accent: 0 0% 98%;
+    --accent-foreground: 207 89% 51%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 207 89% 51%;
+    --success: 142 76% 36%;
+
+    /* ZiggySitters gradient colors */
+    --gradient-primary: linear-gradient(135deg, hsl(207 89% 51%), hsl(182 85% 39%));
+    --gradient-secondary: linear-gradient(180deg, hsl(207 89% 91%), hsl(182 85% 85%));
+    
+    /* Shadow colors */
+    --shadow-soft: 0 4px 20px hsl(207 89% 51% / 0.1);
+    --shadow-hover: 0 8px 30px hsl(207 89% 51% / 0.15);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
 @layer base {
@@ -161,6 +213,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Luxury Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
 
   /* Accessibility improvements */
@@ -220,12 +282,55 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
   .animate-fade-in {
-    animation: fade-in 0.6s ease-out;
+    animation: fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .animate-scale-in {
-    animation: scale-in 0.6s ease-out;
+    animation: scale-in 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% 100%;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Luxury gold text gradient */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(38 70% 50%), hsl(45 80% 60%), hsl(38 70% 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Luxury border effect */
+  .border-luxury {
+    border: 1px solid transparent;
+    background: 
+      linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+      linear-gradient(135deg, hsl(38 70% 50% / 0.3), hsl(38 70% 50% / 0.1), hsl(38 70% 50% / 0.3)) border-box;
   }
   
   /* Hide Lovable badge */
@@ -233,5 +338,16 @@ All colors MUST be HSL.
   [class*="lovable-badge"],
   a[href*="lovable.dev"][target="_blank"] {
     display: none !important;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-body {
+    font-family: 'DM Sans', system-ui, sans-serif;
   }
 }
