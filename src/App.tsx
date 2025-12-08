@@ -16,6 +16,7 @@ import Auth from "./pages/Auth";
 import Welcome from "./pages/Welcome";
 import NotFound from "./pages/NotFound";
 import FindSitters from "./pages/FindSitters";
+import FindSittersSuburb from "./pages/FindSittersSuburb";
 import BecomeSitter from "./pages/BecomeSitter";
 import BecomeSitterSuburb from "./pages/BecomeSitterSuburb";
 import HowItWorks from "./pages/HowItWorks";
@@ -129,8 +130,10 @@ function AppContent() {
             <Route path="/" element={<Index />} />
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/find-sitters" element={<FindSitters />} />
+            <Route path="/find-sitters/:suburb" element={<FindSittersSuburb />} />
             <Route path="/sitter/:id" element={<SitterProfile />} />
             <Route path="/become-sitter" element={<BecomeSitter />} />
+            <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             
             {/* Auth Route - Public only */}
