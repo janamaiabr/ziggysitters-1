@@ -12,9 +12,41 @@ interface VerificationUpdateRequest {
   verification_status: 'verified' | 'rejected';
   rejection_reason?: string;
   badge_type?: 'ID' | 'Gold Star';
+  sitter_id?: string;
+  suburb?: string;
+  city?: string;
 }
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+// Function to trigger new sitter notification in background
+async function triggerNewSitterNotification(sitter_id: string, suburb: string, city?: string) {
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("Missing Supabase env vars for notification trigger");
+      return;
+    }
+
+    console.log(`Triggering new sitter notification for ${sitter_id} in ${suburb}`);
+    
+    const response = await fetch(`${supabaseUrl}/functions/v1/send-new-sitter-notification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({ sitter_id, suburb, city }),
+    });
+
+    const result = await response.json();
+    console.log("New sitter notification result:", result);
+  } catch (error) {
+    console.error("Failed to trigger new sitter notification:", error);
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -27,7 +59,10 @@ serve(async (req) => {
       user_name,
       verification_status,
       rejection_reason,
-      badge_type = 'ID'
+      badge_type = 'ID',
+      sitter_id,
+      suburb,
+      city
     }: VerificationUpdateRequest = await req.json();
 
     const isApproved = verification_status === 'verified';
@@ -35,6 +70,18 @@ serve(async (req) => {
     const subject = isApproved 
       ? `🎉 ${badge_type === 'Gold Star' ? 'Gold Star' : 'ID'} Verification Approved!`
       : `${badge_type === 'Gold Star' ? 'Gold Star' : 'ID'} Verification Update`;
+
+    // If sitter was approved and we have location info, notify users who searched that area
+    if (isApproved && sitter_id && suburb) {
+      // Use EdgeRuntime.waitUntil for background task if available
+      const notificationPromise = triggerNewSitterNotification(sitter_id, suburb, city);
+      if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
+        EdgeRuntime.waitUntil(notificationPromise);
+      } else {
+        // Fire and forget
+        notificationPromise.catch(console.error);
+      }
+    }
 
     const emailContent = isApproved ? `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

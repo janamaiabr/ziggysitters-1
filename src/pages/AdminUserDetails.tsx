@@ -411,7 +411,11 @@ export default function AdminUserDetails() {
           user_email: profile.email,
           user_name: `${profile.first_name} ${profile.last_name}`,
           verification_status: verificationStatus,
-          rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined
+          rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined,
+          // Pass sitter info for new sitter notification
+          sitter_id: isVerified ? profile.id : undefined,
+          suburb: isVerified ? profile.suburb : undefined,
+          city: isVerified ? profile.city : undefined
         }
       }).catch(emailError => {
         console.error('Error sending verification email:', emailError);

@@ -310,6 +310,7 @@ export type Database = {
           email_count: number | null
           id: string
           last_email_sent_at: string | null
+          last_sitter_notification_at: string | null
           name: string | null
           search_location: string | null
           search_service_type: string | null
@@ -322,6 +323,7 @@ export type Database = {
           email_count?: number | null
           id?: string
           last_email_sent_at?: string | null
+          last_sitter_notification_at?: string | null
           name?: string | null
           search_location?: string | null
           search_service_type?: string | null
@@ -334,6 +336,7 @@ export type Database = {
           email_count?: number | null
           id?: string
           last_email_sent_at?: string | null
+          last_sitter_notification_at?: string | null
           name?: string | null
           search_location?: string | null
           search_service_type?: string | null

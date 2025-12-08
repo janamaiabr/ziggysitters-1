@@ -191,7 +191,11 @@ export default function AdminDashboard() {
             user_email: profileToUpdate.email,
             user_name: `${profileToUpdate.first_name} ${profileToUpdate.last_name}`,
             verification_status: verificationStatus,
-            rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined
+            rejection_reason: verificationStatus === 'rejected' ? 'Please review your profile and documents for completeness and accuracy.' : undefined,
+            // Pass sitter info for new sitter notification
+            sitter_id: isVerified ? profileToUpdate.id : undefined,
+            suburb: isVerified ? profileToUpdate.suburb : undefined,
+            city: isVerified ? profileToUpdate.city : undefined
           }
         });
       } catch (emailError) {
