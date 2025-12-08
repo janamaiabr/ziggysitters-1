@@ -80,34 +80,34 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Popular Areas */}
           <div>
-            <h3 className="font-semibold mb-3 md:mb-4 text-base">Resources</h3>
+            <h3 className="font-semibold mb-3 md:mb-4 text-base">Popular Areas</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <button
-                  onClick={async () => {
-                    try {
-                      const response = await fetch('/templates/House_Pet_Sitting_Agreement_NZ_Template.docx');
-                      if (!response.ok) throw new Error('Failed to download template');
-                      const blob = await response.blob();
-                      const url = window.URL.createObjectURL(blob);
-                      const link = document.createElement('a');
-                      link.href = url;
-                      link.download = 'House_Pet_Sitting_Agreement_NZ_Template.docx';
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                      window.URL.revokeObjectURL(url);
-                    } catch (error) {
-                      console.error('Download error:', error);
-                      alert('Failed to download template. Please contact support.');
-                    }
-                  }}
-                  className="text-gray-300 hover:text-white transition-colors text-left underline cursor-pointer"
-                >
-                  Pet Sitting Agreement Template
-                </button>
+                <Link to="/find-sitters/ponsonby" className="text-gray-300 hover:text-white transition-colors">
+                  Ponsonby
+                </Link>
+              </li>
+              <li>
+                <Link to="/find-sitters/grey-lynn" className="text-gray-300 hover:text-white transition-colors">
+                  Grey Lynn
+                </Link>
+              </li>
+              <li>
+                <Link to="/find-sitters/mt-eden" className="text-gray-300 hover:text-white transition-colors">
+                  Mt Eden
+                </Link>
+              </li>
+              <li>
+                <Link to="/find-sitters/remuera" className="text-gray-300 hover:text-white transition-colors">
+                  Remuera
+                </Link>
+              </li>
+              <li>
+                <Link to="/find-sitters/hamilton" className="text-gray-300 hover:text-white transition-colors">
+                  Hamilton
+                </Link>
               </li>
             </ul>
           </div>
