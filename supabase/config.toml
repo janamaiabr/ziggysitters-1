@@ -87,3 +87,5 @@ verify_jwt = false
 [functions.send-verification-update]
 verify_jwt = false
 
+[functions.send-new-sitter-notification]
+verify_jwt = false

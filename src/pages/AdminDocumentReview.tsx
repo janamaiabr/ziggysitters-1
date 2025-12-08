@@ -121,7 +121,11 @@ export default function AdminDocumentReview() {
         body: {
           user_email: sitter.email,
           user_name: `${sitter.first_name} ${sitter.last_name}`,
-          verification_status: 'verified'
+          verification_status: 'verified',
+          // Pass sitter info for new sitter notification
+          sitter_id: sitter.id,
+          suburb: sitter.suburb,
+          city: sitter.city
         }
       });
 
