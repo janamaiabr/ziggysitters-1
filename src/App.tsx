@@ -74,6 +74,7 @@ import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
 import GoldenBadgeTests from "./pages/GoldenBadgeTests";
 import CalendarTests from "./pages/CalendarTests";
+import Areas from "./pages/Areas";
 
 const queryClient = new QueryClient();
 
@@ -134,6 +135,7 @@ function AppContent() {
             <Route path="/sitter/:id" element={<SitterProfile />} />
             <Route path="/become-sitter" element={<BecomeSitter />} />
             <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
+            <Route path="/areas" element={<Areas />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             
             {/* Auth Route - Public only */}

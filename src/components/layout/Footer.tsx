@@ -109,6 +109,11 @@ export default function Footer() {
                   Hamilton
                 </Link>
               </li>
+              <li>
+                <Link to="/areas" className="text-gray-300 hover:text-white transition-colors font-medium">
+                  View All Areas →
+                </Link>
+              </li>
             </ul>
           </div>
 
