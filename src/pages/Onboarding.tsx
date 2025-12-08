@@ -498,6 +498,23 @@ export default function Onboarding() {
         // Don't block onboarding if email fails
       }
 
+      // Notify users who searched in this sitter's area that a new sitter is available
+      try {
+        if (profile?.suburb) {
+          console.log('Triggering new sitter notification for suburb:', profile.suburb);
+          await supabase.functions.invoke('send-new-sitter-notification', {
+            body: {
+              sitter_id: profile.id,
+              suburb: profile.suburb,
+              city: profile.city || 'Auckland'
+            }
+          });
+        }
+      } catch (notifyError) {
+        console.error('Error sending new sitter notifications:', notifyError);
+        // Don't block onboarding if notification fails
+      }
+
       console.log('Profile updated successfully, clearing localStorage');
       localStorage.removeItem('onboarding_step');
       localStorage.removeItem('onboarding_data');
