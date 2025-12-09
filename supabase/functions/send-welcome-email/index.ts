@@ -96,8 +96,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Welcome email sent successfully:", emailResponse);
 
-    // Gather comprehensive user data for admin notification
-    try {
+    // Only send admin notification for PET OWNERS (not sitters)
+    // Sitters will trigger admin notification when they upload documents
+    // This prevents confusing "approval needed" emails for sitters with no documents
+    if (role !== 'pet_sitter') {
+      try {
       // Get user profile details
       const { data: profile } = await supabase
         .from('profiles')
@@ -248,12 +251,12 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         `,
       });
-      console.log("Enhanced admin notification sent for new user");
-    } catch (error) {
-      console.error("Failed to send admin notification:", error);
-      // Don't fail if admin email fails
+        console.log("Enhanced admin notification sent for new pet owner");
+      } catch (error) {
+        console.error("Failed to send admin notification:", error);
+        // Don't fail if admin email fails
+      }
     }
-
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
