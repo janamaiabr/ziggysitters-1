@@ -697,6 +697,9 @@ export type Database = {
           city: string | null
           created_at: string
           email: string
+          email_verification_sent_at: string | null
+          email_verification_token: string | null
+          email_verified: boolean | null
           first_name: string
           golden_badge_approved: boolean | null
           golden_badge_approved_at: string | null
@@ -738,6 +741,9 @@ export type Database = {
           city?: string | null
           created_at?: string
           email: string
+          email_verification_sent_at?: string | null
+          email_verification_token?: string | null
+          email_verified?: boolean | null
           first_name: string
           golden_badge_approved?: boolean | null
           golden_badge_approved_at?: string | null
@@ -779,6 +785,9 @@ export type Database = {
           city?: string | null
           created_at?: string
           email?: string
+          email_verification_sent_at?: string | null
+          email_verification_token?: string | null
+          email_verified?: boolean | null
           first_name?: string
           golden_badge_approved?: boolean | null
           golden_badge_approved_at?: string | null
