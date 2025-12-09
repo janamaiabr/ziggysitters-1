@@ -20,7 +20,8 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
   const getStatusInfo = () => {
     // Check if profile needs completion
     const hasBasicInfo = profile.first_name && profile.last_name && profile.phone && profile.address;
-    const hasDocuments = profile.id_document_url || profile.blue_card_document_url;
+    const hasIdDocument = !!profile.id_document_url;
+    const hasPoliceVet = !!profile.blue_card_document_url;
     // Accept if onboarding is completed, even if not fully enabled yet (Stripe verification pending)
     const hasStripeConnected = stripeStatus?.onboarding_completed || stripeStatus?.enabled;
     const isVerified = profile.is_verified || profile.verification_status === 'verified';
@@ -28,8 +29,8 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
     // Priority order of statuses
     if (!hasBasicInfo) {
       return {
-        status: 'Profile Incomplete',
-        description: 'Complete your basic profile information to continue',
+        status: 'Step 1: Complete Your Profile',
+        description: 'Add your phone number and address to continue setup',
         icon: FileText,
         variant: 'destructive' as const,
         color: 'text-destructive',
@@ -37,10 +38,10 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
       };
     }
 
-    if (!hasDocuments) {
+    if (!hasIdDocument) {
       return {
-        status: 'Documents Required',
-        description: 'Upload verification documents (ID and/or Police Vet) to proceed',
+        status: 'Step 2: Upload ID Document',
+        description: 'Upload your ID (driver\'s license or passport) - this is required before your profile can be approved',
         icon: Shield,
         variant: 'destructive' as const,
         color: 'text-destructive',
@@ -50,8 +51,8 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
 
     if (!hasStripeConnected) {
       return {
-        status: 'Payment Setup Needed',
-        description: 'Connect your bank account to receive payments for bookings',
+        status: 'Step 3: Connect Bank Account',
+        description: 'Connect via Stripe to receive payments - you don\'t need an NZBN, just your personal bank details',
         icon: DollarSign,
         variant: 'default' as const,
         color: 'text-yellow-600',
@@ -61,12 +62,12 @@ export function SitterStatusBadge({ profile, stripeStatus, onNavigate }: SitterS
 
     if (!isVerified && profile.verification_status === 'pending') {
       return {
-        status: 'Pending Admin Approval',
-        description: 'Your profile and documents are being reviewed by our team (1-2 business days)',
+        status: 'Almost There! Awaiting Approval',
+        description: 'Your documents have been submitted and are being reviewed by our team. We\'ll notify you via email once approved (usually within 1-2 business days). You can still complete your Police Vet check to earn a Gold Badge.',
         icon: Clock,
         variant: 'secondary' as const,
         color: 'text-blue-600',
-        action: null
+        action: hasPoliceVet ? null : 'Upload Police Vet (Optional)'
       };
     }
 

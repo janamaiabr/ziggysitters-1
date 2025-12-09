@@ -81,8 +81,13 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               
               <div class="content">
-                <div class="badge badge-urgent">⚡ ACTION REQUIRED</div>
+                <div class="badge badge-urgent">⚡ APPROVAL REQUIRED</div>
                 <div class="badge ${document_type === 'id_verification' ? 'badge-id' : 'badge-gold'}">${badgeLevel}</div>
+                
+                <p style="color: #374151; font-size: 16px; margin: 20px 0; padding: 15px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #22c55e;">
+                  <strong>This sitter has completed their document upload and is ready for your review.</strong><br>
+                  Once approved, they will be visible to pet owners and can start accepting bookings.
+                </p>
                 
                 <h2 style="color: #111827; margin-top: 20px;">Sitter Information</h2>
                 
