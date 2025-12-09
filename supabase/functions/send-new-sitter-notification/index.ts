@@ -150,7 +150,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="https://ziggysitters.co.nz/sitter/${sitter_id}" 
+                <a href="https://ziggysitters.com/sitter/${sitter_id}" 
                    style="display: inline-block; background: #6366f1; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                   View Profile & Book
                 </a>
@@ -160,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
                 You're receiving this because you searched for pet sitters in ${capture.search_location || sitterLocation}.<br>
-                <a href="https://ziggysitters.co.nz" style="color: #6366f1;">Ziggy Sitters</a> | Auckland's trusted pet sitting platform
+                <a href="https://ziggysitters.com" style="color: #6366f1;">Ziggy Sitters</a> | Auckland's trusted pet sitting platform
               </p>
             </div>
           </body>
@@ -168,7 +168,7 @@ const handler = async (req: Request): Promise<Response> => {
         `;
 
         const { error: emailError } = await resend.emails.send({
-          from: "Ziggy Sitters <hello@ziggysitters.co.nz>",
+          from: "Ziggy Sitters <hello@ziggysitters.com>",
           to: [capture.email],
           subject: `🐾 New pet sitter in ${sitterLocation}!`,
           html: emailHtml,
