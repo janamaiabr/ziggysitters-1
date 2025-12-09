@@ -13,6 +13,7 @@ import ImprovedPetOwnerOnboarding from '@/components/onboarding/ImprovedPetOwner
 import ImprovedSitterOnboarding from '@/components/onboarding/ImprovedSitterOnboarding';
 import QuickStartPetOwner from '@/components/onboarding/QuickStartPetOwner';
 import TermsAcceptance from '@/components/TermsAcceptance';
+import EmailVerificationStep from '@/components/onboarding/EmailVerificationStep';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/contexts/ProfileContext';
@@ -60,9 +61,11 @@ export default function Onboarding() {
   const [isLoading, setIsLoading] = useState(false);
   const [profileId, setProfileId] = useState<string>('');
   const [showTerms, setShowTerms] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [hasAcceptedTermsLocally, setHasAcceptedTermsLocally] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [data, setData] = useState<OnboardingData>(() => {
     // Try to load from localStorage first
     const saved = localStorage.getItem('onboarding_data');
@@ -190,17 +193,29 @@ export default function Onboarding() {
         if (!error && profile) {
           // Check if user has already accepted terms in the database
           const hasAcceptedTerms = profile.terms_accepted === true;
-          setTermsChecked(hasAcceptedTerms || hasAcceptedTermsLocally);
+          const hasVerifiedEmail = (profile as any).email_verified === true;
           
-          // For existing users who already accepted terms, clear any stale localStorage
-          if (hasAcceptedTerms || hasAcceptedTermsLocally) {
+          setTermsChecked(hasAcceptedTerms || hasAcceptedTermsLocally);
+          setEmailVerified(hasVerifiedEmail);
+          
+          // For existing users who already accepted terms and verified email
+          if ((hasAcceptedTerms || hasAcceptedTermsLocally) && hasVerifiedEmail) {
             const savedStep = localStorage.getItem('onboarding_step');
             if (savedStep === '0') {
-              console.log('Existing user with accepted terms - clearing stale step 0');
+              console.log('Existing user with accepted terms and verified email - clearing stale step 0');
               localStorage.removeItem('onboarding_step');
               setStep(1);
             }
             setShowTerms(false);
+            setShowEmailVerification(false);
+          } else if (hasAcceptedTerms || hasAcceptedTermsLocally) {
+            // Terms accepted but email not verified
+            setShowTerms(false);
+            if (!hasVerifiedEmail) {
+              setShowEmailVerification(true);
+              setStep(0);
+              localStorage.setItem('onboarding_step', '0');
+            }
           } else {
             // Only show terms if not accepted AND not currently showing
             if (!showTerms) {
@@ -295,12 +310,15 @@ export default function Onboarding() {
       setShowTerms(false);
       setTermsChecked(true);
       setHasAcceptedTermsLocally(true);
-      setStep(1); // Move to role selection
-      localStorage.setItem('onboarding_step', '1');
+      
+      // Show email verification step next
+      setShowEmailVerification(true);
+      setStep(0); // Keep at step 0 for email verification
+      localStorage.setItem('onboarding_step', '0');
       
       toast({
         title: "Terms Accepted",
-        description: "Let's continue setting up your profile.",
+        description: "Please verify your email to continue.",
       });
     } catch (error: any) {
       console.error('Error saving terms acceptance:', error);
@@ -310,6 +328,18 @@ export default function Onboarding() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleEmailVerified = () => {
+    setShowEmailVerification(false);
+    setEmailVerified(true);
+    setStep(1); // Move to role selection
+    localStorage.setItem('onboarding_step', '1');
+    
+    toast({
+      title: "Email Verified!",
+      description: "Let's continue setting up your profile.",
+    });
   };
 
   const handleDeclineTerms = async () => {
@@ -872,6 +902,31 @@ export default function Onboarding() {
         onAccept={handleAcceptTerms}
         onDecline={handleDeclineTerms}
       />
+    );
+  }
+
+  // Show email verification after terms acceptance
+  if (showEmailVerification && user) {
+    return (
+      <div className="min-h-screen relative bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 overflow-hidden py-8 md:py-12 px-4">
+        <div className="absolute inset-0 overflow-hidden -z-10">
+          <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
+        
+        <div className="container mx-auto max-w-lg relative z-10">
+          <Card className="shadow-2xl border-2 border-purple-200 dark:border-purple-800 bg-background/95 backdrop-blur">
+            <CardContent className="p-6 md:p-8">
+              <EmailVerificationStep
+                userId={user.id}
+                email={user.email || ''}
+                firstName={data.first_name || user.user_metadata?.first_name || ''}
+                onVerified={handleEmailVerified}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     );
   }
 
