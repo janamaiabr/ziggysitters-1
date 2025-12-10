@@ -17,7 +17,8 @@ import {
   Wrench,
   AlertTriangle,
   UserCog,
-  Target
+  Target,
+  TrendingUp
 } from 'lucide-react';
 import {
   Sidebar,
@@ -110,6 +111,12 @@ const navSections = [
         href: '/admin/sitter-leads',
         icon: Users,
         description: 'People interested in becoming sitters',
+      },
+      {
+        title: 'Marketing Insights',
+        href: '/admin/marketing-insights',
+        icon: TrendingUp,
+        description: 'Supply & demand analysis for targeted marketing',
       },
     ],
   },

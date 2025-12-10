@@ -69,6 +69,7 @@ import AdminPromoCodeManagement from "./pages/AdminPromoCodeManagement";
 import AdminSearchAnalytics from "./pages/AdminSearchAnalytics";
 import AdminSitterRecruitment from "./pages/AdminSitterRecruitment";
 import AdminSitterLeads from "./pages/AdminSitterLeads";
+import AdminMarketingInsights from "./pages/AdminMarketingInsights";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
@@ -215,6 +216,7 @@ function AppContent() {
               <Route path="/admin/search-analytics" element={<AdminSearchAnalytics />} />
               <Route path="/admin/sitter-recruitment" element={<AdminSitterRecruitment />} />
               <Route path="/admin/sitter-leads" element={<AdminSitterLeads />} />
+              <Route path="/admin/marketing-insights" element={<AdminMarketingInsights />} />
               <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
