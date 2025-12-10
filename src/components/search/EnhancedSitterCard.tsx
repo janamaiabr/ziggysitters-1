@@ -164,13 +164,16 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, showBookingD
         </div>
         
         {/* CTA Button */}
-        <div className="mt-auto pt-3">
+        <div className="mt-auto pt-3 space-y-2">
           <Button 
-            className="w-full font-semibold shadow-sm group-hover:shadow-md transition-shadow"
+            className="w-full font-semibold shadow-sm group-hover:shadow-md transition-shadow text-base py-5"
             onClick={onViewProfile}
           >
-            View Profile & Book
+            Book {sitter.name.split(' ')[0]} Now
           </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            Free cancellation • No upfront payment
+          </p>
         </div>
       </CardContent>
     </Card>
