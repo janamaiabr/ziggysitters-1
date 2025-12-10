@@ -55,6 +55,7 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<PublicSitterProfile[]>([]);
   const [allUsers, setAllUsers] = useState<PublicSitterProfile[]>([]);
+  const [sitterServices, setSitterServices] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
@@ -81,7 +82,27 @@ export default function AdminDashboard() {
 
   const initializeAdminDashboard = async () => {
     await checkAdminStatus();
-    await Promise.all([fetchPendingSitters(), fetchAllUsers()]);
+    await Promise.all([fetchPendingSitters(), fetchAllUsers(), fetchSitterServices()]);
+  };
+
+  const fetchSitterServices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sitter_services')
+        .select('sitter_id')
+        .eq('is_offered', true);
+      
+      if (error) throw error;
+      
+      // Create a map of sitter_id -> has services
+      const servicesMap: Record<string, boolean> = {};
+      (data || []).forEach(s => {
+        servicesMap[s.sitter_id] = true;
+      });
+      setSitterServices(servicesMap);
+    } catch (error) {
+      console.error('Error fetching sitter services:', error);
+    }
   };
 
   const checkAdminStatus = async () => {
@@ -620,6 +641,7 @@ export default function AdminDashboard() {
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Location</TableHead>
+                    <TableHead>In Search?</TableHead>
                     <TableHead>Documents</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Notes</TableHead>
@@ -630,7 +652,7 @@ export default function AdminDashboard() {
                 <TableBody>
                   {filteredUsers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                         No users found matching the selected filters.
                       </TableCell>
                     </TableRow>
@@ -669,6 +691,17 @@ export default function AdminDashboard() {
                       </TableCell>
                       <TableCell>
                         {user.role === 'pet_sitter' ? (
+                          sitterServices[user.id] ? (
+                            <Badge variant="default" className="text-xs bg-green-600">✓ Visible</Badge>
+                          ) : (
+                            <Badge variant="destructive" className="text-xs">✗ No Services</Badge>
+                          )
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {user.role === 'pet_sitter' ? (
                           <div className="flex flex-col gap-1">
                             <div>
                               {user.id_document_url ? (
@@ -698,9 +731,11 @@ export default function AdminDashboard() {
                           <Badge variant={
                             user.is_verified ? 'default' : 
                             user.verification_status === 'rejected' ? 'destructive' : 
-                            'secondary'
-                          }>
-                            {user.is_verified ? 'Verified' : user.verification_status || 'Pending'}
+                            'outline'
+                          } className={!user.is_verified && user.verification_status !== 'rejected' ? 'bg-amber-100 text-amber-800 border-amber-300' : ''}>
+                            {user.is_verified ? '✓ Verified' : 
+                             user.verification_status === 'rejected' ? '✗ Rejected' : 
+                             'Awaiting Docs'}
                           </Badge>
                         ) : (
                           <span className="text-muted-foreground">-</span>
