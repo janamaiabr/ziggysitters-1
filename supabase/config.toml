@@ -95,3 +95,9 @@ verify_jwt = false
 
 [functions.verify-email-code]
 verify_jwt = false
+
+[functions.send-verification-request-email]
+verify_jwt = false
+
+[functions.send-sitter-document-notification]
+verify_jwt = false
