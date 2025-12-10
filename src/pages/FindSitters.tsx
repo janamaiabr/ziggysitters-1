@@ -410,23 +410,26 @@ export default function FindSitters() {
               {/* Mobile Optimized: Stack fields properly */}
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">
-                      Where?
-                      {serviceType === 'pet_sitting_owners_home' && (
-                        <span className="ml-2 text-xs text-primary font-normal">(Optional - sitter comes to you)</span>
-                      )}
-                    </label>
-                    <SuburbAutocomplete
-                      value={location}
-                      onChange={setLocation}
-                      placeholder={serviceType === 'pet_sitting_owners_home' ? "Optional - sitter travels to you" : "Enter suburb or city"}
-                    />
-                  </div>
+                  {serviceType !== 'pet_sitting_owners_home' && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 block">Where?</label>
+                      <SuburbAutocomplete
+                        value={location}
+                        onChange={setLocation}
+                        placeholder="Enter suburb or city"
+                      />
+                    </div>
+                  )}
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 block">Service</label>
-                    <Select value={serviceType} onValueChange={setServiceType}>
+                    <Select value={serviceType} onValueChange={(val) => {
+                      setServiceType(val);
+                      // Clear location when switching to owner's home
+                      if (val === 'pet_sitting_owners_home') {
+                        setLocation('');
+                      }
+                    }}>
                       <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white">
                         <SelectValue placeholder="What do you need?" />
                       </SelectTrigger>

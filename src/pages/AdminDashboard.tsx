@@ -40,6 +40,7 @@ type PublicSitterProfile = {
   background_check_verified: boolean | null;
   verification_status: 'pending' | 'verified' | 'rejected' | null;
   id_document_url?: string | null;
+  id_document_urls?: string[] | null;
   blue_card_document_url?: string | null;
   verification_documents_uploaded_at?: string | null;
   created_at: string;
@@ -126,7 +127,7 @@ export default function AdminDashboard() {
       // Fetch from profiles table with admin privileges - include documents and admin notes
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at, admin_notes')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, id_document_urls, blue_card_document_url, verification_documents_uploaded_at, admin_notes')
         .eq('role', 'pet_sitter')
         .order('created_at', { ascending: false });
 
@@ -150,7 +151,7 @@ export default function AdminDashboard() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, blue_card_document_url, verification_documents_uploaded_at, admin_notes')
+        .select('id, first_name, last_name, email, phone, address, suburb, city, postal_code, role, bio, avatar_url, is_verified, rating, total_reviews, background_check_verified, verification_status, created_at, id_document_url, id_document_urls, blue_card_document_url, verification_documents_uploaded_at, admin_notes')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -345,7 +346,15 @@ export default function AdminDashboard() {
     );
   }
 
-  const pendingSitters = profiles.filter(p => p.verification_status === 'pending' || (!p.verification_status && !p.is_verified));
+  // Only show as "pending" if they have uploaded docs - otherwise they're not ready for review
+  const pendingSitters = profiles.filter(p => 
+    (p.verification_status === 'pending' || (!p.verification_status && !p.is_verified)) &&
+    (p.id_document_url || (p.id_document_urls && (p.id_document_urls as string[]).length > 0))
+  );
+  const incompleteProfiles = profiles.filter(p => 
+    (p.verification_status === 'pending' || (!p.verification_status && !p.is_verified)) &&
+    !p.id_document_url && (!p.id_document_urls || (p.id_document_urls as string[]).length === 0)
+  );
   const approvedSitters = profiles.filter(p => p.is_verified && p.verification_status === 'verified');
   const rejectedSitters = profiles.filter(p => p.verification_status === 'rejected');
   
