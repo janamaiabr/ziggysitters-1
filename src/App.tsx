@@ -24,6 +24,9 @@ import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
 import BookingDetails from "./pages/BookingDetails";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminBookings from "./pages/AdminBookings";
+import AdminPayouts from "./pages/AdminPayouts";
+import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetails from "./pages/AdminUserDetails";
 import AdminDocumentReview from "./pages/AdminDocumentReview";
 import AdminInviteUnverifiedSitters from "./pages/AdminInviteUnverifiedSitters";
@@ -207,7 +210,9 @@ function AppContent() {
             {/* Admin Routes - Wrapped in AdminLayout with Sidebar */}
             <Route element={<AdminLayout />}>
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/bookings" element={<AdminBookings />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/payouts" element={<AdminPayouts />} />
               <Route path="/admin/documents" element={<AdminDocumentReview />} />
               <Route path="/admin/invite-unverified-sitters" element={<AdminInviteUnverifiedSitters />} />
               <Route path="/admin/user/:id" element={<AdminUserDetails />} />

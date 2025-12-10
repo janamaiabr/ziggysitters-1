@@ -4,21 +4,17 @@ import {
   LayoutDashboard,
   Users,
   Mail,
-  Rocket,
   FileText,
   DollarSign,
-  Settings,
   Eye,
   RefreshCw,
   ShieldCheck,
-  ListChecks,
-  Send,
-  MailOpen,
-  Wrench,
-  AlertTriangle,
-  UserCog,
   Target,
-  TrendingUp
+  TrendingUp,
+  CalendarCheck,
+  UserCheck,
+  Ticket,
+  Wrench
 } from 'lucide-react';
 import {
   Sidebar,
@@ -34,13 +30,43 @@ import {
 
 const navSections = [
   {
-    label: 'Overview',
+    label: 'Quick Access',
     items: [
       {
-        title: 'Dashboard',
+        title: 'Overview',
         href: '/admin-dashboard',
         icon: LayoutDashboard,
-        description: 'View all users, manage profiles, and monitor platform activity',
+      },
+      {
+        title: 'Bookings',
+        href: '/admin/bookings',
+        icon: CalendarCheck,
+      },
+    ],
+  },
+  {
+    label: 'Marketing & Insights',
+    highlight: true,
+    items: [
+      {
+        title: 'Marketing Dashboard',
+        href: '/admin/marketing-insights',
+        icon: TrendingUp,
+      },
+      {
+        title: 'Search Analytics',
+        href: '/admin/search-analytics',
+        icon: Eye,
+      },
+      {
+        title: 'Sitter Recruitment',
+        href: '/admin/sitter-recruitment',
+        icon: Target,
+      },
+      {
+        title: 'Sitter Leads',
+        href: '/admin/sitter-leads',
+        icon: Users,
       },
     ],
   },
@@ -49,103 +75,53 @@ const navSections = [
     items: [
       {
         title: 'All Users',
-        href: '/admin-dashboard',
+        href: '/admin/users',
         icon: Users,
-        badge: 'Main',
-        description: 'View and manage all users, verify sitters, and edit profiles',
       },
       {
         title: 'Document Review',
         href: '/admin/documents',
         icon: ShieldCheck,
-        description: 'Review and approve ID verifications and gold badges',
       },
       {
-        title: 'Invite Unverified Sitters',
+        title: 'Invite Sitters',
         href: '/admin/invite-unverified-sitters',
         icon: Mail,
-        description: 'Send invitations to unverified sitters to upload documents',
-      },
-      {
-        title: 'Document Verification',
-        href: '/admin/document-fix',
-        icon: ShieldCheck,
-        description: 'Manually verify documents for sitters with lost verification files',
-      },
-      {
-        title: 'Stripe Accounts',
-        href: '/admin/stripe-reset',
-        icon: RefreshCw,
-        description: 'Reset Stripe accounts and send re-onboarding notifications',
       },
     ],
   },
   {
-    label: 'Communications',
+    label: 'Payments',
+    items: [
+      {
+        title: 'Payouts',
+        href: '/admin/payouts',
+        icon: DollarSign,
+      },
+      {
+        title: 'Promo Codes',
+        href: '/admin/promo-codes',
+        icon: Ticket,
+      },
+    ],
+  },
+  {
+    label: 'Tools',
     items: [
       {
         title: 'Email Management',
         href: '/admin/email-management',
         icon: Mail,
-        description: 'Send campaigns, manage subscriptions, and view email templates',
-      },
-    ],
-  },
-  {
-    label: 'Analytics',
-    items: [
-      {
-        title: 'Search Analytics',
-        href: '/admin/search-analytics',
-        icon: Eye,
-        description: 'View search behavior and retargeting data',
       },
       {
-        title: 'Sitter Recruitment',
-        href: '/admin/sitter-recruitment',
-        icon: Target,
-        description: 'High-demand areas needing sitter coverage',
+        title: 'Stripe Accounts',
+        href: '/admin/stripe-reset',
+        icon: RefreshCw,
       },
       {
-        title: 'Sitter Leads',
-        href: '/admin/sitter-leads',
-        icon: Users,
-        description: 'People interested in becoming sitters',
-      },
-      {
-        title: 'Marketing Insights',
-        href: '/admin/marketing-insights',
-        icon: TrendingUp,
-        description: 'Supply & demand analysis for targeted marketing',
-      },
-    ],
-  },
-  {
-    label: 'Financial',
-    items: [
-      {
-        title: 'Payouts',
-        href: '/admin-dashboard#payouts',
-        icon: DollarSign,
-        description: 'Monitor and process sitter payouts',
-      },
-      {
-        title: 'Promo Codes',
-        href: '/admin/promo-codes',
-        icon: Send,
-        description: 'Create and manage promotional discount codes',
-      },
-      {
-        title: 'Payment Issues',
-        href: '/admin/payment-fix',
-        icon: AlertTriangle,
-        description: 'Fix stuck payments and payment-related issues',
-      },
-      {
-        title: 'Broken Bookings',
+        title: 'Fix Issues',
         href: '/admin/fix-broken-bookings',
         icon: Wrench,
-        description: 'Repair bookings with payment or data issues',
       },
     ],
   },
@@ -162,51 +138,34 @@ export function AdminSidebar() {
         {/* Logo/Title */}
         <div className="px-4 py-4 border-b">
           {!isCollapsed ? (
-            <h2 className="text-lg font-semibold">Admin Panel</h2>
+            <h2 className="text-lg font-semibold">Admin</h2>
           ) : (
-            <UserCog className="h-6 w-6 mx-auto" />
+            <LayoutDashboard className="h-5 w-5 mx-auto" />
           )}
         </div>
 
         {navSections.map((section) => (
           <SidebarGroup key={section.label}>
             {!isCollapsed && (
-              <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+              <SidebarGroupLabel className={section.highlight ? 'text-primary font-semibold' : ''}>
+                {section.label}
+              </SidebarGroupLabel>
             )}
             <SidebarGroupContent>
               <SidebarMenu>
                 {section.items.map((item) => {
-                  const isActive =
-                    item.href === '/admin-dashboard'
-                      ? location.pathname === '/admin-dashboard' && !location.hash
-                      : location.pathname === item.href || location.pathname + location.hash === item.href;
+                  const isActive = location.pathname === item.href;
 
                   return (
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton
                         asChild
                         isActive={isActive}
-                        tooltip={isCollapsed ? `${item.title}: ${item.description}` : undefined}
+                        tooltip={isCollapsed ? item.title : undefined}
                       >
-                        <Link to={item.href} className="flex flex-col items-start gap-0.5">
-                          <div className="flex items-center gap-2 w-full">
-                            <item.icon className="h-4 w-4 flex-shrink-0" />
-                            {!isCollapsed && (
-                              <>
-                                <span>{item.title}</span>
-                                {item.badge && (
-                                  <span className="ml-auto text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
-                                    {item.badge}
-                                  </span>
-                                )}
-                              </>
-                            )}
-                          </div>
-                          {!isCollapsed && item.description && (
-                            <span className="text-xs text-muted-foreground ml-6">
-                              {item.description}
-                            </span>
-                          )}
+                        <Link to={item.href} className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4 flex-shrink-0" />
+                          {!isCollapsed && <span>{item.title}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
