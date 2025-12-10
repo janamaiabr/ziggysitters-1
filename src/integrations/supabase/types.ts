@@ -1566,6 +1566,14 @@ export type Database = {
           weight: number
         }[]
       }
+      get_pet_emergency_contacts: {
+        Args: { pet_id: string }
+        Returns: {
+          emergency_contact_name: string
+          emergency_contact_phone: string
+          id: string
+        }[]
+      }
       get_public_sitter_info: {
         Args: { sitter_id: string }
         Returns: {
