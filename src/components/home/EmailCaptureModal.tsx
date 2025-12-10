@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Mail, Bell, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
 interface EmailCaptureModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,10 +18,10 @@ export default function EmailCaptureModal({
   searchLocation, 
   searchServiceType 
 }: EmailCaptureModalProps) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,17 +44,13 @@ export default function EmailCaptureModal({
           source: 'search_retarget'
         });
 
-      if (error) {
-        // If duplicate email, still show success
-        if (error.code === '23505') {
-          setSubmitted(true);
-          return;
-        }
+      if (error && error.code !== '23505') {
         throw error;
       }
 
-      setSubmitted(true);
-      toast.success('You\'re on the list!');
+      // Navigate to thank you page for tracking
+      onClose();
+      navigate('/email-thank-you');
     } catch (error) {
       console.error('Error saving email:', error);
       toast.error('Something went wrong. Please try again.');
@@ -83,104 +79,83 @@ export default function EmailCaptureModal({
           <X className="w-4 h-4 text-gray-600 dark:text-gray-400" />
         </button>
 
-        {!submitted ? (
-          <>
-            {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-6 text-center">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bell className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                Get Sitter Recommendations 🐾
-              </h3>
-              <p className="text-white/90 text-sm">
-                We'll send you the best matches for your search
-              </p>
-            </div>
-            
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-muted-foreground text-sm">
-                  {searchLocation ? (
-                    <>Looking for sitters in <span className="font-semibold text-foreground">{searchLocation}</span>?</>
-                  ) : (
-                    'Get personalized sitter recommendations'
-                  )}
-                </p>
-              </div>
-              
-              <div className="space-y-3">
-                <Input
-                  type="text"
-                  placeholder="Your name (optional)"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="h-12 border-2 border-purple-200 focus:border-purple-500"
-                />
-                
-                <Input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-12 border-2 border-purple-200 focus:border-purple-500"
-                />
-              </div>
-              
-              {/* Benefits */}
-              <div className="space-y-2 py-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-green-500">✓</span> Personalized sitter recommendations
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-green-500">✓</span> New sitters in your area
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-green-500">✓</span> Unsubscribe anytime
-                </div>
-              </div>
-              
-              <Button 
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full h-12 text-base font-semibold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
-              >
-                {isSubmitting ? (
-                  'Subscribing...'
-                ) : (
-                  <>
-                    <Mail className="mr-2 w-4 h-4" />
-                    Get Recommendations
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </>
-                )}
-              </Button>
-              
-              <p className="text-xs text-center text-muted-foreground">
-                We respect your privacy. No spam, ever.
-              </p>
-            </form>
-          </>
-        ) : (
-          /* Success state */
-          <div className="p-8 text-center">
-            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-4xl">🎉</span>
-            </div>
-            <h3 className="text-2xl font-bold mb-3">You're on the list!</h3>
-            <p className="text-muted-foreground mb-6">
-              We'll send you personalized sitter recommendations based on your search.
-            </p>
-            <Button 
-              onClick={onClose}
-              className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500"
-            >
-              Continue Browsing
-            </Button>
+        {/* Header */}
+        <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-6 text-center">
+          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Bell className="w-8 h-8 text-white" />
           </div>
-        )}
+          <h3 className="text-2xl font-bold text-white mb-2">
+            Get Sitter Recommendations 🐾
+          </h3>
+          <p className="text-white/90 text-sm">
+            We'll send you the best matches for your search
+          </p>
+        </div>
+        
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="text-center mb-4">
+            <p className="text-muted-foreground text-sm">
+              {searchLocation ? (
+                <>Looking for sitters in <span className="font-semibold text-foreground">{searchLocation}</span>?</>
+              ) : (
+                'Get personalized sitter recommendations'
+              )}
+            </p>
+          </div>
+          
+          <div className="space-y-3">
+            <Input
+              type="text"
+              placeholder="Your name (optional)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="h-12 border-2 border-purple-200 focus:border-purple-500"
+            />
+            
+            <Input
+              type="email"
+              placeholder="Your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="h-12 border-2 border-purple-200 focus:border-purple-500"
+            />
+          </div>
+          
+          {/* Benefits */}
+          <div className="space-y-2 py-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="text-green-500">✓</span> Personalized sitter recommendations
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="text-green-500">✓</span> New sitters in your area
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="text-green-500">✓</span> Unsubscribe anytime
+            </div>
+          </div>
+          
+          <Button 
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
+          >
+            {isSubmitting ? (
+              'Subscribing...'
+            ) : (
+              <>
+                <Mail className="mr-2 w-4 h-4" />
+                Get Recommendations
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </>
+            )}
+          </Button>
+          
+          <p className="text-xs text-center text-muted-foreground">
+            We respect your privacy. No spam, ever.
+          </p>
+        </form>
       </div>
     </div>
   );
