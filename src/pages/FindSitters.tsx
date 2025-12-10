@@ -171,8 +171,8 @@ export default function FindSitters() {
     
     let filtered = [...allSitters];
 
-    // Filter by location (case-insensitive partial match)
-    if (location) {
+    // Filter by location - skip for "owner's home" service since sitter travels to you
+    if (location && serviceType !== 'pet_sitting_owners_home') {
       filtered = filtered.filter(sitter => 
         sitter.location.toLowerCase().includes(location.toLowerCase()) ||
         location.toLowerCase().includes('newmarket') && sitter.location.toLowerCase().includes('newmarket')
@@ -309,8 +309,8 @@ export default function FindSitters() {
     setCurrentFilters(filters);
     let filtered = [...allSitters];
 
-    // Apply existing search filters first
-    if (location) {
+    // Apply existing search filters first - skip location for "owner's home" service
+    if (location && serviceType !== 'pet_sitting_owners_home') {
       filtered = filtered.filter(sitter => 
         sitter.location.toLowerCase().includes(location.toLowerCase())
       );
@@ -411,11 +411,16 @@ export default function FindSitters() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Where?</label>
+                    <label className="text-sm font-medium text-gray-700 block">
+                      Where?
+                      {serviceType === 'pet_sitting_owners_home' && (
+                        <span className="ml-2 text-xs text-primary font-normal">(Optional - sitter comes to you)</span>
+                      )}
+                    </label>
                     <SuburbAutocomplete
                       value={location}
                       onChange={setLocation}
-                      placeholder="Enter suburb or city"
+                      placeholder={serviceType === 'pet_sitting_owners_home' ? "Optional - sitter travels to you" : "Enter suburb or city"}
                     />
                   </div>
                   
@@ -525,8 +530,16 @@ export default function FindSitters() {
               <p className="text-gray-600">
                 {filteredSitters.length === 0 
                   ? 'No sitters found matching your criteria. Try adjusting your filters.' 
-                  : `Found ${filteredSitters.length} sitter${filteredSitters.length !== 1 ? 's' : ''} in your area`}
+                  : serviceType === 'pet_sitting_owners_home'
+                    ? `Found ${filteredSitters.length} sitter${filteredSitters.length !== 1 ? 's' : ''} who will come to your home`
+                    : `Found ${filteredSitters.length} sitter${filteredSitters.length !== 1 ? 's' : ''} in your area`}
               </p>
+              {serviceType === 'pet_sitting_owners_home' && filteredSitters.length > 0 && (
+                <p className="text-sm text-primary mt-1 flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  These sitters travel to you — your pet stays comfortable at home!
+                </p>
+              )}
             </div>
           )}
 
