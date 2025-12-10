@@ -62,12 +62,6 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, showBookingD
         {/* Top badges */}
         <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
           <div className="flex gap-1">
-            {sitter.golden_badge && (
-              <Badge className="bg-amber-500 text-white border-0 text-xs shadow-lg">
-                <Star className="w-3 h-3 mr-1 fill-white" />
-                Top Rated
-              </Badge>
-            )}
             {experienceYears >= 2 && (
               <Badge variant="secondary" className="text-xs shadow-lg">
                 {experienceYears}+ yrs exp

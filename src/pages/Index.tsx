@@ -191,7 +191,7 @@ const Index = () => {
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Top-rated Sitters in Auckland & Hamilton</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Verified Sitters in Auckland & Hamilton</h2>
             <p className="text-base md:text-lg text-muted-foreground">
               Meet some of our verified, experienced pet care professionals
             </p>
@@ -221,11 +221,6 @@ const Index = () => {
                           {sitter.location}
                         </div>
                          <div className="flex flex-wrap items-center gap-1 mt-1">
-                           <div className="flex items-center">
-                             <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                             <span className="font-medium text-sm md:text-base">{sitter.rating}</span>
-                             <span className="text-xs md:text-sm text-muted-foreground ml-1">⭐ Top rated</span>
-                           </div>
                           {sitter.verified && (
                             <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
                           )}

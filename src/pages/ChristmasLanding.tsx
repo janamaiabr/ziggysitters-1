@@ -120,12 +120,12 @@ export default function ChristmasLanding() {
                 {
                   emoji: "📅",
                   title: "Peak Dates Fill Fast",
-                  desc: "Christmas Eve through Boxing Day are the most popular dates. Top-rated sitters are already receiving multiple requests."
+                  desc: "Christmas Eve through Boxing Day are the most popular dates. Experienced sitters are already receiving multiple requests."
                 },
                 {
                   emoji: "⭐",
                   title: "Best Sitters, Best Care",
-                  desc: "Our highest-rated, most experienced sitters get booked first. Don't miss out on the cream of the crop for your precious pets."
+                  desc: "Our most experienced, verified sitters get booked first. Don't miss out on the best care for your precious pets."
                 },
                 {
                   emoji: "😌",

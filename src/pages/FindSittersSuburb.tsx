@@ -35,7 +35,7 @@ const SUBURB_DATA: Record<string, {
   'remuera': {
     name: 'Remuera',
     description: "Premium pet sitting services in Remuera from verified local sitters.",
-    seoDescription: "Remuera's top-rated pet sitters. Trusted, verified professionals for house sitting, pet care and daily check-ins. Book your local sitter today.",
+    seoDescription: "Remuera's trusted pet sitters. Verified professionals for house sitting, pet care and daily check-ins. Book your local sitter today.",
     popularAreas: ['Epsom', 'Newmarket', 'Mission Bay'],
     avgRate: '$70-90',
   },
