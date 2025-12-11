@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Shield, Users, CalendarCheck, DollarSign, TrendingUp, Eye, ShieldCheck, Target } from 'lucide-react';
+import { Shield, Users, CalendarCheck, DollarSign, TrendingUp, Eye, ShieldCheck, Target, Mail, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
@@ -13,6 +13,7 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [sendingReminders, setSendingReminders] = useState(false);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalSitters: 0,
@@ -20,6 +21,7 @@ export default function AdminDashboard() {
     pendingDocs: 0,
     activeBookings: 0,
     pendingPayouts: 0,
+    incompleteSitters: 0,
   });
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [usersRes, sittersRes, ownersRes, pendingRes, bookingsRes] = await Promise.all([
+      const [usersRes, sittersRes, ownersRes, pendingRes, bookingsRes, incompleteRes] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'pet_sitter'),
         supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'pet_owner'),
@@ -74,6 +76,10 @@ export default function AdminDashboard() {
           .eq('verification_status', 'pending'),
         supabase.from('bookings').select('id', { count: 'exact', head: true })
           .in('status', ['confirmed', 'in_progress']),
+        supabase.from('profiles').select('id', { count: 'exact', head: true })
+          .eq('role', 'pet_sitter')
+          .eq('is_test_account', false)
+          .or('onboarding_completed.is.null,onboarding_completed.eq.false'),
       ]);
 
       setStats({
@@ -83,11 +89,38 @@ export default function AdminDashboard() {
         pendingDocs: pendingRes.count || 0,
         activeBookings: bookingsRes.count || 0,
         pendingPayouts: 0,
+        incompleteSitters: incompleteRes.count || 0,
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const sendSitterReminders = async () => {
+    setSendingReminders(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-sitter-onboarding-status');
+      
+      if (error) throw error;
+      
+      const results = data?.results || {};
+      const totalSent = (results.day1Reminders || 0) + (results.day3Reminders || 0) + (results.day7Reminders || 0);
+      
+      toast({
+        title: "Reminders Sent!",
+        description: `Day 1: ${results.day1Reminders || 0}, Day 3: ${results.day3Reminders || 0}, Day 7: ${results.day7Reminders || 0}`,
+      });
+    } catch (error: any) {
+      console.error('Error sending reminders:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send reminders",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingReminders(false);
     }
   };
 
@@ -222,6 +255,46 @@ export default function AdminDashboard() {
             </Card>
           ))}
         </div>
+      </div>
+
+      {/* Sitter Automation */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Mail className="h-5 w-5 text-primary" />
+          Sitter Onboarding
+        </h2>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Incomplete Sitter Profiles</p>
+                <p className="text-sm text-muted-foreground">
+                  {stats.incompleteSitters} sitters haven't completed onboarding
+                </p>
+              </div>
+              <Button 
+                onClick={sendSitterReminders} 
+                disabled={sendingReminders}
+                className="gap-2"
+              >
+                {sendingReminders ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4" />
+                    Send Reminders
+                  </>
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              Sends reminder emails to sitters based on signup date (Day 1, 3, or 7)
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Marketing & Insights */}
