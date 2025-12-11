@@ -60,7 +60,7 @@ const HeroSectionPlayful = ({
       </div>
 
       {/* SPCA Charity Badge - repositioned for mobile */}
-      <div className="absolute top-20 md:top-8 left-4 md:left-8 z-20 animate-fade-in">
+      <div className="absolute top-24 md:top-8 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-8 z-20 animate-fade-in">
         <div className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full px-3 md:px-5 py-2 md:py-2.5 shadow-lg font-bold text-xs md:text-sm hover:scale-105 transition-transform">
           <Heart className="w-3 h-3 md:w-4 md:h-4 fill-current" />
           <span className="hidden sm:inline">5% Donated to SPCA NZ</span>
@@ -69,7 +69,7 @@ const HeroSectionPlayful = ({
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 pt-28 md:pt-12 md:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-8 pt-36 md:pt-12 md:py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center mb-6 md:mb-12">
             {/* Left side - Content */}
