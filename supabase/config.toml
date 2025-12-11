@@ -101,3 +101,12 @@ verify_jwt = false
 
 [functions.send-sitter-document-notification]
 verify_jwt = false
+
+[functions.send-sitter-welcome]
+verify_jwt = false
+
+[functions.send-sitter-onboarding-reminder]
+verify_jwt = false
+
+[functions.check-sitter-onboarding-status]
+verify_jwt = false
