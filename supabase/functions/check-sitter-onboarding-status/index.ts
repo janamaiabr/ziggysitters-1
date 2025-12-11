@@ -17,28 +17,32 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     
     console.log("Checking sitter onboarding status at:", now.toISOString());
 
     // Get all pet sitters who haven't completed onboarding
+    // AND haven't received a reminder today
     const { data: incompleteSitters, error: fetchError } = await supabase
       .from('profiles')
-      .select('id, email, first_name, created_at, onboarding_completed, avatar_url, bio, id_document_url, stripe_account_id, stripe_onboarding_completed')
+      .select('id, email, first_name, created_at, onboarding_completed, avatar_url, bio, id_document_url, stripe_account_id, stripe_onboarding_completed, last_onboarding_reminder_at')
       .eq('role', 'pet_sitter')
       .eq('is_test_account', false)
-      .or('onboarding_completed.is.null,onboarding_completed.eq.false');
+      .or('onboarding_completed.is.null,onboarding_completed.eq.false')
+      .or(`last_onboarding_reminder_at.is.null,last_onboarding_reminder_at.lt.${todayStart}`);
 
     if (fetchError) {
       console.error("Error fetching incomplete sitters:", fetchError);
       throw fetchError;
     }
 
-    console.log(`Found ${incompleteSitters?.length || 0} sitters with incomplete onboarding`);
+    console.log(`Found ${incompleteSitters?.length || 0} sitters eligible for reminders`);
 
     const results = {
       day1Reminders: 0,
       day3Reminders: 0,
       day7Reminders: 0,
+      skipped: 0,
       errors: [] as string[],
     };
 
@@ -58,6 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       if (!reminderType) {
+        results.skipped++;
         continue; // Skip if not a reminder day
       }
 
@@ -100,6 +105,12 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         if (response.ok) {
+          // Update last reminder timestamp to prevent duplicates
+          await supabase
+            .from('profiles')
+            .update({ last_onboarding_reminder_at: now.toISOString() })
+            .eq('id', sitter.id);
+
           if (reminderType === 'day1') results.day1Reminders++;
           if (reminderType === 'day3') results.day3Reminders++;
           if (reminderType === 'day7') results.day7Reminders++;

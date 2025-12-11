@@ -710,6 +710,7 @@ export type Database = {
           is_test_account: boolean
           is_verified: boolean | null
           last_name: string
+          last_onboarding_reminder_at: string | null
           latitude: number | null
           longitude: number | null
           onboarding_completed: boolean | null
@@ -754,6 +755,7 @@ export type Database = {
           is_test_account?: boolean
           is_verified?: boolean | null
           last_name: string
+          last_onboarding_reminder_at?: string | null
           latitude?: number | null
           longitude?: number | null
           onboarding_completed?: boolean | null
@@ -798,6 +800,7 @@ export type Database = {
           is_test_account?: boolean
           is_verified?: boolean | null
           last_name?: string
+          last_onboarding_reminder_at?: string | null
           latitude?: number | null
           longitude?: number | null
           onboarding_completed?: boolean | null
