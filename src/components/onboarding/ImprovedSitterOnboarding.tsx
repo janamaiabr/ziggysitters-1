@@ -707,19 +707,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         }
       }
 
-      // Send verification email
-      console.log('Sending verification request email...');
-      try {
-        await supabase.functions.invoke('send-verification-request-email', {
-          body: {
-            user_id: userId,
-            documents_uploaded: !!(idDocumentUrls.length > 0 || blueCardUrl)
-          }
-        });
-      } catch (error) {
-        console.error('Error sending verification email:', error);
-        // Don't block onboarding completion if email fails
-      }
+      // Note: Welcome email and admin notification are sent by handleSitterOnboardingComplete in Onboarding.tsx
+      // Sitters go live automatically - no approval needed
+      console.log('Sitter onboarding data saved successfully, proceeding to completion...');
 
       console.log('Calling onComplete with profileId:', profileId);
       

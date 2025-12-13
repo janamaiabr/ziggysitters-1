@@ -25,7 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending sitter welcome email to ${sitterEmail}`);
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <hello@ziggysitters.co.nz>",
+      from: "ZiggySitters <hello@ziggysitters.com>",
       to: [sitterEmail],
       subject: `Welcome to ZiggySitters, ${sitterName}! 🐾 Let's get you started`,
       html: `
@@ -115,7 +115,7 @@ const handler = async (req: Request): Promise<Response> => {
 
               <div style="border-top: 1px solid #e2e8f0; margin-top: 30px; padding-top: 25px;">
                 <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin: 0;">
-                  <strong>Questions?</strong> Simply reply to this email or contact us at hello@ziggysitters.co.nz
+                  <strong>Questions?</strong> Simply reply to this email or contact us at hello@ziggysitters.com
                 </p>
               </div>
 

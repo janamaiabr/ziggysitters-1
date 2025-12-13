@@ -98,7 +98,7 @@ const handler = async (req: Request): Promise<Response> => {
           body: JSON.stringify({
             sitterEmail: sitter.email,
             sitterName: sitter.first_name || 'there',
-            profileUrl: 'https://ziggysitters.co.nz/profile',
+            profileUrl: 'https://ziggysitters.com/profile',
             reminderType,
             missingSteps,
           }),
