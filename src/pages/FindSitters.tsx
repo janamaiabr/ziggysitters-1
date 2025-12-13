@@ -116,6 +116,7 @@ export default function FindSitters() {
             id: sitter.id,
             name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
             location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
+            city: sitter.city || '', // Keep raw city for filtering
             rating: null, // No rating system
             feedback_count: null, // No reviews system
             baseRate: minRate,
@@ -172,11 +173,27 @@ export default function FindSitters() {
     let filtered = [...allSitters];
 
     // Filter by location - skip for "owner's home" service since sitter travels to you
+    // Also skip filtering when searching for "Auckland" as most sitters are in Auckland
     if (location && serviceType !== 'pet_sitting_owners_home') {
-      filtered = filtered.filter(sitter => 
-        sitter.location.toLowerCase().includes(location.toLowerCase()) ||
-        location.toLowerCase().includes('newmarket') && sitter.location.toLowerCase().includes('newmarket')
-      );
+      const searchTerm = location.toLowerCase().trim();
+      
+      // If searching for "Auckland" or similar, show all Auckland-area sitters
+      // This is more inclusive since Auckland is our main service area
+      if (searchTerm === 'auckland' || searchTerm.includes('auckland')) {
+        filtered = filtered.filter(sitter => {
+          const sitterLocation = sitter.location.toLowerCase();
+          const sitterCity = sitter.city?.toLowerCase() || '';
+          // Match if city is Auckland, or city is empty (default Auckland), or location mentions Auckland
+          return sitterCity.includes('auckland') || 
+                 sitterCity === '' || 
+                 sitterLocation.includes('auckland');
+        });
+      } else {
+        // For specific suburb searches, use exact matching
+        filtered = filtered.filter(sitter => 
+          sitter.location.toLowerCase().includes(searchTerm)
+        );
+      }
     }
 
     // Filter by service type
