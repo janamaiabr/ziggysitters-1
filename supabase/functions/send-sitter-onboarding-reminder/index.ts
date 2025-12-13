@@ -59,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
     ` : '';
 
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <hello@ziggysitters.co.nz>",
+      from: "ZiggySitters <hello@ziggysitters.com>",
       to: [sitterEmail],
       subject: subject,
       html: `
@@ -123,7 +123,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div style="text-align: center; margin-top: 20px;">
               <p style="font-size: 12px; color: #94a3b8;">
                 © ${new Date().getFullYear()} ZiggySitters. All rights reserved.<br>
-                <a href="https://ziggysitters.co.nz" style="color: #94a3b8;">ziggysitters.co.nz</a>
+                <a href="https://ziggysitters.com" style="color: #94a3b8;">ziggysitters.com</a>
               </p>
             </div>
           </div>

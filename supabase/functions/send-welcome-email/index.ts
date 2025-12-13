@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
           body: JSON.stringify({
             sitterEmail: email,
             sitterName: firstName || 'there',
-            profileUrl: 'https://ziggysitters.co.nz/profile',
+            profileUrl: 'https://ziggysitters.com/profile',
           }),
         });
 
@@ -58,7 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
       // Also notify admin about new sitter signup
       try {
         await resend.emails.send({
-          from: "ZiggySitters <hello@ziggysitters.co.nz>",
+          from: "ZiggySitters <hello@ziggysitters.com>",
           to: ["janamaia@gmail.com"],
           subject: `🆕 New Sitter Signup: ${firstName}`,
           html: `
@@ -87,7 +87,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // For PET OWNERS: Send standard welcome email
     const emailResponse = await resend.emails.send({
-      from: "ZiggySitters <hello@ziggysitters.co.nz>",
+      from: "ZiggySitters <hello@ziggysitters.com>",
       to: [email],
       subject: "Welcome to ZiggySitters! 🐾",
       html: `
@@ -127,12 +127,12 @@ const handler = async (req: Request): Promise<Response> => {
                 </ul>
 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://ziggysitters.co.nz/profile" class="btn">Complete My Profile</a>
+                  <a href="https://ziggysitters.com/profile" class="btn">Complete My Profile</a>
                 </div>
               </div>
 
               <div class="footer">
-                <p style="margin: 5px 0;">Questions? Contact us at hello@ziggysitters.co.nz</p>
+                <p style="margin: 5px 0;">Questions? Contact us at hello@ziggysitters.com</p>
               </div>
             </div>
           </body>
@@ -190,7 +190,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       await resend.emails.send({
-        from: "ZiggySitters <hello@ziggysitters.co.nz>",
+        from: "ZiggySitters <hello@ziggysitters.com>",
         to: ["janamaia@gmail.com"],
         subject: `🏠 New Pet Owner: ${firstName}`,
         html: `
@@ -222,7 +222,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
 
               <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center;">
-                <a href="https://ziggysitters.co.nz/admin/user-details/${profile?.id}" 
+                <a href="https://ziggysitters.com/admin/user-details/${profile?.id}" 
                    style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
                   View Full Profile
                 </a>
