@@ -145,8 +145,8 @@ export default function Header() {
               <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')} className="font-body font-medium">
                 Sign In
               </Button>
-              <Button onClick={() => navigate('/auth?tab=signup')} className="font-body font-semibold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
-                Get Started ✨
+              <Button onClick={() => navigate('/find-sitters')} className="font-body font-semibold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+                Find a Sitter 🔍
               </Button>
             </div>
           )}
