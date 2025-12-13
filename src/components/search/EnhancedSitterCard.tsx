@@ -166,16 +166,16 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           Usually responds within a few hours
         </div>
         
-        {/* CTA Button - Clearer action */}
+        {/* CTA Button - Softer, enquiry-focused */}
         <div className="mt-auto pt-3 space-y-2">
           <Button 
             className="w-full font-semibold shadow-sm group-hover:shadow-md transition-shadow text-base py-5"
             onClick={handleClick}
           >
-            View Profile & Book
+            Get a Free Quote
           </Button>
           <p className="text-xs text-center text-muted-foreground">
-            Free cancellation • No payment until sitter accepts
+            No payment upfront • Ask questions first
           </p>
         </div>
       </CardContent>

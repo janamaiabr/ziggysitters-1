@@ -125,6 +125,20 @@ export default function MessageDialog({
         title: 'Message sent!',
         description: 'Your message has been delivered.'
       });
+      
+      // Trigger email notification
+      try {
+        await supabase.functions.invoke('send-message-notification', {
+          body: {
+            recipientId: recipientId,
+            senderId: userProfile.id,
+            senderName: `${userProfile.first_name} ${userProfile.last_name}`,
+            messagePreview: newMessage.trim().substring(0, 100)
+          }
+        });
+      } catch (e) {
+        console.log('Email notification failed:', e);
+      }
     }
     
     setLoading(false);
