@@ -185,27 +185,35 @@ export default function FindSitters() {
     
     let filtered = [...allSitters];
 
-    // Filter by location - skip for "owner's home" service since sitter travels to you
-    // Also skip filtering when searching for "Auckland" as most sitters are in Auckland
+    // RELAXED FILTERING: Show sitters even without exact location match
+    // Priority: exact match > partial match > same city > all sitters
+    // This increases visibility and conversion since we have limited sitters
     if (location && serviceType !== 'pet_sitting_owners_home') {
       const searchTerm = location.toLowerCase().trim();
       
       // If searching for "Auckland" or similar, show all Auckland-area sitters
-      // This is more inclusive since Auckland is our main service area
       if (searchTerm === 'auckland' || searchTerm.includes('auckland')) {
         filtered = filtered.filter(sitter => {
           const sitterLocation = sitter.location.toLowerCase();
           const sitterCity = sitter.city?.toLowerCase() || '';
-          // Match if city is Auckland, or city is empty (default Auckland), or location mentions Auckland
-          return sitterCity.includes('auckland') || 
-                 sitterCity === '' || 
-                 sitterLocation.includes('auckland');
+          return sitterCity.includes('auckland') || sitterCity === '' || sitterLocation.includes('auckland');
         });
       } else {
-        // For specific suburb searches, use exact matching
-        filtered = filtered.filter(sitter => 
-          sitter.location.toLowerCase().includes(searchTerm)
-        );
+        // For specific suburb searches, STILL SHOW ALL SITTERS but prioritize matches
+        // Sort by relevance: exact suburb match first, then city match, then others
+        filtered = filtered.sort((a, b) => {
+          const aLocation = a.location.toLowerCase();
+          const bLocation = b.location.toLowerCase();
+          const aExactMatch = aLocation.includes(searchTerm);
+          const bExactMatch = bLocation.includes(searchTerm);
+          
+          if (aExactMatch && !bExactMatch) return -1;
+          if (!aExactMatch && bExactMatch) return 1;
+          // Keep golden badge priority within same match level
+          if (a.golden_badge && !b.golden_badge) return -1;
+          if (!a.golden_badge && b.golden_badge) return 1;
+          return 0;
+        });
       }
     }
 
@@ -591,8 +599,8 @@ export default function FindSitters() {
                   <EnhancedSitterCard
                     key={sitter.id}
                     sitter={sitter}
+                    onSitterClick={trackSitterClick}
                     onViewProfile={() => {
-                      trackSitterClick(sitter.id);
                       const params = new URLSearchParams({ booking: 'true' });
                       if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
                       if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
@@ -614,8 +622,8 @@ export default function FindSitters() {
                       <EnhancedSitterCard
                         key={sitter.id}
                         sitter={sitter}
+                        onSitterClick={trackSitterClick}
                         onViewProfile={() => {
-                          trackSitterClick(sitter.id);
                           const params = new URLSearchParams({ booking: 'true' });
                           if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
                           if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
@@ -675,6 +683,7 @@ export default function FindSitters() {
                   <EnhancedSitterCard
                     key={sitter.id}
                     sitter={sitter}
+                    onSitterClick={trackSitterClick}
                     onViewProfile={() => {
                       const params = new URLSearchParams({ booking: 'true' });
                       if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);

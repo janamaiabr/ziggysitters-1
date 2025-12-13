@@ -1418,12 +1418,12 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           <Button 
             type="button"
             onClick={handleCompleteOnboarding}
-            disabled={!isStepValid(2) || !isStepValid(4)}
+            disabled={!isStepValid(2)}
             size="lg"
             className="px-8 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
           >
             <CheckCircle2 className="w-5 h-5 mr-2" />
-            Submit for Approval
+            {paymentSetupCompleted ? 'Submit for Approval' : 'Complete Profile (Add Stripe Later)'}
           </Button>
         )}
       </div>

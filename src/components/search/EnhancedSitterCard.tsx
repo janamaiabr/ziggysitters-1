@@ -19,10 +19,11 @@ interface EnhancedSitterCardProps {
     sitterServices?: any[];
   };
   onViewProfile: () => void;
+  onSitterClick?: (sitterId: string) => void;
   showBookingDates?: boolean;
 }
 
-export default function EnhancedSitterCard({ sitter, onViewProfile, showBookingDates }: EnhancedSitterCardProps) {
+export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClick, showBookingDates }: EnhancedSitterCardProps) {
   // Calculate trust signals
   const hasProfilePhoto = !!sitter.image;
   const hasMultipleServices = sitter.services.length > 1;
@@ -30,6 +31,14 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, showBookingD
   const experienceYears = sitter.sitterServices?.[0]?.experience_years || 0;
   const maxPets = sitter.sitterServices?.[0]?.max_pets || 1;
   const hasFencedYard = sitter.sitterServices?.some(s => s.has_fenced_yard);
+
+  const handleClick = () => {
+    // Track the click for analytics
+    if (onSitterClick) {
+      onSitterClick(sitter.id);
+    }
+    onViewProfile();
+  };
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-border/50 hover:border-primary/30">
@@ -161,7 +170,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, showBookingD
         <div className="mt-auto pt-3 space-y-2">
           <Button 
             className="w-full font-semibold shadow-sm group-hover:shadow-md transition-shadow text-base py-5"
-            onClick={onViewProfile}
+            onClick={handleClick}
           >
             Book {sitter.name.split(' ')[0]} Now
           </Button>
