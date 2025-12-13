@@ -14,7 +14,8 @@ import {
   Award,
   Shield,
   Clock,
-  ArrowLeft
+  ArrowLeft,
+  MessageCircle
 } from 'lucide-react';
 import BookingAccordion from '@/components/booking/BookingAccordion';
 import { useAuth } from '@/hooks/useAuth';
@@ -24,6 +25,7 @@ import { metaPixel } from '@/lib/metaPixel';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
+import MessageDialog from '@/components/messaging/MessageDialog';
 
 interface SitterData {
   id: string;
@@ -53,6 +55,7 @@ export default function SitterProfile() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,9 +71,11 @@ export default function SitterProfile() {
     serviceType: serviceTypeParam || undefined,
   };
   
-  // Check if booking should be automatically opened
+  // Check if booking or inquiry should be automatically opened
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
+    const shouldOpenInquiry = searchParams.get('inquiry') === 'true';
+    
     if (shouldOpenBooking && user) {
       setIsBookingOpen(true);
       
@@ -89,7 +94,12 @@ export default function SitterProfile() {
       const currentUrl = `/sitter/${id}?${searchParams.toString()}`;
       navigate(`/auth?redirect=${encodeURIComponent(currentUrl)}`);
     }
-  }, [searchParams, user, id, navigate]);
+    
+    // Auto-open inquiry dialog after login
+    if (shouldOpenInquiry && user && sitterData) {
+      setIsMessageDialogOpen(true);
+    }
+  }, [searchParams, user, id, navigate, sitterData]);
 
   // Load sitter data from the secure database view
   useEffect(() => {
@@ -310,38 +320,60 @@ export default function SitterProfile() {
                 </div>
               </div>
               
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 {profile?.role === 'pet_owner' && (
-                  <Button 
-                    size="lg"
-                    onClick={() => {
-                      setIsBookingOpen(true);
-                      setTimeout(() => {
-                        const bookingSection = document.getElementById('booking-section');
-                        if (bookingSection) {
-                          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                      }, 100);
-                    }}
-                  >
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Book Now
-                  </Button>
+                  <>
+                    <Button 
+                      size="lg"
+                      onClick={() => {
+                        setIsBookingOpen(true);
+                        setTimeout(() => {
+                          const bookingSection = document.getElementById('booking-section');
+                          if (bookingSection) {
+                            bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }
+                        }, 100);
+                      }}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Book Now
+                    </Button>
+                    <Button 
+                      size="lg"
+                      variant="outline"
+                      onClick={() => setIsMessageDialogOpen(true)}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Send Inquiry
+                    </Button>
+                  </>
                 )}
                 {!user && (
-                  <Button 
-                    size="lg"
-                    onClick={() => {
-                      // Preserve all URL parameters when redirecting to auth
-                      const params = new URLSearchParams(searchParams);
-                      params.set('booking', 'true');
-                      const redirectUrl = `/sitter/${id}?${params.toString()}`;
-                      navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
-                    }}
-                  >
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Book Now
-                  </Button>
+                  <>
+                    <Button 
+                      size="lg"
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams);
+                        params.set('booking', 'true');
+                        const redirectUrl = `/sitter/${id}?${params.toString()}`;
+                        navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+                      }}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Book Now
+                    </Button>
+                    <Button 
+                      size="lg"
+                      variant="outline"
+                      onClick={() => {
+                        const redirectUrl = `/sitter/${id}?inquiry=true`;
+                        navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Ask a Question
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -572,6 +604,17 @@ export default function SitterProfile() {
           </div>
         </div>
       </div>
+      
+      {/* Message Dialog for Inquiries */}
+      {sitterData && (
+        <MessageDialog
+          isOpen={isMessageDialogOpen}
+          onClose={() => setIsMessageDialogOpen(false)}
+          recipientId={sitterData.id}
+          recipientName={sitterData.display_name}
+          recipientAvatar={sitterData.avatar}
+        />
+      )}
     </div>
   );
 }
