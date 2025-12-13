@@ -80,6 +80,7 @@ import Calendar from "./pages/Calendar";
 import GoldenBadgeTests from "./pages/GoldenBadgeTests";
 import CalendarTests from "./pages/CalendarTests";
 import Areas from "./pages/Areas";
+import Messages from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -198,6 +199,14 @@ function AppContent() {
                element={
                  <ProtectedRoute>
                    <Calendar />
+                 </ProtectedRoute>
+               } 
+             />
+             <Route
+               path="/messages" 
+               element={
+                 <ProtectedRoute>
+                   <Messages />
                  </ProtectedRoute>
                } 
              />

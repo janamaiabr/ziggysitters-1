@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon } from 'lucide-react';
+import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon, MessageCircle } from 'lucide-react';
 import logoSvg from '@/assets/logo.svg';
 import { useState, useEffect } from 'react';
 
@@ -117,6 +117,10 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuItem onClick={() => navigate('/messages')}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Messages
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="mr-2 h-4 w-4" />
                     Profile
@@ -201,6 +205,10 @@ export default function Header() {
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/black-friday')}>
                         🛍️ Black Friday
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/messages')}>
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        Messages
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/profile')}>
                         <User className="mr-2 h-4 w-4" />
