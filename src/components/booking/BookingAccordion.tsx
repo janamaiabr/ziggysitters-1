@@ -558,8 +558,8 @@ export default function BookingAccordion({
                 );
               })()}
 
-              {/* Pet Selection */}
-              {ownerPets.length > 0 && (
+              {/* Pet Selection - or prompt to add pet */}
+              {ownerPets.length > 0 ? (
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Select Pet(s) for this Booking *</label>
                   <Card className="p-4">
@@ -593,6 +593,30 @@ export default function BookingAccordion({
                     )}
                   </Card>
                 </div>
+              ) : (
+                <Card className="p-6 border-2 border-dashed border-primary/30 bg-primary/5">
+                  <div className="text-center space-y-4">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">Add Your Pet First</h4>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        To book a sitter, you need to add your pet's details. This helps sitters prepare for their care.
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={() => navigate('/profile?tab=pets&addPet=true')}
+                      className="w-full"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Add Your Pet Now
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      Takes less than 2 minutes
+                    </p>
+                  </div>
+                </Card>
               )}
 
               {/* Special Instructions */}

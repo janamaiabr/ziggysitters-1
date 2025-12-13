@@ -53,12 +53,19 @@ export default function Profile() {
   const [cancelReason, setCancelReason] = useState('');
   const [submittingCancel, setSubmittingCancel] = useState(false);
 
+  // State for auto-opening pet dialog
+  const [autoOpenPetDialog, setAutoOpenPetDialog] = useState(false);
+
   // Handle URL tab parameter on mount
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     if (tabParam) {
       setActiveTab(tabParam);
+    }
+    // Handle addPet param to auto-open pet dialog
+    if (urlParams.get('addPet') === 'true') {
+      setAutoOpenPetDialog(true);
     }
   }, []);
 
@@ -1361,6 +1368,7 @@ export default function Profile() {
                       profileId={profile.id}
                       userId={profile.user_id}
                       onPetAdded={fetchUserPets}
+                      autoOpen={autoOpenPetDialog}
                     />
                   </div>
                 </CardHeader>
