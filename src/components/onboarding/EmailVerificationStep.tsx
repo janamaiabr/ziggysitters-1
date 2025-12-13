@@ -204,6 +204,18 @@ export default function EmailVerificationStep({
         </CardContent>
       </Card>
 
+      {onSkip && (
+        <div className="text-center">
+          <Button 
+            variant="ghost" 
+            onClick={onSkip}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Skip for now - I'll verify later
+          </Button>
+        </div>
+      )}
+
       <p className="text-xs text-center text-muted-foreground">
         Make sure to check your spam folder if you don't see the email
       </p>
