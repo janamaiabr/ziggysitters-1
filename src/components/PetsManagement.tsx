@@ -11,12 +11,6 @@ import { usePetOwnerOnboarding } from '@/hooks/usePetOwnerOnboarding';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle, X, Upload, Save } from 'lucide-react';
 
-interface PetsManagementProps {
-  profileId: string;
-  userId: string;
-  onPetAdded: () => void;
-}
-
 const personalityTraits = [
   'Friendly', 'Energetic', 'Calm', 'Playful', 'Shy', 'Aggressive', 'Social', 'Independent',
   'Loyal', 'Protective', 'Gentle', 'Anxious', 'Curious', 'Lazy', 'Smart', 'Stubborn'
@@ -27,10 +21,17 @@ const medicalConditions = [
   'Epilepsy', 'Cancer', 'Eye Problems', 'Skin Conditions', 'Dental Issues', 'None'
 ];
 
-export default function PetsManagement({ profileId, userId, onPetAdded }: PetsManagementProps) {
+interface PetsManagementProps {
+  profileId: string;
+  userId: string;
+  onPetAdded: () => void;
+  autoOpen?: boolean;
+}
+
+export default function PetsManagement({ profileId, userId, onPetAdded, autoOpen = false }: PetsManagementProps) {
   const { pets, addPet, removePet, updatePet, uploadPetPhoto, savePets } = usePetOwnerOnboarding();
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(autoOpen);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
