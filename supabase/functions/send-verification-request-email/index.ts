@@ -86,7 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p><strong>Action Required:</strong> Please review their complete profile and approve or reject their application in the admin dashboard.</p>
           </div>
           
-          <p><a href="https://ziggysitters.lovableproject.com/admin" style="background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Admin Dashboard</a></p>
+          <p><a href="https://ziggysitters.com/admin" style="background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Admin Dashboard</a></p>
           
           <p>Best regards,<br>ZiggySitters System</p>
         </div>
