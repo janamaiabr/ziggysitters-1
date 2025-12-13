@@ -234,6 +234,11 @@ const HeroSectionPlayful = ({
                   <Sparkles className="ml-2 h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               </div>
+              
+              {/* Browse All link - quick access without search */}
+              <p className="text-center mt-4 text-sm text-muted-foreground">
+                or <button onClick={() => navigate('/find-sitters')} className="text-purple-600 dark:text-purple-400 font-semibold hover:underline">browse all available sitters →</button>
+              </p>
             </div>
           </div>
 
