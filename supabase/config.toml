@@ -113,3 +113,6 @@ verify_jwt = false
 
 [functions.send-bulk-onboarding-reminders]
 verify_jwt = true
+
+[functions.send-message-notification]
+verify_jwt = false
