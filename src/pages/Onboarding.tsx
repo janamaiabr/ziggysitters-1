@@ -922,12 +922,6 @@ export default function Onboarding() {
                 email={user.email || ''}
                 firstName={data.first_name || user.user_metadata?.first_name || ''}
                 onVerified={handleEmailVerified}
-                onSkip={() => {
-                  // Allow skipping email verification
-                  setShowEmailVerification(false);
-                  setStep(1);
-                  localStorage.setItem('onboarding_step', '1');
-                }}
               />
             </CardContent>
           </Card>

@@ -10,12 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
 import { 
-  CalendarIcon, Clock, DollarSign, MapPin, User, Shield, Plus, X, AlertCircle
+  CalendarIcon, Clock, DollarSign, MapPin, User, Shield, Plus, X, AlertCircle, PawPrint
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { metaPixel } from '@/lib/metaPixel';
@@ -82,6 +83,13 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   const [repeatAcrossDays, setRepeatAcrossDays] = useState(false);
+  const [ownerProfileId, setOwnerProfileId] = useState<string>('');
+  
+  // Quick add pet state
+  const [showQuickAddPet, setShowQuickAddPet] = useState(false);
+  const [quickPetName, setQuickPetName] = useState('');
+  const [quickPetSpecies, setQuickPetSpecies] = useState<string>('dog');
+  const [addingPet, setAddingPet] = useState(false);
   
   // For dog walking and drop-in visits - multiple sessions
   const [walkVisitSessions, setWalkVisitSessions] = useState<WalkVisitSession[]>([
@@ -177,6 +185,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           .single();
 
         if (!profile) return;
+        
+        setOwnerProfileId(profile.id);
         
         // CRITICAL FIX: Prevent sitters from booking other sitters
         if (profile.role === 'pet_sitter') {
@@ -404,6 +414,64 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       setPromoDiscount(0);
     } finally {
       setCheckingPromo(false);
+    }
+  };
+
+  // Quick add pet function
+  const handleQuickAddPet = async () => {
+    if (!quickPetName.trim()) {
+      toast({
+        title: 'Pet name required',
+        description: 'Please enter your pet\'s name',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!ownerProfileId) {
+      toast({
+        title: 'Profile not found',
+        description: 'Please try again',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setAddingPet(true);
+    try {
+      const { data: newPet, error } = await supabase
+        .from('pets')
+        .insert({
+          owner_id: ownerProfileId,
+          name: quickPetName.trim(),
+          species: quickPetSpecies as any,
+        })
+        .select('id, name, species, breed')
+        .single();
+
+      if (error) throw error;
+
+      // Add to pets list and select it
+      setOwnerPets(prev => [...prev, newPet]);
+      setSelectedPetIds(prev => [...prev, newPet.id]);
+      
+      // Reset form
+      setQuickPetName('');
+      setShowQuickAddPet(false);
+      
+      toast({
+        title: 'Pet added!',
+        description: `${newPet.name} has been added. You can add more details later from your profile.`,
+      });
+    } catch (error: any) {
+      console.error('Error adding pet:', error);
+      toast({
+        title: 'Failed to add pet',
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      });
+    } finally {
+      setAddingPet(false);
     }
   };
 
@@ -1119,9 +1187,83 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           )}
 
           {/* Pet Selection */}
-          {ownerPets.length > 0 && (
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Select Pet(s) for this Booking *</label>
+          <div className="space-y-3">
+            <label className="text-sm font-medium">Select Pet(s) for this Booking *</label>
+            
+            {ownerPets.length === 0 ? (
+              /* No pets registered - show inline add pet form */
+              <Card className="p-4 border-dashed border-2 border-primary/30 bg-primary/5">
+                <div className="text-center space-y-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                    <PawPrint className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Add Your Pet</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Quick add your pet to continue booking
+                    </p>
+                  </div>
+                  
+                  {!showQuickAddPet ? (
+                    <Button 
+                      type="button" 
+                      onClick={() => setShowQuickAddPet(true)}
+                      className="w-full"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Pet
+                    </Button>
+                  ) : (
+                    <div className="space-y-3 text-left">
+                      <div className="space-y-2">
+                        <Label htmlFor="quick-pet-name">Pet Name *</Label>
+                        <Input
+                          id="quick-pet-name"
+                          placeholder="e.g., Max, Bella"
+                          value={quickPetName}
+                          onChange={(e) => setQuickPetName(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="quick-pet-species">Pet Type *</Label>
+                        <Select value={quickPetSpecies} onValueChange={setQuickPetSpecies}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="dog">Dog</SelectItem>
+                            <SelectItem value="cat">Cat</SelectItem>
+                            <SelectItem value="bird">Bird</SelectItem>
+                            <SelectItem value="rabbit">Rabbit</SelectItem>
+                            <SelectItem value="reptile">Reptile</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => setShowQuickAddPet(false)}
+                          className="flex-1"
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="button" 
+                          onClick={handleQuickAddPet}
+                          disabled={addingPet || !quickPetName.trim()}
+                          className="flex-1"
+                        >
+                          {addingPet ? 'Adding...' : 'Add Pet'}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ) : (
+              /* Has pets - show selection */
               <Card className="p-4">
                 <div className="space-y-3">
                   {ownerPets.map((pet) => (
@@ -1151,9 +1293,76 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                 {selectedPetIds.length === 0 && (
                   <p className="text-sm text-orange-600 mt-2">Please select at least one pet</p>
                 )}
+                
+                {/* Add another pet button */}
+                <div className="mt-3 pt-3 border-t">
+                  {!showQuickAddPet ? (
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setShowQuickAddPet(true)}
+                      className="w-full"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Another Pet
+                    </Button>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="quick-pet-name-2" className="text-xs">Name</Label>
+                          <Input
+                            id="quick-pet-name-2"
+                            placeholder="Pet name"
+                            value={quickPetName}
+                            onChange={(e) => setQuickPetName(e.target.value)}
+                            className="h-8 text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="quick-pet-species-2" className="text-xs">Type</Label>
+                          <Select value={quickPetSpecies} onValueChange={setQuickPetSpecies}>
+                            <SelectTrigger className="h-8 text-sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="dog">Dog</SelectItem>
+                              <SelectItem value="cat">Cat</SelectItem>
+                              <SelectItem value="bird">Bird</SelectItem>
+                              <SelectItem value="rabbit">Rabbit</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => {
+                            setShowQuickAddPet(false);
+                            setQuickPetName('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="button" 
+                          size="sm"
+                          onClick={handleQuickAddPet}
+                          disabled={addingPet || !quickPetName.trim()}
+                        >
+                          {addingPet ? 'Adding...' : 'Add'}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </Card>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Special Instructions */}
           <div className="space-y-3">

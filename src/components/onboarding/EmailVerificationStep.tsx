@@ -12,7 +12,6 @@ interface EmailVerificationStepProps {
   email: string;
   firstName: string;
   onVerified: () => void;
-  onSkip?: () => void;
 }
 
 export default function EmailVerificationStep({
@@ -20,7 +19,6 @@ export default function EmailVerificationStep({
   email,
   firstName,
   onVerified,
-  onSkip,
 }: EmailVerificationStepProps) {
   const { toast } = useToast();
   const [code, setCode] = useState('');
@@ -203,18 +201,6 @@ export default function EmailVerificationStep({
           </div>
         </CardContent>
       </Card>
-
-      {onSkip && (
-        <div className="text-center">
-          <Button 
-            variant="ghost" 
-            onClick={onSkip}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Skip for now - I'll verify later
-          </Button>
-        </div>
-      )}
 
       <p className="text-xs text-center text-muted-foreground">
         Make sure to check your spam folder if you don't see the email
