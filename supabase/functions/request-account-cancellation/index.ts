@@ -47,8 +47,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification to admin
     const adminEmailResponse = await resend.emails.send({
-      from: "PetBNB <noreply@petbnb.co.nz>",
-      to: ["admin@petbnb.co.nz"], // Admin email
+      from: "ZiggySitters <noreply@ziggysitters.com>",
+      to: ["janamaia@gmail.com"],
       subject: `Account Cancellation Request - ${userName}`,
       html: `
         <!DOCTYPE html>
@@ -95,10 +95,10 @@ const handler = async (req: Request): Promise<Response> => {
                   <li>If approved, delete the user account from the admin dashboard</li>
                 </ul>
 
-                <a href="https://petbnb.co.nz/admin-dashboard" class="button">Go to Admin Dashboard</a>
+                <a href="https://ziggysitters.com/admin" class="button">Go to Admin Dashboard</a>
 
                 <div class="footer">
-                  <p>PetBNB Admin Notification<br>
+                  <p>ZiggySitters Admin Notification<br>
                   This is an automated message, please do not reply directly.</p>
                 </div>
               </div>
@@ -112,7 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation to user
     const userEmailResponse = await resend.emails.send({
-      from: "PetBNB <noreply@petbnb.co.nz>",
+      from: "ZiggySitters <noreply@ziggysitters.com>",
       to: [userEmail],
       subject: "Account Cancellation Request Received",
       html: `
@@ -137,7 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
               <div class="content">
                 <p>Hi ${userName},</p>
                 
-                <p>We've received your request to cancel your PetBNB account. We're sorry to see you go!</p>
+                <p>We've received your request to cancel your ZiggySitters account. We're sorry to see you go!</p>
 
                 <div class="info-box">
                   <p><strong>What happens next?</strong></p>
@@ -151,12 +151,12 @@ const handler = async (req: Request): Promise<Response> => {
                 <p><strong>Changed your mind?</strong></p>
                 <p>If you'd like to keep your account, simply reply to this email and let us know. We'd love to help resolve any issues you're experiencing.</p>
 
-                <p>Thank you for being part of the PetBNB community!</p>
+                <p>Thank you for being part of the ZiggySitters community!</p>
 
                 <div class="footer">
                   <p>Best regards,<br>
-                  The PetBNB Team<br>
-                  <a href="https://petbnb.co.nz">petbnb.co.nz</a></p>
+                  The ZiggySitters Team<br>
+                  <a href="https://ziggysitters.com">ziggysitters.com</a></p>
                 </div>
               </div>
             </div>
