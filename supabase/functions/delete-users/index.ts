@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
           // Send deletion confirmation email
           try {
             await resend.emails.send({
-              from: "PetBNB <noreply@petbnb.co.nz>",
+              from: "ZiggySitters <noreply@ziggysitters.com>",
               to: [userProfile.email],
               subject: "Account Deletion Confirmation",
               html: `
@@ -136,7 +136,7 @@ Deno.serve(async (req) => {
                       <div class="content">
                         <p>Hi ${userProfile.first_name || 'there'},</p>
                         
-                        <p>This email confirms that your PetBNB account has been permanently deleted.</p>
+                        <p>This email confirms that your ZiggySitters account has been permanently deleted.</p>
 
                         <div class="info-box">
                           <p><strong>What this means:</strong></p>
@@ -148,14 +148,14 @@ Deno.serve(async (req) => {
                           </ul>
                         </div>
 
-                        <p>Thank you for being part of the PetBNB community. We hope to see you again in the future!</p>
+                        <p>Thank you for being part of the ZiggySitters community. We hope to see you again in the future!</p>
 
-                        <p>If you have any questions or believe this was done in error, please contact us at admin@petbnb.co.nz</p>
+                        <p>If you have any questions or believe this was done in error, please contact us at hello@ziggysitters.com</p>
 
                         <div class="footer">
                           <p>Best regards,<br>
-                          The PetBNB Team<br>
-                          <a href="https://petbnb.co.nz">petbnb.co.nz</a></p>
+                          The ZiggySitters Team<br>
+                          <a href="https://ziggysitters.com">ziggysitters.com</a></p>
                         </div>
                       </div>
                     </div>
