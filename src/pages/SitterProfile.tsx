@@ -25,7 +25,8 @@ import { metaPixel } from '@/lib/metaPixel';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
-import MessageDialog from '@/components/messaging/MessageDialog';
+import QuickQuestionDialog from '@/components/messaging/QuickQuestionDialog';
+import FloatingEnquiryButton from '@/components/sitter/FloatingEnquiryButton';
 
 interface SitterData {
   id: string;
@@ -325,6 +326,14 @@ export default function SitterProfile() {
                   <>
                     <Button 
                       size="lg"
+                      variant="outline"
+                      onClick={() => setIsMessageDialogOpen(true)}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Ask a Question
+                    </Button>
+                    <Button 
+                      size="lg"
                       onClick={() => {
                         setIsBookingOpen(true);
                         setTimeout(() => {
@@ -336,32 +345,12 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      Book Now
-                    </Button>
-                    <Button 
-                      size="lg"
-                      variant="outline"
-                      onClick={() => setIsMessageDialogOpen(true)}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Send Inquiry
+                      Get a Quote
                     </Button>
                   </>
                 )}
                 {!user && (
                   <>
-                    <Button 
-                      size="lg"
-                      onClick={() => {
-                        const params = new URLSearchParams(searchParams);
-                        params.set('booking', 'true');
-                        const redirectUrl = `/sitter/${id}?${params.toString()}`;
-                        navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
-                      }}
-                    >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      Book Now
-                    </Button>
                     <Button 
                       size="lg"
                       variant="outline"
@@ -372,6 +361,18 @@ export default function SitterProfile() {
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Ask a Question
+                    </Button>
+                    <Button 
+                      size="lg"
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams);
+                        params.set('booking', 'true');
+                        const redirectUrl = `/sitter/${id}?${params.toString()}`;
+                        navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+                      }}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Get a Quote
                     </Button>
                   </>
                 )}
@@ -605,14 +606,29 @@ export default function SitterProfile() {
         </div>
       </div>
       
-      {/* Message Dialog for Inquiries */}
+      {/* Quick Question Dialog for Enquiries */}
       {sitterData && (
-        <MessageDialog
+        <QuickQuestionDialog
           isOpen={isMessageDialogOpen}
           onClose={() => setIsMessageDialogOpen(false)}
           recipientId={sitterData.id}
           recipientName={sitterData.display_name}
           recipientAvatar={sitterData.avatar}
+        />
+      )}
+      
+      {/* Floating Enquiry Button for Mobile */}
+      {sitterData && (profile?.role === 'pet_owner' || !user) && (
+        <FloatingEnquiryButton 
+          onClick={() => {
+            if (user) {
+              setIsMessageDialogOpen(true);
+            } else {
+              const redirectUrl = `/sitter/${id}?inquiry=true`;
+              navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+            }
+          }}
+          sitterName={sitterData.display_name}
         />
       )}
     </div>
