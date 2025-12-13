@@ -137,8 +137,21 @@ export default function FindSitters() {
           return transformed;
         });
 
+        // Filter to only show bookable sitters (completed onboarding + has services)
+        const bookableSitters = transformedSitters.filter(sitter => {
+          const hasServices = sitter.services && sitter.services.length > 0;
+          // Sitter must have at least one service to be bookable
+          if (!hasServices) {
+            console.log(`Sitter ${sitter.name} hidden: no services`);
+            return false;
+          }
+          return true;
+        });
+        
+        console.log(`Bookable sitters: ${bookableSitters.length} of ${transformedSitters.length}`);
+        
         // Sort sitters: golden badge holders first, then by rating
-        const sortedSitters = transformedSitters.sort((a, b) => {
+        const sortedSitters = bookableSitters.sort((a, b) => {
           if (a.golden_badge && !b.golden_badge) return -1;
           if (!a.golden_badge && b.golden_badge) return 1;
           return 0; // Keep original order if both have same golden badge status
@@ -271,12 +284,19 @@ export default function FindSitters() {
 
     console.log('Filtered results:', filtered);
     
-    // If no results, get nearby sitters (all sitters not matching exact location)
-    if (filtered.length === 0 && location) {
-      // Get sitters from other Auckland suburbs as "nearby"
-      const nearby = allSitters.filter(sitter => 
-        !sitter.location.toLowerCase().includes(location.toLowerCase())
-      ).slice(0, 6);
+    // ALWAYS show nearby sitters as supplementary results when searching
+    // This increases visibility and conversion
+    if (location) {
+      const searchTerm = location.toLowerCase().trim();
+      // Get sitters from other areas as "nearby" suggestions
+      const nearby = allSitters.filter(sitter => {
+        const sitterLocation = sitter.location.toLowerCase();
+        // Don't include sitters already in filtered results
+        const isInFiltered = filtered.some(f => f.id === sitter.id);
+        // Don't include sitters from the exact searched location
+        const isExactMatch = sitterLocation.includes(searchTerm);
+        return !isInFiltered && !isExactMatch;
+      }).slice(0, 6);
       setNearbySitters(nearby);
     } else {
       setNearbySitters([]);
@@ -565,22 +585,49 @@ export default function FindSitters() {
 
           {/* Sitter Cards Grid - Enhanced */}
           {searchPerformed && filteredSitters.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {filteredSitters.map((sitter) => (
-                <EnhancedSitterCard
-                  key={sitter.id}
-                  sitter={sitter}
-                  onViewProfile={() => {
-                    trackSitterClick(sitter.id);
-                    const params = new URLSearchParams({ booking: 'true' });
-                    if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
-                    if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
-                    if (serviceType) params.set('serviceType', serviceType);
-                    navigate(`/sitter/${sitter.id}?${params.toString()}`);
-                  }}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {filteredSitters.map((sitter) => (
+                  <EnhancedSitterCard
+                    key={sitter.id}
+                    sitter={sitter}
+                    onViewProfile={() => {
+                      trackSitterClick(sitter.id);
+                      const params = new URLSearchParams({ booking: 'true' });
+                      if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                      if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                      if (serviceType) params.set('serviceType', serviceType);
+                      navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Show nearby sitters as additional options */}
+              {nearbySitters.length > 0 && (
+                <div className="mt-10">
+                  <h3 className="text-lg font-semibold mb-4 text-muted-foreground">
+                    More sitters you might like
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {nearbySitters.slice(0, 3).map((sitter) => (
+                      <EnhancedSitterCard
+                        key={sitter.id}
+                        sitter={sitter}
+                        onViewProfile={() => {
+                          trackSitterClick(sitter.id);
+                          const params = new URLSearchParams({ booking: 'true' });
+                          if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                          if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                          if (serviceType) params.set('serviceType', serviceType);
+                          navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* No Results Found - Enhanced */}

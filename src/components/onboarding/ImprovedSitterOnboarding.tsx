@@ -662,14 +662,16 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       return;
     }
 
+    // Note: ID documents are optional but recommended
+    // Sitters can upload them later from their profile
     if (idDocumentUrls.length === 0 && !blueCardUrl) {
-      toast({
-        title: "Documents required",
-        description: "Please upload at least one verification document.",
-        variant: "destructive",
-      });
-      setCurrentStep(4);
-      return;
+      const confirmed = window.confirm(
+        "You haven't uploaded any verification documents. While optional, uploading ID helps build trust with pet owners. Continue without documents?"
+      );
+      if (!confirmed) {
+        setCurrentStep(4);
+        return;
+      }
     }
 
     // Check Stripe status if on payment step
@@ -744,7 +746,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         });
       }
       case 3: return true; // Calendar is optional
-      case 4: return idDocumentUrls.length > 0 || blueCardUrl;
+      case 4: return true; // Documents are optional but recommended
       case 5: return true; // Payment can be done later
       default: return false;
     }
