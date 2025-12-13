@@ -110,3 +110,6 @@ verify_jwt = false
 
 [functions.check-sitter-onboarding-status]
 verify_jwt = false
+
+[functions.send-bulk-onboarding-reminders]
+verify_jwt = true
