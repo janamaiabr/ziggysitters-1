@@ -109,12 +109,24 @@ export default function AucklandPetSitters() {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900" />
         
-        {/* Animated fern pattern */}
-        <div className="absolute inset-0 opacity-10">
+        {/* Animated NZ elements - silver ferns, kiwis, pohutukawa */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          {/* Silver ferns */}
           <div className="absolute top-10 left-10 text-8xl animate-float" style={{ animationDelay: '0s' }}>🌿</div>
           <div className="absolute top-32 right-20 text-6xl animate-float" style={{ animationDelay: '1s' }}>🌿</div>
           <div className="absolute bottom-20 left-1/4 text-7xl animate-float" style={{ animationDelay: '2s' }}>🌿</div>
-          <div className="absolute bottom-40 right-1/3 text-5xl animate-float" style={{ animationDelay: '0.5s' }}>🌿</div>
+          
+          {/* Kiwi birds */}
+          <div className="absolute top-1/3 left-[8%] text-5xl animate-bounce-slow" style={{ animationDelay: '0.5s' }}>🥝</div>
+          <div className="absolute bottom-1/4 right-[15%] text-4xl animate-bounce-slow" style={{ animationDelay: '1.5s' }}>🥝</div>
+          
+          {/* Pohutukawa flowers */}
+          <div className="absolute top-20 left-1/3 text-5xl animate-float" style={{ animationDelay: '0.8s' }}>🌺</div>
+          <div className="absolute bottom-32 left-[12%] text-4xl animate-float" style={{ animationDelay: '1.2s' }}>🌺</div>
+          
+          {/* Paw prints scattered */}
+          <div className="absolute top-1/2 right-[45%] text-3xl animate-float opacity-50" style={{ animationDelay: '0.3s' }}>🐾</div>
+          <div className="absolute top-[60%] left-[5%] text-2xl animate-float opacity-40" style={{ animationDelay: '1.8s' }}>🐾</div>
         </div>
 
         {/* Floating pet photos */}
@@ -169,9 +181,8 @@ export default function AucklandPetSitters() {
               </Button>
               <Button 
                 size="lg" 
-                variant="outline"
                 onClick={() => navigate('/become-sitter')}
-                className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-6"
+                className="bg-emerald-500 text-white hover:bg-emerald-400 font-semibold px-8 py-6 border-2 border-emerald-400"
               >
                 Become a Sitter
               </Button>
@@ -211,13 +222,14 @@ export default function AucklandPetSitters() {
           </div>
         </div>
         
-        {/* Infinite scrolling photo strip */}
-        <div className="relative">
-          <div className="flex gap-4 animate-[scroll_30s_linear_infinite] hover:pause">
-            {[...petPhotos, ...petPhotos, ...petPhotos].map((photo, index) => (
+        {/* Photo grid - no duplicates */}
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {petPhotos.map((photo, index) => (
               <div 
                 key={index} 
-                className="flex-shrink-0 w-64 h-48 md:w-80 md:h-60 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow hover:scale-105 duration-300"
+                className="aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all hover:scale-105 duration-300 animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <img src={photo.url} alt={photo.alt} className="w-full h-full object-cover" />
               </div>
@@ -488,10 +500,13 @@ export default function AucklandPetSitters() {
       <section className="relative py-24 overflow-hidden">
         {/* Background with gradient and pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-800" />
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
           <div className="absolute top-10 left-10 text-8xl animate-float">🌿</div>
-          <div className="absolute bottom-10 right-10 text-8xl animate-float" style={{ animationDelay: '1s' }}>🥝</div>
+          <div className="absolute bottom-10 right-10 text-7xl animate-bounce-slow" style={{ animationDelay: '1s' }}>🥝</div>
           <div className="absolute top-1/2 left-1/4 text-6xl animate-float" style={{ animationDelay: '2s' }}>🌿</div>
+          <div className="absolute top-20 right-1/4 text-5xl animate-float" style={{ animationDelay: '0.5s' }}>🌺</div>
+          <div className="absolute bottom-1/3 left-[15%] text-4xl animate-bounce-slow" style={{ animationDelay: '1.5s' }}>🐾</div>
+          <div className="absolute top-1/3 right-[10%] text-3xl animate-float" style={{ animationDelay: '2.5s' }}>🐾</div>
         </div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
@@ -513,9 +528,8 @@ export default function AucklandPetSitters() {
             </Button>
             <Button 
               size="lg" 
-              variant="outline"
               onClick={() => navigate('/how-it-works')}
-              className="border-white/30 text-white hover:bg-white/10 px-10 py-6 text-lg"
+              className="bg-emerald-500 text-white hover:bg-emerald-400 font-semibold px-10 py-6 text-lg border-2 border-emerald-400"
             >
               Learn More
             </Button>
