@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
+import { MapPin, Mail } from 'lucide-react';
 import logoSvg from '@/assets/logo.svg';
 
 export default function Footer() {
@@ -117,7 +117,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact & Social */}
+          {/* Contact */}
           <div className="md:col-span-1">
             <h3 className="font-semibold mb-3 md:mb-4 text-base">Get in Touch</h3>
             <div className="space-y-3 text-sm">
@@ -126,21 +126,12 @@ export default function Footer() {
                 <span className="break-all">hello@ziggysitters.com</span>
               </div>
             </div>
-            
-            <div className="mt-4 md:mt-6">
-              <h4 className="font-medium mb-2 md:mb-3">Follow Us</h4>
-              <div className="flex space-x-3">
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                  <Facebook className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 space-y-3 md:space-y-0">
-          <p className="text-center md:text-left">&copy; 2024 ZiggySitters. All rights reserved.</p>
+          <p className="text-center md:text-left">&copy; 2025 ZiggySitters. All rights reserved.</p>
           <div className="flex space-x-4 md:space-x-6">
             <Link to="/terms" className="hover:text-white transition-colors">
               Terms
