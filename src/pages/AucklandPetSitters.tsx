@@ -41,33 +41,30 @@ const AUCKLAND_SUBURBS = [
 
 const regions = ['Central', 'North Shore', 'East', 'West', 'South'];
 
-// NZ-themed photo gallery
-const petPhotos = [
-  {
-    url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop',
-    alt: 'Happy golden retriever at NZ beach'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&h=400&fit=crop',
-    alt: 'Dog enjoying Auckland park'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=400&fit=crop',
-    alt: 'Cat relaxing at home'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop',
-    alt: 'Two dogs walking together'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop',
-    alt: 'Dog playing fetch'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=400&fit=crop',
-    alt: 'Happy cat portrait'
-  },
+// Hero floating photos (unique set)
+const heroPhotos = [
+  { url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=600&fit=crop', alt: 'Happy golden retriever' },
+  { url: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=800&h=600&fit=crop', alt: 'Smiling labrador' },
+  { url: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=600&fit=crop', alt: 'Curious cat' },
+  { url: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=800&h=600&fit=crop', alt: 'French bulldog portrait' },
 ];
+
+// Gallery photos (different set)
+const galleryPhotos = [
+  { url: 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=600&fit=crop', alt: 'Dog at beach' },
+  { url: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&h=600&fit=crop', alt: 'Cat stretching' },
+  { url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&h=600&fit=crop', alt: 'Dalmatian smiling' },
+  { url: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&h=600&fit=crop', alt: 'Orange cat eyes' },
+  { url: 'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=600&h=600&fit=crop', alt: 'Dog on grass' },
+  { url: 'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=600&h=600&fit=crop', alt: 'White cat' },
+];
+
+// Service card photos (unique set)
+const servicePhotos = {
+  houseSitting: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=800&h=500&fit=crop',
+  dropIn: 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=800&h=500&fit=crop',
+  boarding: 'https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=800&h=500&fit=crop',
+};
 
 export default function AucklandPetSitters() {
   const navigate = useNavigate();
@@ -129,19 +126,19 @@ export default function AucklandPetSitters() {
           <div className="absolute top-[60%] left-[5%] text-2xl animate-float opacity-40" style={{ animationDelay: '1.8s' }}>🐾</div>
         </div>
 
-        {/* Floating pet photos */}
+        {/* Floating pet photos - LARGER */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 right-[5%] w-32 h-32 md:w-48 md:h-48 rounded-2xl overflow-hidden shadow-2xl rotate-6 animate-float opacity-80" style={{ animationDelay: '0.5s' }}>
-            <img src={petPhotos[0].url} alt={petPhotos[0].alt} className="w-full h-full object-cover" />
+          <div className="absolute top-16 right-[3%] w-44 h-44 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-3xl overflow-hidden shadow-2xl rotate-6 animate-float opacity-90" style={{ animationDelay: '0.5s' }}>
+            <img src={heroPhotos[0].url} alt={heroPhotos[0].alt} className="w-full h-full object-cover" />
           </div>
-          <div className="absolute top-40 right-[25%] w-24 h-24 md:w-36 md:h-36 rounded-2xl overflow-hidden shadow-2xl -rotate-3 animate-float opacity-70" style={{ animationDelay: '1.5s' }}>
-            <img src={petPhotos[2].url} alt={petPhotos[2].alt} className="w-full h-full object-cover" />
+          <div className="absolute top-48 right-[22%] w-32 h-32 md:w-44 md:h-44 lg:w-52 lg:h-52 rounded-3xl overflow-hidden shadow-2xl -rotate-3 animate-float opacity-85" style={{ animationDelay: '1.5s' }}>
+            <img src={heroPhotos[1].url} alt={heroPhotos[1].alt} className="w-full h-full object-cover" />
           </div>
-          <div className="absolute bottom-32 right-[10%] w-28 h-28 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl rotate-12 animate-float opacity-75" style={{ animationDelay: '2s' }}>
-            <img src={petPhotos[3].url} alt={petPhotos[3].alt} className="w-full h-full object-cover" />
+          <div className="absolute bottom-28 right-[8%] w-36 h-36 md:w-52 md:h-52 lg:w-60 lg:h-60 rounded-3xl overflow-hidden shadow-2xl rotate-12 animate-float opacity-85" style={{ animationDelay: '2s' }}>
+            <img src={heroPhotos[2].url} alt={heroPhotos[2].alt} className="w-full h-full object-cover" />
           </div>
-          <div className="hidden lg:block absolute bottom-20 right-[30%] w-32 h-32 rounded-2xl overflow-hidden shadow-2xl -rotate-6 animate-float opacity-60" style={{ animationDelay: '0.8s' }}>
-            <img src={petPhotos[5].url} alt={petPhotos[5].alt} className="w-full h-full object-cover" />
+          <div className="hidden lg:block absolute bottom-16 right-[28%] w-40 h-40 lg:w-48 lg:h-48 rounded-3xl overflow-hidden shadow-2xl -rotate-6 animate-float opacity-75" style={{ animationDelay: '0.8s' }}>
+            <img src={heroPhotos[3].url} alt={heroPhotos[3].alt} className="w-full h-full object-cover" />
           </div>
         </div>
         
@@ -222,10 +219,10 @@ export default function AucklandPetSitters() {
           </div>
         </div>
         
-        {/* Photo grid - no duplicates */}
+        {/* Photo grid - unique gallery photos */}
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {petPhotos.map((photo, index) => (
+            {galleryPhotos.map((photo, index) => (
               <div 
                 key={index} 
                 className="aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all hover:scale-105 duration-300 animate-fade-in"
@@ -306,7 +303,7 @@ export default function AucklandPetSitters() {
             <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="relative h-48 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=300&fit=crop" 
+                  src={servicePhotos.houseSitting}
                   alt="Pet sitting at home"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -332,7 +329,7 @@ export default function AucklandPetSitters() {
             <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="relative h-48 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=300&fit=crop" 
+                  src={servicePhotos.dropIn}
                   alt="Cat drop-in visit"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -355,7 +352,7 @@ export default function AucklandPetSitters() {
             <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="relative h-48 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=300&fit=crop" 
+                  src={servicePhotos.boarding}
                   alt="Dogs at sitter's home"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
