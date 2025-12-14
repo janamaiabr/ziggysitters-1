@@ -503,7 +503,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works - with images */}
       <section className="py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
@@ -513,30 +513,42 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto px-4">
             {[
               {
                 step: 1,
                 title: 'Search & Browse',
-                description: 'Find verified pet sitters in your area',
+                description: 'Find verified pet sitters in your area who match your needs',
+                image: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=400&h=300&fit=crop',
                 icon: Search
               },
               {
                 step: 2,
                 title: 'Meet & Greet',
-                description: 'Connect with sitters and arrange a meet',
+                description: 'Connect with sitters, ask questions, and arrange a meet',
+                image: 'https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=400&h=300&fit=crop',
                 icon: Heart
               },
               {
                 step: 3,
                 title: 'Book & Relax',
-                description: 'Book securely and enjoy peace of mind',
+                description: 'Book securely and receive daily photo updates of your pet',
+                image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=300&fit=crop',
                 icon: Shield
               }
             ].map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-primary text-primary-foreground rounded-full mb-4 md:mb-6 font-bold text-lg md:text-xl">
-                  {step.step}
+              <div key={index} className="text-center group">
+                {/* Image container */}
+                <div className="relative mb-4 md:mb-6 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow">
+                  <img 
+                    src={step.image} 
+                    alt={step.title}
+                    className="w-full h-40 md:h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-3 left-3 inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-primary text-primary-foreground rounded-full font-bold text-lg shadow-lg">
+                    {step.step}
+                  </div>
                 </div>
                 <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">{step.title}</h3>
                 <p className="text-sm md:text-base text-muted-foreground">{step.description}</p>
