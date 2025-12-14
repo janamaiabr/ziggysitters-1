@@ -71,9 +71,8 @@ export default function TestimonialsSection() {
               
               {/* Author */}
               <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12 border-2 border-purple-200">
-                  <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                  <AvatarFallback>{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <Avatar className="h-12 w-12 border-2 border-purple-200 bg-gradient-to-br from-purple-400 to-indigo-500">
+                  <AvatarFallback className="bg-transparent text-white font-semibold">{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-semibold text-foreground">{testimonial.name}</p>
