@@ -16,32 +16,36 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify admin authentication
+    // Check if called from cron (no auth header or anon key) or admin user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header");
-    }
+    const isCronCall = !authHeader || authHeader.includes("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcm14emVweXpiZW5lbWNvcmR2Iiwicm9sZSI6ImFub24i");
     
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
-      throw new Error("Unauthorized");
+    if (!isCronCall) {
+      // Verify admin authentication for manual calls
+      const token = authHeader.replace("Bearer ", "");
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      
+      if (authError || !user) {
+        throw new Error("Unauthorized");
+      }
+
+      // Check if user is admin
+      const { data: adminCheck } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .single();
+
+      if (!adminCheck) {
+        throw new Error("Admin access required");
+      }
+      console.log("[BULK-ONBOARDING-REMINDERS] Admin verified");
+    } else {
+      console.log("[BULK-ONBOARDING-REMINDERS] Called via cron job");
     }
 
-    // Check if user is admin
-    const { data: adminCheck } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .single();
-
-    if (!adminCheck) {
-      throw new Error("Admin access required");
-    }
-
-    console.log("Admin verified, fetching incomplete sitters...");
+    console.log("[BULK-ONBOARDING-REMINDERS] Fetching incomplete sitters...");
 
     // Get all sitters who haven't completed onboarding
     const { data: incompleteSitters, error: sittersError } = await supabase

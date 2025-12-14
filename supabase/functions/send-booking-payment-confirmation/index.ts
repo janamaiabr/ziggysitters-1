@@ -131,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
                             </tr>
                             <tr>
                               <td style="color: #666666; font-size: 14px; font-weight: 600; padding-top: 12px; border-top: 2px solid #e0e0e0;">Total Amount:</td>
-                              <td style="color: #667eea; font-size: 18px; font-weight: 700; text-align: right; padding-top: 12px; border-top: 2px solid #e0e0e0;">$${(booking.total_amount / 100).toFixed(2)} NZD</td>
+                              <td style="color: #667eea; font-size: 18px; font-weight: 700; text-align: right; padding-top: 12px; border-top: 2px solid #e0e0e0;">$${booking.total_amount.toFixed(2)} NZD</td>
                             </tr>
                           </table>
                         </div>

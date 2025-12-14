@@ -105,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <li>Photos if possible!</li>
               </ul>
               <center>
-                <a href="https://82b1d4df-49fa-4aed-8283-e8671c38c6b4.lovableproject.com/daily-reports" class="button">
+                <a href="https://www.ziggysitters.com/daily-reports" class="button">
                   Submit Daily Report
                 </a>
               </center>
