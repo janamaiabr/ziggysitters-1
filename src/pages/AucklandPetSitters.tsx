@@ -278,7 +278,7 @@ export default function AucklandPetSitters() {
               <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
                 <Heart className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Whānau Values</h3>
+              <h3 className="text-xl font-bold mb-3">Family Values</h3>
               <p className="text-muted-foreground">
                 Your pets are treated like family, not just another booking. That's the Kiwi way.
               </p>
