@@ -139,6 +139,24 @@ export default function MessageDialog({
       } catch (e) {
         console.log('Email notification failed:', e);
       }
+
+      // Create in-app notification
+      try {
+        await supabase.functions.invoke('create-notification', {
+          body: {
+            user_id: recipientId,
+            type: 'message',
+            title: `New message from ${userProfile.first_name}`,
+            message: newMessage.trim().substring(0, 140),
+            link: '/messages',
+            metadata: {
+              source: 'message_dialog'
+            }
+          }
+        });
+      } catch (e) {
+        console.log('In-app notification failed:', e);
+      }
     }
     
     setLoading(false);

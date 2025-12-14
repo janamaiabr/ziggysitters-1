@@ -114,6 +114,24 @@ export default function QuickQuestionDialog({
       } catch (e) {
         console.log('Email notification failed:', e);
       }
+
+      // Create in-app notification
+      try {
+        await supabase.functions.invoke('create-notification', {
+          body: {
+            user_id: recipientId,
+            type: 'message',
+            title: `New enquiry from ${userProfile.first_name}`,
+            message: message.trim().substring(0, 140),
+            link: '/messages',
+            metadata: {
+              source: 'quick_question_dialog'
+            }
+          }
+        });
+      } catch (e) {
+        console.log('In-app notification failed:', e);
+      }
       
       setMessage('');
       onClose();
