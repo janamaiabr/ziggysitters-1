@@ -450,7 +450,7 @@ export default function SitterProfile() {
                       switch (type) {
                         case 'pet_sitting_owners_home': return 'Pet care in your home';
                         case 'pet_sitting_sitters_home': return 'Pet care in sitter\'s home';
-                        case 'drop_in_visits': return 'Quick visits for feeding & care';
+                        case 'drop_in_visits': return 'Pop in for feeding, cuddles & playtime';
                         default: return 'Professional pet care service';
                       }
                     };

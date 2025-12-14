@@ -355,7 +355,7 @@ export default function HowItWorks() {
               },
               {
                 title: 'Drop-in Visits',
-                description: 'Quick check-ins for feeding and care',
+                description: 'Pop in to feed, play & give cuddles at your home',
                 price: 'From $20/visit',
                 icon: '⏰'
               },

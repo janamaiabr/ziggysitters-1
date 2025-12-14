@@ -257,7 +257,7 @@ export default function AdminPromoCodeManagement() {
                 <Label htmlFor="code">Code</Label>
                 <Input
                   id="code"
-                  placeholder="BLACKFRIDAY50"
+                  placeholder="SUMMER25"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                 />
@@ -267,7 +267,7 @@ export default function AdminPromoCodeManagement() {
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  placeholder="Black Friday 50% off promotion"
+                  placeholder="Summer 25% off promotion"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 />
