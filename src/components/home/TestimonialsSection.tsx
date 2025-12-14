@@ -1,5 +1,4 @@
 import { Star, Quote } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const testimonials = [
   {
@@ -70,10 +69,7 @@ export default function TestimonialsSection() {
               </p>
               
               {/* Author */}
-              <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12 border-2 border-purple-200 bg-gradient-to-br from-purple-400 to-indigo-500">
-                  <AvatarFallback className="bg-transparent text-white font-semibold">{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
+              <div className="flex items-start gap-3">
                 <div>
                   <p className="font-semibold text-foreground">{testimonial.name}</p>
                   <p className="text-sm text-muted-foreground">{testimonial.location}</p>

@@ -81,6 +81,7 @@ import GoldenBadgeTests from "./pages/GoldenBadgeTests";
 import CalendarTests from "./pages/CalendarTests";
 import Areas from "./pages/Areas";
 import Messages from "./pages/Messages";
+import AucklandPetSitters from "./pages/AucklandPetSitters";
 
 const queryClient = new QueryClient();
 
@@ -142,6 +143,8 @@ function AppContent() {
             <Route path="/become-sitter" element={<BecomeSitter />} />
             <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
             <Route path="/areas" element={<Areas />} />
+            <Route path="/pet-sitters-auckland" element={<AucklandPetSitters />} />
+            <Route path="/auckland" element={<AucklandPetSitters />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             
             {/* Auth Route - Public only */}
