@@ -20,6 +20,16 @@ import TestimonialsSection from '@/components/home/TestimonialsSection';
 import TrustSignalsSection from '@/components/home/TrustSignalsSection';
 import ExitIntentPopup from '@/components/home/ExitIntentPopup';
 
+// Pet photos for gallery section
+const petGalleryPhotos = [
+  { url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop', alt: 'Happy golden retriever' },
+  { url: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=400&fit=crop', alt: 'Curious cat' },
+  { url: 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=400&h=400&fit=crop', alt: 'Dog at beach' },
+  { url: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=400&h=400&fit=crop', alt: 'Orange cat' },
+  { url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&h=400&fit=crop', alt: 'Dalmatian smiling' },
+  { url: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=400&h=400&fit=crop', alt: 'Cat stretching' },
+];
+
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -156,6 +166,33 @@ const Index = () => {
 
       {/* How It Works */}
       <HowItWorksSection />
+
+      {/* Pet Gallery Section - NEW */}
+      <section className="py-12 md:py-16 bg-gradient-to-b from-background to-accent/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Happy Pets, Happy Owners</h2>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Our verified sitters care for all kinds of furry, feathered, and scaly friends
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 max-w-5xl mx-auto">
+            {petGalleryPhotos.map((photo, index) => (
+              <div 
+                key={index} 
+                className="aspect-square rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              >
+                <img 
+                  src={photo.url} 
+                  alt={photo.alt}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Popular Services */}
       <section className="py-12 md:py-20 bg-accent/5">
@@ -371,14 +408,26 @@ const Index = () => {
                     </div>
                     
                     <div className="grid grid-cols-3 gap-2 mt-4">
-                      <div className="bg-gray-100 rounded-lg h-16 flex items-center justify-center">
-                        <Camera className="w-6 h-6 text-gray-400" />
+                      <div className="rounded-lg h-16 overflow-hidden">
+                        <img 
+                          src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop" 
+                          alt="Pet photo 1" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="bg-gray-100 rounded-lg h-16 flex items-center justify-center">
-                        <Camera className="w-6 h-6 text-gray-400" />
+                      <div className="rounded-lg h-16 overflow-hidden">
+                        <img 
+                          src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=100&h=100&fit=crop" 
+                          alt="Pet photo 2" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="bg-gray-100 rounded-lg h-16 flex items-center justify-center">
-                        <Camera className="w-6 h-6 text-gray-400" />
+                      <div className="rounded-lg h-16 overflow-hidden">
+                        <img 
+                          src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=100&h=100&fit=crop" 
+                          alt="Pet photo 3" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
                     
