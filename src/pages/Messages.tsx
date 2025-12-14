@@ -207,6 +207,24 @@ export default function Messages() {
       } catch (e) {
         console.log('Email notification failed:', e);
       }
+
+      // Create in-app notification
+      try {
+        await supabase.functions.invoke('create-notification', {
+          body: {
+            user_id: selectedConversation,
+            type: 'message',
+            title: `New message from ${userProfile.first_name}`,
+            message: newMessage.trim().substring(0, 140),
+            link: '/messages',
+            metadata: {
+              source: 'messages_page'
+            }
+          }
+        });
+      } catch (e) {
+        console.log('In-app notification failed:', e);
+      }
     }
     
     setSendingMessage(false);
