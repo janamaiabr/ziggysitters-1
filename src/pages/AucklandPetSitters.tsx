@@ -3,7 +3,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Heart, ArrowRight, Check, Dog, Cat, Bird, Home, Clock, Users } from 'lucide-react';
+import { MapPin, Shield, Heart, ArrowRight, Check, Dog, Cat, Bird, Home, Clock, Users, Star, Camera, Leaf } from 'lucide-react';
 
 // Auckland suburbs for SEO
 const AUCKLAND_SUBURBS = [
@@ -41,6 +41,34 @@ const AUCKLAND_SUBURBS = [
 
 const regions = ['Central', 'North Shore', 'East', 'West', 'South'];
 
+// NZ-themed photo gallery
+const petPhotos = [
+  {
+    url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop',
+    alt: 'Happy golden retriever at NZ beach'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&h=400&fit=crop',
+    alt: 'Dog enjoying Auckland park'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=400&fit=crop',
+    alt: 'Cat relaxing at home'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop',
+    alt: 'Two dogs walking together'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop',
+    alt: 'Dog playing fetch'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=400&fit=crop',
+    alt: 'Happy cat portrait'
+  },
+];
+
 export default function AucklandPetSitters() {
   const navigate = useNavigate();
 
@@ -76,70 +104,135 @@ export default function AucklandPetSitters() {
         structuredData={structuredData}
       />
       
-      {/* Hero Section - Authentic Kiwi feel */}
-      <section className="relative py-20 lg:py-28 overflow-hidden bg-[#1a3a2f]">
-        {/* Silver fern pattern overlay */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUwIDEwQzUwIDEwIDMwIDMwIDMwIDUwQzMwIDcwIDUwIDkwIDUwIDkwQzUwIDkwIDcwIDcwIDcwIDUwQzcwIDMwIDUwIDEwIDUwIDEwWiIgc3Ryb2tlPSJ3aGl0ZSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+')] bg-repeat" />
+      {/* Hero Section with photo collage */}
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900" />
+        
+        {/* Animated fern pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 text-8xl animate-float" style={{ animationDelay: '0s' }}>🌿</div>
+          <div className="absolute top-32 right-20 text-6xl animate-float" style={{ animationDelay: '1s' }}>🌿</div>
+          <div className="absolute bottom-20 left-1/4 text-7xl animate-float" style={{ animationDelay: '2s' }}>🌿</div>
+          <div className="absolute bottom-40 right-1/3 text-5xl animate-float" style={{ animationDelay: '0.5s' }}>🌿</div>
+        </div>
+
+        {/* Floating pet photos */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-[5%] w-32 h-32 md:w-48 md:h-48 rounded-2xl overflow-hidden shadow-2xl rotate-6 animate-float opacity-80" style={{ animationDelay: '0.5s' }}>
+            <img src={petPhotos[0].url} alt={petPhotos[0].alt} className="w-full h-full object-cover" />
+          </div>
+          <div className="absolute top-40 right-[25%] w-24 h-24 md:w-36 md:h-36 rounded-2xl overflow-hidden shadow-2xl -rotate-3 animate-float opacity-70" style={{ animationDelay: '1.5s' }}>
+            <img src={petPhotos[2].url} alt={petPhotos[2].alt} className="w-full h-full object-cover" />
+          </div>
+          <div className="absolute bottom-32 right-[10%] w-28 h-28 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl rotate-12 animate-float opacity-75" style={{ animationDelay: '2s' }}>
+            <img src={petPhotos[3].url} alt={petPhotos[3].alt} className="w-full h-full object-cover" />
+          </div>
+          <div className="hidden lg:block absolute bottom-20 right-[30%] w-32 h-32 rounded-2xl overflow-hidden shadow-2xl -rotate-6 animate-float opacity-60" style={{ animationDelay: '0.8s' }}>
+            <img src={petPhotos[5].url} alt={petPhotos[5].alt} className="w-full h-full object-cover" />
+          </div>
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-white/10 text-white border-white/20 backdrop-blur-sm px-4 py-2">
-              <MapPin className="w-4 h-4 mr-2" />
-              Proudly Kiwi-Owned & Operated
-            </Badge>
+        <div className="container mx-auto px-4 relative z-10 py-20">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-6 animate-fade-in">
+              <Badge className="bg-white/10 text-white border-white/20 backdrop-blur-sm px-4 py-2 text-sm">
+                <MapPin className="w-4 h-4 mr-2" />
+                100% Kiwi-Owned
+              </Badge>
+              <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 backdrop-blur-sm px-4 py-2 text-sm">
+                <Leaf className="w-4 h-4 mr-2" />
+                Tāmaki Makaurau
+              </Badge>
+            </div>
             
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
-              <span className="block mb-2">Tāmaki Makaurau's</span>
-              <span className="block text-emerald-400">
-                Trusted Pet Sitters
+            <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <span className="block mb-2">Auckland's</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300">
+                Most Trusted
               </span>
+              <span className="block">Pet Sitters</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Real locals. Real care. Real peace of mind. We connect Auckland pet owners with verified neighbourhood sitters who treat your fur babies like whānau.
+            <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              Real locals who treat your fur babies like whānau. From Devonport to Manukau, find your perfect match.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 mb-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <Button 
                 size="lg" 
                 onClick={() => navigate('/find-sitters')}
-                className="gap-2 bg-white text-[#1a3a2f] hover:bg-white/90 font-semibold text-base px-8"
+                className="gap-2 bg-white text-emerald-900 hover:bg-white/90 font-bold text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
               >
                 Find Your Local Sitter
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-5 h-5" />
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
                 onClick={() => navigate('/become-sitter')}
-                className="border-white/30 text-white hover:bg-white/10"
+                className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-6"
               >
                 Become a Sitter
               </Button>
             </div>
 
-            {/* Trust indicators */}
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-white/70">
-              <span className="flex items-center gap-2">
+            {/* Trust indicators with animation */}
+            <div className="flex flex-wrap gap-6 text-sm text-white/70 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
                 <Check className="w-5 h-5 text-emerald-400" /> NZ ID Verified
               </span>
-              <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-emerald-400" /> Daily Photo Updates
+              <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Camera className="w-5 h-5 text-emerald-400" /> Daily Photo Updates
               </span>
-              <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-emerald-400" /> Local Auckland Support
+              <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Star className="w-5 h-5 text-emerald-400" /> 5-Star Reviews
               </span>
             </div>
           </div>
         </div>
+        
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" fill="none" className="w-full">
+            <path d="M0,64 C480,120 960,0 1440,64 L1440,120 L0,120 Z" fill="hsl(var(--background))" />
+          </svg>
+        </div>
       </section>
 
-      {/* Why Local - Kiwi values */}
-      <section className="py-20 bg-background">
+      {/* Photo Gallery Section */}
+      <section className="py-16 bg-background overflow-hidden">
+        <div className="container mx-auto px-4 mb-8">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Happy Pets Across <span className="text-emerald-600">Auckland</span>
+            </h2>
+            <p className="text-lg text-muted-foreground">Real moments from our amazing sitters and their furry guests</p>
+          </div>
+        </div>
+        
+        {/* Infinite scrolling photo strip */}
+        <div className="relative">
+          <div className="flex gap-4 animate-[scroll_30s_linear_infinite] hover:pause">
+            {[...petPhotos, ...petPhotos, ...petPhotos].map((photo, index) => (
+              <div 
+                key={index} 
+                className="flex-shrink-0 w-64 h-48 md:w-80 md:h-60 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow hover:scale-105 duration-300"
+              >
+                <img src={photo.url} alt={photo.alt} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Local - Kiwi values with icons */}
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
+            <Badge className="mb-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700">
+              🥝 100% NZ Made
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               Why Kiwis Choose <span className="text-emerald-600">Local</span>
             </h2>
@@ -149,9 +242,10 @@ export default function AucklandPetSitters() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                <MapPin className="w-8 h-8 text-emerald-600" />
+            <Card className="relative overflow-hidden group text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500" />
+              <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                <MapPin className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-xl font-bold mb-3">Your Neighbourhood</h3>
               <p className="text-muted-foreground">
@@ -159,9 +253,10 @@ export default function AucklandPetSitters() {
               </p>
             </Card>
 
-            <Card className="text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                <Shield className="w-8 h-8 text-emerald-600" />
+            <Card className="relative overflow-hidden group text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-500/10 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500" />
+              <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg">
+                <Shield className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-xl font-bold mb-3">NZ Verified</h3>
               <p className="text-muted-foreground">
@@ -169,9 +264,10 @@ export default function AucklandPetSitters() {
               </p>
             </Card>
 
-            <Card className="text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                <Heart className="w-8 h-8 text-emerald-600" />
+            <Card className="relative overflow-hidden group text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/10 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500" />
+              <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
+                <Heart className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-xl font-bold mb-3">Whānau Values</h3>
               <p className="text-muted-foreground">
@@ -182,8 +278,8 @@ export default function AucklandPetSitters() {
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-20 bg-muted/30">
+      {/* Services with photos */}
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -194,89 +290,125 @@ export default function AucklandPetSitters() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <Home className="w-6 h-6 text-primary" />
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=300&fit=crop" 
+                  alt="Pet sitting at home"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <Badge className="bg-white/90 text-emerald-700">Most Popular</Badge>
                 </div>
-                <h3 className="text-xl font-bold">House Sitting</h3>
               </div>
-              <p className="text-muted-foreground mb-4">
-                Your sitter stays overnight in your home. Pets stay comfortable, plants get watered, mail gets collected.
-              </p>
-              <p className="text-lg font-semibold text-primary">From $65/night</p>
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/40">
+                    <Home className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">House Sitting</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Your sitter stays overnight in your home. Pets stay comfortable, plants get watered, mail gets collected.
+                </p>
+                <p className="text-2xl font-bold text-emerald-600">From $65<span className="text-sm font-normal text-muted-foreground">/night</span></p>
+              </div>
             </Card>
 
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <Clock className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Drop-in Visits</h3>
+            <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=300&fit=crop" 
+                  alt="Cat drop-in visit"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-              <p className="text-muted-foreground mb-4">
-                Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets.
-              </p>
-              <p className="text-lg font-semibold text-primary">From $35/visit</p>
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/40">
+                    <Clock className="w-5 h-5 text-teal-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">Drop-in Visits</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets.
+                </p>
+                <p className="text-2xl font-bold text-teal-600">From $35<span className="text-sm font-normal text-muted-foreground">/visit</span></p>
+              </div>
             </Card>
 
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <Users className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Pet Boarding</h3>
+            <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=300&fit=crop" 
+                  alt="Dogs at sitter's home"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-              <p className="text-muted-foreground mb-4">
-                Your pet stays at the sitter's home. Great for social pets who love company.
-              </p>
-              <p className="text-lg font-semibold text-primary">From $55/night</p>
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/40">
+                    <Users className="w-5 h-5 text-cyan-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">Pet Boarding</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Your pet stays at the sitter's home. Great for social pets who love company.
+                </p>
+                <p className="text-2xl font-bold text-cyan-600">From $55<span className="text-sm font-normal text-muted-foreground">/night</span></p>
+              </div>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Pets We Care For */}
-      <section className="py-16 bg-background">
+      {/* Pets We Care For with fun icons */}
+      <section className="py-16 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-4">All Creatures Great & Small</h2>
             <p className="text-muted-foreground">Auckland sitters experienced with all your furry, feathered, and scaly mates</p>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
-            <Badge variant="secondary" className="text-base px-5 py-2.5 gap-2">
-              <Dog className="w-4 h-4" /> Dogs
-            </Badge>
-            <Badge variant="secondary" className="text-base px-5 py-2.5 gap-2">
-              <Cat className="w-4 h-4" /> Cats
-            </Badge>
-            <Badge variant="secondary" className="text-base px-5 py-2.5 gap-2">
-              <Bird className="w-4 h-4" /> Birds
-            </Badge>
-            <Badge variant="secondary" className="text-base px-5 py-2.5">
-              🐰 Rabbits
-            </Badge>
-            <Badge variant="secondary" className="text-base px-5 py-2.5">
-              🐹 Small Pets
-            </Badge>
-            <Badge variant="secondary" className="text-base px-5 py-2.5">
-              🦎 Reptiles
-            </Badge>
-            <Badge variant="secondary" className="text-base px-5 py-2.5">
-              🐴 Horses
-            </Badge>
+          <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+            {[
+              { icon: <Dog className="w-6 h-6" />, label: 'Dogs', color: 'from-amber-400 to-orange-500' },
+              { icon: <Cat className="w-6 h-6" />, label: 'Cats', color: 'from-purple-400 to-pink-500' },
+              { icon: <Bird className="w-6 h-6" />, label: 'Birds', color: 'from-cyan-400 to-blue-500' },
+              { icon: '🐰', label: 'Rabbits', color: 'from-pink-400 to-rose-500' },
+              { icon: '🐹', label: 'Small Pets', color: 'from-yellow-400 to-amber-500' },
+              { icon: '🦎', label: 'Reptiles', color: 'from-green-400 to-emerald-500' },
+              { icon: '🐴', label: 'Horses', color: 'from-amber-500 to-brown-600' },
+            ].map((pet, index) => (
+              <div 
+                key={pet.label}
+                className="group flex items-center gap-3 bg-white dark:bg-card px-6 py-4 rounded-2xl shadow-md hover:shadow-xl transition-all hover:scale-105 cursor-default"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${pet.color} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform`}>
+                  {typeof pet.icon === 'string' ? <span className="text-2xl">{pet.icon}</span> : pet.icon}
+                </div>
+                <span className="font-semibold text-lg">{pet.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Auckland Suburbs - SEO */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
+            <Badge className="mb-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+              <MapPin className="w-4 h-4 mr-2" />
+              30+ Auckland Suburbs
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Find Sitters in Your Auckland Suburb
+              Find Sitters in Your Suburb
             </h2>
             <p className="text-lg text-muted-foreground">
               Local sitters across the motu - from Devonport to Manukau
@@ -288,7 +420,8 @@ export default function AucklandPetSitters() {
               const regionSuburbs = AUCKLAND_SUBURBS.filter(s => s.region === region);
               return (
                 <div key={region} className="mb-10">
-                  <h3 className="text-xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-emerald-500" />
                     {region} Auckland
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -296,7 +429,7 @@ export default function AucklandPetSitters() {
                       <Link 
                         key={suburb.slug}
                         to={`/find-sitters/${suburb.slug}`}
-                        className="px-4 py-2.5 bg-background hover:bg-emerald-50 dark:hover:bg-emerald-950/30 border border-border rounded-lg text-sm font-medium transition-all hover:text-emerald-600 hover:border-emerald-300"
+                        className="px-4 py-2.5 bg-card hover:bg-emerald-50 dark:hover:bg-emerald-950/30 border border-border rounded-xl text-sm font-medium transition-all hover:text-emerald-600 hover:border-emerald-300 hover:shadow-md hover:-translate-y-0.5"
                       >
                         {suburb.name}
                       </Link>
@@ -310,70 +443,79 @@ export default function AucklandPetSitters() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-4">Easy as - Here's How It Works</h2>
           </div>
           
           <div className="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xl">1</div>
-              <h3 className="font-bold mb-2 text-lg">Search Locally</h3>
-              <p className="text-sm text-muted-foreground">Browse verified sitters in your Auckland neighbourhood</p>
-            </div>
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xl">2</div>
-              <h3 className="font-bold mb-2 text-lg">Have a Yarn</h3>
-              <p className="text-sm text-muted-foreground">Message sitters and arrange a meet & greet</p>
-            </div>
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xl">3</div>
-              <h3 className="font-bold mb-2 text-lg">Book Securely</h3>
-              <p className="text-sm text-muted-foreground">Book online with secure NZ payment</p>
-            </div>
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xl">4</div>
-              <h3 className="font-bold mb-2 text-lg">Stay Connected</h3>
-              <p className="text-sm text-muted-foreground">Get daily photos & updates of your happy pet</p>
-            </div>
+            {[
+              { step: 1, title: 'Search Locally', desc: 'Browse verified sitters in your Auckland neighbourhood', icon: MapPin },
+              { step: 2, title: 'Have a Yarn', desc: 'Message sitters and arrange a meet & greet', icon: Users },
+              { step: 3, title: 'Book Securely', desc: 'Book online with secure NZ payment', icon: Shield },
+              { step: 4, title: 'Stay Connected', desc: 'Get daily photos & updates of your happy pet', icon: Camera },
+            ].map((item, index) => (
+              <div key={item.step} className="text-center group">
+                <div className="relative inline-block mb-5">
+                  <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                    <item.icon className="w-10 h-10" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white dark:bg-card border-2 border-emerald-500 flex items-center justify-center font-bold text-emerald-600 shadow-md">
+                    {item.step}
+                  </div>
+                </div>
+                <h3 className="font-bold mb-2 text-lg">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
           </div>
 
           <div className="text-center mt-14">
             <Button 
               size="lg" 
               onClick={() => navigate('/find-sitters')}
-              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-8"
+              className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-10 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
             >
               Get Started - Find Your Sitter
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </Button>
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-[#1a3a2f] text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Find Your Perfect Auckland Sitter?
+      <section className="relative py-24 overflow-hidden">
+        {/* Background with gradient and pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-800" />
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 text-8xl animate-float">🌿</div>
+          <div className="absolute bottom-10 right-10 text-8xl animate-float" style={{ animationDelay: '1s' }}>🥝</div>
+          <div className="absolute top-1/2 left-1/4 text-6xl animate-float" style={{ animationDelay: '2s' }}>🌿</div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Ready to Find Your Perfect
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-cyan-300">Auckland Sitter?</span>
           </h2>
-          <p className="text-lg text-white/70 mb-10 max-w-2xl mx-auto">
-            Join thousands of Auckland pet owners who trust ZiggySitters with their fur babies. It's time to book your next holiday worry-free.
+          <p className="text-xl text-white/70 mb-10 max-w-2xl mx-auto">
+            Join thousands of Auckland pet owners who trust ZiggySitters with their fur babies. Book your next holiday worry-free.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
               onClick={() => navigate('/find-sitters')}
-              className="gap-2 bg-white text-[#1a3a2f] hover:bg-white/90 font-semibold px-8"
+              className="gap-2 bg-white text-emerald-800 hover:bg-white/90 font-bold px-10 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
             >
               Find Sitters Near Me
+              <ArrowRight className="w-5 h-5" />
             </Button>
             <Button 
               size="lg" 
               variant="outline"
               onClick={() => navigate('/how-it-works')}
-              className="border-white/30 text-white hover:bg-white/10"
+              className="border-white/30 text-white hover:bg-white/10 px-10 py-6 text-lg"
             >
               Learn More
             </Button>
