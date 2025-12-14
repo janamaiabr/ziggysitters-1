@@ -51,7 +51,7 @@ const handler = async (req: Request): Promise<Response> => {
     ` : '';
 
     const emailResponse = await resend.emails.send({
-      from: "Ziggy Sitters <bookings@ziggysitters.com>",
+      from: "ZiggySitters <onboarding@resend.dev>",
       to: [sitter_email],
       subject: `💰 Payment Processed - ${booking_reference}`,
       html: `

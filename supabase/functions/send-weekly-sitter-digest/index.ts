@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
         const emailHtml = generateDigestEmail(sitter.first_name, stats);
         
         const { error: emailError } = await resend.emails.send({
-          from: "Ziggysitters <hello@ziggysitters.com>",
+          from: "ZiggySitters <onboarding@resend.dev>",
           to: [sitter.email],
           subject: `📊 Your Weekly Activity Summary - ${stats.searchesInArea} pet owners searching near you!`,
           html: emailHtml,
