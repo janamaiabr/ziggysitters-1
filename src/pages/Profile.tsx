@@ -25,12 +25,16 @@ import ClientDailyReports from '@/components/ClientDailyReports';
 import { SitterStatusBadge } from '@/components/onboarding/SitterStatusBadge';
 import SitterPayouts from '@/components/SitterPayouts';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
+import SitterDashboard from '@/components/sitter/SitterDashboard';
+import CompleteProfileBanner from '@/components/sitter/CompleteProfileBanner';
+import { useConfetti } from '@/hooks/useConfetti';
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { profile, loading, refetch } = useProfile();
   const { toast } = useToast();
+  const { fireSuccess } = useConfetti();
   const [activeTab, setActiveTab] = useState('overview');
   const [recentBookings, setRecentBookings] = useState([]);
   const [sitterServices, setSitterServices] = useState([]);
@@ -52,6 +56,7 @@ export default function Profile() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [submittingCancel, setSubmittingCancel] = useState(false);
+  const [previousOnboardingStatus, setPreviousOnboardingStatus] = useState<boolean | null>(null);
 
   // State for auto-opening pet dialog
   const [autoOpenPetDialog, setAutoOpenPetDialog] = useState(false);
@@ -112,9 +117,10 @@ export default function Profile() {
                 
               if (!error) {
                 await refetch();
+                fireSuccess(); // Celebrate with confetti!
                 toast({
-                  title: "Onboarding Complete!",
-                  description: "Your sitter profile is now active.",
+                  title: "🎉 Onboarding Complete!",
+                  description: "Your sitter profile is now active. Pet owners can now find you!",
                 });
               }
             }
@@ -1159,6 +1165,21 @@ export default function Profile() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
+            {/* Complete Profile Banner for Sitters */}
+            {profile.role === 'pet_sitter' && !profile.onboarding_completed && (
+              <CompleteProfileBanner profile={profile} />
+            )}
+            
+            {/* Sitter Dashboard - shows stats and activity */}
+            {profile.role === 'pet_sitter' && (
+              <SitterDashboard 
+                profileId={profile.id}
+                suburb={profile.suburb}
+                city={profile.city}
+                onboardingCompleted={profile.onboarding_completed || false}
+              />
+            )}
+            
             {/* Sitter Status Badge - shows current onboarding/verification status */}
             {profile.role === 'pet_sitter' && !profile.is_verified && (
               <SitterStatusBadge 
