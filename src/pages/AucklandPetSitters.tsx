@@ -158,13 +158,13 @@ export default function AucklandPetSitters() {
             <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <span className="block mb-2">Auckland's</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300">
-                Most Trusted
+                Trusted Local
               </span>
               <span className="block">Pet Sitters</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Real locals who treat your fur babies like whānau. From Devonport to Manukau, find your perfect match.
+              Real locals who treat your fur babies like family. Guaranteed daily photo updates so you never miss a moment.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
@@ -187,11 +187,11 @@ export default function AucklandPetSitters() {
 
             {/* Trust indicators with animation */}
             <div className="flex flex-wrap gap-6 text-sm text-white/70 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Check className="w-5 h-5 text-emerald-400" /> NZ ID Verified
+              <span className="flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-400/30">
+                <Camera className="w-5 h-5 text-emerald-300" /> Guaranteed Daily Updates
               </span>
               <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Camera className="w-5 h-5 text-emerald-400" /> Daily Photo Updates
+                <Check className="w-5 h-5 text-emerald-400" /> NZ ID Verified
               </span>
               <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
                 <Star className="w-5 h-5 text-emerald-400" /> 5-Star Reviews
