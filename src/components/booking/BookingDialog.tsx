@@ -1433,7 +1433,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                 </div>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Enter code (e.g., BLACKFRIDAY50)"
+                    placeholder="Enter promo code"
                     value={promoCode}
                     onChange={(e) => {
                       setPromoCode(e.target.value.toUpperCase());

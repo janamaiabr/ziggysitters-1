@@ -634,7 +634,7 @@ export default function Profile() {
     { 
       key: 'drop_in_visits', 
       label: 'Drop-in Visits', 
-      description: 'Short visits to check on pets, provide food, water, and quick playtime or bathroom breaks.',
+      description: 'Pop in to feed, play and give cuddles at your home. Perfect for cats or pets who prefer staying in their own environment.',
       rateLabel: 'Per Visit',
       icon: '⏰'
     }

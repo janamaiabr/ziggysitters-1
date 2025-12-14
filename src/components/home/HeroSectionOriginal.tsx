@@ -92,7 +92,7 @@ const HeroSectionOriginal = ({
                     <SelectContent className="z-50 bg-white border shadow-lg">
                       <SelectItem value="pet_sitting_sitters_home">🏠 Pet Sitting (Sitter's Home)</SelectItem>
                       <SelectItem value="pet_sitting_owners_home">🏡 Pet Sitting (Your Home)</SelectItem>
-                      <SelectItem value="drop_in_visits">⏰ Drop-in Visits</SelectItem>
+                      <SelectItem value="drop_in_visits">👋 Drop-in Visits (pop in to feed & play)</SelectItem>
                       {/* DOG_WALKING <SelectItem value="dog_walking">🚶‍♂️ Dog Walking</SelectItem> END_DOG_WALKING */}
                     </SelectContent>
                   </Select>
