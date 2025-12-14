@@ -9,18 +9,66 @@ import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon, Mess
 import logoSvg from '@/assets/logo.svg';
 import { useState, useEffect } from 'react';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { Badge } from '@/components/ui/badge';
+
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   useEffect(() => {
     if (user) {
       checkAdminStatusAndProfile();
+      fetchUnreadMessages();
+      
+      // Subscribe to real-time message updates
+      const channel = supabase
+        .channel('header-messages')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'messages'
+          },
+          () => {
+            fetchUnreadMessages();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
+
+  const fetchUnreadMessages = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (!profileData) return;
+
+      const { count } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('recipient_id', profileData.id)
+        .eq('is_read', false);
+      
+      setUnreadMessageCount(count || 0);
+    } catch (error) {
+      console.error('Error fetching unread messages:', error);
+    }
+  };
 
   const checkAdminStatusAndProfile = async () => {
     if (!user) {
@@ -118,12 +166,24 @@ export default function Header() {
                         {profile?.first_name?.[0] || user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
+                    {unreadMessageCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-0 text-xs bg-destructive text-destructive-foreground">
+                        {unreadMessageCount > 9 ? '9+' : unreadMessageCount}
+                      </Badge>
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuItem onClick={() => navigate('/messages')}>
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Messages
+                  <DropdownMenuItem onClick={() => navigate('/messages')} className="flex items-center justify-between">
+                    <span className="flex items-center">
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Messages
+                    </span>
+                    {unreadMessageCount > 0 && (
+                      <Badge variant="destructive" className="ml-2 h-5 min-w-5 flex items-center justify-center text-xs">
+                        {unreadMessageCount}
+                      </Badge>
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="mr-2 h-4 w-4" />
@@ -207,9 +267,16 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/christmas')}>
                         🎄 Christmas
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/messages')}>
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        Messages
+                      <Button variant="ghost" className="w-full justify-between" onClick={() => handleMobileNavigation('/messages')}>
+                        <span className="flex items-center">
+                          <MessageCircle className="mr-2 h-4 w-4" />
+                          Messages
+                        </span>
+                        {unreadMessageCount > 0 && (
+                          <Badge variant="destructive" className="h-5 min-w-5 flex items-center justify-center text-xs">
+                            {unreadMessageCount}
+                          </Badge>
+                        )}
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/profile')}>
                         <User className="mr-2 h-4 w-4" />
