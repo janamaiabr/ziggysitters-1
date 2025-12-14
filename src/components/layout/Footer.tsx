@@ -85,6 +85,11 @@ export default function Footer() {
             <h3 className="font-semibold mb-3 md:mb-4 text-base">Popular Areas</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link to="/pet-sitters-auckland" className="text-gray-300 hover:text-white transition-colors font-medium">
+                  Auckland
+                </Link>
+              </li>
+              <li>
                 <Link to="/find-sitters/ponsonby" className="text-gray-300 hover:text-white transition-colors">
                   Ponsonby
                 </Link>
@@ -92,11 +97,6 @@ export default function Footer() {
               <li>
                 <Link to="/find-sitters/grey-lynn" className="text-gray-300 hover:text-white transition-colors">
                   Grey Lynn
-                </Link>
-              </li>
-              <li>
-                <Link to="/find-sitters/mt-eden" className="text-gray-300 hover:text-white transition-colors">
-                  Mt Eden
                 </Link>
               </li>
               <li>
