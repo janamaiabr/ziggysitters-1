@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/co
 import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon, MessageCircle } from 'lucide-react';
 import logoSvg from '@/assets/logo.svg';
 import { useState, useEffect } from 'react';
-
+import NotificationBell from '@/components/notifications/NotificationBell';
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -99,6 +99,13 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Notification Bell - only for logged in users */}
+          {user && (
+            <div className="hidden md:block">
+              <NotificationBell />
+            </div>
+          )}
+          
           {/* Desktop Navigation */}
           {user ? (
             <div className="hidden md:flex">
