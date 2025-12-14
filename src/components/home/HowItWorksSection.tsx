@@ -6,21 +6,24 @@ const steps = [
     number: "1",
     title: "Search",
     description: "Enter your suburb and dates to find verified sitters near you",
-    color: "from-purple-500 to-indigo-500"
+    color: "from-purple-500 to-indigo-500",
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=250&fit=crop"
   },
   {
     icon: Calendar,
     number: "2", 
     title: "Book",
     description: "Choose your sitter, select services, and book securely online",
-    color: "from-indigo-500 to-blue-500"
+    color: "from-indigo-500 to-blue-500",
+    image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=250&fit=crop"
   },
   {
     icon: Heart,
     number: "3",
     title: "Relax",
     description: "Get daily photo updates and enjoy peace of mind",
-    color: "from-blue-500 to-cyan-500"
+    color: "from-blue-500 to-cyan-500",
+    image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=250&fit=crop"
   }
 ];
 
@@ -50,22 +53,35 @@ export default function HowItWorksSection() {
             >
               {/* Connector line - hidden on mobile */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-200 to-blue-200 dark:from-purple-800 dark:to-blue-800" />
+                <div className="hidden md:block absolute top-32 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-200 to-blue-200 dark:from-purple-800 dark:to-blue-800" />
               )}
               
-              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-100 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 group-hover:-translate-y-2">
-                {/* Number badge */}
-                <div className={`absolute -top-4 -right-4 w-10 h-10 rounded-full bg-gradient-to-r ${step.color} text-white font-bold text-lg flex items-center justify-center shadow-lg`}>
-                  {step.number}
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-100 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 group-hover:-translate-y-2">
+                {/* Image */}
+                <div className="relative h-36 md:h-40 overflow-hidden">
+                  <img 
+                    src={step.image} 
+                    alt={step.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  
+                  {/* Number badge on image */}
+                  <div className={`absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r ${step.color} text-white font-bold text-lg flex items-center justify-center shadow-lg`}>
+                    {step.number}
+                  </div>
                 </div>
                 
-                {/* Icon */}
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${step.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <step.icon className="w-8 h-8 text-white" />
+                {/* Content */}
+                <div className="p-6">
+                  {/* Icon */}
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${step.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <step.icon className="w-6 h-6 text-white" />
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-2 text-foreground">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
                 </div>
-                
-                <h3 className="text-xl font-bold mb-3 text-foreground">{step.title}</h3>
-                <p className="text-muted-foreground">{step.description}</p>
               </div>
             </div>
           ))}
