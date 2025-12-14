@@ -338,13 +338,16 @@ export default function Profile() {
         // Don't block upload if notification fails
       }
 
+      // Celebrate the milestone!
+      fireSuccess();
+      
       toast({
-        title: "Document uploaded successfully",
-        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for verification.`,
+        title: "🎉 Document uploaded successfully!",
+        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for verification. Great progress!`,
       });
 
       // Refresh profile data
-      window.location.reload();
+      await refetch();
     } catch (error: any) {
       console.error('Error uploading document:', error);
       
@@ -594,9 +597,13 @@ export default function Profile() {
         setServiceEditData({});
         // Refresh services list
         await fetchSitterServices();
+        
+        // Celebrate first service added!
+        fireSuccess();
+        
         toast({
-          title: "Service added",
-          description: "Your new service has been added successfully.",
+          title: "🎉 Service added!",
+          description: "Your new service has been added successfully. You're making great progress!",
         });
       }
     } catch (error: any) {
@@ -688,8 +695,11 @@ export default function Profile() {
 
       if (uploadError) throw uploadError;
 
+      // Celebrate photo upload!
+      fireSuccess();
+      
       toast({
-        title: "Photo uploaded",
+        title: "🎉 Photo uploaded!",
         description: "Your portfolio photo has been uploaded successfully.",
       });
 
