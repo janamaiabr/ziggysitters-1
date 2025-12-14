@@ -26,7 +26,7 @@ serve(async (req) => {
 
     const { data: incompleteProfiles, error: profileError } = await supabaseClient
       .from('profiles')
-      .select('user_id, email, first_name, last_name, role, updated_at')
+      .select('id, user_id, email, first_name, last_name, role, updated_at, avatar_url, bio, id_document_url, stripe_account_id, stripe_onboarding_completed')
       .eq('onboarding_completed', false)
       .not('email', 'is', null)
       .lt('updated_at', yesterday.toISOString());
@@ -46,8 +46,34 @@ serve(async (req) => {
     // Send reminder emails for each incomplete profile
     const reminderPromises = incompleteProfiles.map(async (profile) => {
       try {
+        // Calculate missing steps for the profile
+        const missingSteps: string[] = [];
+        if (!profile.avatar_url) missingSteps.push("Add a profile photo");
+        if (!profile.bio) missingSteps.push("Write your bio");
+        if (!profile.id_document_url) missingSteps.push("Upload ID for verification");
+        if (!profile.stripe_account_id || !profile.stripe_onboarding_completed) {
+          missingSteps.push("Set up Stripe for payments");
+        }
+
+        // Check if sitter has services set up
+        const { data: services } = await supabaseClient
+          .from('sitter_services')
+          .select('id')
+          .eq('sitter_id', profile.id)
+          .eq('is_offered', true)
+          .limit(1);
+
+        if (!services || services.length === 0) {
+          missingSteps.push("Set up your services and rates");
+        }
+
+        // Call send-onboarding-reminder with correct parameters
         const { error: emailError } = await supabaseClient.functions.invoke('send-onboarding-reminder', {
-          body: { user_id: profile.user_id }
+          body: {
+            sitterEmail: profile.email,
+            sitterName: profile.first_name || 'there',
+            onboardingUrl: 'https://ziggysitters.com/onboarding'
+          }
         });
 
         if (emailError) {

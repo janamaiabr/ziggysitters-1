@@ -128,3 +128,6 @@ verify_jwt = false
 
 [functions.create-notification]
 verify_jwt = false
+
+[functions.send-onboarding-reminder]
+verify_jwt = false
