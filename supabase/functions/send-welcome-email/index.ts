@@ -150,6 +150,13 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('email', email)
         .single();
 
+      // Check if user has verified their email via auth.users
+      const { data: authUser } = await supabase.auth.admin.getUserById(profile?.user_id);
+      const emailConfirmed = authUser?.user?.email_confirmed_at ? true : false;
+      const emailConfirmedAt = authUser?.user?.email_confirmed_at 
+        ? new Date(authUser.user.email_confirmed_at).toLocaleString() 
+        : null;
+
       const { data: searches } = await supabase
         .from('search_events')
         .select('*')
@@ -202,6 +209,9 @@ const handler = async (req: Request): Promise<Response> => {
                 <h3 style="margin-top: 0;">📋 Basic Information</h3>
                 <p style="margin: 5px 0;"><strong>Name:</strong> ${firstName}</p>
                 <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
+                <p style="margin: 5px 0;"><strong>Email Verified:</strong> ${emailConfirmed 
+                  ? `✅ Yes (${emailConfirmedAt})` 
+                  : '❌ Not yet verified'}</p>
                 <p style="margin: 5px 0;"><strong>Phone:</strong> ${profile?.phone || '❌ Not provided'}</p>
                 <p style="margin: 5px 0;"><strong>Location:</strong> ${profile?.suburb ? `${profile.suburb}, ${profile.city}` : '❌ Not provided'}</p>
                 <p style="margin: 5px 0;"><strong>Registered:</strong> ${new Date().toLocaleString()}</p>
