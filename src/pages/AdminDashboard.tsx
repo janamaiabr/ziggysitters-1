@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Shield, Users, CalendarCheck, DollarSign, TrendingUp, Eye, ShieldCheck, Target, Mail, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { BusinessReports } from '@/components/admin/BusinessReports';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -235,6 +236,11 @@ export default function AdminDashboard() {
             <div className="text-sm text-muted-foreground">Active Bookings</div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Business Reports */}
+      <div className="mb-8">
+        <BusinessReports />
       </div>
 
       {/* Quick Actions */}
