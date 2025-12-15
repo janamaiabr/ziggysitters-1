@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Shield, Users, CalendarCheck, DollarSign, TrendingUp, Eye, ShieldCheck, Target, Mail, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BusinessReports } from '@/components/admin/BusinessReports';
+import { OnboardingFunnel } from '@/components/admin/OnboardingFunnel';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -239,9 +240,10 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Business Reports */}
-      <div className="mb-8">
+      {/* Business Reports & Onboarding Funnel */}
+      <div className="mb-8 grid md:grid-cols-2 gap-6">
         <BusinessReports />
+        <OnboardingFunnel />
       </div>
 
       {/* Quick Actions */}

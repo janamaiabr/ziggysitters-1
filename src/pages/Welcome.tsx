@@ -33,8 +33,14 @@ export default function Welcome() {
     const now = Date.now();
     const timeDiff = now - signUpTime;
     // Consider new user if account was created within the last 5 minutes
-    setIsNewUser(timeDiff < 5 * 60 * 1000);
-  }, [user, navigate]);
+    const isNew = timeDiff < 5 * 60 * 1000;
+    setIsNewUser(isNew);
+
+    // For new pet owners, redirect to quick setup wizard
+    if (isNew && profile?.role === 'pet_owner') {
+      navigate('/quick-setup');
+    }
+  }, [user, navigate, profile?.role]);
 
   const getNextSteps = () => {
     if (!profile?.role) {
