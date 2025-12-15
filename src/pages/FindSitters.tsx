@@ -18,6 +18,7 @@ import { useSearchTracking } from '@/hooks/useSearchTracking';
 import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
+import AddPetsPrompt from '@/components/search/AddPetsPrompt';
 
 // No more mock data - using real database profiles
 
@@ -572,6 +573,9 @@ export default function FindSitters() {
           {/* Search Results Header */}
           {searchPerformed && (
             <div className="mb-6 md:mb-8">
+              {/* Subtle prompt to add pets */}
+              <AddPetsPrompt />
+              
               <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
                 Available Pet Sitters
               </h2>

@@ -52,12 +52,20 @@ export default function Welcome() {
     const steps = [];
 
     if (profile.role === 'pet_owner') {
+      // Encourage BOTH searching AND adding pets
       steps.push({
         icon: Search,
-        title: "Find Pet Sitters",
-        description: "Browse verified sitters in your area",
+        title: "Browse Pet Sitters",
+        description: "See who's available in your area right now",
         action: "Find Sitters",
         path: "/find-sitters"
+      });
+      steps.push({
+        icon: PawPrint,
+        title: "Add Your Pet",
+        description: "Help sitters prepare by sharing your pet's details",
+        action: "Add Pet",
+        path: "/profile"
       });
     }
 
