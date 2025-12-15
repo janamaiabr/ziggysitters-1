@@ -152,6 +152,13 @@ export type Database = {
             foreignKeyName: "bookings_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "bookings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -168,6 +175,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_sitters"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "bookings_sitter_id_fkey"
@@ -381,6 +395,13 @@ export type Database = {
             foreignKeyName: "email_subscriptions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "email_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -466,6 +487,13 @@ export type Database = {
             foreignKeyName: "favorites_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "favorites_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -482,6 +510,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_sitters"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "favorites_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "favorites_sitter_id_fkey"
@@ -549,6 +584,13 @@ export type Database = {
             foreignKeyName: "messages_recipient_id_fkey"
             columns: ["recipient_id"]
             isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -565,6 +607,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_sitters"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "messages_sender_id_fkey"
@@ -624,6 +673,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
@@ -721,6 +777,13 @@ export type Database = {
           weight?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "pets_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "pets_owner_id_fkey"
             columns: ["owner_id"]
@@ -981,6 +1044,13 @@ export type Database = {
             foreignKeyName: "referrals_referred_user_id_fkey"
             columns: ["referred_user_id"]
             isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "referrals_referred_user_id_fkey"
+            columns: ["referred_user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -997,6 +1067,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_sitters"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "referrals_referrer_id_fkey"
@@ -1064,6 +1141,13 @@ export type Database = {
             foreignKeyName: "reviews_reviewee_id_fkey"
             columns: ["reviewee_id"]
             isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewee_id_fkey"
+            columns: ["reviewee_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1080,6 +1164,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_sitters"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "reviews_reviewer_id_fkey"
@@ -1181,6 +1272,13 @@ export type Database = {
           sitter_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "sitter_availability_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "sitter_availability_sitter_id_fkey"
             columns: ["sitter_id"]
@@ -1321,6 +1419,13 @@ export type Database = {
             foreignKeyName: "sitter_services_sitter_id_fkey"
             columns: ["sitter_id"]
             isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sitter_services_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1372,6 +1477,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "stripe_migration_tracking_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: true
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "stripe_migration_tracking_sitter_id_fkey"
             columns: ["sitter_id"]
@@ -1448,6 +1560,74 @@ export type Database = {
           },
         ]
       }
+      user_events: {
+        Row: {
+          created_at: string
+          event_data: Json | null
+          event_name: string
+          event_type: string
+          id: string
+          page_path: string | null
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json | null
+          event_name: string
+          event_type: string
+          id?: string
+          page_path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json | null
+          event_name?: string
+          event_type?: string
+          id?: string
+          page_path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -1471,6 +1651,54 @@ export type Database = {
       }
     }
     Views: {
+      onboarding_funnel: {
+        Row: {
+          added_pet: boolean | null
+          completed_booking: boolean | null
+          email: string | null
+          first_booking_at: string | null
+          first_name: string | null
+          first_pet_added_at: string | null
+          first_search_at: string | null
+          made_booking: boolean | null
+          registered_at: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          searched: boolean | null
+          signed_up: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          added_pet?: never
+          completed_booking?: never
+          email?: string | null
+          first_booking_at?: never
+          first_name?: string | null
+          first_pet_added_at?: never
+          first_search_at?: never
+          made_booking?: never
+          registered_at?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          searched?: never
+          signed_up?: never
+          user_id?: string | null
+        }
+        Update: {
+          added_pet?: never
+          completed_booking?: never
+          email?: string | null
+          first_booking_at?: never
+          first_name?: string | null
+          first_pet_added_at?: never
+          first_search_at?: never
+          made_booking?: never
+          registered_at?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          searched?: never
+          signed_up?: never
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       public_sitter_profiles: {
         Row: {
           avatar_url: string | null

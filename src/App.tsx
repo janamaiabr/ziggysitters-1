@@ -46,6 +46,7 @@ import OnboardingComplete from "./pages/OnboardingComplete";
 import OnboardingPendingApproval from "./pages/OnboardingPendingApproval";
 import CreateAdmin from "./pages/CreateAdmin";
 import EmailThankYou from "./pages/EmailThankYou";
+import { QuickPetOwnerWizard } from "./components/onboarding/QuickPetOwnerWizard";
 
 import FAQ from "./pages/FAQ";
 import Error500 from "./pages/Error500";
@@ -171,6 +172,14 @@ function AppContent() {
                 <Route path="/onboarding-pending-approval" element={<OnboardingPendingApproval />} />
                 <Route path="/email-thank-you" element={<EmailThankYou />} />
                 <Route path="/create-admin" element={<CreateAdmin />} />
+                <Route 
+                  path="/quick-setup" 
+                  element={
+                    <ProtectedRoute>
+                      <QuickPetOwnerWizard />
+                    </ProtectedRoute>
+                  } 
+                />
             
             {/* Protected Routes */}
             <Route 
