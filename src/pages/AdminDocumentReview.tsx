@@ -181,6 +181,9 @@ export default function AdminDocumentReview() {
       if (documentType === 'id') {
         updateData.is_verified = false;
         updateData.verification_status = 'rejected';
+        // Clear the document URL so they don't keep appearing in the review queue
+        updateData.id_document_url = null;
+        updateData.id_document_urls = [];
       } else {
         updateData.golden_badge_approved = false;
         updateData.blue_card_document_url = null;
@@ -228,7 +231,8 @@ export default function AdminDocumentReview() {
     );
   }
 
-  const pendingIDApprovals = sitters.filter(s => s.id_document_url && !s.is_verified);
+  // Only show sitters with pending status who have uploaded documents
+  const pendingIDApprovals = sitters.filter(s => s.id_document_url && !s.is_verified && s.verification_status !== 'rejected');
   const pendingGoldBadge = sitters.filter(s => s.blue_card_document_url && s.is_verified && !s.golden_badge_approved);
   const approved = sitters.filter(s => s.is_verified);
 
