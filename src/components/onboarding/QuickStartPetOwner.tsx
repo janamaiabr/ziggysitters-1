@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,7 @@ interface QuickStartPetOwnerProps {
 }
 
 export default function QuickStartPetOwner({ profileId, userId, onComplete }: QuickStartPetOwnerProps) {
+  const navigate = useNavigate();
   const [petName, setPetName] = useState('');
   const [petSpecies, setPetSpecies] = useState('');
   const [suburb, setSuburb] = useState('');
@@ -84,8 +86,12 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         duration: 4000,
       });
 
-      // Mark as complete then redirect directly to find-sitters
-      onComplete(profileId);
+      // Clear localStorage and navigate DIRECTLY to find-sitters with suburb pre-filled
+      localStorage.removeItem('onboarding_data');
+      localStorage.removeItem('onboarding_step');
+      
+      // Navigate with location param so FindSitters auto-searches their area
+      navigate(`/find-sitters?location=${encodeURIComponent(suburb.trim())}`, { replace: true });
     } catch (error: any) {
       console.error('Error in quick start:', error);
       toast({
