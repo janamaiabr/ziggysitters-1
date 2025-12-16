@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Users, MapPin, Calendar, MousePointerClick } from 'lucide-react';
+import { TrendingUp, Users, MapPin, Calendar, MousePointerClick, Target, UserPlus, Mail, Search } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface SearchEvent {
@@ -21,11 +21,26 @@ interface SearchEvent {
   created_at: string;
 }
 
+interface TargetedAreaStats {
+  searches: number;
+  uniqueSessions: number;
+  registrations: number;
+  emailCaptures: number;
+  clickRate: number;
+  serviceBreakdown: Record<string, number>;
+  recentSearches: SearchEvent[];
+  recentRegistrations: { first_name: string; created_at: string; email: string }[];
+}
+
+// Marketing target areas to monitor
+const MARKETING_TARGET_AREAS = ['Titirangi', 'Glen Eden', 'Henderson', 'Te Atatu', 'New Lynn'];
+
 export default function AdminSearchAnalytics() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchEvents, setSearchEvents] = useState<SearchEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [targetedAreaStats, setTargetedAreaStats] = useState<Record<string, TargetedAreaStats>>({});
   const [stats, setStats] = useState({
     totalSearches: 0,
     uniqueUsers: 0,
@@ -37,6 +52,7 @@ export default function AdminSearchAnalytics() {
   useEffect(() => {
     checkAdminAccess();
     fetchSearchEvents();
+    fetchTargetedAreaStats();
   }, []);
 
   const checkAdminAccess = async () => {
@@ -55,6 +71,70 @@ export default function AdminSearchAnalytics() {
     if (!roleData) {
       navigate('/');
     }
+  };
+
+  const fetchTargetedAreaStats = async () => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const areaStats: Record<string, TargetedAreaStats> = {};
+
+    for (const area of MARKETING_TARGET_AREAS) {
+      const areaLower = area.toLowerCase();
+      
+      // Fetch searches for this area
+      const { data: areaSearches } = await supabase
+        .from('search_events')
+        .select('*')
+        .gte('search_timestamp', thirtyDaysAgo.toISOString())
+        .or(`suburb.ilike.%${areaLower}%,city.ilike.%${areaLower}%`)
+        .order('search_timestamp', { ascending: false });
+
+      // Fetch registrations from this area
+      const { data: areaRegistrations } = await supabase
+        .from('profiles')
+        .select('first_name, email, created_at, suburb')
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .ilike('suburb', `%${areaLower}%`)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      // Fetch email captures from this area
+      const { data: areaEmails } = await supabase
+        .from('email_captures')
+        .select('*')
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .ilike('search_location', `%${areaLower}%`);
+
+      const searches = areaSearches || [];
+      const uniqueSessions = new Set(searches.map(s => s.session_id)).size;
+      const clickedSearches = searches.filter(s => s.clicked_sitter_ids && s.clicked_sitter_ids.length > 0);
+      
+      // Service breakdown
+      const serviceBreakdown = searches.reduce((acc, s) => {
+        if (s.service_type) {
+          acc[s.service_type] = (acc[s.service_type] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>);
+
+      areaStats[area] = {
+        searches: searches.length,
+        uniqueSessions,
+        registrations: (areaRegistrations || []).length,
+        emailCaptures: (areaEmails || []).length,
+        clickRate: searches.length > 0 ? Math.round((clickedSearches.length / searches.length) * 100) : 0,
+        serviceBreakdown,
+        recentSearches: searches.slice(0, 5),
+        recentRegistrations: (areaRegistrations || []).map(r => ({
+          first_name: r.first_name,
+          created_at: r.created_at,
+          email: r.email
+        }))
+      };
+    }
+
+    setTargetedAreaStats(areaStats);
   };
 
   const fetchSearchEvents = async () => {
@@ -175,6 +255,108 @@ export default function AdminSearchAnalytics() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Marketing Target Areas - Titirangi Focus */}
+      <Card className="border-2 border-orange-500 bg-orange-50 dark:bg-orange-950/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-orange-900 dark:text-orange-100">
+            <Target className="h-5 w-5" />
+            Marketing Target Areas (Last 30 Days)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {MARKETING_TARGET_AREAS.map((area) => {
+              const areaData = targetedAreaStats[area];
+              const isPrimary = area === 'Titirangi';
+              
+              return (
+                <Card key={area} className={isPrimary ? 'border-2 border-orange-600 bg-white dark:bg-background' : ''}>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <MapPin className={`h-4 w-4 ${isPrimary ? 'text-orange-600' : 'text-muted-foreground'}`} />
+                      {area}
+                      {isPrimary && <Badge className="bg-orange-600">Primary</Badge>}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {areaData ? (
+                      <>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div className="flex items-center gap-1">
+                            <Search className="h-3 w-3 text-muted-foreground" />
+                            <span className="font-medium">{areaData.searches}</span>
+                            <span className="text-muted-foreground">searches</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Users className="h-3 w-3 text-muted-foreground" />
+                            <span className="font-medium">{areaData.uniqueSessions}</span>
+                            <span className="text-muted-foreground">visitors</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <UserPlus className="h-3 w-3 text-green-600" />
+                            <span className="font-medium text-green-600">{areaData.registrations}</span>
+                            <span className="text-muted-foreground">signups</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Mail className="h-3 w-3 text-blue-600" />
+                            <span className="font-medium text-blue-600">{areaData.emailCaptures}</span>
+                            <span className="text-muted-foreground">emails</span>
+                          </div>
+                        </div>
+                        
+                        <div className="pt-2 border-t">
+                          <div className="text-xs text-muted-foreground mb-1">Click Rate</div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-muted rounded-full h-2">
+                              <div 
+                                className={`h-2 rounded-full ${areaData.clickRate > 10 ? 'bg-green-500' : areaData.clickRate > 0 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                style={{ width: `${Math.min(areaData.clickRate, 100)}%` }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">{areaData.clickRate}%</span>
+                          </div>
+                        </div>
+
+                        {Object.keys(areaData.serviceBreakdown).length > 0 && (
+                          <div className="pt-2 border-t">
+                            <div className="text-xs text-muted-foreground mb-1">Services Searched</div>
+                            <div className="flex flex-wrap gap-1">
+                              {Object.entries(areaData.serviceBreakdown).map(([service, count]) => (
+                                <Badge key={service} variant="outline" className="text-xs">
+                                  {service.replace(/_/g, ' ')}: {count}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {areaData.recentRegistrations.length > 0 && (
+                          <div className="pt-2 border-t">
+                            <div className="text-xs text-muted-foreground mb-1">Recent Signups</div>
+                            <div className="space-y-1">
+                              {areaData.recentRegistrations.slice(0, 3).map((reg, i) => (
+                                <div key={i} className="text-xs flex justify-between">
+                                  <span className="font-medium">{reg.first_name}</span>
+                                  <span className="text-muted-foreground">
+                                    {new Date(reg.created_at).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Loading...</p>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Top Suburbs */}
       <Card>
