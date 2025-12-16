@@ -43,26 +43,8 @@ export default function Welcome() {
     setIsNewUser(isNew);
   }, [user, navigate, profile?.role, trackPageView]);
 
-  // Check for pets and redirect to wizard if needed
-  useEffect(() => {
-    const checkPetsAndRedirect = async () => {
-      if (!profile || profile.role !== 'pet_owner') return;
-      
-      // Check if user has any pets
-      const { data: pets } = await supabase
-        .from('pets')
-        .select('id')
-        .eq('owner_id', profile.id)
-        .limit(1);
-      
-      // If no pets, redirect to quick setup wizard
-      if (!pets || pets.length === 0) {
-        navigate('/quick-setup');
-      }
-    };
-    
-    checkPetsAndRedirect();
-  }, [profile, navigate]);
+  // No longer auto-redirect to wizard - let users explore freely
+  // They can search without adding pets first
 
   const getNextSteps = () => {
     if (!profile?.role) {
@@ -80,18 +62,19 @@ export default function Welcome() {
     const steps = [];
 
     if (profile.role === 'pet_owner') {
-      // Encourage BOTH searching AND adding pets
+      // Make searching the PRIMARY and MOST PROMINENT action
       steps.push({
         icon: Search,
-        title: "Browse Pet Sitters",
-        description: "See who's available in your area right now",
-        action: "Find Sitters",
-        path: "/find-sitters"
+        title: "Find a Sitter Now",
+        description: "Browse available sitters in your area - no pet profile needed!",
+        action: "Search Now",
+        path: "/find-sitters",
+        primary: true // Mark as primary
       });
       steps.push({
         icon: PawPrint,
-        title: "Add Your Pet",
-        description: "Help sitters prepare by sharing your pet's details",
+        title: "Add Your Pet Later",
+        description: "Optional: Share your pet's details when you're ready to book",
         action: "Add Pet",
         path: "/profile"
       });
@@ -218,10 +201,18 @@ export default function Welcome() {
             {nextSteps.map((step, index) => (
               <div 
                 key={index}
-                className="flex items-center justify-between p-5 rounded-xl border-2 border-purple-200 dark:border-purple-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 dark:hover:from-pink-950/20 dark:hover:to-purple-950/20 hover:shadow-xl transition-all hover:scale-[1.02]"
+                className={`flex items-center justify-between p-5 rounded-xl border-2 ${
+                  (step as any).primary 
+                    ? 'border-green-400 dark:border-green-600 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 shadow-lg ring-2 ring-green-200 dark:ring-green-800' 
+                    : 'border-purple-200 dark:border-purple-800 bg-white/80 dark:bg-gray-900/80'
+                } backdrop-blur hover:shadow-xl transition-all hover:scale-[1.02]`}
               >
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <div className={`w-12 h-12 ${
+                    (step as any).primary 
+                      ? 'bg-gradient-to-br from-green-400 to-emerald-500' 
+                      : 'bg-gradient-to-br from-pink-400 to-purple-400'
+                  } rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
                     <step.icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -231,8 +222,12 @@ export default function Welcome() {
                 </div>
                 <Button 
                   onClick={() => navigate(step.path)}
-                  className="flex-shrink-0 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg"
-                  size="sm"
+                  className={`flex-shrink-0 ${
+                    (step as any).primary 
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 animate-pulse' 
+                      : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+                  } shadow-lg`}
+                  size={(step as any).primary ? "default" : "sm"}
                 >
                   {step.action}
                   <ArrowRight className="w-4 h-4 ml-1" />
