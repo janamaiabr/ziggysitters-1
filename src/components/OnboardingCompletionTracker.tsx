@@ -39,26 +39,10 @@ export function OnboardingCompletionTracker() {
         return;
       }
 
-      // For pet owners, basic info + at least 1 pet is required
+      // For pet owners, basic info is sufficient - don't require pets
       if (profile.role === 'pet_owner') {
+        console.log('Auto-completing onboarding for pet owner with complete profile');
         try {
-          // Check if pet owner has at least one pet
-          const { data: pets, error: petsError } = await supabase
-            .from('pets')
-            .select('id')
-            .eq('owner_id', profile.id)
-            .limit(1);
-
-          if (petsError) throw petsError;
-
-          const hasPets = pets && pets.length > 0;
-          
-          if (!hasPets) {
-            console.log('Pet owner has no pets - cannot auto-complete onboarding');
-            return;
-          }
-
-          console.log('Auto-completing onboarding for pet owner with complete profile and pets');
           const { error } = await supabase
             .from('profiles')
             .update({ onboarding_completed: true })
