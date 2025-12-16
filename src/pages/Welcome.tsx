@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   CheckCircle, 
   PawPrint, 
@@ -16,10 +17,13 @@ import {
   Shield
 } from 'lucide-react';
 
+import { useEventTracking } from '@/hooks/useEventTracking';
+
 export default function Welcome() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const { trackPageView } = useEventTracking();
   const [isNewUser, setIsNewUser] = useState(false);
 
   useEffect(() => {
@@ -28,19 +32,37 @@ export default function Welcome() {
       return;
     }
 
+    // Track page view
+    trackPageView('welcome_page', { role: profile?.role });
+
     // Check if this is a new user (just signed up)
     const signUpTime = new Date(user.created_at).getTime();
     const now = Date.now();
     const timeDiff = now - signUpTime;
-    // Consider new user if account was created within the last 5 minutes
     const isNew = timeDiff < 5 * 60 * 1000;
     setIsNewUser(isNew);
+  }, [user, navigate, profile?.role, trackPageView]);
 
-    // For new pet owners, redirect to quick setup wizard
-    if (isNew && profile?.role === 'pet_owner') {
-      navigate('/quick-setup');
-    }
-  }, [user, navigate, profile?.role]);
+  // Check for pets and redirect to wizard if needed
+  useEffect(() => {
+    const checkPetsAndRedirect = async () => {
+      if (!profile || profile.role !== 'pet_owner') return;
+      
+      // Check if user has any pets
+      const { data: pets } = await supabase
+        .from('pets')
+        .select('id')
+        .eq('owner_id', profile.id)
+        .limit(1);
+      
+      // If no pets, redirect to quick setup wizard
+      if (!pets || pets.length === 0) {
+        navigate('/quick-setup');
+      }
+    };
+    
+    checkPetsAndRedirect();
+  }, [profile, navigate]);
 
   const getNextSteps = () => {
     if (!profile?.role) {

@@ -51,7 +51,7 @@ export function useEventTracking() {
 
   const trackEvent = useCallback(async ({ eventType, eventName, eventData = {}, pagePath }: TrackEventParams) => {
     try {
-      await supabase.from('user_events').insert({
+      const payload = {
         user_id: profile?.id || null,
         session_id: getSessionId(),
         event_type: eventType,
@@ -60,9 +60,19 @@ export function useEventTracking() {
         page_path: pagePath || window.location.pathname,
         referrer: document.referrer || null,
         user_agent: navigator.userAgent,
-      });
+      };
+      
+      console.log('[EventTracking] Inserting event:', eventName, payload);
+      
+      const { error } = await supabase.from('user_events').insert(payload);
+      
+      if (error) {
+        console.error('[EventTracking] Insert error:', error);
+      } else {
+        console.log('[EventTracking] Event inserted successfully:', eventName);
+      }
     } catch (error) {
-      console.error('Error tracking event:', error);
+      console.error('[EventTracking] Exception:', error);
     }
   }, [profile?.id]);
 
