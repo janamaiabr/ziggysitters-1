@@ -89,6 +89,30 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         console.error('Failed to send welcome email:', emailError);
       }
 
+      // Track search event immediately (before navigation to ensure it's recorded)
+      try {
+        const sessionId = sessionStorage.getItem('search_session_id') || 
+          `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        sessionStorage.setItem('search_session_id', sessionId);
+        
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        
+        await supabase.from('search_events').insert({
+          user_id: authUser?.id || null,
+          session_id: sessionId,
+          search_timestamp: new Date().toISOString(),
+          suburb: suburb.trim(),
+          city: 'Auckland',
+          service_type: null,
+          results_count: null, // Will be updated when page loads
+          user_agent: navigator.userAgent,
+          referrer: 'onboarding_completion',
+        });
+        console.log('Search event tracked from onboarding');
+      } catch (trackError) {
+        console.error('Failed to track onboarding search:', trackError);
+      }
+
       // Success message
       const petMessage = petName.trim() 
         ? `${petName} is ready to meet their perfect sitter!` 
