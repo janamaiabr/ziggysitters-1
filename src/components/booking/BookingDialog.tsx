@@ -533,15 +533,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       }
     }
 
-    // Require pet selection - pet owners MUST have pets registered
-    if (ownerPets.length === 0) {
-      toast({
-        title: 'No Pets Registered',
-        description: 'Please add your pets to your profile before booking a sitter.',
-        variant: 'destructive'
-      });
-      return;
-    }
+    // Note: Users can add pets inline during booking if they don't have any
+    // The selectedPetIds check below ensures at least one pet is selected
 
     if (selectedPetIds.length === 0) {
       toast({
