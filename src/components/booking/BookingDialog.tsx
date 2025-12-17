@@ -62,6 +62,14 @@ const STEPS = [
   { id: 5, name: 'Review', description: 'Confirm booking' },
 ];
 
+// Common time presets for quick selection
+const TIME_PRESETS = [
+  { label: 'Morning (9am)', start: '09:00', end: '10:00' },
+  { label: 'Midday (12pm)', start: '12:00', end: '13:00' },
+  { label: 'Afternoon (3pm)', start: '15:00', end: '16:00' },
+  { label: 'Evening (6pm)', start: '18:00', end: '19:00' },
+];
+
 export default function BookingDialog({ isOpen, onClose, sitter, servicesData = [], initialDates }: BookingDialogProps) {
   // Wizard step state
   const [currentStep, setCurrentStep] = useState(1);
@@ -141,6 +149,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     }
   }, [isOpen]);
 
+  // Pre-fill dates and auto-select service with smart defaults
   useEffect(() => {
     if (initialDates) {
       if (initialDates.checkIn) setStartDate(new Date(initialDates.checkIn));
@@ -148,6 +157,21 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       if (initialDates.serviceType) setServiceType(initialDates.serviceType);
     }
   }, [initialDates]);
+
+  // Smart defaults: auto-select most popular service if none selected
+  useEffect(() => {
+    if (isOpen && servicesData.length > 0 && !serviceType && !initialDates?.serviceType) {
+      // Priority: pet_sitting_owners_home > pet_sitting_sitters_home > drop_in_visits > dog_walking
+      const priorityOrder = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits', 'dog_walking'];
+      for (const type of priorityOrder) {
+        const service = servicesData.find(s => s.service_type === type);
+        if (service) {
+          setServiceType(type);
+          break;
+        }
+      }
+    }
+  }, [isOpen, servicesData, serviceType, initialDates]);
 
   useEffect(() => {
     const fetchBookedDates = async () => {
@@ -684,8 +708,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   // Step content renderers
   const renderStep1 = () => (
     <div className="space-y-4">
-      <div className="text-center mb-6">
-        <h3 className="font-semibold text-lg">What service do you need?</h3>
+      <div className="text-center mb-4 sm:mb-6">
+        <h3 className="font-semibold text-lg sm:text-xl">What service do you need?</h3>
         <p className="text-sm text-muted-foreground">Select the type of care for your pet</p>
       </div>
       
@@ -700,27 +724,32 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             let rate = 0;
             let rateLabel = '';
             let serviceName = '';
+            let serviceIcon = '🏠';
             
             switch (service.service_type) {
               case 'pet_sitting_sitters_home':
                 serviceName = "Pet Sitting (Sitter's Home)";
                 rate = service.daily_rate || 0;
                 rateLabel = '/day/pet';
+                serviceIcon = '🏡';
                 break;
               case 'pet_sitting_owners_home':
                 serviceName = "Pet Sitting (Your Home)";
                 rate = service.daily_rate || 0;
                 rateLabel = '/day/pet';
+                serviceIcon = '🏠';
                 break;
               case 'drop_in_visits':
                 serviceName = "Drop-in Visits";
                 rate = service.hourly_rate || 0;
                 rateLabel = '/visit';
+                serviceIcon = '👋';
                 break;
               case 'dog_walking':
                 serviceName = "Dog Walking";
                 rate = service.hourly_rate || 0;
                 rateLabel = '/hour/pet';
+                serviceIcon = '🐕';
                 break;
               default:
                 serviceName = service.service_type;
@@ -732,22 +761,24 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
               <Card 
                 key={service.id}
                 className={cn(
-                  "p-4 cursor-pointer transition-all hover:border-primary",
-                  serviceType === service.service_type && "border-primary bg-primary/5"
+                  "p-4 sm:p-4 cursor-pointer transition-all hover:border-primary active:scale-[0.98]",
+                  "min-h-[60px] sm:min-h-0", // Larger touch target on mobile
+                  serviceType === service.service_type && "border-primary bg-primary/5 ring-1 ring-primary"
                 )}
                 onClick={() => setServiceType(service.service_type)}
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
+                    <span className="text-xl sm:text-base">{serviceIcon}</span>
                     <div className={cn(
-                      "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                      "w-6 h-6 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
                       serviceType === service.service_type ? "border-primary bg-primary" : "border-muted-foreground"
                     )}>
-                      {serviceType === service.service_type && <Check className="w-3 h-3 text-primary-foreground" />}
+                      {serviceType === service.service_type && <Check className="w-4 h-4 sm:w-3 sm:h-3 text-primary-foreground" />}
                     </div>
-                    <span className="font-medium">{serviceName}</span>
+                    <span className="font-medium text-base sm:text-sm">{serviceName}</span>
                   </div>
-                  <Badge variant="secondary">${rate.toFixed(2)}{rateLabel}</Badge>
+                  <Badge variant="secondary" className="text-sm sm:text-xs">${rate.toFixed(2)}{rateLabel}</Badge>
                 </div>
               </Card>
             );
@@ -843,7 +874,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
 
       {serviceType === 'dog_walking' && (
         <>
-          <div className="flex items-start space-x-3 p-3 border rounded-lg bg-muted/30">
+          <div className="flex items-start space-x-3 p-4 sm:p-3 border rounded-lg bg-muted/30 min-h-[52px]">
             <input
               type="checkbox"
               id="repeat-days"
@@ -852,7 +883,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                 setRepeatAcrossDays(e.target.checked);
                 if (!e.target.checked) setEndDate(undefined);
               }}
-              className="mt-1 h-4 w-4"
+              className="mt-1 h-5 w-5 sm:h-4 sm:w-4"
             />
             <div className="flex-1">
               <label htmlFor="repeat-days" className="text-sm font-medium cursor-pointer">
@@ -862,14 +893,36 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             </div>
           </div>
 
+          {/* Quick Time Presets */}
+          <div className="space-y-2">
+            <Label className="text-sm">Quick Select Time</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {TIME_PRESETS.map((preset) => (
+                <Button
+                  key={preset.label}
+                  type="button"
+                  variant={startTime === preset.start && endTime === preset.end ? "default" : "outline"}
+                  size="sm"
+                  className="h-10 sm:h-9 text-xs sm:text-sm"
+                  onClick={() => {
+                    setStartTime(preset.start);
+                    setEndTime(preset.end);
+                  }}
+                >
+                  {preset.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Start Time *</Label>
-              <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+              <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="h-11 sm:h-10" />
             </div>
             <div className="space-y-2">
               <Label>End Time *</Label>
-              <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+              <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="h-11 sm:h-10" />
             </div>
           </div>
 
@@ -960,8 +1013,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
 
   const renderStep3 = () => (
     <div className="space-y-4">
-      <div className="text-center mb-6">
-        <h3 className="font-semibold text-lg">Which pets need care?</h3>
+      <div className="text-center mb-4 sm:mb-6">
+        <h3 className="font-semibold text-lg sm:text-xl">Which pets need care?</h3>
         <p className="text-sm text-muted-foreground">Select the pets for this booking</p>
       </div>
 
@@ -992,19 +1045,19 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             </div>
             
             {!showQuickAddPet ? (
-              <Button type="button" onClick={() => setShowQuickAddPet(true)} className="w-full">
+              <Button type="button" onClick={() => setShowQuickAddPet(true)} className="w-full h-12 sm:h-10">
                 <Plus className="w-4 h-4 mr-2" /> Add Pet
               </Button>
             ) : (
               <div className="space-y-3 text-left">
                 <div className="space-y-2">
                   <Label htmlFor="quick-pet-name">Pet Name *</Label>
-                  <Input id="quick-pet-name" placeholder="e.g., Max, Bella" value={quickPetName} onChange={(e) => setQuickPetName(e.target.value)} />
+                  <Input id="quick-pet-name" placeholder="e.g., Max, Bella" value={quickPetName} onChange={(e) => setQuickPetName(e.target.value)} className="h-11 sm:h-10" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="quick-pet-species">Pet Type *</Label>
                   <Select value={quickPetSpecies} onValueChange={setQuickPetSpecies}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-10"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="dog">Dog</SelectItem>
                       <SelectItem value="cat">Cat</SelectItem>
@@ -1016,8 +1069,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                   </Select>
                 </div>
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" onClick={() => setShowQuickAddPet(false)} className="flex-1">Cancel</Button>
-                  <Button type="button" onClick={handleQuickAddPet} disabled={addingPet || !quickPetName.trim()} className="flex-1">
+                  <Button type="button" variant="outline" onClick={() => setShowQuickAddPet(false)} className="flex-1 h-11 sm:h-10">Cancel</Button>
+                  <Button type="button" onClick={handleQuickAddPet} disabled={addingPet || !quickPetName.trim()} className="flex-1 h-11 sm:h-10">
                     {addingPet ? 'Adding...' : 'Add Pet'}
                   </Button>
                 </div>
@@ -1027,28 +1080,37 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         </Card>
       ) : (
         <Card className="p-4">
-          <div className="space-y-3">
+          <div className="space-y-2">
             {ownerPets.map((pet) => (
-              <div key={pet.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                <input
-                  type="checkbox"
-                  id={`pet-${pet.id}`}
-                  checked={selectedPetIds.includes(pet.id)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedPetIds([...selectedPetIds, pet.id]);
-                    } else {
-                      setSelectedPetIds(selectedPetIds.filter(id => id !== pet.id));
-                    }
-                  }}
-                  className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                />
-                <label htmlFor={`pet-${pet.id}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium">{pet.name}</div>
+              <div 
+                key={pet.id} 
+                className={cn(
+                  "flex items-center gap-3 p-4 sm:p-3 rounded-lg cursor-pointer transition-all active:scale-[0.98]",
+                  "min-h-[56px] sm:min-h-0", // Larger touch target on mobile
+                  selectedPetIds.includes(pet.id) 
+                    ? "bg-primary/10 border border-primary/30" 
+                    : "hover:bg-muted/50 border border-transparent"
+                )}
+                onClick={() => {
+                  if (selectedPetIds.includes(pet.id)) {
+                    setSelectedPetIds(selectedPetIds.filter(id => id !== pet.id));
+                  } else {
+                    setSelectedPetIds([...selectedPetIds, pet.id]);
+                  }
+                }}
+              >
+                <div className={cn(
+                  "w-6 h-6 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                  selectedPetIds.includes(pet.id) ? "border-primary bg-primary" : "border-muted-foreground"
+                )}>
+                  {selectedPetIds.includes(pet.id) && <Check className="w-4 h-4 sm:w-3 sm:h-3 text-primary-foreground" />}
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-base sm:text-sm">{pet.name}</div>
                   <div className="text-sm text-muted-foreground capitalize">
                     {pet.species} {pet.breed ? `• ${pet.breed}` : ''}
                   </div>
-                </label>
+                </div>
               </div>
             ))}
           </div>
@@ -1263,9 +1325,17 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     }
   };
 
+  // Running total for display
+  const runningTotal = calculateTotal();
+  const showRunningTotal = serviceType && (
+    (serviceType.includes('pet_sitting') && startDate && endDate && selectedPetIds.length > 0) ||
+    (serviceType === 'dog_walking' && startDate && startTime && endTime && selectedPetIds.length > 0) ||
+    (serviceType === 'drop_in_visits' && walkVisitSessions.length > 0)
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto sm:max-w-lg">
         {loadingBookedDates && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
             <div className="text-center">
@@ -1275,11 +1345,11 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           </div>
         )}
         
-        <DialogHeader>
+        <DialogHeader className="pb-2">
           <DialogTitle className="flex items-center gap-3">
-            <img src={sitter.avatar} alt={sitter.name} className="w-10 h-10 rounded-full object-cover" />
+            <img src={sitter.avatar} alt={sitter.name} className="w-12 h-12 sm:w-10 sm:h-10 rounded-full object-cover" />
             <div>
-              <div className="font-semibold">Book {sitter.name}</div>
+              <div className="font-semibold text-base sm:text-lg">Book {sitter.name}</div>
               <div className="text-sm text-muted-foreground flex items-center">
                 <MapPin className="w-3 h-3 mr-1" />
                 {sitter.location}
@@ -1291,14 +1361,14 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           </DialogDescription>
         </DialogHeader>
 
-        {/* Progress Indicator */}
-        <div className="space-y-2">
+        {/* Progress Indicator - Compact on mobile */}
+        <div className="space-y-2 py-2">
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>Step {currentStep} of 5</span>
-            <span>{STEPS[currentStep - 1].name}</span>
+            <span className="font-medium">{STEPS[currentStep - 1].name}</span>
           </div>
           <Progress value={(currentStep / 5) * 100} className="h-2" />
-          <div className="flex justify-between">
+          <div className="hidden sm:flex justify-between">
             {STEPS.map((step) => (
               <div 
                 key={step.id} 
@@ -1322,19 +1392,30 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
           </div>
         </div>
 
+        {/* Running Total Banner - Shows estimated price as user fills form */}
+        {showRunningTotal && currentStep < 5 && (
+          <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">Estimated Total</span>
+            </div>
+            <span className="text-lg font-bold text-primary">${runningTotal.toFixed(2)}</span>
+          </div>
+        )}
+
         {/* Step Content */}
-        <div className="min-h-[300px]">
+        <div className="min-h-[280px] sm:min-h-[300px]">
           {renderCurrentStep()}
         </div>
 
-        {/* Navigation Buttons */}
+        {/* Navigation Buttons - Larger touch targets on mobile */}
         <div className="flex gap-3 pt-4 border-t">
           {currentStep > 1 ? (
-            <Button variant="outline" onClick={prevStep} className="flex-1">
-              <ChevronLeft className="w-4 h-4 mr-1" /> Back
+            <Button variant="outline" onClick={prevStep} className="flex-1 h-12 sm:h-10 text-base sm:text-sm">
+              <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4 mr-1" /> Back
             </Button>
           ) : (
-            <Button variant="outline" onClick={handleClose} className="flex-1">
+            <Button variant="outline" onClick={handleClose} className="flex-1 h-12 sm:h-10 text-base sm:text-sm">
               Cancel
             </Button>
           )}
@@ -1343,15 +1424,15 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
             <Button 
               onClick={nextStep} 
               disabled={!canProceedFromStep(currentStep)}
-              className="flex-1"
+              className="flex-1 h-12 sm:h-10 text-base sm:text-sm"
             >
-              Continue <ChevronRight className="w-4 h-4 ml-1" />
+              Continue <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4 ml-1" />
             </Button>
           ) : (
             <Button 
               onClick={handleBooking}
               disabled={!agreedToTerms || loading}
-              className="flex-1"
+              className="flex-1 h-12 sm:h-10 text-base sm:text-sm"
             >
               {loading ? 'Submitting...' : user ? 'Send Booking Request' : 'Login & Submit'}
             </Button>
