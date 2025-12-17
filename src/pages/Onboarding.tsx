@@ -823,13 +823,16 @@ export default function Onboarding() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="bio">About You</Label>
+          <Label htmlFor="bio" className="flex items-center gap-2">
+            About You
+            <span className="text-xs text-muted-foreground font-normal">(Optional - add later from profile)</span>
+          </Label>
           <Textarea
             id="bio"
-            placeholder="Tell us about yourself, your experience with pets, or what makes you special..."
+            placeholder="Tell us about yourself, your experience with pets..."
             value={data.bio || ''}
             onChange={(e) => handleInputChange('bio', e.target.value)}
-            rows={4}
+            rows={3}
           />
         </div>
       </div>
