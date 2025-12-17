@@ -106,9 +106,20 @@ export default function FindSitters() {
           console.error('Error fetching services:', servicesError);
         }
 
+        // Fetch service areas for each sitter
+        const { data: serviceAreasData, error: areasError } = await supabase
+          .from('sitter_service_areas')
+          .select('sitter_id, suburb, is_primary');
+
+        if (areasError) {
+          console.error('Error fetching service areas:', areasError);
+        }
+        console.log('Service areas data:', serviceAreasData);
+
         // Transform data
         const transformedSitters = (profilesData || []).map(sitter => {
           const sitterServices = (servicesData || []).filter(s => s.sitter_id === sitter.id);
+          const sitterAreas = (serviceAreasData || []).filter(a => a.sitter_id === sitter.id);
           const serviceNames = sitterServices.map(s => {
             // Map database service types to display names
           const serviceMap: { [key: string]: string } = {
@@ -128,6 +139,8 @@ export default function FindSitters() {
             name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
             location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
             city: sitter.city || '', // Keep raw city for filtering
+            suburb: sitter.suburb || '', // Primary suburb
+            serviceAreas: sitterAreas.map(a => a.suburb), // All service areas
             rating: null, // No rating system
             feedback_count: null, // No reviews system
             baseRate: minRate,
@@ -144,7 +157,7 @@ export default function FindSitters() {
             pet_types: ['dogs']
           };
           
-          console.log('Transformed sitter:', transformed);
+          console.log('Transformed sitter:', transformed.name, 'Service areas:', transformed.serviceAreas);
           return transformed;
         });
 
@@ -197,7 +210,7 @@ export default function FindSitters() {
     let filtered = [...allSitters];
 
     // RELAXED FILTERING: Show sitters even without exact location match
-    // Priority: exact match > partial match > same city > all sitters
+    // Priority: service area match > exact match > partial match > same city > all sitters
     // This increases visibility and conversion since we have limited sitters
     if (location && serviceType !== 'pet_sitting_owners_home') {
       const searchTerm = location.toLowerCase().trim();
@@ -210,16 +223,24 @@ export default function FindSitters() {
           return sitterCity.includes('auckland') || sitterCity === '' || sitterLocation.includes('auckland');
         });
       } else {
-        // For specific suburb searches, STILL SHOW ALL SITTERS but prioritize matches
-        // Sort by relevance: exact suburb match first, then city match, then others
+        // For specific suburb searches, check service areas first, then location
+        // Sort by relevance: service area match first, then suburb match, then city match
         filtered = filtered.sort((a, b) => {
-          const aLocation = a.location.toLowerCase();
-          const bLocation = b.location.toLowerCase();
-          const aExactMatch = aLocation.includes(searchTerm);
-          const bExactMatch = bLocation.includes(searchTerm);
+          const aServiceAreaMatch = a.serviceAreas?.some((area: string) => 
+            area.toLowerCase().includes(searchTerm) || searchTerm.includes(area.toLowerCase())
+          );
+          const bServiceAreaMatch = b.serviceAreas?.some((area: string) => 
+            area.toLowerCase().includes(searchTerm) || searchTerm.includes(area.toLowerCase())
+          );
+          const aLocationMatch = a.location.toLowerCase().includes(searchTerm);
+          const bLocationMatch = b.location.toLowerCase().includes(searchTerm);
           
-          if (aExactMatch && !bExactMatch) return -1;
-          if (!aExactMatch && bExactMatch) return 1;
+          // Service area matches get highest priority
+          if (aServiceAreaMatch && !bServiceAreaMatch) return -1;
+          if (!aServiceAreaMatch && bServiceAreaMatch) return 1;
+          // Then location matches
+          if (aLocationMatch && !bLocationMatch) return -1;
+          if (!aLocationMatch && bLocationMatch) return 1;
           // Keep golden badge priority within same match level
           if (a.golden_badge && !b.golden_badge) return -1;
           if (!a.golden_badge && b.golden_badge) return 1;
