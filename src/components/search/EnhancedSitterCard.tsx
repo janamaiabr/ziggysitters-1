@@ -90,8 +90,9 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         {/* Bottom price tag */}
         <div className="absolute bottom-2 left-2">
           <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+            <span className="text-muted-foreground text-sm">from </span>
             <span className="font-bold text-foreground">${sitter.baseRate}</span>
-            <span className="text-muted-foreground text-sm">/hr</span>
+            <span className="text-muted-foreground text-sm">/day</span>
           </div>
         </div>
         
