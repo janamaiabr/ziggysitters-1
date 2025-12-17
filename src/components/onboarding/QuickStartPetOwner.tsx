@@ -24,24 +24,7 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
   const { toast } = useToast();
 
   const handleQuickStart = async () => {
-    if (!petName.trim()) {
-      toast({
-        title: "Pet name required",
-        description: "Please enter your pet's name to continue",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!petSpecies) {
-      toast({
-        title: "Pet type required",
-        description: "Please select your pet's type",
-        variant: "destructive"
-      });
-      return;
-    }
-
+    // Only suburb is required - pet info is optional
     if (!suburb.trim()) {
       toast({
         title: "Suburb required",
@@ -54,18 +37,23 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
     setIsSubmitting(true);
 
     try {
-      // Create basic pet record
-      const { error: petError } = await supabase
-        .from('pets')
-        .insert([{
-          owner_id: profileId,
-          name: petName,
-          species: petSpecies as any,
-          age: 0,
-          size: 'medium' as any,
-        }]);
+      // Only create pet record if user provided pet info
+      if (petName.trim() && petSpecies) {
+        const { error: petError } = await supabase
+          .from('pets')
+          .insert([{
+            owner_id: profileId,
+            name: petName.trim(),
+            species: petSpecies as any,
+            age: 0,
+            size: 'medium' as any,
+          }]);
 
-      if (petError) throw petError;
+        if (petError) {
+          console.error('Pet creation error (non-blocking):', petError);
+          // Don't block onboarding if pet creation fails
+        }
+      }
 
       // Update profile with suburb and mark onboarding as completed
       const { error: profileError } = await supabase
@@ -79,7 +67,7 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
 
       if (profileError) throw profileError;
 
-      // Send welcome email with correct role now that we know they're a pet owner
+      // Send welcome email
       try {
         const { data: profileData } = await supabase
           .from('profiles')
@@ -91,7 +79,7 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
           await supabase.functions.invoke('send-welcome-email', {
             body: {
               email: profileData.email,
-              firstName: profileData.first_name || petName,
+              firstName: profileData.first_name || 'there',
               role: 'pet_owner'
             }
           });
@@ -99,21 +87,23 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         }
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
-        // Don't block onboarding
       }
 
-      // Skip the success page and go straight to search
+      // Success message
+      const petMessage = petName.trim() 
+        ? `${petName} is ready to meet their perfect sitter!` 
+        : "Let's find the perfect sitter for your pet!";
+      
       toast({
         title: "🎉 Welcome to ZiggySitters!",
-        description: `${petName} is ready to meet their perfect sitter! Let's find them... 🔍`,
+        description: `${petMessage} 🔍`,
         duration: 4000,
       });
 
-      // Clear localStorage and navigate DIRECTLY to find-sitters with suburb pre-filled
+      // Clear localStorage and navigate to find-sitters
       localStorage.removeItem('onboarding_data');
       localStorage.removeItem('onboarding_step');
       
-      // Navigate with location param so FindSitters auto-searches their area
       navigate(`/find-sitters?location=${encodeURIComponent(suburb.trim())}`, { replace: true });
     } catch (error: any) {
       console.error('Error in quick start:', error);
@@ -147,10 +137,10 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         
         <div className="space-y-3 relative">
           <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent animate-in slide-in-from-top-4 duration-500">
-            Let's Meet Your Pet!
+            Let's Get Started!
           </h2>
           <p className="text-xl text-muted-foreground max-w-md mx-auto animate-in fade-in duration-700" style={{ animationDelay: '200ms' }}>
-            Just 3 quick things and you're ready to book! 🎯
+            Just tell us where you are and start browsing! 🎯
           </p>
         </div>
       </div>
@@ -173,45 +163,11 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         </CardHeader>
         
         <CardContent className="space-y-7 relative">
+          {/* Location - REQUIRED */}
           <div className="space-y-4 animate-in slide-in-from-left duration-500">
-            <Label htmlFor="petName" className="text-xl font-bold flex items-center gap-2">
-              <span className="text-3xl">💖</span>
-              What's your pet's name?
-            </Label>
-            <Input
-              id="petName"
-              placeholder="e.g., Max, Bella, Luna, Charlie..."
-              value={petName}
-              onChange={(e) => setPetName(e.target.value)}
-              className="h-16 text-xl border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all duration-300 hover:shadow-lg"
-              autoFocus
-            />
-          </div>
-
-          <div className="space-y-4 animate-in slide-in-from-right duration-500" style={{ animationDelay: '100ms' }}>
-            <Label htmlFor="petSpecies" className="text-xl font-bold flex items-center gap-2">
-              <span className="text-3xl">🌟</span>
-              What kind of cutie?
-            </Label>
-            <Select value={petSpecies} onValueChange={setPetSpecies}>
-              <SelectTrigger className="h-16 text-xl border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all duration-300 hover:shadow-lg">
-                <SelectValue placeholder="Choose your pet type" />
-              </SelectTrigger>
-              <SelectContent className="backdrop-blur">
-                <SelectItem value="dog" className="text-xl py-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20">🐕 Dog</SelectItem>
-                <SelectItem value="cat" className="text-xl py-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20">🐱 Cat</SelectItem>
-                <SelectItem value="bird" className="text-xl py-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20">🦜 Bird</SelectItem>
-                <SelectItem value="rabbit" className="text-xl py-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20">🐰 Rabbit</SelectItem>
-                <SelectItem value="horse" className="text-xl py-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20">🐴 Horse</SelectItem>
-                <SelectItem value="other" className="text-xl py-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20">✨ Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-4 animate-in slide-in-from-left duration-500" style={{ animationDelay: '200ms' }}>
             <Label htmlFor="suburb" className="text-xl font-bold flex items-center gap-2">
               <span className="text-3xl">📍</span>
-              Where are you?
+              Where are you? <span className="text-destructive">*</span>
             </Label>
             <Input
               id="suburb"
@@ -219,14 +175,48 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
               value={suburb}
               onChange={(e) => setSuburb(e.target.value)}
               className="h-16 text-xl border-2 border-purple-300 dark:border-purple-700 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all duration-300 hover:shadow-lg"
+              autoFocus
             />
           </div>
 
-          <div className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 border-2 border-purple-300 dark:border-purple-700 rounded-2xl p-6 animate-in fade-in duration-700" style={{ animationDelay: '300ms' }}>
+          {/* Pet Info - OPTIONAL */}
+          <div className="space-y-4 animate-in slide-in-from-right duration-500 pt-2" style={{ animationDelay: '100ms' }}>
+            <div className="flex items-center gap-2">
+              <Label className="text-lg font-semibold text-muted-foreground flex items-center gap-2">
+                <span className="text-2xl">🐾</span>
+                Pet info (optional - add later)
+              </Label>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
+                id="petName"
+                placeholder="Pet's name"
+                value={petName}
+                onChange={(e) => setPetName(e.target.value)}
+                className="h-14 text-lg border-2 border-purple-200 dark:border-purple-800 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all duration-300"
+              />
+              <Select value={petSpecies} onValueChange={setPetSpecies}>
+                <SelectTrigger className="h-14 text-lg border-2 border-purple-200 dark:border-purple-800 focus:border-purple-500 dark:focus:border-purple-500 bg-white/90 dark:bg-gray-900/90 backdrop-blur transition-all duration-300">
+                  <SelectValue placeholder="Pet type" />
+                </SelectTrigger>
+                <SelectContent className="backdrop-blur">
+                  <SelectItem value="dog" className="text-lg py-3">🐕 Dog</SelectItem>
+                  <SelectItem value="cat" className="text-lg py-3">🐱 Cat</SelectItem>
+                  <SelectItem value="bird" className="text-lg py-3">🦜 Bird</SelectItem>
+                  <SelectItem value="rabbit" className="text-lg py-3">🐰 Rabbit</SelectItem>
+                  <SelectItem value="horse" className="text-lg py-3">🐴 Horse</SelectItem>
+                  <SelectItem value="other" className="text-lg py-3">✨ Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 border-2 border-purple-300 dark:border-purple-700 rounded-2xl p-6 animate-in fade-in duration-700" style={{ animationDelay: '200ms' }}>
             <p className="text-base font-medium text-purple-900 dark:text-purple-100 flex items-start gap-3">
               <Sparkles className="h-6 w-6 flex-shrink-0 mt-0.5 text-purple-500 animate-pulse" />
               <span>
-                That's it! Start browsing sitters now and add more pet details later from your profile. 🎉
+                Just enter your location and start browsing! Add pet details anytime from your profile. 🎉
               </span>
             </p>
           </div>
@@ -251,8 +241,8 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
             )}
           </Button>
 
-          <p className="text-center text-muted-foreground animate-in fade-in duration-700" style={{ animationDelay: '500ms' }}>
-            <span className="text-lg">⚡ Takes 30 seconds • 🎯 Book instantly • 💝 Trusted sitters</span>
+          <p className="text-center text-muted-foreground animate-in fade-in duration-700" style={{ animationDelay: '400ms' }}>
+            <span className="text-lg">⚡ Takes 10 seconds • 🎯 Browse instantly • 💝 Trusted sitters</span>
           </p>
         </CardContent>
       </Card>
