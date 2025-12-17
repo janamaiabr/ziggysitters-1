@@ -31,7 +31,8 @@ export default function Auth() {
   });
 
   const defaultTab = searchParams.get('tab') || 'signin';
-  const redirectUrl = searchParams.get('redirect') || '/welcome';
+  // Always redirect new signups to onboarding to collect profile info
+  const redirectUrl = searchParams.get('redirect') || '/onboarding';
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -137,19 +138,10 @@ export default function Auth() {
           }
         }
         
-        // Send welcome email
-        try {
-          await supabase.functions.invoke('send-welcome-email', {
-            body: {
-              email: formData.email,
-              firstName: formData.firstName,
-              role: 'pet_owner' // Default role, will be updated during onboarding
-            }
-          });
-        } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError);
-          // Don't block signup if email fails
-        }
+        // Note: Role-specific welcome emails are sent during onboarding
+        // when the user actually selects their role. At signup, we don't know
+        // if they're a pet owner or sitter yet.
+        console.log('User signed up - role-specific welcome email will be sent during onboarding');
         
         // Track registration completion
         metaPixel.trackCompleteRegistration();
