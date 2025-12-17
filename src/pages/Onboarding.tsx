@@ -198,24 +198,17 @@ export default function Onboarding() {
           setTermsChecked(hasAcceptedTerms || hasAcceptedTermsLocally);
           setEmailVerified(hasVerifiedEmail);
           
-          // For existing users who already accepted terms and verified email
-          if ((hasAcceptedTerms || hasAcceptedTermsLocally) && hasVerifiedEmail) {
+          // For existing users who already accepted terms
+          if (hasAcceptedTerms || hasAcceptedTermsLocally) {
             const savedStep = localStorage.getItem('onboarding_step');
             if (savedStep === '0') {
-              console.log('Existing user with accepted terms and verified email - clearing stale step 0');
+              console.log('Existing user with accepted terms - clearing stale step 0');
               localStorage.removeItem('onboarding_step');
               setStep(1);
             }
             setShowTerms(false);
+            // Email verification is now role-dependent (sitters only), handled in nextStep
             setShowEmailVerification(false);
-          } else if (hasAcceptedTerms || hasAcceptedTermsLocally) {
-            // Terms accepted but email not verified
-            setShowTerms(false);
-            if (!hasVerifiedEmail) {
-              setShowEmailVerification(true);
-              setStep(0);
-              localStorage.setItem('onboarding_step', '0');
-            }
           } else {
             // Only show terms if not accepted AND not currently showing
             if (!showTerms) {
@@ -311,14 +304,15 @@ export default function Onboarding() {
       setTermsChecked(true);
       setHasAcceptedTermsLocally(true);
       
-      // Show email verification step next
-      setShowEmailVerification(true);
-      setStep(0); // Keep at step 0 for email verification
-      localStorage.setItem('onboarding_step', '0');
+      // Go directly to role selection - email verification is role-dependent
+      // Pet owners: optional (prompted post-booking)
+      // Sitters: required (shown after role selection)
+      setStep(1);
+      localStorage.setItem('onboarding_step', '1');
       
       toast({
         title: "Terms Accepted",
-        description: "Please verify your email to continue.",
+        description: "Let's get you set up!",
       });
     } catch (error: any) {
       console.error('Error saving terms acceptance:', error);
@@ -333,8 +327,15 @@ export default function Onboarding() {
   const handleEmailVerified = () => {
     setShowEmailVerification(false);
     setEmailVerified(true);
-    setStep(1); // Move to role selection
-    localStorage.setItem('onboarding_step', '1');
+    
+    // For sitters, proceed to basic info (step 2)
+    if (data.role === 'pet_sitter') {
+      setStep(2);
+      localStorage.setItem('onboarding_step', '2');
+    } else {
+      setStep(1);
+      localStorage.setItem('onboarding_step', '1');
+    }
     
     toast({
       title: "Email Verified!",
@@ -584,6 +585,13 @@ export default function Onboarding() {
     if (step === 1 && data.role === 'pet_owner') {
       console.log('Pet owner selected - jumping to step 2 (QuickStart)');
       setStep(2);
+      return;
+    }
+    
+    // Sitters need email verification before proceeding
+    if (step === 1 && data.role === 'pet_sitter' && !emailVerified) {
+      console.log('Sitter selected - showing email verification');
+      setShowEmailVerification(true);
       return;
     }
     

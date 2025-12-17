@@ -6,16 +6,43 @@ import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { metaPixel } from "@/lib/metaPixel";
+import { useAuth } from "@/hooks/useAuth";
+import PostBookingEmailVerification from "@/components/booking/PostBookingEmailVerification";
 
 const BookingSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isVerifying, setIsVerifying] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'failed' | 'pending'>('pending');
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
+  const [userFirstName, setUserFirstName] = useState('');
   
   const sessionId = searchParams.get('session_id');
   const bookingRef = searchParams.get('booking_ref');
   const bookingId = searchParams.get('booking_id'); // Legacy support
+
+  // Check if user's email is verified
+  useEffect(() => {
+    const checkEmailVerified = async () => {
+      if (!user?.id) return;
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email_verified, first_name, role')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      // Only show email verification prompt for pet owners who haven't verified
+      if (profile && profile.role === 'pet_owner' && !profile.email_verified) {
+        setEmailVerified(false);
+        setUserFirstName(profile.first_name || '');
+      }
+    };
+    
+    checkEmailVerified();
+  }, [user?.id]);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -88,6 +115,11 @@ const BookingSuccess = () => {
           // Track purchase completion
           metaPixel.trackPurchase(data.amount || 0, 'NZD');
           
+          // Show email verification prompt for unverified pet owners
+          if (!emailVerified) {
+            setShowEmailVerification(true);
+          }
+          
           toast({
             title: "Payment Successful!",
             description: "Your booking has been confirmed.",
@@ -114,11 +146,24 @@ const BookingSuccess = () => {
     };
 
     verifyPayment();
-  }, [sessionId, bookingId, bookingRef]);
+  }, [sessionId, bookingId, bookingRef, emailVerified]);
 
   const handleViewBookings = () => {
     // Add a timestamp to force a hard navigation and refresh
     navigate('/bookings?refresh=' + Date.now());
+  };
+
+  const handleEmailVerified = () => {
+    setShowEmailVerification(false);
+    setEmailVerified(true);
+    toast({
+      title: "Email Verified!",
+      description: "You'll now receive booking updates via email.",
+    });
+  };
+
+  const handleSkipVerification = () => {
+    setShowEmailVerification(false);
   };
 
   if (isVerifying) {
@@ -138,7 +183,7 @@ const BookingSuccess = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-md">
+    <div className="container mx-auto px-4 py-8 max-w-md space-y-4">
       <Card>
         <CardHeader className="text-center">
           {paymentStatus === 'success' ? (
@@ -175,6 +220,17 @@ const BookingSuccess = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Email verification prompt for pet owners */}
+      {showEmailVerification && user && paymentStatus === 'success' && (
+        <PostBookingEmailVerification
+          userId={user.id}
+          email={user.email || ''}
+          firstName={userFirstName}
+          onVerified={handleEmailVerified}
+          onSkip={handleSkipVerification}
+        />
+      )}
     </div>
   );
 };
