@@ -1235,16 +1235,16 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Alert className="bg-primary/5 border-primary/20">
-              <Shield className="h-4 w-4" />
-              <AlertDescription>
-                ID document is required for verification. Upload your Police Vet check to earn a gold badge!
+            <Alert className="bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800">
+              <Shield className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800 dark:text-green-200">
+                <strong>Documents are optional!</strong> You can upload them later from your profile. Adding ID helps build trust with pet owners and earns you a verified badge.
               </AlertDescription>
             </Alert>
             
             <div className="space-y-6">
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Photo ID (Driver's License, Passport, etc.) <span className="text-destructive">*</span></Label>
+                <Label className="text-base font-semibold">Photo ID (Driver's License, Passport, etc.) <Badge variant="secondary" className="ml-2">Optional</Badge></Label>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
