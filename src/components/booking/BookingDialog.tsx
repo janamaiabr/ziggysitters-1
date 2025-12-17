@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useEventTracking } from '@/hooks/useEventTracking';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
 import { 
@@ -101,7 +102,30 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   
   const { user } = useAuth();
   const { toast } = useToast();
+  const { trackEvent } = useEventTracking();
   const navigate = useNavigate();
+  const hasTrackedOpen = useRef(false);
+  const hasStartedBooking = useRef(false);
+
+  // Track dialog open
+  useEffect(() => {
+    if (isOpen && !hasTrackedOpen.current) {
+      hasTrackedOpen.current = true;
+      trackEvent({
+        eventType: 'booking',
+        eventName: 'booking_form_viewed',
+        eventData: {
+          sitter_id: sitter.id,
+          sitter_name: sitter.name,
+          available_services: servicesData.map(s => s.service_type)
+        }
+      });
+    }
+    if (!isOpen) {
+      hasTrackedOpen.current = false;
+      hasStartedBooking.current = false;
+    }
+  }, [isOpen]);
 
   // Pre-populate dates from URL params
   useEffect(() => {
@@ -564,8 +588,22 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
 
-    // Track initiate checkout event
+    // Track booking submission attempt
     const total = calculateTotal();
+    trackEvent({
+      eventType: 'booking',
+      eventName: 'booking_submitted',
+      eventData: {
+        sitter_id: sitter.id,
+        sitter_name: sitter.name,
+        service_type: serviceType,
+        total_amount: total,
+        pet_count: selectedPetIds.length,
+        has_promo: promoDiscount > 0,
+      }
+    });
+
+    // Track initiate checkout event for Meta
     metaPixel.trackInitiateCheckout({ 
       value: total, 
       currency: 'NZD' 
@@ -741,6 +779,19 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
   };
 
   const handleClose = () => {
+    // Track abandon if user started filling the form
+    if (hasStartedBooking.current && !loading) {
+      trackEvent({
+        eventType: 'booking',
+        eventName: 'booking_abandoned',
+        eventData: {
+          sitter_id: sitter.id,
+          service_type: serviceType,
+          had_dates: !!(startDate || endDate),
+          had_pets: selectedPetIds.length > 0,
+        }
+      });
+    }
     resetForm();
     onClose();
   };
@@ -824,6 +875,19 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
                 <Select value={serviceType} onValueChange={(value) => {
                   console.log('Service type selected:', value);
                   setServiceType(value);
+                  // Track booking started when service is selected
+                  if (!hasStartedBooking.current) {
+                    hasStartedBooking.current = true;
+                    trackEvent({
+                      eventType: 'booking',
+                      eventName: 'booking_started',
+                      eventData: {
+                        sitter_id: sitter.id,
+                        sitter_name: sitter.name,
+                        service_type: value
+                      }
+                    });
+                  }
                 }}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a service" />

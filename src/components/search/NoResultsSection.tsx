@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { MapPin, Bell, Mail, ArrowRight, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
+import { useEventTracking } from '@/hooks/useEventTracking';
 
 interface NoResultsSectionProps {
   searchLocation: string;
@@ -24,10 +25,24 @@ export default function NoResultsSection({
   onClearFilters,
   onViewSitter
 }: NoResultsSectionProps) {
+  const { trackEvent, trackConversion } = useEventTracking();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Track when no results page is shown
+  useEffect(() => {
+    trackEvent({
+      eventType: 'search',
+      eventName: 'no_results_shown',
+      eventData: {
+        location: searchLocation,
+        service_type: searchServiceType,
+        nearby_sitters_count: nearbySitters?.length || 0
+      }
+    });
+  }, [searchLocation, searchServiceType]);
 
   const handleNotifyMe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +60,13 @@ export default function NoResultsSection({
 
       if (error) throw error;
 
+      // Track email capture conversion
+      trackConversion('email_capture_no_results', {
+        location: searchLocation,
+        service_type: searchServiceType,
+        has_name: !!name
+      });
+
       setIsSubscribed(true);
       toast.success("We'll notify you when a sitter becomes available!");
     } catch (error) {
@@ -53,6 +75,19 @@ export default function NoResultsSection({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleNearbySitterClick = (sitterId: string, sitterName: string) => {
+    trackEvent({
+      eventType: 'button_click',
+      eventName: 'nearby_sitter_click',
+      eventData: {
+        sitter_id: sitterId,
+        sitter_name: sitterName,
+        from_location: searchLocation
+      }
+    });
+    onViewSitter(sitterId);
   };
 
   const serviceTypeLabels: Record<string, string> = {
@@ -162,7 +197,7 @@ export default function NoResultsSection({
               <Card 
                 key={sitter.id} 
                 className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
-                onClick={() => onViewSitter(sitter.id)}
+                onClick={() => handleNearbySitterClick(sitter.id, sitter.name)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">

@@ -22,6 +22,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
+import { useEventTracking } from '@/hooks/useEventTracking';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
@@ -55,6 +56,7 @@ export default function SitterProfile() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const { trackEvent } = useEventTracking();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
@@ -225,6 +227,21 @@ export default function SitterProfile() {
         console.log('Setting sitter data:', transformedData);
         setSitterData(transformedData);
         
+        // Track profile view event
+        trackEvent({
+          eventType: 'page_view',
+          eventName: 'sitter_profile_view',
+          eventData: {
+            sitter_id: id,
+            sitter_name: transformedData.display_name,
+            sitter_location: transformedData.location,
+            is_verified: transformedData.verified,
+            has_golden_badge: transformedData.hasPoliceVet,
+            base_rate: transformedData.baseRate,
+            services_count: transformedData.services.length,
+          }
+        });
+        
         // Track view content event
         metaPixel.trackViewContent(
           transformedData.display_name,
@@ -335,6 +352,16 @@ export default function SitterProfile() {
                     <Button 
                       size="lg"
                       onClick={() => {
+                        // Track booking dialog open
+                        trackEvent({
+                          eventType: 'booking',
+                          eventName: 'booking_dialog_open',
+                          eventData: {
+                            sitter_id: sitterData.id,
+                            sitter_name: sitterData.display_name,
+                            source: 'profile_page'
+                          }
+                        });
                         setIsBookingOpen(true);
                         setTimeout(() => {
                           const bookingSection = document.getElementById('booking-section');
