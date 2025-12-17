@@ -15,6 +15,7 @@ import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { metaPixel } from '@/lib/metaPixel';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
+import { useEventTracking } from '@/hooks/useEventTracking';
 import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
@@ -27,6 +28,15 @@ export default function FindSitters() {
   const [searchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const { trackSearch, trackSitterClick } = useSearchTracking();
+  const { trackEvent, trackPageView } = useEventTracking();
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('find_sitters_page', { 
+      initial_location: searchParams.get('location'),
+      initial_service: searchParams.get('serviceType')
+    });
+  }, []);
   const [location, setLocation] = useState(searchParams.get('location') || '');
   const [selectedDate, setSelectedDate] = useState<Date>(
     searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined
@@ -297,22 +307,41 @@ export default function FindSitters() {
     // This increases visibility and conversion
     if (location) {
       const searchTerm = location.toLowerCase().trim();
-      // Get sitters from other areas as "nearby" suggestions
-      const nearby = allSitters.filter(sitter => {
-        const sitterLocation = sitter.location.toLowerCase();
-        // Don't include sitters already in filtered results
-        const isInFiltered = filtered.some(f => f.id === sitter.id);
-        // Don't include sitters from the exact searched location
-        const isExactMatch = sitterLocation.includes(searchTerm);
-        return !isInFiltered && !isExactMatch;
-      }).slice(0, 6);
-      setNearbySitters(nearby);
+      
+      // If no results found, show ALL sitters as nearby alternatives
+      if (filtered.length === 0) {
+        setNearbySitters(allSitters.slice(0, 8)); // Show more when there's no results
+      } else {
+        // Get sitters from other areas as "nearby" suggestions
+        const nearby = allSitters.filter(sitter => {
+          const sitterLocation = sitter.location.toLowerCase();
+          // Don't include sitters already in filtered results
+          const isInFiltered = filtered.some(f => f.id === sitter.id);
+          // Don't include sitters from the exact searched location
+          const isExactMatch = sitterLocation.includes(searchTerm);
+          return !isInFiltered && !isExactMatch;
+        }).slice(0, 6);
+        setNearbySitters(nearby);
+      }
     } else {
       setNearbySitters([]);
     }
     
     setFilteredSitters(filtered);
     setSearchPerformed(true);
+
+    // Track search event with comprehensive data
+    trackEvent({
+      eventType: 'search',
+      eventName: filtered.length > 0 ? 'search_with_results' : 'search_no_results',
+      eventData: {
+        location,
+        serviceType,
+        results_count: filtered.length,
+        nearby_count: nearbySitters.length,
+        has_dates: !!(selectedDate && checkOutDate),
+      }
+    });
 
     // Track search event for retargeting
     trackSearch({
@@ -661,6 +690,11 @@ export default function FindSitters() {
               }}
               onViewSitter={(sitterId) => {
                 trackSitterClick(sitterId);
+                trackEvent({
+                  eventType: 'button_click',
+                  eventName: 'nearby_sitter_clicked',
+                  eventData: { sitter_id: sitterId, from_no_results: true }
+                });
                 const params = new URLSearchParams({ booking: 'true' });
                 if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
                 if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
