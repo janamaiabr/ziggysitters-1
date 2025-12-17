@@ -79,6 +79,29 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
 
       if (profileError) throw profileError;
 
+      // Send welcome email with correct role now that we know they're a pet owner
+      try {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name, email')
+          .eq('id', profileId)
+          .single();
+
+        if (profileData) {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email: profileData.email,
+              firstName: profileData.first_name || petName,
+              role: 'pet_owner'
+            }
+          });
+          console.log('Pet owner welcome email sent');
+        }
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't block onboarding
+      }
+
       // Skip the success page and go straight to search
       toast({
         title: "🎉 Welcome to ZiggySitters!",
