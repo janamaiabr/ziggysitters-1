@@ -7,11 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Upload, PlusCircle, X, Shield, Calendar, Trash2, DollarSign, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, PlusCircle, X, Shield, Calendar, Trash2, DollarSign, Sparkles, CheckCircle2, AlertCircle, MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format, eachDayOfInterval, parseISO } from 'date-fns';
+import MultiSuburbSelector from './MultiSuburbSelector';
 
 // Phone validation function for New Zealand numbers
 const validateNZPhone = (phone: string): boolean => {
@@ -101,6 +102,8 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   const [bio, setBio] = useState(savedData.bio || '');
   const [experienceYears, setExperienceYears] = useState(savedData.experienceYears || 0);
   const [portfolioPhotos, setPortfolioPhotos] = useState<string[]>(savedData.portfolioPhotos || []);
+  const [serviceAreas, setServiceAreas] = useState<string[]>(savedData.serviceAreas || []);
+  const [primarySuburb, setPrimarySuburb] = useState<string>(savedData.primarySuburb || '');
   
   // Step 2: Services & Pricing
   const [services, setServices] = useState<Service[]>(savedData.services || []);
@@ -130,6 +133,8 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       bio,
       experienceYears,
       portfolioPhotos,
+      serviceAreas,
+      primarySuburb,
       services,
       hasFencedYard,
       maxPets,
@@ -143,7 +148,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       paymentSetupCompleted
     };
         localStorage.setItem('sitter_onboarding_data', JSON.stringify(dataToSave));
-    console.log('Saved to localStorage. Services count:', services.length);
+    console.log('Saved to localStorage. Services count:', services.length, 'Service areas:', serviceAreas.length);
     if (services.length > 0) {
       console.log('Service rates:', services.map(s => ({ 
         type: s.service_type, 
@@ -151,7 +156,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         daily: s.daily_rate 
       })));
     }
-  }, [bio, experienceYears, portfolioPhotos, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrls, blueCardUrl, paymentSetupCompleted]);
+  }, [bio, experienceYears, portfolioPhotos, serviceAreas, primarySuburb, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrls, blueCardUrl, paymentSetupCompleted]);
   
   // Load existing data from database on mount (only if not already in state)
   useEffect(() => {
@@ -164,7 +169,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         // Load profile data - only set if current state is empty
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('bio, id_document_urls, blue_card_document_url')
+          .select('bio, id_document_urls, blue_card_document_url, suburb')
           .eq('id', profileId)
           .single();
         
@@ -176,6 +181,24 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             setIdDocumentUrls(profileData.id_document_urls);
           }
           if (profileData.blue_card_document_url && !blueCardUrl) setBlueCardUrl(profileData.blue_card_document_url);
+          // Set primary suburb from profile if not already set
+          if (profileData.suburb && !primarySuburb) setPrimarySuburb(profileData.suburb);
+        }
+        
+        // Load service areas - only if current array is empty
+        if (serviceAreas.length === 0) {
+          const { data: areasData, error: areasError } = await supabase
+            .from('sitter_service_areas')
+            .select('suburb, is_primary')
+            .eq('sitter_id', profileId);
+          
+          if (!areasError && areasData && areasData.length > 0) {
+            const loadedAreas = areasData.map(a => a.suburb);
+            setServiceAreas(loadedAreas);
+            const primary = areasData.find(a => a.is_primary);
+            if (primary) setPrimarySuburb(primary.suburb);
+            console.log('Loaded', loadedAreas.length, 'service areas from database');
+          }
         }
         
         // Load services - only if current services array is empty
@@ -484,6 +507,44 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         console.log('✅ All services saved successfully');
       } else {
         console.log('⚠️ No services to save');
+      }
+
+      // Save service areas
+      if (serviceAreas.length > 0) {
+        console.log('Saving', serviceAreas.length, 'service areas...');
+        
+        // Delete existing service areas
+        await supabase
+          .from('sitter_service_areas')
+          .delete()
+          .eq('sitter_id', profileId);
+        
+        // Insert new service areas
+        const areasToInsert = serviceAreas.map(suburb => ({
+          sitter_id: profileId,
+          suburb,
+          city: 'Auckland',
+          is_primary: suburb === primarySuburb
+        }));
+        
+        const { error: areasError } = await supabase
+          .from('sitter_service_areas')
+          .insert(areasToInsert);
+        
+        if (areasError) {
+          console.error('Error saving service areas:', areasError);
+          throw areasError;
+        }
+        
+        // Update primary suburb in profile
+        if (primarySuburb) {
+          await supabase
+            .from('profiles')
+            .update({ suburb: primarySuburb })
+            .eq('id', profileId);
+        }
+        
+        console.log('✅ Service areas saved successfully');
       }
 
       // Save unavailable dates
@@ -914,6 +975,26 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Service Areas - Multiple Suburb Selection */}
+            <div className="pt-4 border-t">
+              <div className="flex items-center gap-2 mb-4">
+                <MapPin className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-lg">Where Will You Pet Sit?</h3>
+              </div>
+              <Alert className="mb-4 bg-primary/5 border-primary/20">
+                <AlertDescription>
+                  Select all the Auckland suburbs you're willing to travel to for pet sitting. This helps pet owners find you more easily!
+                </AlertDescription>
+              </Alert>
+              <MultiSuburbSelector
+                selectedSuburbs={serviceAreas}
+                onChange={setServiceAreas}
+                primarySuburb={primarySuburb}
+                onPrimaryChange={setPrimarySuburb}
+                maxSuburbs={15}
+              />
             </div>
           </CardContent>
         </Card>

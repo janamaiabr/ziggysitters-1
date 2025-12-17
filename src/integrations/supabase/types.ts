@@ -1350,6 +1350,62 @@ export type Database = {
         }
         Relationships: []
       }
+      sitter_service_areas: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          is_primary: boolean | null
+          sitter_id: string
+          suburb: string
+        }
+        Insert: {
+          city?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          sitter_id: string
+          suburb: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          sitter_id?: string
+          suburb?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sitter_service_areas_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sitter_service_areas_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sitter_service_areas_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sitter_service_areas_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sitter_services: {
         Row: {
           accepted_pet_sizes: Database["public"]["Enums"]["pet_size"][] | null
