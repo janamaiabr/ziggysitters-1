@@ -41,7 +41,10 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-border/50 hover:border-primary/30">
+    <Card 
+      className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-border/50 hover:border-primary/30 cursor-pointer"
+      onClick={handleClick}
+    >
       {/* Image Section with Overlays */}
       <div className="relative">
         <div className="aspect-[4/3] bg-muted relative overflow-hidden">
@@ -170,7 +173,10 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         <div className="mt-auto pt-3 space-y-2">
           <Button 
             className="w-full font-semibold shadow-sm group-hover:shadow-md transition-shadow text-base py-5"
-            onClick={handleClick}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent double-firing from card click
+              handleClick();
+            }}
           >
             Get a Free Quote
           </Button>

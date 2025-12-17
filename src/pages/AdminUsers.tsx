@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Trash2, StickyNote, Search, Eye } from 'lucide-react';
+import { Trash2, StickyNote, Search, Eye, CreditCard, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -52,6 +52,7 @@ export default function AdminUsers() {
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [adminNotes, setAdminNotes] = useState<string>('');
+  const [sendingStripeReminders, setSendingStripeReminders] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -143,6 +144,24 @@ export default function AdminUsers() {
     }
   };
 
+  const sendStripeReminders = async () => {
+    setSendingStripeReminders(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-stripe-setup-reminders');
+      if (error) throw error;
+      toast({ 
+        title: "Stripe Reminders Sent", 
+        description: `Sent ${data.emails_sent} reminder emails to sitters without Stripe setup` 
+      });
+    } catch (error) {
+      console.error('Error sending reminders:', error);
+      toast({ title: "Error", description: "Failed to send reminders", variant: "destructive" });
+    } finally {
+      setSendingStripeReminders(false);
+    }
+  };
+
+
   const filteredUsers = users.filter(u => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -230,6 +249,20 @@ export default function AdminUsers() {
                 </AlertDialogContent>
               </AlertDialog>
             )}
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={sendStripeReminders}
+              disabled={sendingStripeReminders}
+            >
+              {sendingStripeReminders ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <CreditCard className="w-4 h-4 mr-2" />
+              )}
+              Send Stripe Reminders
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
