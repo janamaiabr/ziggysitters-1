@@ -186,7 +186,7 @@ const handler = async (req: Request): Promise<Response> => {
         .select('name, species, size')
         .eq('owner_id', profile?.id);
 
-      let petsInfo = '<p>⚠️ <strong>No pets added yet</strong></p>';
+      let petsInfo = '<p style="color: #666;">🐾 No pets added yet (can add later when booking)</p>';
       if (pets && pets.length > 0) {
         petsInfo = `
           <h3>🐾 Pets Added (${pets.length})</h3>
