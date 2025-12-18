@@ -136,10 +136,13 @@ export default function AdminConversionFunnel() {
   };
 
   const fetchPetOwnerFunnel = async () => {
+    const periodStart = new Date(Date.now() - getPeriodMs()).toISOString();
+    
     const { data } = await supabase
       .from('onboarding_funnel')
       .select('*')
-      .eq('role', 'pet_owner');
+      .eq('role', 'pet_owner')
+      .gte('registered_at', period === 'all' ? '2020-01-01' : periodStart);
 
     if (data) {
       setPetOwnerFunnel({
@@ -354,9 +357,12 @@ export default function AdminConversionFunnel() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
-            Pet Owner Journey Funnel
+            Pet Owner Onboarding Funnel
           </CardTitle>
-          <CardDescription>From signup to completed booking (all time)</CardDescription>
+          <CardDescription>
+            Data from {period === 'all' ? 'all time' : `last ${period.replace('d', ' days')}`} 
+            {petOwnerFunnel && ` • ${petOwnerFunnel.totalSignups} total signups`}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (

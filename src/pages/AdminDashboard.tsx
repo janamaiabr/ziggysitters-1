@@ -76,7 +76,9 @@ export default function AdminDashboard() {
         supabase.from('profiles').select('id', { count: 'exact', head: true })
           .eq('role', 'pet_sitter')
           .eq('verification_status', 'pending')
-          .not('id_document_url', 'is', null),
+          .not('id_document_url', 'is', null)
+          .neq('id_document_url', '')
+          .neq('id_document_url', 'MANUALLY_VERIFIED_BY_ADMIN'),
         supabase.from('bookings').select('id', { count: 'exact', head: true })
           .in('status', ['confirmed', 'in_progress']),
         supabase.from('profiles').select('id', { count: 'exact', head: true })
