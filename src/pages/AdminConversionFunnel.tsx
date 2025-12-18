@@ -24,6 +24,10 @@ interface FunnelData {
   bookingRequests: number;
   paymentsCompleted: number;
   completedBookings: number;
+  zeroResultSearches: number;
+  totalSearches: number;
+  bookableSitters: number;
+  totalSitters: number;
 }
 
 interface DropoffInsight {
@@ -89,6 +93,8 @@ export default function AdminConversionFunnel() {
     const searchesWithClicks = searchData?.filter(s => 
       s.clicked_sitter_ids && s.clicked_sitter_ids.length > 0
     ).length || 0;
+    const totalSearches = searchData?.length || 0;
+    const zeroResultSearches = searchData?.filter(s => s.results_count === 0).length || 0;
 
     const { data: bookings } = await supabase
       .from('bookings')
@@ -105,6 +111,16 @@ export default function AdminConversionFunnel() {
       .eq('event_type', 'page_view')
       .gte('created_at', new Date(Date.now() - getPeriodMs()).toISOString());
 
+    // Get bookable sitters count
+    const { data: sitterData } = await supabase
+      .from('profiles')
+      .select('id, is_verified, stripe_account_enabled')
+      .eq('role', 'pet_sitter')
+      .eq('is_test_account', false);
+
+    const totalSitters = sitterData?.length || 0;
+    const bookableSitters = sitterData?.filter(s => s.is_verified && s.stripe_account_enabled).length || 0;
+
     setFunnelData({
       totalVisitors: pageViews || 0,
       searchSessions: uniqueSessions,
@@ -112,6 +128,10 @@ export default function AdminConversionFunnel() {
       bookingRequests: totalBookings,
       paymentsCompleted: paidBookings,
       completedBookings: completedBookings,
+      zeroResultSearches,
+      totalSearches,
+      bookableSitters,
+      totalSitters,
     });
   };
 
@@ -285,6 +305,46 @@ export default function AdminConversionFunnel() {
                 </div>
               </div>
             ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Supply Problem Alert - THE MAIN ISSUE */}
+      {funnelData && funnelData.zeroResultSearches > 0 && (
+        <Card className="border-amber-500 bg-amber-500/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2 text-amber-600">
+              <AlertTriangle className="h-5 w-5" />
+              Supply Problem: {Math.round((funnelData.zeroResultSearches / funnelData.totalSearches) * 100)}% of Searches Find No Sitters
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4 mb-4">
+              <div className="p-4 bg-background rounded-lg text-center">
+                <div className="text-3xl font-bold text-destructive">{funnelData.zeroResultSearches}</div>
+                <div className="text-sm text-muted-foreground">Searches with 0 results</div>
+              </div>
+              <div className="p-4 bg-background rounded-lg text-center">
+                <div className="text-3xl font-bold text-amber-600">{funnelData.bookableSitters}</div>
+                <div className="text-sm text-muted-foreground">Fully bookable sitters</div>
+              </div>
+              <div className="p-4 bg-background rounded-lg text-center">
+                <div className="text-3xl font-bold">{funnelData.totalSitters}</div>
+                <div className="text-sm text-muted-foreground">Total sitters (inc. incomplete)</div>
+              </div>
+            </div>
+            <div className="p-3 bg-background rounded-lg">
+              <p className="font-medium mb-2">Why the 87% drop-off from Search → Booking:</p>
+              <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                <li>Users search but find no sitters in their area → leave disappointed</li>
+                <li>Only {funnelData.bookableSitters} of {funnelData.totalSitters} sitters can actually accept & get paid</li>
+                <li>{funnelData.totalSitters - funnelData.bookableSitters} sitters need to complete verification or Stripe setup</li>
+              </ul>
+              <div className="mt-3 p-2 bg-primary/10 rounded flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Fix: Recruit more sitters in high-demand areas & help existing sitters complete onboarding</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
