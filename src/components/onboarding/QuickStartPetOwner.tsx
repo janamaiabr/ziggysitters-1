@@ -143,18 +143,11 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in-50 slide-in-from-bottom-4 duration-700">
-      {/* Ultra Cute Header */}
+      {/* Header */}
       <div className="text-center space-y-6 relative">
-        {/* Floating hearts animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-4 left-1/4 text-4xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💖</div>
-          <div className="absolute top-8 right-1/4 text-3xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐾</div>
-          <div className="absolute top-12 left-1/3 text-2xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>✨</div>
-        </div>
-        
         <div className="relative inline-block">
           <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-full blur-3xl opacity-40 animate-pulse"></div>
-          <div className="relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 rounded-full shadow-2xl animate-bounce" style={{ animationDuration: '1.5s' }}>
+          <div className="relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 rounded-full shadow-2xl">
             <Heart className="h-12 w-12 text-pink-500 dark:text-pink-400" fill="currentColor" />
           </div>
         </div>
@@ -170,19 +163,15 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
       </div>
 
       <Card className="border-2 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden relative transform transition-all hover:scale-[1.01]">
-        {/* Super Decorative Background */}
+        {/* Subtle Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 opacity-60"></div>
-        <div className="absolute top-0 right-0 w-40 h-40 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
         
         <CardHeader className="relative pb-6">
           <CardTitle className="flex items-center justify-center gap-3 text-3xl">
-            <span className="text-5xl animate-bounce">🐾</span>
+            <span className="text-4xl">🐾</span>
             <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Quick Setup
             </span>
-            <span className="text-5xl animate-bounce" style={{ animationDelay: '0.3s' }}>🐾</span>
           </CardTitle>
         </CardHeader>
         

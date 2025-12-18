@@ -55,8 +55,18 @@ export default function MultiSuburbSelector({
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
+  // Normalize search term: convert "St" to "Saint" for matching
+  const normalizeSearch = (query: string) => query.toLowerCase()
+    .replace(/\bst\b/gi, 'saint')
+    .replace(/\bst\./gi, 'saint');
+
   const filteredSuburbs = searchQuery
-    ? ALL_SUBURBS.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? ALL_SUBURBS.filter(s => {
+        const normalizedSuburb = s.toLowerCase();
+        const normalizedQuery = normalizeSearch(searchQuery);
+        return normalizedSuburb.includes(searchQuery.toLowerCase()) || 
+               normalizedSuburb.includes(normalizedQuery);
+      })
     : [];
 
   const toggleSuburb = (suburb: string) => {
