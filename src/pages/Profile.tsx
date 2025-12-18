@@ -386,14 +386,20 @@ export default function Profile() {
   const handleSaveProfile = async () => {
     if (!profile) return;
 
-    // Validate mandatory fields
-    const requiredFields = {
-      first_name: 'First Name',
-      last_name: 'Last Name',
-      email: 'Email',
-      phone: 'Phone Number',
-      address: 'Address'
-    };
+    // Validate mandatory fields - sitters require more fields than pet owners
+    const requiredFields: Record<string, string> = profile.role === 'pet_sitter' 
+      ? {
+          first_name: 'First Name',
+          last_name: 'Last Name',
+          email: 'Email',
+          phone: 'Phone Number',
+          address: 'Address'
+        }
+      : {
+          first_name: 'First Name',
+          last_name: 'Last Name',
+          email: 'Email'
+        };
 
     for (const [field, label] of Object.entries(requiredFields)) {
       if (!editData[field] || !editData[field].trim()) {

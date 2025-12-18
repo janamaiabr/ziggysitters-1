@@ -40,9 +40,17 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
 
   useEffect(() => {
     if (value) {
-      const filtered = aucklandSuburbs.filter(suburb =>
-        suburb.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 8); // Limit to 8 results
+      // Normalize search term: convert "St" to "Saint" for matching
+      const normalizedSearch = value.toLowerCase()
+        .replace(/\bst\b/gi, 'saint')  // "St Heliers" -> "Saint Heliers"
+        .replace(/\bst\./gi, 'saint'); // "St. Heliers" -> "Saint Heliers"
+      
+      const filtered = aucklandSuburbs.filter(suburb => {
+        const normalizedSuburb = suburb.toLowerCase();
+        // Match against both the original value and normalized version
+        return normalizedSuburb.includes(value.toLowerCase()) || 
+               normalizedSuburb.includes(normalizedSearch);
+      }).slice(0, 8); // Limit to 8 results
       setFilteredSuburbs(filtered);
       setIsOpen(filtered.length > 0);
     } else {
