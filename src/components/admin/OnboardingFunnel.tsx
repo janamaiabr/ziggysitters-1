@@ -27,60 +27,26 @@ export function OnboardingFunnel() {
 
   const fetchFunnelStats = async () => {
     try {
-      // Fetch pet owners
-      const { data: owners } = await supabase
-        .from('profiles')
-        .select('id, user_id')
-        .eq('role', 'pet_owner')
-        .eq('is_test_account', false);
+      // Use the onboarding_funnel view which has pre-computed data
+      const { data, error } = await supabase
+        .from('onboarding_funnel')
+        .select('*')
+        .eq('role', 'pet_owner');
 
-      if (!owners) return;
+      if (error) {
+        console.error('Error fetching funnel stats:', error);
+        return;
+      }
 
-      const ownerIds = owners.map(o => o.id);
-      const userIds = owners.map(o => o.user_id);
-
-      // Count pets
-      const { count: petsCount } = await supabase
-        .from('pets')
-        .select('owner_id', { count: 'exact', head: true })
-        .in('owner_id', ownerIds);
-
-      // Count unique owners with pets
-      const { data: ownersWithPets } = await supabase
-        .from('pets')
-        .select('owner_id')
-        .in('owner_id', ownerIds);
-      const uniqueOwnersWithPets = new Set(ownersWithPets?.map(p => p.owner_id)).size;
-
-      // Count searches
-      const { data: searchOwners } = await supabase
-        .from('search_events')
-        .select('user_id')
-        .in('user_id', userIds);
-      const uniqueSearchers = new Set(searchOwners?.map(s => s.user_id)).size;
-
-      // Count bookings
-      const { data: bookingOwners } = await supabase
-        .from('bookings')
-        .select('owner_id')
-        .in('owner_id', ownerIds);
-      const uniqueBookers = new Set(bookingOwners?.map(b => b.owner_id)).size;
-
-      // Count completed bookings
-      const { data: completedOwners } = await supabase
-        .from('bookings')
-        .select('owner_id')
-        .in('owner_id', ownerIds)
-        .eq('status', 'completed');
-      const uniqueCompleted = new Set(completedOwners?.map(b => b.owner_id)).size;
-
-      setStats({
-        totalSignups: owners.length,
-        addedPet: uniqueOwnersWithPets,
-        searched: uniqueSearchers,
-        madeBooking: uniqueBookers,
-        completedBooking: uniqueCompleted,
-      });
+      if (data) {
+        setStats({
+          totalSignups: data.length,
+          addedPet: data.filter(d => d.added_pet).length,
+          searched: data.filter(d => d.searched).length,
+          madeBooking: data.filter(d => d.made_booking).length,
+          completedBooking: data.filter(d => d.completed_booking).length,
+        });
+      }
     } catch (error) {
       console.error('Error fetching funnel stats:', error);
     } finally {

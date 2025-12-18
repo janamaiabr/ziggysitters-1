@@ -231,8 +231,14 @@ export default function AdminDocumentReview() {
     );
   }
 
-  // Only show sitters with pending status who have uploaded documents
-  const pendingIDApprovals = sitters.filter(s => s.id_document_url && !s.is_verified && s.verification_status !== 'rejected');
+  // Only show sitters with pending status who have uploaded documents (exclude manual verifications)
+  const pendingIDApprovals = sitters.filter(s => 
+    s.id_document_url && 
+    s.id_document_url !== '' &&
+    s.id_document_url !== 'MANUALLY_VERIFIED_BY_ADMIN' &&
+    !s.is_verified && 
+    s.verification_status !== 'rejected'
+  );
   const pendingGoldBadge = sitters.filter(s => s.blue_card_document_url && s.is_verified && !s.golden_badge_approved);
   const approved = sitters.filter(s => s.is_verified);
 

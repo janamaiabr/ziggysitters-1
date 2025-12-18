@@ -324,26 +324,18 @@ export default function FindSitters() {
 
     console.log('Filtered results:', filtered);
     
-    // ALWAYS show nearby sitters as supplementary results when searching
-    // This increases visibility and conversion
-    if (location) {
-      const searchTerm = location.toLowerCase().trim();
-      
-      // If no results found, show ALL sitters as nearby alternatives
-      if (filtered.length === 0) {
-        setNearbySitters(allSitters.slice(0, 8)); // Show more when there's no results
-      } else {
-        // Get sitters from other areas as "nearby" suggestions
-        const nearby = allSitters.filter(sitter => {
-          const sitterLocation = sitter.location.toLowerCase();
-          // Don't include sitters already in filtered results
-          const isInFiltered = filtered.some(f => f.id === sitter.id);
-          // Don't include sitters from the exact searched location
-          const isExactMatch = sitterLocation.includes(searchTerm);
-          return !isInFiltered && !isExactMatch;
-        }).slice(0, 6);
-        setNearbySitters(nearby);
-      }
+    // ALWAYS show sitters - if no results in searched area, show ALL sitters
+    // This prevents 0 results and increases conversion
+    if (filtered.length === 0 && allSitters.length > 0) {
+      // Show ALL available sitters when no local match - sorted by golden badge
+      filtered = [...allSitters];
+      console.log('No local results, showing all sitters:', filtered.length);
+    }
+    
+    // Show nearby sitters as supplementary when there ARE results but user searched a specific location
+    if (location && filtered.length > 0 && filtered.length < allSitters.length) {
+      const nearby = allSitters.filter(sitter => !filtered.some(f => f.id === sitter.id)).slice(0, 6);
+      setNearbySitters(nearby);
     } else {
       setNearbySitters([]);
     }
