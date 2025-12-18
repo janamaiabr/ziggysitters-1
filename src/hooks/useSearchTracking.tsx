@@ -63,23 +63,34 @@ export const useSearchTracking = () => {
       const sessionId = getSessionId();
       
       // Update the most recent search event with clicked sitter
-      const { data: recentSearch } = await supabase
+      const { data: recentSearch, error: selectError } = await supabase
         .from('search_events')
         .select('id, clicked_sitter_ids')
         .eq('session_id', sessionId)
         .order('search_timestamp', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
+
+      if (selectError) {
+        console.error('Error fetching search event:', selectError);
+        return;
+      }
 
       if (recentSearch) {
-        const updatedClicks = [...(recentSearch.clicked_sitter_ids || []), sitterId];
+        const existingClicks = recentSearch.clicked_sitter_ids || [];
+        // Avoid duplicates
+        if (existingClicks.includes(sitterId)) return;
         
-        await supabase
+        const updatedClicks = [...existingClicks, sitterId];
+        
+        const { error: updateError } = await supabase
           .from('search_events')
-          .update({ 
-            clicked_sitter_ids: updatedClicks 
-          })
+          .update({ clicked_sitter_ids: updatedClicks })
           .eq('id', recentSearch.id);
+
+        if (updateError) {
+          console.error('Error updating sitter clicks:', updateError);
+        }
       }
     } catch (err) {
       console.error('Failed to track sitter click:', err);
