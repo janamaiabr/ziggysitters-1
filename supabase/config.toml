@@ -131,3 +131,9 @@ verify_jwt = false
 
 [functions.send-onboarding-reminder]
 verify_jwt = false
+
+[functions.send-service-area-reminder]
+verify_jwt = false
+
+[functions.send-add-pet-reminder]
+verify_jwt = false

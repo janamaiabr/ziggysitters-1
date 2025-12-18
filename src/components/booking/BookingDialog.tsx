@@ -301,8 +301,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     const service = servicesData.find(s => s.service_type === serviceType);
     if (!service) return 0;
     
-    const petCount = selectedPetIds.length;
-    if (petCount === 0) return 0;
+    // Allow booking without pets - use 1 as minimum for calculation
+    const petCount = Math.max(1, selectedPetIds.length);
 
     if (serviceType === 'pet_sitting_sitters_home' || serviceType === 'pet_sitting_owners_home') {
       if (!startDate || !endDate) return 0;
@@ -488,10 +488,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       return;
     }
 
-    if (selectedPetIds.length === 0) {
-      toast({ title: 'No Pets Selected', description: 'Please select at least one pet for this booking.', variant: 'destructive' });
-      return;
-    }
+    // Pet selection is now optional - owners can book without adding pets first
 
     if (specialInstructions && !specialInstructions.trim()) {
       toast({ title: 'Invalid Instructions', description: 'Special instructions cannot be empty or contain only spaces.', variant: 'destructive' });
