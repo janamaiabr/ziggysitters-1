@@ -131,12 +131,15 @@ serve(async (req) => {
       throw new Error("Booking duration cannot exceed 90 days");
     }
     
-    // Validate pet count (max 10 pets per booking)
-    if (!bookingData.petIds || bookingData.petIds.length === 0) {
-      throw new Error("At least one pet must be selected");
-    }
-    if (bookingData.petIds.length > 10) {
+    // Pet selection is optional - allow booking without pets
+    // But still validate max 10 pets if any are provided
+    if (bookingData.petIds && bookingData.petIds.length > 10) {
       throw new Error("Maximum 10 pets per booking");
+    }
+    
+    // Ensure petIds is at least an empty array
+    if (!bookingData.petIds) {
+      bookingData.petIds = [];
     }
     
     // Validate total amount is positive and reasonable
@@ -162,19 +165,23 @@ serve(async (req) => {
     
     logStep("Edge case validation passed");
 
-    // ============= CRITICAL VALIDATION: Data Integrity - Pet IDs exist =============
+    // ============= OPTIONAL VALIDATION: Pet IDs if provided =============
     
-    // Validate all pet IDs exist and belong to the owner
-    const { data: validPets, error: petsError } = await supabaseClient
-      .from('pets')
-      .select('id')
-      .eq('owner_id', profile.id)
-      .in('id', bookingData.petIds);
-    
-    if (petsError || !validPets || validPets.length !== bookingData.petIds.length) {
-      throw new Error("One or more pet IDs are invalid or do not belong to you");
+    // Only validate pet IDs if any are provided
+    if (bookingData.petIds && bookingData.petIds.length > 0) {
+      const { data: validPets, error: petsError } = await supabaseClient
+        .from('pets')
+        .select('id')
+        .eq('owner_id', profile.id)
+        .in('id', bookingData.petIds);
+      
+      if (petsError || !validPets || validPets.length !== bookingData.petIds.length) {
+        throw new Error("One or more pet IDs are invalid or do not belong to you");
+      }
+      logStep("Pet IDs validated", { petCount: validPets.length });
+    } else {
+      logStep("No pets provided - booking without pets");
     }
-    logStep("Pet IDs validated", { petCount: validPets.length });
 
     // Service type mapping from frontend to database enum
     // ONLY 3 CORE SERVICES (dog walking removed)
@@ -212,7 +219,8 @@ serve(async (req) => {
     // Calculate expected amount based on NEW pricing model (PER PET)
     let expectedAmount = 0;
     const numDays = daysDiff;
-    const numPets = bookingData.petIds.length;
+    // Use minimum 1 pet for pricing when no pets specified
+    const numPets = Math.max(1, bookingData.petIds?.length || 0);
     
     if (dbServiceType === 'pet_sitting_owners_home' || dbServiceType === 'pet_sitting_sitters_home') {
       // Pet sitting: daily_rate PER PET
