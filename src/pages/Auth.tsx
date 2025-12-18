@@ -132,6 +132,32 @@ export default function Auth() {
             } else {
               console.log('✅ Terms acceptance saved to database during signup');
             }
+            
+            // Link anonymous searches to the new user profile
+            const sessionId = sessionStorage.getItem('search_session_id');
+            if (sessionId) {
+              // Get the profile ID for this user
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('user_id', session.user.id)
+                .single();
+              
+              if (profile?.id) {
+                // Update any anonymous searches from this session to link to the user
+                const { error: linkError } = await supabase
+                  .from('search_events')
+                  .update({ user_id: profile.id })
+                  .eq('session_id', sessionId)
+                  .is('user_id', null);
+                
+                if (linkError) {
+                  console.error('Error linking anonymous searches:', linkError);
+                } else {
+                  console.log('✅ Linked anonymous searches to user profile');
+                }
+              }
+            }
           } catch (error) {
             console.error('Error saving terms acceptance:', error);
             // Don't fail signup if this fails
