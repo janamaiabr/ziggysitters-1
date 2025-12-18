@@ -139,7 +139,7 @@ const Index = () => {
       />
       <div className="bg-gradient-to-b from-background to-accent/20">
       {/* Launch Location Notice - Visible for all users */}
-      <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-4 text-center">
         <p className="text-sm md:text-base font-medium">
           📍 Currently serving Auckland and Hamilton, New Zealand. Expanding to more cities soon!
         </p>

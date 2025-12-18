@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { TrendingUp, Users, PawPrint, Search, MousePointerClick, CalendarCheck, CheckCircle } from 'lucide-react';
 
@@ -12,6 +13,8 @@ interface FunnelStats {
   completedBooking: number;
 }
 
+type Period = '7d' | '30d' | '90d' | 'all';
+
 export function OnboardingFunnel() {
   const [stats, setStats] = useState<FunnelStats>({
     totalSignups: 0,
@@ -22,18 +25,36 @@ export function OnboardingFunnel() {
     completedBooking: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<Period>('30d');
 
   useEffect(() => {
     fetchFunnelStats();
-  }, []);
+  }, [period]);
+
+  const getDateFilter = () => {
+    if (period === 'all') return null;
+    const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return date.toISOString();
+  };
 
   const fetchFunnelStats = async () => {
+    setLoading(true);
     try {
+      const dateFilter = getDateFilter();
+      
       // Use the onboarding_funnel view which has pre-computed data
-      const { data, error } = await supabase
+      let query = supabase
         .from('onboarding_funnel')
         .select('*')
         .eq('role', 'pet_owner');
+      
+      if (dateFilter) {
+        query = query.gte('registered_at', dateFilter);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching funnel stats:', error);
@@ -41,10 +62,16 @@ export function OnboardingFunnel() {
       }
 
       // Get click data from search_events - count unique users/sessions that clicked
-      const { data: clickData, error: clickError } = await supabase
+      let clickQuery = supabase
         .from('search_events')
-        .select('user_id, session_id, clicked_sitter_ids')
+        .select('user_id, session_id, clicked_sitter_ids, created_at')
         .not('clicked_sitter_ids', 'is', null);
+      
+      if (dateFilter) {
+        clickQuery = clickQuery.gte('created_at', dateFilter);
+      }
+
+      const { data: clickData, error: clickError } = await clickQuery;
 
       let clickedCount = 0;
       if (!clickError && clickData) {
@@ -90,10 +117,20 @@ export function OnboardingFunnel() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
-          Pet Owner Onboarding Funnel
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            Pet Owner Onboarding Funnel
+          </CardTitle>
+          <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
+            <TabsList className="h-8">
+              <TabsTrigger value="7d" className="text-xs px-2">7d</TabsTrigger>
+              <TabsTrigger value="30d" className="text-xs px-2">30d</TabsTrigger>
+              <TabsTrigger value="90d" className="text-xs px-2">90d</TabsTrigger>
+              <TabsTrigger value="all" className="text-xs px-2">All</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
         <p className="text-sm text-muted-foreground">Conversion through each stage</p>
       </CardHeader>
       <CardContent>
