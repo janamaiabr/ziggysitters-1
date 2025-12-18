@@ -680,32 +680,41 @@ export default function Bookings() {
         {/* Stripe Live Mode Warning for Sitters */}
         <StripeLiveModeWarning />
 
-        {/* Stripe Setup Warning for Sitters */}
-        {profile?.role === 'pet_sitter' && (!profile?.stripe_account_id || !profile?.stripe_account_enabled) && (
-          <Card className="mb-6 border-orange-200 bg-orange-50 dark:bg-orange-950/20">
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-4">
-                <div className="text-3xl">⚠️</div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">
-                    Complete Your Payment Setup Required
-                  </h3>
-                  <p className="text-sm text-orange-800 dark:text-orange-200 mb-4">
-                    You cannot accept bookings until you complete your Stripe Connect setup. 
-                    This ensures you can receive payments for your services.
-                  </p>
-                  <Button 
-                    onClick={() => navigate('/profile?tab=payments')}
-                    variant="default"
-                    size="sm"
-                  >
-                    Complete Setup Now
-                  </Button>
+        {/* Stripe Setup Warning for Sitters - Show pending booking count */}
+        {profile?.role === 'pet_sitter' && (!profile?.stripe_account_id || !profile?.stripe_account_enabled) && (() => {
+          const pendingCount = bookings.filter(b => b.status === 'pending' && b.sitter_id === profile.id).length;
+          const hasPending = pendingCount > 0;
+          return (
+            <Card className={`mb-6 ${hasPending ? 'border-red-400 bg-red-50 dark:bg-red-950/30 animate-pulse' : 'border-orange-200 bg-orange-50 dark:bg-orange-950/20'}`}>
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <div className="text-3xl">{hasPending ? '🚨' : '⚠️'}</div>
+                  <div className="flex-1">
+                    <h3 className={`font-semibold mb-2 ${hasPending ? 'text-red-900 dark:text-red-100' : 'text-orange-900 dark:text-orange-100'}`}>
+                      {hasPending 
+                        ? `🎉 You have ${pendingCount} booking request${pendingCount > 1 ? 's' : ''} waiting!` 
+                        : 'Complete Your Payment Setup'}
+                    </h3>
+                    <p className={`text-sm mb-4 ${hasPending ? 'text-red-800 dark:text-red-200' : 'text-orange-800 dark:text-orange-200'}`}>
+                      {hasPending 
+                        ? 'Set up Stripe now to accept this booking and get paid. It only takes 5 minutes!'
+                        : 'Complete your Stripe Connect setup to accept bookings and receive payments.'}
+                    </p>
+                    <Button 
+                      onClick={() => navigate('/profile?tab=payments')}
+                      variant="default"
+                      size={hasPending ? 'lg' : 'sm'}
+                      className={hasPending ? 'bg-red-600 hover:bg-red-700 font-bold' : ''}
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      {hasPending ? 'Set Up Stripe & Accept Booking' : 'Complete Setup Now'}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          );
+        })()}
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-2 mb-8">
@@ -843,21 +852,33 @@ export default function Bookings() {
                           {/* Sitter Accept/Decline buttons for pending bookings */}
                           {booking.status === 'pending' && booking.sitter_id === profile.id && (
                             <>
-                              <Button 
-                                size="sm" 
-                                onClick={() => handleAcceptBooking(booking.id)}
-                                disabled={acceptingBookingId === booking.id}
-                                className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none sm:min-w-[100px]"
-                              >
-                                {acceptingBookingId === booking.id ? (
-                                  <>
-                                    <span className="animate-spin mr-2">⏳</span>
-                                    Processing...
-                                  </>
-                                ) : (
-                                  'Accept'
-                                )}
-                              </Button>
+                              {/* Check if sitter can accept (has Stripe set up) */}
+                              {profile?.stripe_account_id && profile?.stripe_account_enabled ? (
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => handleAcceptBooking(booking.id)}
+                                  disabled={acceptingBookingId === booking.id}
+                                  className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none sm:min-w-[100px]"
+                                >
+                                  {acceptingBookingId === booking.id ? (
+                                    <>
+                                      <span className="animate-spin mr-2">⏳</span>
+                                      Processing...
+                                    </>
+                                  ) : (
+                                    'Accept'
+                                  )}
+                                </Button>
+                              ) : (
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => navigate('/profile?tab=payments')}
+                                  className="bg-orange-600 hover:bg-orange-700 flex-1 sm:flex-none"
+                                >
+                                  <CreditCard className="w-4 h-4 mr-2" />
+                                  Set Up Stripe to Accept
+                                </Button>
+                              )}
                               <Button 
                                 variant="destructive" 
                                 size="sm" 
