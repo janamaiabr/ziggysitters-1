@@ -49,9 +49,14 @@ const navSections = [
     highlight: true,
     items: [
       {
+        title: 'Conversion Funnel',
+        href: '/admin/conversion-funnel',
+        icon: TrendingUp,
+      },
+      {
         title: 'Marketing Dashboard',
         href: '/admin/marketing-insights',
-        icon: TrendingUp,
+        icon: Target,
       },
       {
         title: 'Search Analytics',
