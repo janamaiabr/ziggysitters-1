@@ -169,6 +169,38 @@ const handler = async (req: Request): Promise<Response> => {
         .select('*')
         .eq('owner_id', profile?.id);
 
+      // Collect all clicked sitter IDs from searches
+      const allClickedSitterIds: string[] = [];
+      searches?.forEach(s => {
+        if (s.clicked_sitter_ids?.length) {
+          allClickedSitterIds.push(...s.clicked_sitter_ids);
+        }
+      });
+      const uniqueClickedIds = [...new Set(allClickedSitterIds)];
+
+      // Fetch sitter details for clicked sitters
+      let clickedSittersHtml = '';
+      if (uniqueClickedIds.length > 0) {
+        const { data: clickedSitters } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, suburb, city')
+          .in('id', uniqueClickedIds);
+        
+        if (clickedSitters && clickedSitters.length > 0) {
+          clickedSittersHtml = `
+            <div style="background: #fef9c3; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #eab308;">
+              <h3 style="margin-top: 0; color: #854d0e;">👆 Clicked on ${clickedSitters.length} Sitter(s)</h3>
+              <ul style="margin: 0; padding-left: 20px;">
+                ${clickedSitters.map(s => 
+                  `<li><strong>${s.first_name} ${s.last_name}</strong>${s.suburb ? ` - ${s.suburb}` : ''} 
+                   <a href="https://ziggysitters.com/sitter/${s.id}" style="color: #2563eb;">[View Profile]</a></li>`
+                ).join('')}
+              </ul>
+            </div>
+          `;
+        }
+      }
+
       let searchSummary = 'No searches yet';
       if (searches && searches.length > 0) {
         searchSummary = searches.map(s => {
@@ -176,7 +208,7 @@ const handler = async (req: Request): Promise<Response> => {
           if (s.suburb) parts.push(`📍 ${s.suburb}`);
           if (s.service_type) parts.push(`🛏️ ${s.service_type.replace(/_/g, ' ')}`);
           if (s.pet_species?.length) parts.push(`🐾 ${s.pet_species.join(', ')}`);
-          if (s.clicked_sitter_ids?.length) parts.push(`👆 Clicked ${s.clicked_sitter_ids.length} sitters`);
+          parts.push(`(${new Date(s.search_timestamp).toLocaleString()})`);
           return parts.join(' | ') || 'Generic search';
         }).join('<br>');
       }
@@ -225,6 +257,8 @@ const handler = async (req: Request): Promise<Response> => {
                   ${searchSummary}
                 </div>
               </div>
+
+              ${clickedSittersHtml}
 
               <div style="background: #fef3f2; padding: 15px; border-radius: 5px; margin: 20px 0;">
                 <h3 style="margin-top: 0;">📅 Bookings</h3>
