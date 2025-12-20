@@ -105,18 +105,86 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
     }
   }
   
-  // Also try to find session from search_events
-  const { data: searchEvents } = await supabase
+  // Get FULL search events data including clicked sitters
+  let searchEventsData: any[] = [];
+  const { data: userSearchEvents } = await supabase
     .from('search_events')
-    .select('session_id')
+    .select('*')
     .eq('user_id', profileId)
-    .limit(1);
+    .order('created_at', { ascending: true });
   
-  if (searchEvents && searchEvents.length > 0 && searchEvents[0].session_id) {
+  if (userSearchEvents && userSearchEvents.length > 0) {
+    searchEventsData = userSearchEvents;
+    // Also get session from first search event to find pre-registration events
+    if (userSearchEvents[0].session_id) {
+      const { data: sessionSearchEvents } = await supabase
+        .from('search_events')
+        .select('*')
+        .eq('session_id', userSearchEvents[0].session_id)
+        .order('created_at', { ascending: true });
+      
+      if (sessionSearchEvents) {
+        const existingIds = new Set(searchEventsData.map(e => e.id));
+        sessionSearchEvents.forEach(e => {
+          if (!existingIds.has(e.id)) {
+            searchEventsData.push(e);
+          }
+        });
+        searchEventsData.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      }
+    }
+  }
+  
+  // Also try direct session search if we have sessionId
+  if (sessionId) {
+    const { data: directSessionSearch } = await supabase
+      .from('search_events')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true });
+    
+    if (directSessionSearch) {
+      const existingIds = new Set(searchEventsData.map(e => e.id));
+      directSessionSearch.forEach(e => {
+        if (!existingIds.has(e.id)) {
+          searchEventsData.push(e);
+        }
+      });
+      searchEventsData.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    }
+  }
+  
+  // Get clicked sitter details
+  const allClickedSitterIds = new Set<string>();
+  searchEventsData.forEach(se => {
+    if (se.clicked_sitter_ids && Array.isArray(se.clicked_sitter_ids)) {
+      se.clicked_sitter_ids.forEach((id: string) => allClickedSitterIds.add(id));
+    }
+  });
+  
+  let clickedSittersInfo: { id: string; name: string; suburb: string }[] = [];
+  if (allClickedSitterIds.size > 0) {
+    const { data: sitterProfiles } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name, suburb')
+      .in('id', Array.from(allClickedSitterIds));
+    
+    if (sitterProfiles) {
+      clickedSittersInfo = sitterProfiles.map(s => ({
+        id: s.id,
+        name: `${s.first_name} ${s.last_name}`,
+        suburb: s.suburb || 'Unknown'
+      }));
+    }
+  }
+  
+  // Also merge user_events from search sessions
+  const searchSessionIds = new Set(searchEventsData.map(se => se.session_id).filter(Boolean));
+  for (const sId of searchSessionIds) {
     const { data: additionalEvents } = await supabase
       .from('user_events')
       .select('*')
-      .eq('session_id', searchEvents[0].session_id)
+      .eq('session_id', sId)
       .order('created_at', { ascending: true });
     
     if (additionalEvents && additionalEvents.length > 0) {
@@ -126,11 +194,11 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
           events.push(e);
         }
       });
-      events.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
     }
   }
+  events.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
-  console.log("Found", events.length, "events for user journey");
+  console.log("Found", events.length, "events,", searchEventsData.length, "searches,", clickedSittersInfo.length, "clicked sitters");
 
   const summary: Record<string, any> = {
     totalEvents: events.length,
@@ -295,9 +363,108 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
     </div>
   `;
 
-  // Analysis / Drop-off reasons
+  // Build SEARCH ACTIVITY section - critical for understanding intent
+  let searchActivityHtml = '';
+  if (searchEventsData.length > 0) {
+    const searchRows = searchEventsData.map((se, idx) => {
+      const time = new Date(se.created_at).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const resultColor = se.results_count === 0 ? '#ef4444' : se.results_count > 0 ? '#22c55e' : '#6b7280';
+      const resultText = se.results_count === 0 ? '🔴 0 results!' : se.results_count > 0 ? `✅ ${se.results_count} results` : '—';
+      const serviceLabel = se.service_type || '(no service selected)';
+      const clickedCount = se.clicked_sitter_ids?.length || 0;
+      
+      return `
+        <tr style="background: ${idx % 2 === 0 ? '#ffffff' : '#f9fafb'};">
+          <td style="padding: 6px; font-size: 12px; color: #6b7280;">${time}</td>
+          <td style="padding: 6px; font-size: 13px;">${se.suburb || 'Unknown'}</td>
+          <td style="padding: 6px; font-size: 12px; color: #6b7280;">${serviceLabel}</td>
+          <td style="padding: 6px; font-size: 13px; color: ${resultColor}; font-weight: 600;">${resultText}</td>
+          <td style="padding: 6px; font-size: 13px;">${clickedCount > 0 ? `👆 ${clickedCount} click(s)` : '—'}</td>
+        </tr>
+      `;
+    }).join('');
+    
+    const zeroResultSearches = searchEventsData.filter(se => se.results_count === 0).length;
+    const totalSearches = searchEventsData.length;
+    
+    searchActivityHtml = `
+      <div style="background: #eff6ff; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+        <h3 style="margin-top: 0; color: #1e40af;">🔍 Search Activity (${totalSearches} searches${zeroResultSearches > 0 ? `, <span style="color: #ef4444;">${zeroResultSearches} with 0 results!</span>` : ''})</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <thead>
+            <tr style="background: #dbeafe;">
+              <th style="padding: 6px; text-align: left; font-size: 11px;">TIME</th>
+              <th style="padding: 6px; text-align: left; font-size: 11px;">LOCATION</th>
+              <th style="padding: 6px; text-align: left; font-size: 11px;">SERVICE</th>
+              <th style="padding: 6px; text-align: left; font-size: 11px;">RESULTS</th>
+              <th style="padding: 6px; text-align: left; font-size: 11px;">CLICKS</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${searchRows}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else {
+    searchActivityHtml = `
+      <div style="background: #fef2f2; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ef4444;">
+        <h3 style="margin-top: 0; color: #b91c1c;">🔍 No Search Activity Recorded</h3>
+        <p style="margin: 0; color: #7f1d1d;">User registered but never performed a search. They may have:</p>
+        <ul style="color: #7f1d1d; margin-bottom: 0;">
+          <li>Just created an account to explore later</li>
+          <li>Got confused by the interface</li>
+          <li>Had a technical issue</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  // Build CLICKED SITTERS section - who did they show interest in?
+  let clickedSittersHtml = '';
+  if (clickedSittersInfo.length > 0) {
+    const sitterRows = clickedSittersInfo.map(s => `
+      <tr>
+        <td style="padding: 8px; font-size: 14px;"><strong>${s.name}</strong></td>
+        <td style="padding: 8px; font-size: 13px; color: #6b7280;">${s.suburb}</td>
+        <td style="padding: 8px;"><a href="https://ziggysitters.com/sitter/${s.id}" style="color: #2563eb; text-decoration: none;">View Profile →</a></td>
+      </tr>
+    `).join('');
+    
+    clickedSittersHtml = `
+      <div style="background: #f0fdf4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #22c55e;">
+        <h3 style="margin-top: 0; color: #166534;">💚 Sitters They Were Interested In (${clickedSittersInfo.length})</h3>
+        <p style="color: #166534; margin-bottom: 10px;">These are the sitters they clicked on during their session:</p>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: #dcfce7;">
+              <th style="padding: 8px; text-align: left; font-size: 12px;">SITTER NAME</th>
+              <th style="padding: 8px; text-align: left; font-size: 12px;">LOCATION</th>
+              <th style="padding: 8px; text-align: left; font-size: 12px;">PROFILE</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sitterRows}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  // Analysis / Drop-off reasons - ENHANCED with search context
   let analysisHtml = '';
   const issues: string[] = [];
+  
+  // Check for zero result searches - major drop-off indicator!
+  const zeroResultSearches = searchEventsData.filter(se => se.results_count === 0);
+  if (zeroResultSearches.length > 0) {
+    issues.push(`🔴 Got 0 results ${zeroResultSearches.length} time(s) - this is a major frustration point!`);
+  }
+  
+  // Check if they clicked sitters but didn't book
+  if (clickedSittersInfo.length > 0) {
+    issues.push(`💔 Clicked on ${clickedSittersInfo.length} sitter(s) but didn't book - what stopped them?`);
+  }
   
   if (summary.timeOnSite < 30) {
     issues.push('⚡ Very short session - user left quickly');
@@ -305,25 +472,22 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
   if (summary.idleEvents > 2) {
     issues.push('💤 Multiple idle periods - user was distracted or confused');
   }
-  if (summary.searchCount === 0 && summary.pagesViewed.length < 3) {
-    issues.push('🔍 No searches performed - may not have found what they were looking for');
+  if (searchEventsData.length === 0 && summary.pagesViewed.length < 3) {
+    issues.push('🔍 No searches performed - may not have found the search feature');
   }
   if (summary.formAbandons > 0) {
     issues.push('❌ Form abandoned - onboarding friction detected');
   }
-  if (summary.maxScrollDepth < 30) {
+  if (summary.maxScrollDepth < 30 && summary.maxScrollDepth > 0) {
     issues.push('📜 Low scroll depth - content above the fold didn\'t engage');
-  }
-  if (!summary.pagesViewed.includes('/find-sitters') && !summary.pagesViewed.includes('/onboarding')) {
-    issues.push('🚶 Never reached find sitters or onboarding pages');
   }
 
   if (issues.length > 0) {
     analysisHtml = `
       <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-        <h3 style="margin-top: 0; color: #92400e;">🔍 Potential Drop-off Reasons</h3>
+        <h3 style="margin-top: 0; color: #92400e;">⚠️ Drop-off Analysis</h3>
         <ul style="margin: 0; padding-left: 20px; color: #78350f;">
-          ${issues.map(i => `<li>${i}</li>`).join('')}
+          ${issues.map(i => `<li style="margin-bottom: 5px;">${i}</li>`).join('')}
         </ul>
       </div>
     `;
@@ -337,7 +501,7 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
   }
 
   return {
-    html: summaryHtml + analysisHtml + timelineHtml,
+    html: summaryHtml + searchActivityHtml + clickedSittersHtml + analysisHtml + timelineHtml,
     summary
   };
 }
