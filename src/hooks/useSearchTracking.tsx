@@ -59,6 +59,11 @@ export const useSearchTracking = () => {
       return [...prev, sitterId];
     });
 
+    // CRITICAL: Store the last clicked sitter so we can redirect after registration
+    // This ensures users who click a sitter, register, then come back will see that sitter
+    sessionStorage.setItem('last_clicked_sitter_id', sitterId);
+    console.log('Stored last clicked sitter:', sitterId);
+
     try {
       const sessionId = getSessionId();
       
@@ -97,9 +102,21 @@ export const useSearchTracking = () => {
     }
   };
 
+  // Get the last clicked sitter ID (for post-registration redirect)
+  const getLastClickedSitter = (): string | null => {
+    return sessionStorage.getItem('last_clicked_sitter_id');
+  };
+
+  // Clear the last clicked sitter (after using it for redirect)
+  const clearLastClickedSitter = () => {
+    sessionStorage.removeItem('last_clicked_sitter_id');
+  };
+
   return {
     trackSearch,
     trackSitterClick,
     clickedSitters,
+    getLastClickedSitter,
+    clearLastClickedSitter,
   };
 };

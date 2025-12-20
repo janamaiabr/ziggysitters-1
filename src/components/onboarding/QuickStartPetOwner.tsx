@@ -128,11 +128,20 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         duration: 4000,
       });
 
-      // Clear localStorage and navigate to find-sitters
+      // Clear localStorage
       localStorage.removeItem('onboarding_data');
       localStorage.removeItem('onboarding_step');
       
-      navigate(`/find-sitters?location=${encodeURIComponent(suburb.trim())}`, { replace: true });
+      // Check if user clicked on a sitter before registering - redirect them to that sitter!
+      const lastClickedSitter = sessionStorage.getItem('last_clicked_sitter_id');
+      if (lastClickedSitter) {
+        console.log('User clicked sitter before registering, redirecting to:', lastClickedSitter);
+        sessionStorage.removeItem('last_clicked_sitter_id'); // Clear after use
+        navigate(`/sitter/${lastClickedSitter}`, { replace: true });
+      } else {
+        // Otherwise go to find-sitters with their suburb
+        navigate(`/find-sitters?location=${encodeURIComponent(suburb.trim())}`, { replace: true });
+      }
     } catch (error: any) {
       console.error('Error in quick start:', error);
       toast({
