@@ -21,6 +21,18 @@ interface SearchParams {
   resultsCount?: number;
 }
 
+// Full search context to preserve across login
+interface SearchContext {
+  location?: string;
+  serviceType?: string;
+  checkIn?: string;
+  checkOut?: string;
+  clickedSitterId?: string;
+  clickedSitterName?: string;
+}
+
+const SEARCH_CONTEXT_KEY = 'pre_login_search_context';
+
 export const useSearchTracking = () => {
   const { user } = useAuth();
   const [clickedSitters, setClickedSitters] = useState<string[]>([]);
@@ -53,16 +65,46 @@ export const useSearchTracking = () => {
     }
   };
 
-  const trackSitterClick = async (sitterId: string) => {
+  // Save the FULL search context before login (location, dates, service type, clicked sitter)
+  const saveSearchContext = (context: SearchContext) => {
+    const existing = getSearchContext() || {};
+    const merged = { ...existing, ...context };
+    sessionStorage.setItem(SEARCH_CONTEXT_KEY, JSON.stringify(merged));
+    console.log('Saved search context:', merged);
+  };
+
+  // Get the preserved search context
+  const getSearchContext = (): SearchContext | null => {
+    try {
+      const stored = sessionStorage.getItem(SEARCH_CONTEXT_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Clear after use (after successful redirect post-login)
+  const clearSearchContext = () => {
+    sessionStorage.removeItem(SEARCH_CONTEXT_KEY);
+    sessionStorage.removeItem('last_clicked_sitter_id');
+    console.log('Cleared search context');
+  };
+
+  const trackSitterClick = async (sitterId: string, sitterName?: string) => {
     setClickedSitters(prev => {
       if (prev.includes(sitterId)) return prev;
       return [...prev, sitterId];
     });
 
-    // CRITICAL: Store the last clicked sitter so we can redirect after registration
-    // This ensures users who click a sitter, register, then come back will see that sitter
+    // Store clicked sitter in context so user can return after registration
+    saveSearchContext({ 
+      clickedSitterId: sitterId,
+      clickedSitterName: sitterName 
+    });
+    
+    // Also keep legacy storage for backwards compatibility
     sessionStorage.setItem('last_clicked_sitter_id', sitterId);
-    console.log('Stored last clicked sitter:', sitterId);
+    console.log('Stored last clicked sitter:', sitterId, sitterName);
 
     try {
       const sessionId = getSessionId();
@@ -104,12 +146,20 @@ export const useSearchTracking = () => {
 
   // Get the last clicked sitter ID (for post-registration redirect)
   const getLastClickedSitter = (): string | null => {
-    return sessionStorage.getItem('last_clicked_sitter_id');
+    const context = getSearchContext();
+    return context?.clickedSitterId || sessionStorage.getItem('last_clicked_sitter_id');
   };
 
   // Clear the last clicked sitter (after using it for redirect)
   const clearLastClickedSitter = () => {
     sessionStorage.removeItem('last_clicked_sitter_id');
+    // Also clear from context
+    const context = getSearchContext();
+    if (context) {
+      delete context.clickedSitterId;
+      delete context.clickedSitterName;
+      sessionStorage.setItem(SEARCH_CONTEXT_KEY, JSON.stringify(context));
+    }
   };
 
   return {
@@ -118,5 +168,9 @@ export const useSearchTracking = () => {
     clickedSitters,
     getLastClickedSitter,
     clearLastClickedSitter,
+    // NEW: Full context methods for seamless journey
+    saveSearchContext,
+    getSearchContext,
+    clearSearchContext,
   };
 };

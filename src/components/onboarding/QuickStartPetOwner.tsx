@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, ArrowRight, Heart, Zap } from 'lucide-react';
+import { useSearchTracking } from '@/hooks/useSearchTracking';
 
 interface QuickStartPetOwnerProps {
   profileId: string;
@@ -17,6 +18,7 @@ interface QuickStartPetOwnerProps {
 
 export default function QuickStartPetOwner({ profileId, userId, onComplete }: QuickStartPetOwnerProps) {
   const navigate = useNavigate();
+  const { getSearchContext, clearSearchContext } = useSearchTracking();
   const [petName, setPetName] = useState('');
   const [petSpecies, setPetSpecies] = useState('');
   const [suburb, setSuburb] = useState('');
@@ -132,14 +134,29 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
       localStorage.removeItem('onboarding_data');
       localStorage.removeItem('onboarding_step');
       
-      // Check if user clicked on a sitter before registering - redirect them to that sitter!
-      const lastClickedSitter = sessionStorage.getItem('last_clicked_sitter_id');
+      // Get full search context from before registration
+      const searchContext = getSearchContext();
+      const lastClickedSitter = searchContext?.clickedSitterId || sessionStorage.getItem('last_clicked_sitter_id');
+      
+      // Clear the context after using it
+      clearSearchContext();
+      
       if (lastClickedSitter) {
+        // BEST: User clicked a sitter before - take them directly there!
         console.log('User clicked sitter before registering, redirecting to:', lastClickedSitter);
-        sessionStorage.removeItem('last_clicked_sitter_id'); // Clear after use
         navigate(`/sitter/${lastClickedSitter}`, { replace: true });
+      } else if (searchContext?.location || searchContext?.serviceType) {
+        // GOOD: User had a search in progress - restore it fully
+        const params = new URLSearchParams();
+        if (searchContext.location) params.set('location', searchContext.location);
+        if (searchContext.serviceType) params.set('serviceType', searchContext.serviceType);
+        if (searchContext.checkIn) params.set('checkIn', searchContext.checkIn);
+        if (searchContext.checkOut) params.set('checkOut', searchContext.checkOut);
+        
+        console.log('Restoring pre-login search context:', searchContext);
+        navigate(`/find-sitters?${params.toString()}`, { replace: true });
       } else {
-        // Otherwise go to find-sitters with their suburb
+        // OK: No prior context - use their onboarding suburb
         navigate(`/find-sitters?location=${encodeURIComponent(suburb.trim())}`, { replace: true });
       }
     } catch (error: any) {
