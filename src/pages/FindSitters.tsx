@@ -249,8 +249,9 @@ export default function FindSitters() {
       }
     }
 
-    // Filter by service type
-    if (serviceType) {
+    // Filter by service type - ONLY if one is selected
+    // If no service type selected, show ALL sitters (more lenient for better UX)
+    if (serviceType && serviceType.trim() !== '') {
       const serviceMap: { [key: string]: string } = {
         'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
         'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
@@ -263,6 +264,7 @@ export default function FindSitters() {
         );
       }
     }
+    // When no service type is selected, we show ALL sitters - this prevents 0 results after onboarding
 
     // Filter by pet type
     if (petType) {
