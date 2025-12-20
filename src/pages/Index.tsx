@@ -19,6 +19,8 @@ import HowItWorksSection from '@/components/home/HowItWorksSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import TrustSignalsSection from '@/components/home/TrustSignalsSection';
 import ExitIntentPopup from '@/components/home/ExitIntentPopup';
+import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
+import { useProfile } from '@/contexts/ProfileContext';
 
 // Pet photos for gallery section
 const petGalleryPhotos = [
@@ -32,12 +34,23 @@ const petGalleryPhotos = [
 
 const Index = () => {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { trackAction } = useBehaviorTracking();
   const [location, setLocation] = useState(searchParams.get('location') || '');
   const [serviceType, setServiceType] = useState(searchParams.get('serviceType') || '');
   const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || '');
   const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || '');
+
+  // Track home page view with user context
+  useEffect(() => {
+    trackAction('home_page_viewed', {
+      is_authenticated: !!user,
+      user_role: profile?.role || 'anonymous',
+      has_completed_onboarding: profile?.onboarding_completed || false,
+    });
+  }, [user, profile]);
 
   const popularServices = [
     { name: 'Pet Sitting (Sitter\'s Home)', icon: '🏠', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them', value: 'pet_sitting_sitters_home' },

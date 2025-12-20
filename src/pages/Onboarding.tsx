@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +17,7 @@ import EmailVerificationStep from '@/components/onboarding/EmailVerificationStep
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Textarea } from '@/components/ui/textarea';
 import { useProfile } from '@/contexts/ProfileContext';
+import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 
 // Phone validation function for New Zealand numbers
 const validateNZPhone = (phone: string): boolean => {
@@ -53,6 +54,9 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { trackAction, trackDropoff } = useBehaviorTracking();
+  const stepStartTime = useRef<number>(Date.now());
+  const onboardingStartTime = useRef<number>(Date.now());
   
   const [step, setStep] = useState(() => {
     const saved = localStorage.getItem('onboarding_step');
@@ -66,6 +70,40 @@ export default function Onboarding() {
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [hasAcceptedTermsLocally, setHasAcceptedTermsLocally] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
+
+  // Track onboarding page view
+  useEffect(() => {
+    onboardingStartTime.current = Date.now();
+    trackAction('onboarding_started', { 
+      initial_step: step,
+      has_saved_data: !!localStorage.getItem('onboarding_data'),
+    });
+
+    // Track if user leaves without completing
+    return () => {
+      const timeSpent = Math.round((Date.now() - onboardingStartTime.current) / 1000);
+      // Only track dropoff if they didn't complete
+      if (step < 3) {
+        trackDropoff('onboarding', 'page_left', {
+          last_step: step,
+          role_selected: !!profile?.role,
+          time_spent_seconds: timeSpent,
+        });
+      }
+    };
+  }, []);
+
+  // Track step changes
+  useEffect(() => {
+    const timeOnPreviousStep = Math.round((Date.now() - stepStartTime.current) / 1000);
+    stepStartTime.current = Date.now();
+    
+    trackAction('onboarding_step_changed', {
+      step,
+      role: profile?.role || 'not_selected',
+      time_on_previous_step: timeOnPreviousStep,
+    });
+  }, [step]);
   const [data, setData] = useState<OnboardingData>(() => {
     // Try to load from localStorage first
     const saved = localStorage.getItem('onboarding_data');
@@ -265,6 +303,7 @@ export default function Onboarding() {
   }, [user, navigate, initialLoadComplete, showTerms, step, hasAcceptedTermsLocally]);
 
   const handleRoleSelection = (role: UserRole) => {
+    trackAction('onboarding_role_selected', { role });
     setData(prev => ({ ...prev, role }));
   };
 
