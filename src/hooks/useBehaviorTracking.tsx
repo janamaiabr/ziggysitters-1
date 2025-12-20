@@ -14,13 +14,41 @@ interface BehaviorEvent {
 const TRACKING_KEY = 'ziggy_behavior_tracking';
 
 // Get or create session ID
-const getSessionId = () => {
+export const getSessionId = () => {
   let sessionId = sessionStorage.getItem('ziggy_session_id');
   if (!sessionId) {
     sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     sessionStorage.setItem('ziggy_session_id', sessionId);
   }
   return sessionId;
+};
+
+// Link all session events to a user (call after signup/login)
+export const linkSessionEventsToUser = async (userId: string) => {
+  const sessionId = getSessionId();
+  console.log('[BehaviorTracking] Linking session events to user:', userId, 'session:', sessionId);
+  
+  try {
+    const { supabase } = await import('@/integrations/supabase/client');
+    
+    // Update all anonymous events from this session to link to the user
+    const { error, count } = await supabase
+      .from('user_events')
+      .update({ user_id: userId })
+      .eq('session_id', sessionId)
+      .is('user_id', null);
+    
+    if (error) {
+      console.error('[BehaviorTracking] Error linking session events:', error);
+    } else {
+      console.log('[BehaviorTracking] Linked session events to user:', count);
+    }
+    
+    return { error, count };
+  } catch (error) {
+    console.error('[BehaviorTracking] Exception linking session events:', error);
+    return { error, count: 0 };
+  }
 };
 
 // Track scroll depth (25%, 50%, 75%, 100%)

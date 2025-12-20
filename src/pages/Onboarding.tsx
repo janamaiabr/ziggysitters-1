@@ -555,12 +555,15 @@ export default function Onboarding() {
       // Send admin notification about new sitter completion
       try {
         console.log('Sending admin notification for new sitter');
+        // Get session ID for journey tracking
+        const sessionId = sessionStorage.getItem('ziggy_session_id') || sessionStorage.getItem('search_session_id');
+        
         await supabase.functions.invoke('send-welcome-email', {
           body: {
-            user_id: user?.id,
-            user_email: user?.email,
-            user_name: `${profile?.first_name} ${profile?.last_name}`,
-            user_role: 'pet_sitter'
+            email: user?.email,
+            firstName: profile?.first_name || 'there',
+            role: 'pet_sitter',
+            sessionId: sessionId,
           }
         });
       } catch (emailError) {

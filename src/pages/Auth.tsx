@@ -11,7 +11,7 @@ import { Eye, EyeOff, PawPrint, Sparkles, Heart, Shield } from 'lucide-react';
 import TermsAcceptance from '@/components/TermsAcceptance';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
-import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
+import { useBehaviorTracking, linkSessionEventsToUser, getSessionId } from '@/hooks/useBehaviorTracking';
 import petServicesImg from '@/assets/pet-services.jpg';
 
 export default function Auth() {
@@ -178,6 +178,10 @@ export default function Auth() {
                 } else {
                   console.log('✅ Linked anonymous searches to user profile');
                 }
+                
+                // Also link ALL behavior tracking events from this session
+                await linkSessionEventsToUser(profile.id);
+                console.log('✅ Linked behavior tracking events to user profile');
               }
             }
           } catch (error) {
