@@ -76,6 +76,7 @@ import AdminSitterRecruitment from "./pages/AdminSitterRecruitment";
 import AdminSitterLeads from "./pages/AdminSitterLeads";
 import AdminMarketingInsights from "./pages/AdminMarketingInsights";
 import AdminConversionFunnel from "./pages/AdminConversionFunnel";
+import AdminUserBehavior from "./pages/AdminUserBehavior";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
@@ -247,6 +248,7 @@ function AppContent() {
               <Route path="/admin/sitter-leads" element={<AdminSitterLeads />} />
               <Route path="/admin/marketing-insights" element={<AdminMarketingInsights />} />
               <Route path="/admin/conversion-funnel" element={<AdminConversionFunnel />} />
+              <Route path="/admin/user-behavior" element={<AdminUserBehavior />} />
               <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />

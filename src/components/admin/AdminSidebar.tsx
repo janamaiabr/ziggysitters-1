@@ -14,7 +14,8 @@ import {
   CalendarCheck,
   UserCheck,
   Ticket,
-  Wrench
+  Wrench,
+  Activity
 } from 'lucide-react';
 import {
   Sidebar,
@@ -52,6 +53,11 @@ const navSections = [
         title: 'Conversion Funnel',
         href: '/admin/conversion-funnel',
         icon: TrendingUp,
+      },
+      {
+        title: 'User Behavior',
+        href: '/admin/user-behavior',
+        icon: Activity,
       },
       {
         title: 'Marketing Dashboard',

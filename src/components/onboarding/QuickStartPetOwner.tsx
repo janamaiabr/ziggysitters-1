@@ -76,14 +76,18 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
           .single();
 
         if (profileData) {
+          // Get session ID for journey tracking
+          const sessionId = sessionStorage.getItem('ziggy_session_id') || sessionStorage.getItem('search_session_id');
+          
           await supabase.functions.invoke('send-welcome-email', {
             body: {
               email: profileData.email,
               firstName: profileData.first_name || 'there',
-              role: 'pet_owner'
+              role: 'pet_owner',
+              sessionId: sessionId,
             }
           });
-          console.log('Pet owner welcome email sent');
+          console.log('Pet owner welcome email sent with session:', sessionId);
         }
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
