@@ -138,11 +138,13 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
       const searchContext = getSearchContext();
       const lastClickedSitter = searchContext?.clickedSitterId || sessionStorage.getItem('last_clicked_sitter_id');
       
-      // Clear the context after using it
-      clearSearchContext();
+      // DON'T clear the full context yet - keep it so user can go "back to search" from sitter profile
+      // Only clear the clicked sitter ID so we don't keep redirecting to it
+      sessionStorage.removeItem('last_clicked_sitter_id');
       
       if (lastClickedSitter) {
         // BEST: User clicked a sitter before - take them directly there!
+        // Keep search context so they can easily go back and search again
         console.log('User clicked sitter before registering, redirecting to:', lastClickedSitter);
         navigate(`/sitter/${lastClickedSitter}`, { replace: true });
       } else if (searchContext?.location || searchContext?.serviceType) {
@@ -154,9 +156,11 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
         if (searchContext.checkOut) params.set('checkOut', searchContext.checkOut);
         
         console.log('Restoring pre-login search context:', searchContext);
+        clearSearchContext(); // Clear after using for search redirect
         navigate(`/find-sitters?${params.toString()}`, { replace: true });
       } else {
         // OK: No prior context - use their onboarding suburb
+        clearSearchContext();
         navigate(`/find-sitters?location=${encodeURIComponent(suburb.trim())}`, { replace: true });
       }
     } catch (error: any) {
