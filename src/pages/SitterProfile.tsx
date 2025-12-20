@@ -15,7 +15,8 @@ import {
   Shield,
   Clock,
   ArrowLeft,
-  MessageCircle
+  MessageCircle,
+  Search
 } from 'lucide-react';
 import BookingAccordion from '@/components/booking/BookingAccordion';
 import { useAuth } from '@/hooks/useAuth';
@@ -23,6 +24,7 @@ import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
 import { useEventTracking } from '@/hooks/useEventTracking';
+import { useSearchTracking } from '@/hooks/useSearchTracking';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
@@ -57,11 +59,30 @@ export default function SitterProfile() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const { trackEvent } = useEventTracking();
+  const { getSearchContext, clearSearchContext } = useSearchTracking();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Build smart "back to search" URL from saved context
+  const buildSearchUrl = () => {
+    const context = getSearchContext();
+    const params = new URLSearchParams();
+    
+    if (context?.location) params.set('location', context.location);
+    if (context?.serviceType) params.set('serviceType', context.serviceType);
+    if (context?.checkIn) params.set('checkIn', context.checkIn);
+    if (context?.checkOut) params.set('checkOut', context.checkOut);
+    
+    return params.toString() ? `/find-sitters?${params.toString()}` : '/find-sitters';
+  };
+  
+  const handleBackToSearch = () => {
+    clearSearchContext(); // Clear after navigating back
+    navigate(buildSearchUrl());
+  };
   
   // Get dates from URL params
   const checkInDate = searchParams.get('checkIn');
@@ -276,9 +297,9 @@ export default function SitterProfile() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Sitter Not Found</h1>
-          <Button onClick={() => navigate('/find-sitters')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Find Sitters
+          <Button onClick={handleBackToSearch}>
+            <Search className="mr-2 h-4 w-4" />
+            Back to Search
           </Button>
         </div>
       </div>
@@ -292,10 +313,10 @@ export default function SitterProfile() {
         <div className="container mx-auto px-4">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/find-sitters')}
+            onClick={handleBackToSearch}
             className="mb-6"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <Search className="mr-2 h-4 w-4" />
             Back to Search
           </Button>
           
