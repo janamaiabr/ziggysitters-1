@@ -27,7 +27,7 @@ export default function FindSitters() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isMobile = useIsMobile();
-  const { trackSearch, trackSitterClick } = useSearchTracking();
+  const { trackSearch, trackSitterClick, saveSearchContext } = useSearchTracking();
   const { trackEvent, trackPageView } = useEventTracking();
 
   // Track page view on mount
@@ -379,6 +379,15 @@ export default function FindSitters() {
     
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.replaceState({}, '', newUrl);
+
+    // CRITICAL: Save full search context so user can resume after login/registration
+    // This ensures they don't lose their search when they click a sitter and register
+    saveSearchContext({
+      location: location || undefined,
+      serviceType: serviceType || undefined,
+      checkIn: selectedDate?.toISOString().split('T')[0],
+      checkOut: checkOutDate?.toISOString().split('T')[0],
+    });
 
     // Auto-scroll to results after search - on mobile scroll to top of page to show results immediately
     if (isMobile) {

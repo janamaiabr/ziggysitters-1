@@ -19,7 +19,7 @@ interface EnhancedSitterCardProps {
     sitterServices?: any[];
   };
   onViewProfile: () => void;
-  onSitterClick?: (sitterId: string) => void;
+  onSitterClick?: (sitterId: string, sitterName?: string) => void;
   showBookingDates?: boolean;
 }
 
@@ -33,9 +33,9 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
   const hasFencedYard = sitter.sitterServices?.some(s => s.has_fenced_yard);
 
   const handleClick = () => {
-    // Track the click for analytics
+    // Track the click for analytics - include sitter name for better context
     if (onSitterClick) {
-      onSitterClick(sitter.id);
+      onSitterClick(sitter.id, sitter.name);
     }
     onViewProfile();
   };
