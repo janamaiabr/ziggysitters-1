@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,9 +11,12 @@ import { Eye, EyeOff, PawPrint, Sparkles, Heart, Shield } from 'lucide-react';
 import TermsAcceptance from '@/components/TermsAcceptance';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
+import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import petServicesImg from '@/assets/pet-services.jpg';
 
 export default function Auth() {
+  const { trackAction, trackFormInteraction, trackDropoff } = useBehaviorTracking();
+  const formStartTime = useRef<number | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { signIn, signUp, user } = useAuth();
@@ -34,18 +37,22 @@ export default function Auth() {
   // Always redirect new signups to onboarding to collect profile info
   const redirectUrl = searchParams.get('redirect') || '/onboarding';
 
-  // Redirect if already authenticated
+  // Track page view and form interactions
   useEffect(() => {
-    if (user) {
-      navigate(redirectUrl);
-    }
-  }, [user, navigate, redirectUrl]);
+    trackAction('auth_page_viewed', { 
+      default_tab: defaultTab,
+      has_redirect: !!searchParams.get('redirect'),
+    });
+  }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    trackFormInteraction('signin_form', 'submitted');
+    
     // Validate inputs are not empty or spaces-only
     if (!formData.email.trim() || !formData.password.trim()) {
+      trackAction('signin_validation_failed', { reason: 'empty_fields' });
       toast({
         title: "Invalid Input",
         description: "Please enter valid email and password.",
@@ -61,12 +68,14 @@ export default function Auth() {
       const { error } = await signIn(formData.email.trim(), formData.password.trim());
       
       if (error) {
+        trackAction('signin_failed', { error: error.message });
         toast({
           title: "Sign In Failed",
           description: error.message,
           variant: "destructive",
         });
       } else {
+        trackAction('signin_completed');
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in.",
@@ -74,6 +83,7 @@ export default function Auth() {
         navigate(redirectUrl);
       }
     } catch (error) {
+      trackAction('signin_error', { error: 'unexpected' });
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
@@ -86,6 +96,7 @@ export default function Auth() {
 
   const executeSignUp = async () => {
     setIsLoading(true);
+    const signupStartTime = Date.now();
 
     try {
       // Trim all values before sending to API
@@ -97,6 +108,11 @@ export default function Auth() {
       );
       
       if (error) {
+        trackAction('signup_failed', { 
+          error: error.message, 
+          time_spent_seconds: Math.round((Date.now() - signupStartTime) / 1000) 
+        });
+        
         if (error.message.includes('already registered')) {
           toast({
             title: "Account Already Exists",
@@ -111,6 +127,12 @@ export default function Auth() {
           });
         }
       } else {
+        // Track successful signup
+        trackAction('signup_completed', {
+          time_to_signup_seconds: formStartTime.current 
+            ? Math.round((Date.now() - formStartTime.current) / 1000) 
+            : null,
+        });
         // Get the newly created user session
         const { data: { session } } = await supabase.auth.getSession();
         
@@ -192,8 +214,24 @@ export default function Auth() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Track form start if not already started
+    if (!formStartTime.current) {
+      formStartTime.current = Date.now();
+    }
+    
+    trackFormInteraction('signup_form', 'submitted');
+    
     // Validate inputs are not empty or spaces-only
     if (!formData.email.trim() || !formData.password.trim() || !formData.firstName.trim() || !formData.lastName.trim()) {
+      trackAction('signup_validation_failed', { 
+        reason: 'empty_fields',
+        fields_filled: {
+          email: !!formData.email.trim(),
+          password: !!formData.password.trim(),
+          firstName: !!formData.firstName.trim(),
+          lastName: !!formData.lastName.trim(),
+        }
+      });
       toast({
         title: "Invalid Input",
         description: "Please fill in all fields with valid information.",
@@ -202,12 +240,14 @@ export default function Auth() {
       return;
     }
     
+    trackAction('signup_terms_shown');
     // Show terms acceptance dialog
     setPendingAuthAction(() => executeSignUp);
     setShowTerms(true);
   };
 
   const handleTermsAccept = async () => {
+    trackAction('terms_accepted');
     setShowTerms(false);
     if (pendingAuthAction) {
       // Set a flag in localStorage (persists across refreshes) that terms were just accepted
@@ -218,6 +258,8 @@ export default function Auth() {
   };
 
   const handleTermsDecline = () => {
+    trackAction('terms_declined');
+    trackDropoff('signup', 'terms_declined');
     setShowTerms(false);
     setPendingAuthAction(null);
     toast({
@@ -228,6 +270,12 @@ export default function Auth() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Track first interaction with form
+    if (!formStartTime.current) {
+      formStartTime.current = Date.now();
+      trackFormInteraction('signup_form', 'started');
+    }
+    
     const value = e.target.value;
     setFormData(prev => ({
       ...prev,
