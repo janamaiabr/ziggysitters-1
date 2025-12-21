@@ -174,6 +174,74 @@ const Index = () => {
         setCheckOut={setCheckOut}
       />
 
+      {/* Featured Sitters - Moved Higher for Prominence */}
+      <section className="py-10 md:py-16 bg-gradient-to-b from-accent/10 to-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-6 md:mb-10 px-4">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3">Meet Our Trusted Sitters</h2>
+            <p className="text-base md:text-lg text-muted-foreground">
+              Verified professionals ready to care for your pets
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto px-4">
+            {featuredSitters.map((sitter) => (
+              <Card 
+                key={sitter.id} 
+                className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
+                onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex flex-col items-center text-center">
+                    <Avatar className="h-20 w-20 md:h-24 md:w-24 mb-3 ring-4 ring-primary/20 group-hover:ring-primary/40 transition-all">
+                      <AvatarImage 
+                        src={sitter.avatar} 
+                        alt={sitter.name} 
+                        className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
+                        }}
+                      />
+                      <AvatarFallback className="text-lg">{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    
+                    <h3 className="font-semibold text-lg mb-1">{sitter.name}</h3>
+                    
+                    <div className="flex items-center text-sm text-muted-foreground mb-2">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {sitter.location.split(',')[0]}
+                    </div>
+                    
+                    <div className="flex items-center gap-1 mb-3">
+                      {sitter.verified && (
+                        <Badge variant="secondary" className="text-xs">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Verified
+                        </Badge>
+                      )}
+                      {sitter.hasPoliceVet && (
+                        <Badge className="text-xs bg-yellow-500">⭐ Gold</Badge>
+                      )}
+                    </div>
+                    
+                    <Button size="sm" className="w-full group-hover:bg-primary/90">
+                      View Profile
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center mt-6 md:mt-8">
+            <Button variant="outline" size="lg" onClick={() => navigate('/find-sitters')}>
+              <Search className="w-4 h-4 mr-2" />
+              Browse All Sitters
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <HowItWorksSection />
 
@@ -234,88 +302,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Sitters */}
-      <section className="py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Verified Sitters in Auckland & Hamilton</h2>
-            <p className="text-base md:text-lg text-muted-foreground">
-              Meet some of our verified, experienced pet care professionals
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto px-4">
-            {featuredSitters.map((sitter) => (
-              <Card key={sitter.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                <CardHeader className="pb-3 md:pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center space-x-3 md:space-x-4">
-                      <Avatar className="h-12 w-12 md:h-16 md:w-16">
-                         <AvatarImage 
-                           src={sitter.avatar} 
-                           alt={sitter.name} 
-                           className="object-cover"
-                           onError={(e) => {
-                             e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
-                           }}
-                         />
-                        <AvatarFallback>{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                         <CardTitle className="text-lg md:text-xl">{sitter.name}</CardTitle>
-                        <div className="flex items-center text-xs md:text-sm text-muted-foreground">
-                          <MapPin className="w-3 h-3 mr-1" />
-                          {sitter.location}
-                        </div>
-                         <div className="flex flex-wrap items-center gap-1 mt-1">
-                          {sitter.verified && (
-                            <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
-                          )}
-                          {sitter.hasPoliceVet && (
-                            <Badge variant="default" className="text-xs bg-yellow-500 whitespace-nowrap">⭐</Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    {/* Removed save sitter functionality */}
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-3 md:space-y-4">
-                  <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    {sitter.services.map((service) => (
-                      <Badge key={service} variant="outline" className="text-xs">
-                        {service}
-                      </Badge>
-                    ))}
-                  </div>
-                  
-                   <div className="flex items-center justify-between">
-                      <div className="text-xs md:text-sm text-muted-foreground">
-                        
-                     </div>
-                   </div>
-                  
-                  <Button 
-                    className="w-full"
-                    onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
-                   >
-                     View Profile & Book
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center mt-8 md:mt-12 px-4">
-           <Button variant="outline" size="lg" onClick={() => navigate('/find-sitters')}>
-             View All Sitters
-           </Button>
-          </div>
-        </div>
-      </section>
 
       {/* Daily Reports Section */}
       <section className="py-12 md:py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
