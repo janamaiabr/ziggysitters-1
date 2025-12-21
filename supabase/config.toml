@@ -137,3 +137,9 @@ verify_jwt = false
 
 [functions.send-add-pet-reminder]
 verify_jwt = false
+
+[functions.send-abandoned-booking-email]
+verify_jwt = false
+
+[functions.check-abandoned-bookings]
+verify_jwt = false
