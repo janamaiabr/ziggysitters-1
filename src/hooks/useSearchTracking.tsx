@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/contexts/ProfileContext';
 
 // Generate or retrieve session ID for tracking anonymous users
 const getSessionId = (): string => {
@@ -35,6 +36,7 @@ const SEARCH_CONTEXT_KEY = 'pre_login_search_context';
 
 export const useSearchTracking = () => {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const [clickedSitters, setClickedSitters] = useState<string[]>([]);
 
   const trackSearch = async (params: SearchParams) => {
@@ -44,7 +46,7 @@ export const useSearchTracking = () => {
       const { error } = await supabase
         .from('search_events')
         .insert({
-          user_id: user?.id || null,
+          user_id: profile?.id || null, // Use profile.id for consistency with welcome email queries
           session_id: sessionId,
           search_timestamp: new Date().toISOString(),
           suburb: params.suburb,
