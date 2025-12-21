@@ -214,12 +214,12 @@ const Index = () => {
                   {/* Top accent bar */}
                   <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
                   
-                  <CardContent className="p-6">
+                  <CardContent className="p-5">
                     <div className="flex flex-col items-center text-center">
                       {/* Avatar with animated ring */}
-                      <div className="relative mb-4">
+                      <div className="relative mb-3">
                         <div className="absolute -inset-2 bg-gradient-to-r from-primary via-accent to-primary rounded-full opacity-30 group-hover:opacity-100 blur-sm transition-opacity duration-500 animate-spin-slow" style={{ animationDuration: '8s' }} />
-                        <Avatar className="h-24 w-24 md:h-28 md:w-28 ring-4 ring-background relative z-10">
+                        <Avatar className="h-20 w-20 md:h-24 md:w-24 ring-4 ring-background relative z-10">
                           <AvatarImage 
                             src={sitter.avatar} 
                             alt={sitter.name} 
@@ -232,53 +232,47 @@ const Index = () => {
                             {sitter.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
-                        
-                        {/* Online indicator */}
-                        <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-background z-20 animate-pulse" />
                       </div>
                       
-                      {/* Name with gradient on hover */}
-                      <h3 className="font-bold text-xl mb-1 group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-accent group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                      {/* Name */}
+                      <h3 className="font-bold text-lg mb-1 group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-accent group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                         {sitter.name}
                       </h3>
                       
-                      {/* Rating stars */}
-                      <div className="flex items-center gap-1 mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-4 h-4 ${i < Math.floor(sitter.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30'}`} 
-                          />
-                        ))}
-                        <span className="text-sm font-medium ml-1">{sitter.rating}</span>
-                      </div>
-                      
                       {/* Location */}
-                      <div className="flex items-center text-sm text-muted-foreground mb-3">
-                        <MapPin className="w-4 h-4 mr-1 text-primary" />
+                      <div className="flex items-center text-sm text-muted-foreground mb-2">
+                        <MapPin className="w-3 h-3 mr-1 text-primary" />
                         {sitter.location.split(',')[0]}
                       </div>
                       
+                      {/* Bio snippet */}
+                      {sitter.bio && (
+                        <p className="text-xs text-muted-foreground line-clamp-2 mb-3 min-h-[2.5rem]">
+                          {sitter.bio}
+                        </p>
+                      )}
+                      
                       {/* Badges */}
-                      <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+                      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
                         {sitter.verified && (
-                          <Badge className="bg-green-500/10 text-green-600 border border-green-500/30 hover:bg-green-500/20">
+                          <Badge className="bg-green-500/10 text-green-600 border border-green-500/30 hover:bg-green-500/20 text-xs px-2 py-0.5">
                             <Shield className="w-3 h-3 mr-1" />
-                            ID Verified
+                            Verified
                           </Badge>
                         )}
                         {sitter.hasPoliceVet && (
-                          <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 shadow-md">
-                            ⭐ Police Vetted
+                          <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 shadow-md text-xs px-2 py-0.5">
+                            ⭐ Gold
                           </Badge>
                         )}
                       </div>
                       
                       {/* CTA Button */}
                       <Button 
+                        size="sm"
                         className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
                       >
-                        Book Now
+                        View Profile
                         <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                       </Button>
                     </div>
