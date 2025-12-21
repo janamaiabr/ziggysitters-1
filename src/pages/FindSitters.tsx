@@ -174,11 +174,20 @@ export default function FindSitters() {
         
         console.log(`Bookable sitters: ${bookableSitters.length} of ${transformedSitters.length}`);
         
-        // Sort sitters: golden badge holders first, then by rating
+        // Sort sitters: Auckland sitters first, then golden badge, then others
         const sortedSitters = bookableSitters.sort((a, b) => {
+          const aIsAuckland = (a.city || '').toLowerCase().includes('auckland');
+          const bIsAuckland = (b.city || '').toLowerCase().includes('auckland');
+          
+          // Auckland sitters come first
+          if (aIsAuckland && !bIsAuckland) return -1;
+          if (!aIsAuckland && bIsAuckland) return 1;
+          
+          // Within same city priority, golden badge holders first
           if (a.golden_badge && !b.golden_badge) return -1;
           if (!a.golden_badge && b.golden_badge) return 1;
-          return 0; // Keep original order if both have same golden badge status
+          
+          return 0; // Keep original order if both have same status
         });
         
         console.log('All transformed sitters:', sortedSitters);
@@ -636,8 +645,10 @@ export default function FindSitters() {
                 {filteredSitters.length === 0 
                   ? 'No sitters found matching your criteria. Try adjusting your filters.' 
                   : serviceType === 'pet_sitting_owners_home'
-                    ? `Found ${filteredSitters.length} sitter${filteredSitters.length !== 1 ? 's' : ''} who will come to your home`
-                    : `Found ${filteredSitters.length} sitter${filteredSitters.length !== 1 ? 's' : ''} in your area`}
+                    ? 'Showing sitters who will come to your home'
+                    : location 
+                      ? `Showing sitters near ${location}`
+                      : 'Showing available sitters in your area'}
               </p>
               {serviceType === 'pet_sitting_owners_home' && filteredSitters.length > 0 && (
                 <p className="text-sm text-primary mt-1 flex items-center gap-1">
