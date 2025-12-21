@@ -19,6 +19,7 @@ import HowItWorksSection from '@/components/home/HowItWorksSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import TrustSignalsSection from '@/components/home/TrustSignalsSection';
 import ExitIntentPopup from '@/components/home/ExitIntentPopup';
+import GeoLocationBanner from '@/components/home/GeoLocationBanner';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import { useProfile } from '@/contexts/ProfileContext';
 
@@ -151,12 +152,8 @@ const Index = () => {
         structuredData={structuredData}
       />
       <div className="bg-gradient-to-b from-background to-accent/20">
-      {/* Launch Location Notice - Visible for all users */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-4 text-center">
-        <p className="text-sm md:text-base font-medium">
-          📍 Currently serving Auckland and Hamilton, New Zealand. Expanding to more cities soon!
-        </p>
-      </div>
+      {/* Geo-aware location banner for international visitors */}
+      <GeoLocationBanner />
 
       {/* Stripe Live Mode Warning for Logged-in Sitters */}
       {user && (

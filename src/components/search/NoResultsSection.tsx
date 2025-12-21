@@ -98,83 +98,78 @@ export default function NoResultsSection({
 
   return (
     <div className="py-8 space-y-8">
-      {/* Main No Results Message */}
-      <div className="text-center max-w-2xl mx-auto">
-        <div className="w-20 h-20 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-          <span className="text-4xl">🔍</span>
-        </div>
-        <h3 className="text-2xl font-bold mb-2 text-foreground">
-          No sitters found in {searchLocation || 'your area'}
-        </h3>
-        <p className="text-muted-foreground mb-4">
-          {searchServiceType && (
-            <>for <span className="font-medium">{serviceTypeLabels[searchServiceType] || searchServiceType}</span></>
-          )}
-        </p>
-        
-        {/* Quick Actions */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          <Button variant="outline" onClick={onClearFilters}>
-            Clear filters & see all
-          </Button>
-        </div>
-      </div>
-
-      {/* Notify Me Section */}
+      {/* Notify Me Section - NOW FIRST AND PROMINENT */}
       {!isSubscribed ? (
-        <Card className="max-w-lg mx-auto border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-primary/10 rounded-full">
-                <Bell className="w-5 h-5 text-primary" />
+        <Card className="max-w-xl mx-auto border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10 shadow-xl">
+          <CardContent className="p-6 md:p-8">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                <Bell className="w-8 h-8 text-white" />
               </div>
-              <div>
-                <h4 className="font-semibold text-foreground">Get notified when a sitter joins</h4>
-                <p className="text-sm text-muted-foreground">
-                  We're actively recruiting sitters in {searchLocation || 'your area'}
-                </p>
-              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">
+                No sitters in {searchLocation || 'your area'} yet
+              </h3>
+              <p className="text-muted-foreground">
+                But don't worry! We're actively recruiting sitters nearby.
+                <span className="block font-medium text-primary mt-1">Be the first to know when one joins!</span>
+              </p>
             </div>
-            <form onSubmit={handleNotifyMe} className="space-y-3">
+            <form onSubmit={handleNotifyMe} className="space-y-4">
               <Input
                 type="text"
                 placeholder="Your name (optional)"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="bg-background"
+                className="bg-background h-12 text-base"
               />
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-background"
-                />
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : 'Notify Me'}
-                </Button>
-              </div>
+              <Input
+                type="email"
+                placeholder="Your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-background h-12 text-base"
+              />
+              <Button 
+                type="submit" 
+                disabled={isSubmitting} 
+                className="w-full h-12 text-base font-bold bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+              >
+                {isSubmitting ? 'Saving...' : '🔔 Notify Me When Available'}
+              </Button>
               <p className="text-xs text-muted-foreground text-center">
-                We'll only email you when a matching sitter becomes available
+                We'll only email you when a matching sitter becomes available. No spam, ever.
               </p>
             </form>
           </CardContent>
         </Card>
       ) : (
-        <Card className="max-w-lg mx-auto border-green-200 bg-green-50">
-          <CardContent className="p-6 text-center">
-            <div className="w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full flex items-center justify-center">
-              <Mail className="w-6 h-6 text-green-600" />
+        <Card className="max-w-xl mx-auto border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+              <Mail className="w-8 h-8 text-green-600" />
             </div>
-            <h4 className="font-semibold text-green-900">You're on the list!</h4>
-            <p className="text-sm text-green-700">
-              We'll email you when a sitter becomes available in {searchLocation || 'your area'}
+            <h4 className="text-xl font-bold text-green-900 mb-2">You're on the list! 🎉</h4>
+            <p className="text-green-700">
+              We'll email you the moment a sitter becomes available in {searchLocation || 'your area'}
             </p>
           </CardContent>
         </Card>
       )}
+      
+      {/* Secondary message with clear all option */}
+      <div className="text-center">
+        <p className="text-muted-foreground mb-3">
+          {searchServiceType && (
+            <>Looking for <span className="font-medium">{serviceTypeLabels[searchServiceType] || searchServiceType}</span>? </>
+          )}
+          Try expanding your search.
+        </p>
+        <Button variant="outline" onClick={onClearFilters}>
+          View all available sitters
+        </Button>
+      </div>
+
 
       {/* Nearby Sitters Section */}
       {nearbySitters.length > 0 && (

@@ -90,8 +90,20 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  Experience peace of mind with <span className="text-purple-600 dark:text-purple-400 font-bold">guaranteed daily updates</span>. Our sitters must deliver photo reports, or face a 15% payment reduction! 📸
+                  <span className="text-purple-600 dark:text-purple-400 font-bold">Trusted pet sitters in Auckland & Hamilton</span> with guaranteed daily photo updates. No guessing - just peace of mind! 📸
                 </p>
+
+                {/* Quick CTA for mobile - immediately visible */}
+                <div className="lg:hidden pt-2">
+                  <Button 
+                    size="lg" 
+                    className="w-full text-base font-bold shadow-lg bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
+                    onClick={handleSearch}
+                  >
+                    <Search className="mr-2 h-5 w-5" />
+                    Find a Sitter Now
+                  </Button>
+                </div>
               </div>
 
               {/* Feature badges with emojis - smaller on mobile */}
