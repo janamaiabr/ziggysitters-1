@@ -16,7 +16,7 @@ interface WelcomeEmailRequest {
   email: string;
   firstName: string;
   role: string;
-  sessionId?: string; // Optional session ID to link events
+  sessionId?: string;
 }
 
 interface UserEvent {
@@ -30,11 +30,34 @@ interface UserEvent {
   event_data: Record<string, any>;
 }
 
+interface SearchEvent {
+  id: string;
+  session_id: string;
+  user_id: string | null;
+  suburb: string | null;
+  city: string | null;
+  service_type: string | null;
+  pet_species: string[] | null;
+  pet_size: string[] | null;
+  results_count: number | null;
+  clicked_sitter_ids: string[] | null;
+  created_at: string;
+  search_timestamp: string;
+  referrer: string | null;
+}
+
 function formatDuration(seconds: number): string {
   if (seconds < 60) return `${seconds}s`;
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}m ${secs}s`;
+}
+
+function formatServiceType(serviceType: string | null): string {
+  if (!serviceType) return 'Not specified';
+  return serviceType
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, l => l.toUpperCase());
 }
 
 function getEventIcon(eventType: string, eventName: string): string {
@@ -58,6 +81,8 @@ function getEventIcon(eventType: string, eventName: string): string {
   if (eventName.includes('search')) return '🔍';
   if (eventName.includes('signup') || eventName.includes('register')) return '✨';
   if (eventName.includes('wizard')) return '🧙';
+  if (eventName.includes('sitter')) return '👤';
+  if (eventName.includes('booking')) return '📅';
   
   return icons[eventType] || '•';
 }
@@ -71,10 +96,101 @@ function formatEventName(eventName: string): string {
 async function buildUserJourneyHtml(profileId: string, sessionId?: string): Promise<{ html: string; summary: Record<string, any> }> {
   console.log("Building user journey for profile:", profileId, "session:", sessionId);
   
-  // Get all events for this user OR their session
+  // Collect all session IDs we need to check
+  const sessionIdsToCheck = new Set<string>();
+  if (sessionId) {
+    sessionIdsToCheck.add(sessionId);
+  }
+  
+  // STEP 1: Get ALL search events - by session first (this captures pre-registration searches)
+  let searchEventsData: SearchEvent[] = [];
+  
+  // Get searches by session_id FIRST (most important - captures anonymous searches)
+  if (sessionId) {
+    console.log("Fetching search events by session_id:", sessionId);
+    const { data: sessionSearches, error: sessionSearchError } = await supabase
+      .from('search_events')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true });
+    
+    if (sessionSearchError) {
+      console.error("Error fetching session searches:", sessionSearchError);
+    }
+    if (sessionSearches && sessionSearches.length > 0) {
+      console.log("Found", sessionSearches.length, "searches by session_id");
+      searchEventsData = sessionSearches;
+    }
+  }
+  
+  // Also get by user_id (in case they made searches while logged in)
+  const { data: userSearches, error: userSearchError } = await supabase
+    .from('search_events')
+    .select('*')
+    .eq('user_id', profileId)
+    .order('created_at', { ascending: true });
+  
+  if (userSearchError) {
+    console.error("Error fetching user searches:", userSearchError);
+  }
+  if (userSearches && userSearches.length > 0) {
+    console.log("Found", userSearches.length, "searches by user_id");
+    const existingIds = new Set(searchEventsData.map(e => e.id));
+    userSearches.forEach(e => {
+      if (!existingIds.has(e.id)) {
+        searchEventsData.push(e);
+        if (e.session_id) sessionIdsToCheck.add(e.session_id);
+      }
+    });
+  }
+  
+  // Add session IDs from search events to our check list
+  searchEventsData.forEach(se => {
+    if (se.session_id) sessionIdsToCheck.add(se.session_id);
+  });
+  
+  console.log("Total session IDs to check:", Array.from(sessionIdsToCheck));
+  console.log("Total search events found:", searchEventsData.length);
+  
+  // Sort searches by timestamp
+  searchEventsData.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  
+  // STEP 2: Get ALL clicked sitter details with FULL info
+  const allClickedSitterIds = new Set<string>();
+  searchEventsData.forEach(se => {
+    if (se.clicked_sitter_ids && Array.isArray(se.clicked_sitter_ids)) {
+      se.clicked_sitter_ids.forEach((id: string) => allClickedSitterIds.add(id));
+    }
+  });
+  
+  console.log("All clicked sitter IDs:", Array.from(allClickedSitterIds));
+  
+  let clickedSittersInfo: { id: string; name: string; suburb: string; city: string; rating: number | null }[] = [];
+  if (allClickedSitterIds.size > 0) {
+    const { data: sitterProfiles, error: sitterError } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name, suburb, city, rating')
+      .in('id', Array.from(allClickedSitterIds));
+    
+    if (sitterError) {
+      console.error("Error fetching sitter profiles:", sitterError);
+    }
+    if (sitterProfiles) {
+      clickedSittersInfo = sitterProfiles.map(s => ({
+        id: s.id,
+        name: `${s.first_name} ${s.last_name}`,
+        suburb: s.suburb || 'Unknown',
+        city: s.city || '',
+        rating: s.rating
+      }));
+      console.log("Found sitter profiles:", clickedSittersInfo.length);
+    }
+  }
+  
+  // STEP 3: Get all user events from all relevant sessions
   let events: UserEvent[] = [];
   
-  // First try to get events by user_id
+  // Get events by user_id first
   const { data: userEvents } = await supabase
     .from('user_events')
     .select('*')
@@ -85,154 +201,45 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
     events = userEvents;
   }
   
-  // Also get events by session_id if provided
-  if (sessionId) {
+  // Get events from ALL session IDs we've collected
+  for (const sId of sessionIdsToCheck) {
     const { data: sessionEvents } = await supabase
       .from('user_events')
       .select('*')
-      .eq('session_id', sessionId)
+      .eq('session_id', sId)
       .order('created_at', { ascending: true });
     
     if (sessionEvents && sessionEvents.length > 0) {
-      // Merge and dedupe by id
       const existingIds = new Set(events.map(e => e.id));
       sessionEvents.forEach(e => {
         if (!existingIds.has(e.id)) {
           events.push(e);
         }
       });
-      events.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
     }
   }
   
-  // Get FULL search events data including clicked sitters
-  let searchEventsData: any[] = [];
-  const { data: userSearchEvents } = await supabase
-    .from('search_events')
-    .select('*')
-    .eq('user_id', profileId)
-    .order('created_at', { ascending: true });
-  
-  if (userSearchEvents && userSearchEvents.length > 0) {
-    searchEventsData = userSearchEvents;
-    // Also get session from first search event to find pre-registration events
-    if (userSearchEvents[0].session_id) {
-      const { data: sessionSearchEvents } = await supabase
-        .from('search_events')
-        .select('*')
-        .eq('session_id', userSearchEvents[0].session_id)
-        .order('created_at', { ascending: true });
-      
-      if (sessionSearchEvents) {
-        const existingIds = new Set(searchEventsData.map(e => e.id));
-        sessionSearchEvents.forEach(e => {
-          if (!existingIds.has(e.id)) {
-            searchEventsData.push(e);
-          }
-        });
-        searchEventsData.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-      }
-    }
-  }
-  
-  // Also try direct session search if we have sessionId
-  if (sessionId) {
-    const { data: directSessionSearch } = await supabase
-      .from('search_events')
-      .select('*')
-      .eq('session_id', sessionId)
-      .order('created_at', { ascending: true });
-    
-    if (directSessionSearch) {
-      const existingIds = new Set(searchEventsData.map(e => e.id));
-      directSessionSearch.forEach(e => {
-        if (!existingIds.has(e.id)) {
-          searchEventsData.push(e);
-        }
-      });
-      searchEventsData.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    }
-  }
-  
-  // Get clicked sitter details
-  const allClickedSitterIds = new Set<string>();
-  searchEventsData.forEach(se => {
-    if (se.clicked_sitter_ids && Array.isArray(se.clicked_sitter_ids)) {
-      se.clicked_sitter_ids.forEach((id: string) => allClickedSitterIds.add(id));
-    }
-  });
-  
-  let clickedSittersInfo: { id: string; name: string; suburb: string }[] = [];
-  if (allClickedSitterIds.size > 0) {
-    const { data: sitterProfiles } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, suburb')
-      .in('id', Array.from(allClickedSitterIds));
-    
-    if (sitterProfiles) {
-      clickedSittersInfo = sitterProfiles.map(s => ({
-        id: s.id,
-        name: `${s.first_name} ${s.last_name}`,
-        suburb: s.suburb || 'Unknown'
-      }));
-    }
-  }
-  
-  // Also merge user_events from search sessions
-  const searchSessionIds = new Set(searchEventsData.map(se => se.session_id).filter(Boolean));
-  for (const sId of searchSessionIds) {
-    const { data: additionalEvents } = await supabase
-      .from('user_events')
-      .select('*')
-      .eq('session_id', sId)
-      .order('created_at', { ascending: true });
-    
-    if (additionalEvents && additionalEvents.length > 0) {
-      const existingIds = new Set(events.map(e => e.id));
-      additionalEvents.forEach(e => {
-        if (!existingIds.has(e.id)) {
-          events.push(e);
-        }
-      });
-    }
-  }
+  // Sort all events by time
   events.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-  console.log("Found", events.length, "events,", searchEventsData.length, "searches,", clickedSittersInfo.length, "clicked sitters");
+  
+  console.log("Total user_events found:", events.length);
 
   const summary: Record<string, any> = {
     totalEvents: events.length,
+    totalSearches: searchEventsData.length,
     pagesViewed: new Set<string>(),
     referrer: null,
     firstSeen: null,
     lastSeen: null,
     timeOnSite: 0,
     maxScrollDepth: 0,
-    searchCount: 0,
+    searchCount: searchEventsData.length,
     clickCount: 0,
     formStarts: 0,
     formAbandons: 0,
     idleEvents: 0,
+    clickedSitters: clickedSittersInfo.length,
   };
-
-  if (events.length === 0) {
-    return {
-      html: `
-        <div style="background: #fef2f2; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ef4444;">
-          <h3 style="margin-top: 0; color: #b91c1c;">⚠️ No Journey Data Found</h3>
-          <p style="margin: 0; color: #7f1d1d;">
-            We couldn't find any tracked events for this user. This could mean:
-          </p>
-          <ul style="color: #7f1d1d; margin-bottom: 0;">
-            <li>They registered very quickly without browsing</li>
-            <li>They had ad blockers or tracking protection enabled</li>
-            <li>They came from a direct link to the auth page</li>
-          </ul>
-        </div>
-      `,
-      summary
-    };
-  }
 
   // Process events for summary
   events.forEach(event => {
@@ -250,7 +257,6 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
     if (event.event_data?.scroll_depth > summary.maxScrollDepth) {
       summary.maxScrollDepth = event.event_data.scroll_depth;
     }
-    if (event.event_type === 'search') summary.searchCount++;
     if (event.event_name.includes('click')) summary.clickCount++;
     if (event.event_name === 'form_start') summary.formStarts++;
     if (event.event_name === 'form_abandon') summary.formAbandons++;
@@ -269,6 +275,27 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
 
   summary.pagesViewed = Array.from(summary.pagesViewed);
 
+  // If no events and no searches, show appropriate message
+  if (events.length === 0 && searchEventsData.length === 0) {
+    return {
+      html: `
+        <div style="background: #fef2f2; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ef4444;">
+          <h3 style="margin-top: 0; color: #b91c1c;">⚠️ No Journey Data Found</h3>
+          <p style="margin: 0; color: #7f1d1d;">
+            Session ID received: ${sessionId || 'NONE - this is the problem!'}<br>
+            We couldn't find any tracked events. This could mean:
+          </p>
+          <ul style="color: #7f1d1d; margin-bottom: 0;">
+            <li>Session ID wasn't passed correctly from frontend</li>
+            <li>They had ad blockers or tracking protection enabled</li>
+            <li>They came from a direct link and registered very quickly</li>
+          </ul>
+        </div>
+      `,
+      summary
+    };
+  }
+
   // Build summary section
   const summaryHtml = `
     <div style="background: #f0fdf4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #22c55e;">
@@ -276,7 +303,7 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
       <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
         <tr>
           <td style="padding: 5px 10px 5px 0;"><strong>🌐 Came From:</strong></td>
-          <td style="padding: 5px 0;">${summary.referrer ? `<a href="${summary.referrer}" style="color: #2563eb;">${new URL(summary.referrer).hostname}</a>` : 'Direct / Unknown'}</td>
+          <td style="padding: 5px 0;">${summary.referrer ? `<a href="${summary.referrer}" style="color: #2563eb;">${(() => { try { return new URL(summary.referrer).hostname; } catch { return summary.referrer; } })()}</a>` : 'Direct / Unknown'}</td>
         </tr>
         <tr>
           <td style="padding: 5px 10px 5px 0;"><strong>⏱️ Time on Site:</strong></td>
@@ -288,116 +315,69 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
         </tr>
         <tr>
           <td style="padding: 5px 10px 5px 0;"><strong>🔍 Searches:</strong></td>
-          <td style="padding: 5px 0;">${summary.searchCount}</td>
+          <td style="padding: 5px 0; font-weight: bold; color: ${searchEventsData.length > 0 ? '#16a34a' : '#dc2626'};">${searchEventsData.length}</td>
         </tr>
         <tr>
-          <td style="padding: 5px 10px 5px 0;"><strong>👆 Clicks:</strong></td>
-          <td style="padding: 5px 0;">${summary.clickCount}</td>
+          <td style="padding: 5px 10px 5px 0;"><strong>👆 Sitters Clicked:</strong></td>
+          <td style="padding: 5px 0; font-weight: bold; color: ${clickedSittersInfo.length > 0 ? '#16a34a' : '#6b7280'};">${clickedSittersInfo.length}</td>
         </tr>
         <tr>
           <td style="padding: 5px 10px 5px 0;"><strong>📜 Max Scroll:</strong></td>
           <td style="padding: 5px 0;">${summary.maxScrollDepth}%</td>
         </tr>
-        <tr>
-          <td style="padding: 5px 10px 5px 0;"><strong>💤 Idle Events:</strong></td>
-          <td style="padding: 5px 0;">${summary.idleEvents} (user was inactive)</td>
-        </tr>
       </table>
     </div>
   `;
 
-  // Build timeline
-  const timelineItems = events.slice(0, 50).map((event, index) => {
-    const time = new Date(event.created_at).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const icon = getEventIcon(event.event_type, event.event_name);
-    const name = formatEventName(event.event_name);
-    
-    let details = '';
-    if (event.page_path && event.event_name === 'page_entered') {
-      details = ` → ${event.page_path}`;
-    }
-    if (event.event_data?.scroll_depth) {
-      details += ` (${event.event_data.scroll_depth}% scroll)`;
-    }
-    if (event.event_data?.time_on_page) {
-      details += ` (${event.event_data.time_on_page}s on page)`;
-    }
-    if (event.event_data?.idle_duration_seconds) {
-      details = ` (${event.event_data.idle_duration_seconds}s idle)`;
-    }
-    if (event.event_data?.search_location || event.event_data?.suburb) {
-      details = ` for "${event.event_data.search_location || event.event_data.suburb}"`;
-    }
-    if (event.event_data?.element_text) {
-      details = ` on "${event.event_data.element_text}"`;
-    }
-    if (event.event_data?.step) {
-      details = ` - Step ${event.event_data.step}`;
-    }
-    
-    const bgColor = index % 2 === 0 ? '#ffffff' : '#f9fafb';
-    
-    return `
-      <tr style="background: ${bgColor};">
-        <td style="padding: 8px; font-size: 12px; color: #6b7280; white-space: nowrap;">${time}</td>
-        <td style="padding: 8px; font-size: 14px;">${icon} ${name}${details}</td>
-      </tr>
-    `;
-  }).join('');
-
-  const timelineHtml = `
-    <div style="background: #f8fafc; padding: 15px; border-radius: 5px; margin: 20px 0;">
-      <h3 style="margin-top: 0; color: #334155;">📋 Full Journey Timeline (${events.length} events)</h3>
-      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-        <thead>
-          <tr style="background: #e2e8f0;">
-            <th style="padding: 8px; text-align: left; font-size: 12px;">TIME</th>
-            <th style="padding: 8px; text-align: left; font-size: 12px;">EVENT</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${timelineItems}
-        </tbody>
-      </table>
-      ${events.length > 50 ? `<p style="color: #6b7280; font-size: 12px; margin-top: 10px;">Showing first 50 events of ${events.length}</p>` : ''}
-    </div>
-  `;
-
-  // Build SEARCH ACTIVITY section - critical for understanding intent
+  // Build DETAILED SEARCH ACTIVITY section
   let searchActivityHtml = '';
   if (searchEventsData.length > 0) {
     const searchRows = searchEventsData.map((se, idx) => {
-      const time = new Date(se.created_at).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const resultColor = se.results_count === 0 ? '#ef4444' : se.results_count > 0 ? '#22c55e' : '#6b7280';
-      const resultText = se.results_count === 0 ? '🔴 0 results!' : se.results_count > 0 ? `✅ ${se.results_count} results` : '—';
-      const serviceLabel = se.service_type || '(no service selected)';
+      const time = new Date(se.search_timestamp || se.created_at).toLocaleTimeString('en-NZ', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true 
+      });
+      const resultColor = se.results_count === 0 ? '#ef4444' : se.results_count && se.results_count > 0 ? '#22c55e' : '#6b7280';
+      const resultText = se.results_count === 0 ? '🔴 0 results!' : se.results_count && se.results_count > 0 ? `✅ ${se.results_count} found` : '—';
       const clickedCount = se.clicked_sitter_ids?.length || 0;
       
+      // Build detailed search params
+      const params: string[] = [];
+      if (se.suburb) params.push(`📍 ${se.suburb}`);
+      if (se.service_type) params.push(`🛏️ ${formatServiceType(se.service_type)}`);
+      if (se.pet_species && se.pet_species.length > 0) {
+        params.push(`🐾 ${se.pet_species.join(', ')}`);
+      }
+      if (se.pet_size && se.pet_size.length > 0) {
+        params.push(`📏 ${se.pet_size.join(', ')}`);
+      }
+      
       return `
-        <tr style="background: ${idx % 2 === 0 ? '#ffffff' : '#f9fafb'};">
-          <td style="padding: 6px; font-size: 12px; color: #6b7280;">${time}</td>
-          <td style="padding: 6px; font-size: 13px;">${se.suburb || 'Unknown'}</td>
-          <td style="padding: 6px; font-size: 12px; color: #6b7280;">${serviceLabel}</td>
-          <td style="padding: 6px; font-size: 13px; color: ${resultColor}; font-weight: 600;">${resultText}</td>
-          <td style="padding: 6px; font-size: 13px;">${clickedCount > 0 ? `👆 ${clickedCount} click(s)` : '—'}</td>
+        <tr style="background: ${idx % 2 === 0 ? '#ffffff' : '#f9fafb'}; vertical-align: top;">
+          <td style="padding: 8px; font-size: 12px; color: #6b7280; white-space: nowrap;">${time}</td>
+          <td style="padding: 8px; font-size: 13px;">
+            <div style="margin-bottom: 4px;">${params.length > 0 ? params.join(' • ') : '<em style="color: #9ca3af;">No filters</em>'}</div>
+          </td>
+          <td style="padding: 8px; font-size: 13px; color: ${resultColor}; font-weight: 600; text-align: center;">${resultText}</td>
+          <td style="padding: 8px; font-size: 13px; text-align: center;">${clickedCount > 0 ? `<span style="color: #16a34a; font-weight: bold;">👆 ${clickedCount}</span>` : '<span style="color: #9ca3af;">—</span>'}</td>
         </tr>
       `;
     }).join('');
     
     const zeroResultSearches = searchEventsData.filter(se => se.results_count === 0).length;
-    const totalSearches = searchEventsData.length;
     
     searchActivityHtml = `
       <div style="background: #eff6ff; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-        <h3 style="margin-top: 0; color: #1e40af;">🔍 Search Activity (${totalSearches} searches${zeroResultSearches > 0 ? `, <span style="color: #ef4444;">${zeroResultSearches} with 0 results!</span>` : ''})</h3>
+        <h3 style="margin-top: 0; color: #1e40af;">🔍 Search Activity (${searchEventsData.length} searches${zeroResultSearches > 0 ? ` - <span style="color: #ef4444;">${zeroResultSearches} with 0 results!</span>` : ''})</h3>
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
           <thead>
             <tr style="background: #dbeafe;">
-              <th style="padding: 6px; text-align: left; font-size: 11px;">TIME</th>
-              <th style="padding: 6px; text-align: left; font-size: 11px;">LOCATION</th>
-              <th style="padding: 6px; text-align: left; font-size: 11px;">SERVICE</th>
-              <th style="padding: 6px; text-align: left; font-size: 11px;">RESULTS</th>
-              <th style="padding: 6px; text-align: left; font-size: 11px;">CLICKS</th>
+              <th style="padding: 8px; text-align: left; font-size: 11px; width: 80px;">TIME</th>
+              <th style="padding: 8px; text-align: left; font-size: 11px;">SEARCH PARAMETERS</th>
+              <th style="padding: 8px; text-align: center; font-size: 11px; width: 90px;">RESULTS</th>
+              <th style="padding: 8px; text-align: center; font-size: 11px; width: 70px;">CLICKED</th>
             </tr>
           </thead>
           <tbody>
@@ -409,38 +389,46 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
   } else {
     searchActivityHtml = `
       <div style="background: #fef2f2; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ef4444;">
-        <h3 style="margin-top: 0; color: #b91c1c;">🔍 No Search Activity Recorded</h3>
-        <p style="margin: 0; color: #7f1d1d;">User registered but never performed a search. They may have:</p>
+        <h3 style="margin-top: 0; color: #b91c1c;">🔍 No Search Activity Found</h3>
+        <p style="margin: 0; color: #7f1d1d;">
+          <strong>Debug info:</strong> Session ID = ${sessionId || 'NOT PROVIDED'}<br><br>
+          User registered but no searches were linked. They may have:
+        </p>
         <ul style="color: #7f1d1d; margin-bottom: 0;">
           <li>Just created an account to explore later</li>
-          <li>Got confused by the interface</li>
-          <li>Had a technical issue</li>
+          <li>Used a different session/browser before registering</li>
+          <li>Had tracking blocked</li>
         </ul>
       </div>
     `;
   }
 
-  // Build CLICKED SITTERS section - who did they show interest in?
+  // Build CLICKED SITTERS section with more detail
   let clickedSittersHtml = '';
   if (clickedSittersInfo.length > 0) {
-    const sitterRows = clickedSittersInfo.map(s => `
-      <tr>
-        <td style="padding: 8px; font-size: 14px;"><strong>${s.name}</strong></td>
-        <td style="padding: 8px; font-size: 13px; color: #6b7280;">${s.suburb}</td>
-        <td style="padding: 8px;"><a href="https://ziggysitters.com/sitter/${s.id}" style="color: #2563eb; text-decoration: none;">View Profile →</a></td>
-      </tr>
-    `).join('');
+    const sitterRows = clickedSittersInfo.map(s => {
+      const ratingDisplay = s.rating ? `⭐ ${s.rating.toFixed(1)}` : '<span style="color: #9ca3af;">New</span>';
+      return `
+        <tr>
+          <td style="padding: 10px; font-size: 14px;"><strong>${s.name}</strong></td>
+          <td style="padding: 10px; font-size: 13px; color: #6b7280;">${s.suburb}${s.city ? `, ${s.city}` : ''}</td>
+          <td style="padding: 10px; font-size: 13px;">${ratingDisplay}</td>
+          <td style="padding: 10px;"><a href="https://ziggysitters.com/sitter/${s.id}" style="color: #2563eb; text-decoration: none; font-weight: 500;">View Profile →</a></td>
+        </tr>
+      `;
+    }).join('');
     
     clickedSittersHtml = `
-      <div style="background: #f0fdf4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #22c55e;">
-        <h3 style="margin-top: 0; color: #166534;">💚 Sitters They Were Interested In (${clickedSittersInfo.length})</h3>
-        <p style="color: #166534; margin-bottom: 10px;">These are the sitters they clicked on during their session:</p>
-        <table style="width: 100%; border-collapse: collapse;">
+      <div style="background: #fef9c3; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #eab308;">
+        <h3 style="margin-top: 0; color: #854d0e;">💛 Sitters They Clicked (${clickedSittersInfo.length})</h3>
+        <p style="color: #854d0e; margin-bottom: 10px; font-size: 14px;">These are the sitters they showed interest in - they may want to book with one of them!</p>
+        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 5px;">
           <thead>
-            <tr style="background: #dcfce7;">
-              <th style="padding: 8px; text-align: left; font-size: 12px;">SITTER NAME</th>
-              <th style="padding: 8px; text-align: left; font-size: 12px;">LOCATION</th>
-              <th style="padding: 8px; text-align: left; font-size: 12px;">PROFILE</th>
+            <tr style="background: #fef08a;">
+              <th style="padding: 10px; text-align: left; font-size: 12px;">SITTER NAME</th>
+              <th style="padding: 10px; text-align: left; font-size: 12px;">LOCATION</th>
+              <th style="padding: 10px; text-align: left; font-size: 12px;">RATING</th>
+              <th style="padding: 10px; text-align: left; font-size: 12px;">PROFILE</th>
             </tr>
           </thead>
           <tbody>
@@ -451,51 +439,108 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
     `;
   }
 
-  // Analysis / Drop-off reasons - ENHANCED with search context
+  // Analysis / Drop-off reasons
   let analysisHtml = '';
   const issues: string[] = [];
   
-  // Check for zero result searches - major drop-off indicator!
   const zeroResultSearches = searchEventsData.filter(se => se.results_count === 0);
   if (zeroResultSearches.length > 0) {
-    issues.push(`🔴 Got 0 results ${zeroResultSearches.length} time(s) - this is a major frustration point!`);
+    const locations = [...new Set(zeroResultSearches.map(s => s.suburb).filter(Boolean))];
+    issues.push(`🔴 Got 0 results ${zeroResultSearches.length} time(s)${locations.length > 0 ? ` searching in: ${locations.join(', ')}` : ''}`);
   }
   
-  // Check if they clicked sitters but didn't book
   if (clickedSittersInfo.length > 0) {
-    issues.push(`💔 Clicked on ${clickedSittersInfo.length} sitter(s) but didn't book - what stopped them?`);
+    issues.push(`💔 Clicked ${clickedSittersInfo.length} sitter(s) but didn't complete a booking - what stopped them?`);
   }
   
   if (summary.timeOnSite < 30) {
-    issues.push('⚡ Very short session - user left quickly');
+    issues.push('⚡ Very short session (<30 seconds)');
   }
   if (summary.idleEvents > 2) {
-    issues.push('💤 Multiple idle periods - user was distracted or confused');
+    issues.push('💤 Multiple idle periods - user seemed confused or distracted');
   }
-  if (searchEventsData.length === 0 && summary.pagesViewed.length < 3) {
-    issues.push('🔍 No searches performed - may not have found the search feature');
+  if (searchEventsData.length === 0) {
+    issues.push('🔍 No searches performed at all');
   }
   if (summary.formAbandons > 0) {
-    issues.push('❌ Form abandoned - onboarding friction detected');
-  }
-  if (summary.maxScrollDepth < 30 && summary.maxScrollDepth > 0) {
-    issues.push('📜 Low scroll depth - content above the fold didn\'t engage');
+    issues.push('❌ Abandoned a form - friction in onboarding');
   }
 
   if (issues.length > 0) {
     analysisHtml = `
       <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-        <h3 style="margin-top: 0; color: #92400e;">⚠️ Drop-off Analysis</h3>
+        <h3 style="margin-top: 0; color: #92400e;">⚠️ Potential Issues Detected</h3>
         <ul style="margin: 0; padding-left: 20px; color: #78350f;">
           ${issues.map(i => `<li style="margin-bottom: 5px;">${i}</li>`).join('')}
         </ul>
       </div>
     `;
-  } else {
+  } else if (searchEventsData.length > 0 || events.length > 10) {
     analysisHtml = `
       <div style="background: #dbeafe; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-        <h3 style="margin-top: 0; color: #1e40af;">✅ Session Looked Normal</h3>
-        <p style="margin: 0; color: #1e3a8a;">No obvious issues detected. User may have just registered to explore later.</p>
+        <h3 style="margin-top: 0; color: #1e40af;">✅ Engaged User</h3>
+        <p style="margin: 0; color: #1e3a8a;">This user showed good engagement with the platform.</p>
+      </div>
+    `;
+  }
+
+  // Build timeline (only key events, condensed)
+  const keyEvents = events.filter(e => 
+    e.event_name.includes('page') ||
+    e.event_name.includes('search') ||
+    e.event_name.includes('click') ||
+    e.event_name.includes('sitter') ||
+    e.event_name.includes('onboarding') ||
+    e.event_name.includes('booking') ||
+    e.event_name.includes('form') ||
+    e.event_type === 'action'
+  ).slice(0, 30);
+
+  let timelineHtml = '';
+  if (keyEvents.length > 0) {
+    const timelineItems = keyEvents.map((event, index) => {
+      const time = new Date(event.created_at).toLocaleTimeString('en-NZ', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true 
+      });
+      const icon = getEventIcon(event.event_type, event.event_name);
+      const name = formatEventName(event.event_name);
+      
+      let details = '';
+      if (event.page_path && (event.event_name === 'page_entered' || event.event_name === 'page_view')) {
+        details = ` → <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 12px;">${event.page_path}</code>`;
+      }
+      if (event.event_data?.sitter_name) {
+        details = ` → <strong>${event.event_data.sitter_name}</strong>`;
+      }
+      if (event.event_data?.search_location || event.event_data?.suburb) {
+        details = ` for "${event.event_data.search_location || event.event_data.suburb}"`;
+      }
+      if (event.event_data?.step) {
+        details = ` - Step ${event.event_data.step}`;
+      }
+      
+      const bgColor = index % 2 === 0 ? '#ffffff' : '#f9fafb';
+      
+      return `
+        <tr style="background: ${bgColor};">
+          <td style="padding: 6px 10px; font-size: 11px; color: #6b7280; white-space: nowrap;">${time}</td>
+          <td style="padding: 6px 10px; font-size: 13px;">${icon} ${name}${details}</td>
+        </tr>
+      `;
+    }).join('');
+
+    timelineHtml = `
+      <div style="background: #f8fafc; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="margin-top: 0; color: #334155;">📋 Key Events Timeline</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tbody>
+            ${timelineItems}
+          </tbody>
+        </table>
+        ${events.length > keyEvents.length ? `<p style="color: #6b7280; font-size: 12px; margin: 10px 0 0 0;">Showing ${keyEvents.length} key events of ${events.length} total</p>` : ''}
       </div>
     `;
   }
@@ -513,11 +558,12 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email, firstName, role, sessionId }: WelcomeEmailRequest = await req.json();
-    console.log("Sending welcome email to:", email, "Role:", role, "SessionId:", sessionId);
+    console.log("=== WELCOME EMAIL ===");
+    console.log("Email:", email, "Role:", role, "SessionId:", sessionId);
 
-    // For SITTERS: Send the comprehensive sitter welcome email instead
+    // For SITTERS: Send the comprehensive sitter welcome email
     if (role === 'pet_sitter') {
-      console.log("Triggering sitter-specific welcome email for:", email);
+      console.log("Triggering sitter-specific welcome email");
       
       try {
         const sitterWelcomeResponse = await fetch(`${supabaseUrl}/functions/v1/send-sitter-welcome`, {
@@ -533,9 +579,7 @@ const handler = async (req: Request): Promise<Response> => {
           }),
         });
 
-        if (sitterWelcomeResponse.ok) {
-          console.log("Sitter welcome email sent successfully");
-        } else {
+        if (!sitterWelcomeResponse.ok) {
           const errorText = await sitterWelcomeResponse.text();
           console.error("Failed to send sitter welcome email:", errorText);
         }
@@ -556,7 +600,7 @@ const handler = async (req: Request): Promise<Response> => {
         journeyHtml = html;
       }
 
-      // Also notify admin about new sitter signup with journey
+      // Notify admin about new sitter
       try {
         await resend.emails.send({
           from: "ZiggySitters <hello@ziggysitters.com>",
@@ -570,32 +614,25 @@ const handler = async (req: Request): Promise<Response> => {
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
                   <p><strong>Name:</strong> ${firstName}</p>
                   <p><strong>Email:</strong> ${email}</p>
-                  <p><strong>Status:</strong> Just signed up - awaiting profile completion</p>
                 </div>
 
-                <h3 style="color: #374151; margin-top: 30px;">📊 User Journey Before Signup</h3>
+                <h3 style="color: #374151; margin-top: 30px;">📊 User Journey</h3>
                 ${journeyHtml}
-
-                <p style="color: #64748b; margin-top: 20px;">
-                  They will receive automated reminders if they don't complete their profile.
-                  You'll receive another notification when they upload verification documents.
-                </p>
               </div>
             </div>
           `,
         });
-        console.log("Admin notification sent for new sitter");
       } catch (adminError) {
         console.error("Failed to send admin notification:", adminError);
       }
 
-      return new Response(JSON.stringify({ success: true, message: "Sitter welcome email sent" }), {
+      return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    // For PET OWNERS: Send standard welcome email
+    // For PET OWNERS: Send welcome email
     const emailResponse = await resend.emails.send({
       from: "ZiggySitters <hello@ziggysitters.com>",
       to: [email],
@@ -610,39 +647,19 @@ const handler = async (req: Request): Promise<Response> => {
               .header { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
               .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
               .btn { display: inline-block; padding: 12px 24px; background: #6366f1; color: white !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 10px 5px; }
-              .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="header">
                 <h1 style="margin: 0; font-size: 28px;">Welcome to ZiggySitters! 🎉</h1>
-                <p style="margin: 10px 0 0 0; opacity: 0.9;">Your trusted pet care community</p>
               </div>
-              
               <div class="content">
                 <h2 style="color: #111827;">Hi ${firstName}!</h2>
-                <p style="color: #4b5563;">Thank you for joining ZiggySitters! We're excited to help you find the perfect care for your furry friends.</p>
-                
-                <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6366f1;">
-                  <p style="margin: 0; color: #4b5563;"><strong>What's next?</strong> Complete your profile and add your pets to start searching for trusted sitters in your area.</p>
-                </div>
-
-                <h3 style="color: #111827; margin-top: 30px;">Getting Started:</h3>
-                <ul style="color: #4b5563; line-height: 1.8;">
-                  <li>📝 <strong>Complete your profile</strong> with your contact details</li>
-                  <li>🐾 <strong>Add your pets</strong> so sitters know who they'll be caring for</li>
-                  <li>🔍 <strong>Search for sitters</strong> in your area</li>
-                  <li>📅 <strong>Book with confidence</strong> - all sitters are verified</li>
-                </ul>
-
+                <p>Thank you for joining! We're excited to help you find the perfect care for your furry friends.</p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://ziggysitters.com/profile" class="btn">Complete My Profile</a>
+                  <a href="https://ziggysitters.com/find-sitters" class="btn">Find Sitters</a>
                 </div>
-              </div>
-
-              <div class="footer">
-                <p style="margin: 5px 0;">Questions? Contact us at hello@ziggysitters.com</p>
               </div>
             </div>
           </body>
@@ -650,9 +667,9 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Pet owner welcome email sent successfully:", emailResponse);
+    console.log("Pet owner welcome email sent");
 
-    // Send admin notification for pet owners with FULL journey data
+    // Send detailed admin notification
     try {
       const { data: profile } = await supabase
         .from('profiles')
@@ -660,117 +677,47 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('email', email)
         .single();
 
-      // Check if user has verified their email via auth.users
-      const { data: authUser } = await supabase.auth.admin.getUserById(profile?.user_id);
-      const emailConfirmed = authUser?.user?.email_confirmed_at ? true : false;
-      const emailConfirmedAt = authUser?.user?.email_confirmed_at 
-        ? new Date(authUser.user.email_confirmed_at).toLocaleString() 
-        : null;
-
-      // Build the full journey HTML
+      // Build journey with session ID
       let journeyHtml = '<p style="color: #666;">No journey data available</p>';
-      let journeySummary: Record<string, any> = {};
       if (profile) {
         const journeyData = await buildUserJourneyHtml(profile.id, sessionId);
         journeyHtml = journeyData.html;
-        journeySummary = journeyData.summary;
       }
 
-      const { data: searches } = await supabase
-        .from('search_events')
-        .select('*')
-        .eq('user_id', profile?.id)
-        .order('search_timestamp', { ascending: false })
-        .limit(5);
-
-      const { data: bookings } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('owner_id', profile?.id);
-
-      // Collect all clicked sitter IDs from searches
-      const allClickedSitterIds: string[] = [];
-      searches?.forEach(s => {
-        if (s.clicked_sitter_ids?.length) {
-          allClickedSitterIds.push(...s.clicked_sitter_ids);
-        }
-      });
-      const uniqueClickedIds = [...new Set(allClickedSitterIds)];
-
-      // Fetch sitter details for clicked sitters
-      let clickedSittersHtml = '';
-      if (uniqueClickedIds.length > 0) {
-        const { data: clickedSitters } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, suburb, city')
-          .in('id', uniqueClickedIds);
-        
-        if (clickedSitters && clickedSitters.length > 0) {
-          clickedSittersHtml = `
-            <div style="background: #fef9c3; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #eab308;">
-              <h3 style="margin-top: 0; color: #854d0e;">👆 Clicked on ${clickedSitters.length} Sitter(s)</h3>
-              <ul style="margin: 0; padding-left: 20px;">
-                ${clickedSitters.map(s => 
-                  `<li><strong>${s.first_name} ${s.last_name}</strong>${s.suburb ? ` - ${s.suburb}` : ''} 
-                   <a href="https://ziggysitters.com/sitter/${s.id}" style="color: #2563eb;">[View Profile]</a></li>`
-                ).join('')}
-              </ul>
-            </div>
-          `;
-        }
-      }
-
-      let searchSummary = 'No searches yet';
-      if (searches && searches.length > 0) {
-        searchSummary = searches.map(s => {
-          const parts = [];
-          if (s.suburb) parts.push(`📍 ${s.suburb}`);
-          if (s.service_type) parts.push(`🛏️ ${s.service_type.replace(/_/g, ' ')}`);
-          if (s.pet_species?.length) parts.push(`🐾 ${s.pet_species.join(', ')}`);
-          parts.push(`(${new Date(s.search_timestamp).toLocaleString()})`);
-          return parts.join(' | ') || 'Generic search';
-        }).join('<br>');
-      }
-
+      // Get pets
       const { data: pets } = await supabase
         .from('pets')
         .select('name, species, size')
         .eq('owner_id', profile?.id);
 
-      let petsInfo = '<p style="color: #666;">🐾 No pets added yet (can add later when booking)</p>';
+      let petsInfo = '<p style="color: #666;">🐾 No pets added yet</p>';
       if (pets && pets.length > 0) {
         petsInfo = `
-          <h3>🐾 Pets Added (${pets.length})</h3>
-          <ul>
+          <h4 style="margin-bottom: 10px;">🐾 Pets Added (${pets.length})</h4>
+          <ul style="margin: 0; padding-left: 20px;">
             ${pets.map(p => `<li>${p.name} - ${p.species}${p.size ? ` (${p.size})` : ''}</li>`).join('')}
           </ul>
         `;
       }
 
-      // Determine if this is a concerning drop-off
-      const isConcerning = journeySummary.totalEvents < 5 || 
-                          journeySummary.timeOnSite < 60 || 
-                          (pets?.length === 0 && searches?.length === 0);
-
       await resend.emails.send({
         from: "ZiggySitters <hello@ziggysitters.com>",
         to: ["janamaia@gmail.com"],
-        subject: `${isConcerning ? '⚠️' : '🏠'} New Pet Owner: ${firstName}${isConcerning ? ' (Quick Drop-off)' : ''}`,
+        subject: `🏠 New Pet Owner: ${firstName}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f5f5;">
             <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
               <h2 style="color: #667eea; margin-top: 0;">👤 New Pet Owner Registration</h2>
               
               <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                <h3 style="margin-top: 0;">📋 Basic Information</h3>
                 <p style="margin: 5px 0;"><strong>Name:</strong> ${firstName}</p>
                 <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
-                <p style="margin: 5px 0;"><strong>Email Verified:</strong> ${emailConfirmed 
-                  ? `✅ Yes (${emailConfirmedAt})` 
-                  : '❌ Not yet verified'}</p>
-                <p style="margin: 5px 0;"><strong>Phone:</strong> ${profile?.phone || '❌ Not provided'}</p>
-                <p style="margin: 5px 0;"><strong>Location:</strong> ${profile?.suburb ? `${profile.suburb}, ${profile.city}` : '❌ Not provided'}</p>
-                <p style="margin: 5px 0;"><strong>Registered:</strong> ${new Date().toLocaleString()}</p>
+                <p style="margin: 5px 0;"><strong>Location:</strong> ${profile?.suburb ? `${profile.suburb}, ${profile.city}` : 'Not provided'}</p>
+                <p style="margin: 5px 0;"><strong>Session ID:</strong> <code>${sessionId || 'NOT PROVIDED'}</code></p>
+              </div>
+
+              <div style="background: #f0f9ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                ${petsInfo}
               </div>
 
               <h3 style="color: #374151; margin-top: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
@@ -778,37 +725,17 @@ const handler = async (req: Request): Promise<Response> => {
               </h3>
               ${journeyHtml}
 
-              ${petsInfo}
-
-              <div style="background: #f0f9ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                <h3 style="margin-top: 0;">🔍 Search Activity</h3>
-                <div style="font-size: 14px; line-height: 1.8;">
-                  ${searchSummary}
-                </div>
-              </div>
-
-              ${clickedSittersHtml}
-
-              <div style="background: #fef3f2; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                <h3 style="margin-top: 0;">📅 Bookings</h3>
-                <p>${bookings && bookings.length > 0 ? `✅ Has ${bookings.length} booking(s)` : '❌ No bookings yet'}</p>
-              </div>
-
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center;">
+              <div style="margin-top: 30px; text-align: center;">
                 <a href="https://ziggysitters.com/admin/user-details/${profile?.id}" 
                    style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
                   View Full Profile
-                </a>
-                <a href="https://ziggysitters.com/admin/user-behavior" 
-                   style="display: inline-block; padding: 12px 24px; background: #6b7280; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-left: 10px;">
-                  View Analytics
                 </a>
               </div>
             </div>
           </div>
         `,
       });
-      console.log("Admin notification sent for new pet owner");
+      console.log("Admin notification sent");
     } catch (adminError) {
       console.error("Failed to send admin notification:", adminError);
     }
