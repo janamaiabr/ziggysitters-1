@@ -25,6 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
 import { useEventTracking } from '@/hooks/useEventTracking';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
+import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
@@ -60,11 +61,29 @@ export default function SitterProfile() {
   const { profile } = useProfile();
   const { trackEvent } = useEventTracking();
   const { getSearchContext, clearSearchContext } = useSearchTracking();
+  const { trackAction } = useBehaviorTracking();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Track when booking form is opened/closed
+  const handleBookingOpenChange = (open: boolean) => {
+    setIsBookingOpen(open);
+    if (open) {
+      trackAction('booking_form_opened', {
+        sitter_id: id,
+        sitter_name: sitterData?.display_name,
+        has_dates_prefilled: !!(checkInDate && checkOutDate),
+        has_service_prefilled: !!serviceTypeParam,
+      });
+    } else {
+      trackAction('booking_form_closed', {
+        sitter_id: id,
+      });
+    }
+  };
   
   // Build smart "back to search" URL from saved context
   const buildSearchUrl = () => {

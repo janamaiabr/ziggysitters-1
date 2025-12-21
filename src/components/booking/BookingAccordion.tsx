@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format, addDays, differenceInHours, differenceInDays } from 'date-fns';
 import { CalendarIcon, Clock, DollarSign, MapPin, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 
 interface BookingAccordionProps {
   sitter: {
@@ -83,6 +84,40 @@ export default function BookingAccordion({
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { trackAction, trackDropoff } = useBehaviorTracking();
+  
+  // Track when accordion is opened (booking funnel step 1)
+  useEffect(() => {
+    if (isOpen) {
+      trackAction('booking_accordion_opened', {
+        sitter_id: sitter.id,
+        sitter_name: sitter.name,
+        has_initial_dates: !!(initialCheckIn && initialCheckOut),
+        has_initial_service: !!initialServiceType,
+      });
+    }
+  }, [isOpen]);
+  
+  // Track service selection (booking funnel step 2)
+  const handleServiceChange = (value: string) => {
+    setServiceType(value);
+    trackAction('booking_service_selected', {
+      sitter_id: sitter.id,
+      service_type: value,
+    });
+  };
+  
+  // Track date selection (booking funnel step 3)
+  const handleDateChange = (date: Date | undefined, type: 'start' | 'end') => {
+    handleDateSelect(date, type);
+    if (date) {
+      trackAction('booking_date_selected', {
+        sitter_id: sitter.id,
+        date_type: type,
+        date: format(date, 'yyyy-MM-dd'),
+      });
+    }
+  };
 
   // Fetch owner's pets when component mounts
   useEffect(() => {
@@ -226,6 +261,13 @@ export default function BookingAccordion({
 
     if (!startDate || !endDate || !serviceType) {
       console.log('Missing required fields');
+      trackDropoff('booking', 'validation_failed', {
+        sitter_id: sitter.id,
+        reason: 'missing_fields',
+        has_start_date: !!startDate,
+        has_end_date: !!endDate,
+        has_service_type: !!serviceType,
+      });
       toast({
         title: 'Missing Information',
         description: 'Please fill in all required fields.',
@@ -236,6 +278,10 @@ export default function BookingAccordion({
 
     if (!agreedToTerms) {
       console.log('Terms not agreed');
+      trackDropoff('booking', 'validation_failed', {
+        sitter_id: sitter.id,
+        reason: 'terms_not_agreed',
+      });
       toast({
         title: 'Agreement Required',
         description: 'Please agree to the booking terms and conditions.',
@@ -246,6 +292,10 @@ export default function BookingAccordion({
 
     // Check selected pets
     if (selectedPetIds.length === 0) {
+      trackDropoff('booking', 'validation_failed', {
+        sitter_id: sitter.id,
+        reason: 'no_pets_selected',
+      });
       toast({
         title: 'No Pets Selected',
         description: 'Please select at least one pet for this booking.',
@@ -256,6 +306,17 @@ export default function BookingAccordion({
 
     console.log('Setting loading to true');
     setLoading(true);
+    
+    // Track booking submission attempt (booking funnel step 5)
+    trackAction('booking_submit_attempted', {
+      sitter_id: sitter.id,
+      sitter_name: sitter.name,
+      service_type: serviceType,
+      start_date: format(startDate, 'yyyy-MM-dd'),
+      end_date: format(endDate, 'yyyy-MM-dd'),
+      pet_count: selectedPetIds.length,
+      total_amount: calculateTotal(),
+    });
 
     try {
       const total = calculateTotal();
@@ -300,6 +361,16 @@ export default function BookingAccordion({
 
       // Booking created successfully - payment will be requested after sitter accepts
       console.log('Booking created successfully:', data);
+      
+      // Track booking success (booking funnel complete!)
+      trackAction('booking_request_sent', {
+        sitter_id: sitter.id,
+        sitter_name: sitter.name,
+        service_type: serviceType,
+        booking_id: (data as any)?.booking?.id,
+        total_amount: calculateTotal(),
+      });
+      
       toast({
         title: 'Booking Request Sent!',
         description: data?.message || 'Your booking has been sent to the sitter. You will be notified when they accept, and then you can complete payment.',
@@ -320,6 +391,13 @@ export default function BookingAccordion({
       
       // Extract error message from the response
       const errorMessage = error?.message || error?.error || 'There was an error creating your booking. Please try again.';
+      
+      // Track booking failure
+      trackDropoff('booking', 'submit_failed', {
+        sitter_id: sitter.id,
+        error: errorMessage,
+        service_type: serviceType,
+      });
       
       toast({
         title: 'Booking Failed',
