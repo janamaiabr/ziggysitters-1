@@ -71,19 +71,27 @@ export default function Onboarding() {
   const [hasAcceptedTermsLocally, setHasAcceptedTermsLocally] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
 
-  // Track onboarding page view
+  // Track onboarding page view - use ref to prevent double-tracking on React re-mounts
+  const hasTrackedOnboardingStart = useRef(false);
+  
   useEffect(() => {
-    onboardingStartTime.current = Date.now();
-    trackAction('onboarding_started', { 
-      initial_step: step,
-      has_saved_data: !!localStorage.getItem('onboarding_data'),
-    });
+    // Only track once per actual page load, not on React re-mounts
+    if (!hasTrackedOnboardingStart.current) {
+      hasTrackedOnboardingStart.current = true;
+      onboardingStartTime.current = Date.now();
+      trackAction('onboarding_started', { 
+        initial_step: step,
+        has_saved_data: !!localStorage.getItem('onboarding_data'),
+      });
+    }
 
     // Track if user leaves without completing
+    // IMPORTANT: Only track dropoff if they've been on page for at least 3 seconds
+    // This prevents false dropoffs from React re-renders/re-mounts
     return () => {
       const timeSpent = Math.round((Date.now() - onboardingStartTime.current) / 1000);
-      // Only track dropoff if they didn't complete
-      if (step < 3) {
+      // Only track dropoff if they didn't complete AND spent meaningful time
+      if (step < 3 && timeSpent >= 3) {
         trackDropoff('onboarding', 'page_left', {
           last_step: step,
           role_selected: !!profile?.role,
@@ -555,8 +563,10 @@ export default function Onboarding() {
       // Send admin notification about new sitter completion
       try {
         console.log('Sending admin notification for new sitter');
-        // Get session ID for journey tracking
-        const sessionId = sessionStorage.getItem('ziggy_session_id') || sessionStorage.getItem('search_session_id');
+        // Get ALL possible session IDs for journey tracking
+        const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
+        const searchSessionId = sessionStorage.getItem('search_session_id');
+        const sessionId = behaviorSessionId || searchSessionId;
         
         await supabase.functions.invoke('send-welcome-email', {
           body: {
