@@ -684,14 +684,30 @@ export default function SitterProfile() {
         />
       )}
       
-      {/* Floating Enquiry Button for Mobile */}
+      {/* Floating CTA Buttons for Mobile */}
       {sitterData && (profile?.role === 'pet_owner' || !user) && (
         <FloatingEnquiryButton 
-          onClick={() => {
+          onEnquiryClick={() => {
             if (user) {
               setIsMessageDialogOpen(true);
             } else {
               const redirectUrl = `/sitter/${id}?inquiry=true`;
+              navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+            }
+          }}
+          onBookingClick={() => {
+            if (user) {
+              setIsBookingOpen(true);
+              setTimeout(() => {
+                const bookingSection = document.getElementById('booking-section');
+                if (bookingSection) {
+                  bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 100);
+            } else {
+              const params = new URLSearchParams(searchParams);
+              params.set('booking', 'true');
+              const redirectUrl = `/sitter/${id}?${params.toString()}`;
               navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
             }
           }}
