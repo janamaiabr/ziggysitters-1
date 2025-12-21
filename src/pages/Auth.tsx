@@ -34,6 +34,8 @@ export default function Auth() {
   });
 
   const defaultTab = searchParams.get('tab') || 'signin';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [noAccountMessage, setNoAccountMessage] = useState(false);
   // Always redirect new signups to onboarding to collect profile info
   const redirectUrl = searchParams.get('redirect') || '/onboarding';
 
@@ -69,11 +71,22 @@ export default function Auth() {
       
       if (error) {
         trackAction('signin_failed', { error: error.message });
-        toast({
-          title: "Sign In Failed",
-          description: error.message,
-          variant: "destructive",
-        });
+        
+        // Check if user doesn't have an account - switch to signup tab
+        if (error.message.includes('Invalid login credentials')) {
+          setNoAccountMessage(true);
+          setActiveTab('signup');
+          toast({
+            title: "No account found",
+            description: "Let's create one for you! Just fill in your details below.",
+          });
+        } else {
+          toast({
+            title: "Sign In Failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
       } else {
         trackAction('signin_completed');
         toast({
@@ -358,7 +371,7 @@ export default function Auth() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 relative">
-            <Tabs defaultValue={defaultTab} className="w-full">
+            <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); setNoAccountMessage(false); }} className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 p-1.5 h-auto">
                 <TabsTrigger 
                   value="signin" 
@@ -448,6 +461,13 @@ export default function Auth() {
               </TabsContent>
               
               <TabsContent value="signup" className="space-y-6 animate-in fade-in slide-in-from-right duration-500">
+                {noAccountMessage && (
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center animate-in fade-in duration-300">
+                    <p className="text-green-800 dark:text-green-200 font-medium">
+                      ✨ No worries! We've kept your email - just add your name and password to get started!
+                    </p>
+                  </div>
+                )}
                 <form onSubmit={handleSignUp} className="space-y-5">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-3">
