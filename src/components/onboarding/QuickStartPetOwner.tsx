@@ -78,8 +78,11 @@ export default function QuickStartPetOwner({ profileId, userId, onComplete }: Qu
           .single();
 
         if (profileData) {
-          // Get session ID for journey tracking
-          const sessionId = sessionStorage.getItem('ziggy_session_id') || sessionStorage.getItem('search_session_id');
+          // Get ALL possible session IDs for journey tracking
+          const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
+          const searchSessionId = sessionStorage.getItem('search_session_id');
+          // Prefer behavior tracking session as it's more comprehensive
+          const sessionId = behaviorSessionId || searchSessionId;
           
           await supabase.functions.invoke('send-welcome-email', {
             body: {
