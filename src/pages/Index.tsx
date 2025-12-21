@@ -174,69 +174,131 @@ const Index = () => {
         setCheckOut={setCheckOut}
       />
 
-      {/* Featured Sitters - Moved Higher for Prominence */}
-      <section className="py-10 md:py-16 bg-gradient-to-b from-accent/10 to-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-6 md:mb-10 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3">Meet Our Trusted Sitters</h2>
-            <p className="text-base md:text-lg text-muted-foreground">
-              Verified professionals ready to care for your pets
+      {/* Featured Sitters - Premium Showcase */}
+      <section className="py-16 md:py-24 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Section Header with flair */}
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 mb-4">
+              <Heart className="w-4 h-4 text-primary animate-pulse" />
+              <span className="text-sm font-medium text-primary">Handpicked for Excellence</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+              Meet Your Pet's New Best Friend
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Police-vetted, experienced sitters who treat your pets like family
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto px-4">
-            {featuredSitters.map((sitter) => (
-              <Card 
-                key={sitter.id} 
-                className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
-                onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+          {/* Sitter Cards with Premium Design */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto">
+            {featuredSitters.map((sitter, index) => (
+              <div
+                key={sitter.id}
+                className="group relative"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardContent className="p-4">
-                  <div className="flex flex-col items-center text-center">
-                    <Avatar className="h-20 w-20 md:h-24 md:w-24 mb-3 ring-4 ring-primary/20 group-hover:ring-primary/40 transition-all">
-                      <AvatarImage 
-                        src={sitter.avatar} 
-                        alt={sitter.name} 
-                        className="object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
-                        }}
-                      />
-                      <AvatarFallback className="text-lg">{sitter.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    
-                    <h3 className="font-semibold text-lg mb-1">{sitter.name}</h3>
-                    
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <MapPin className="w-3 h-3 mr-1" />
-                      {sitter.location.split(',')[0]}
+                {/* Glow effect on hover */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 via-accent/50 to-primary/50 rounded-2xl blur-lg opacity-0 group-hover:opacity-75 transition-opacity duration-500" />
+                
+                <Card 
+                  className="relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-transparent hover:border-primary/30 transition-all duration-500 cursor-pointer rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2"
+                  onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                >
+                  {/* Top accent bar */}
+                  <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
+                  
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center">
+                      {/* Avatar with animated ring */}
+                      <div className="relative mb-4">
+                        <div className="absolute -inset-2 bg-gradient-to-r from-primary via-accent to-primary rounded-full opacity-30 group-hover:opacity-100 blur-sm transition-opacity duration-500 animate-spin-slow" style={{ animationDuration: '8s' }} />
+                        <Avatar className="h-24 w-24 md:h-28 md:w-28 ring-4 ring-background relative z-10">
+                          <AvatarImage 
+                            src={sitter.avatar} 
+                            alt={sitter.name} 
+                            className="object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
+                            }}
+                          />
+                          <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-primary to-accent text-primary-foreground">
+                            {sitter.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        
+                        {/* Online indicator */}
+                        <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-background z-20 animate-pulse" />
+                      </div>
+                      
+                      {/* Name with gradient on hover */}
+                      <h3 className="font-bold text-xl mb-1 group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-accent group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                        {sitter.name}
+                      </h3>
+                      
+                      {/* Rating stars */}
+                      <div className="flex items-center gap-1 mb-2">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={`w-4 h-4 ${i < Math.floor(sitter.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30'}`} 
+                          />
+                        ))}
+                        <span className="text-sm font-medium ml-1">{sitter.rating}</span>
+                      </div>
+                      
+                      {/* Location */}
+                      <div className="flex items-center text-sm text-muted-foreground mb-3">
+                        <MapPin className="w-4 h-4 mr-1 text-primary" />
+                        {sitter.location.split(',')[0]}
+                      </div>
+                      
+                      {/* Badges */}
+                      <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+                        {sitter.verified && (
+                          <Badge className="bg-green-500/10 text-green-600 border border-green-500/30 hover:bg-green-500/20">
+                            <Shield className="w-3 h-3 mr-1" />
+                            ID Verified
+                          </Badge>
+                        )}
+                        {sitter.hasPoliceVet && (
+                          <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 shadow-md">
+                            ⭐ Police Vetted
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {/* CTA Button */}
+                      <Button 
+                        className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+                      >
+                        Book Now
+                        <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                      </Button>
                     </div>
-                    
-                    <div className="flex items-center gap-1 mb-3">
-                      {sitter.verified && (
-                        <Badge variant="secondary" className="text-xs">
-                          <CheckCircle className="w-3 h-3 mr-1" />
-                          Verified
-                        </Badge>
-                      )}
-                      {sitter.hasPoliceVet && (
-                        <Badge className="text-xs bg-yellow-500">⭐ Gold</Badge>
-                      )}
-                    </div>
-                    
-                    <Button size="sm" className="w-full group-hover:bg-primary/90">
-                      View Profile
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
           
-          <div className="text-center mt-6 md:mt-8">
-            <Button variant="outline" size="lg" onClick={() => navigate('/find-sitters')}>
-              <Search className="w-4 h-4 mr-2" />
-              Browse All Sitters
+          {/* Bottom CTA */}
+          <div className="text-center mt-12 md:mt-16">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={() => navigate('/find-sitters')}
+              className="border-2 border-primary/30 hover:border-primary hover:bg-primary/5 px-8 py-6 text-lg font-semibold group"
+            >
+              <Search className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+              Discover All Sitters
+              <span className="ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">→</span>
             </Button>
           </div>
         </div>
