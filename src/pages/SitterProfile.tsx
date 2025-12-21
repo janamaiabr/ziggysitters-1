@@ -114,10 +114,26 @@ export default function SitterProfile() {
     serviceType: serviceTypeParam || undefined,
   };
   
-  // Check if booking or inquiry should be automatically opened
+  // Auto-open booking form for logged-in pet owners, and handle URL params
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
     const shouldOpenInquiry = searchParams.get('inquiry') === 'true';
+    
+    // Auto-open booking for pet owners when they land on the page
+    if (user && profile?.role === 'pet_owner' && sitterData && !isBookingOpen) {
+      // Auto-open after a brief delay to let the page render
+      const timer = setTimeout(() => {
+        setIsBookingOpen(true);
+        // Scroll to booking section
+        setTimeout(() => {
+          const bookingSection = document.getElementById('booking-section');
+          if (bookingSection) {
+            bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
     
     if (shouldOpenBooking && user) {
       setIsBookingOpen(true);
@@ -142,7 +158,7 @@ export default function SitterProfile() {
     if (shouldOpenInquiry && user && sitterData) {
       setIsMessageDialogOpen(true);
     }
-  }, [searchParams, user, id, navigate, sitterData]);
+  }, [searchParams, user, id, navigate, sitterData, profile?.role]);
 
   // Load sitter data from the secure database view
   useEffect(() => {
@@ -464,6 +480,36 @@ export default function SitterProfile() {
               </Alert>
             )}
             
+            {/* Prominent CTA for non-logged in users */}
+            {!user && (
+              <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="text-xl font-bold text-foreground mb-1">
+                        Ready to book {sitterData.display_name.split(' ')[0]}? 🐾
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Create a free account to request a booking and get a quote
+                      </p>
+                    </div>
+                    <Button 
+                      size="lg"
+                      className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold px-8"
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams);
+                        params.set('booking', 'true');
+                        const redirectUrl = `/sitter/${id}?${params.toString()}`;
+                        navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
+                      }}
+                    >
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Get a Free Quote
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Booking Form - Only show if user is pet owner */}
             {profile?.role === 'pet_owner' && (

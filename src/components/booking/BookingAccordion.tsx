@@ -452,7 +452,7 @@ export default function BookingAccordion({
         <Accordion 
           type="single" 
           collapsible 
-          defaultValue={isOpen ? "booking-form" : undefined}
+          value={isOpen ? "booking-form" : undefined}
           onValueChange={(value) => console.log('Accordion value changed to:', value)}
         >
           <AccordionItem value="booking-form">
