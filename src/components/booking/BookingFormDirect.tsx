@@ -307,12 +307,6 @@ export default function BookingFormDirect({
 
   return (
     <Card className="border-2 border-primary/20 shadow-xl bg-gradient-to-br from-background via-background to-primary/5 overflow-hidden relative">
-      {/* Urgency Banner */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
-        <Sparkles className="inline-block w-4 h-4 mr-1 animate-pulse" />
-        Christmas holidays filling fast! Book early to secure your dates
-      </div>
-      
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -328,11 +322,6 @@ export default function BookingFormDirect({
                   <CheckCircle className="w-3 h-3 mr-1 text-green-500" />
                   Verified
                 </span>
-                <span className="text-muted-foreground/50">•</span>
-                <span className="flex items-center">
-                  <Users className="w-3 h-3 mr-1" />
-                  Quick responder
-                </span>
               </div>
             </div>
           </div>
@@ -340,19 +329,15 @@ export default function BookingFormDirect({
       </CardHeader>
 
       <CardContent className="space-y-5 pt-4">
-        {/* Trust Indicators */}
+        {/* Trust Indicators - Only factual claims */}
         <div className="flex flex-wrap gap-2 pb-2">
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
             <Shield className="w-3 h-3 mr-1" />
-            Secure Payment
-          </Badge>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-            <Star className="w-3 h-3 mr-1" />
-            Free Cancellation
+            Secure Payment via Stripe
           </Badge>
           <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
             <CheckCircle className="w-3 h-3 mr-1" />
-            Verified Sitter
+            ID Verified
           </Badge>
         </div>
 
