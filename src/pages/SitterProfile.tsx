@@ -18,7 +18,7 @@ import {
   MessageCircle,
   Search
 } from 'lucide-react';
-import BookingAccordion from '@/components/booking/BookingAccordion';
+import BookingFormDirect from '@/components/booking/BookingFormDirect';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,28 +62,10 @@ export default function SitterProfile() {
   const { trackEvent } = useEventTracking();
   const { getSearchContext, clearSearchContext } = useSearchTracking();
   const { trackAction } = useBehaviorTracking();
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Track when booking form is opened/closed
-  const handleBookingOpenChange = (open: boolean) => {
-    setIsBookingOpen(open);
-    if (open) {
-      trackAction('booking_form_opened', {
-        sitter_id: id,
-        sitter_name: sitterData?.display_name,
-        has_dates_prefilled: !!(checkInDate && checkOutDate),
-        has_service_prefilled: !!serviceTypeParam,
-      });
-    } else {
-      trackAction('booking_form_closed', {
-        sitter_id: id,
-      });
-    }
-  };
   
   // Build smart "back to search" URL from saved context
   const buildSearchUrl = () => {
@@ -114,34 +96,25 @@ export default function SitterProfile() {
     serviceType: serviceTypeParam || undefined,
   };
   
-  // Auto-open booking form for logged-in pet owners, and handle URL params
+  // Handle URL params for booking/inquiry redirects
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
     const shouldOpenInquiry = searchParams.get('inquiry') === 'true';
     
-    // Auto-open booking for pet owners when they land on the page
-    if (user && profile?.role === 'pet_owner' && sitterData && !isBookingOpen) {
-      // Auto-open after a brief delay to let the page render
+    // Auto-scroll to booking section for pet owners
+    if (user && profile?.role === 'pet_owner' && sitterData) {
       const timer = setTimeout(() => {
-        setIsBookingOpen(true);
-        // Scroll to booking section
-        setTimeout(() => {
-          const bookingSection = document.getElementById('booking-section');
-          if (bookingSection) {
-            bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
+        const bookingSection = document.getElementById('booking-section');
+        if (bookingSection) {
+          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }, 500);
       return () => clearTimeout(timer);
     }
     
     if (shouldOpenBooking && user) {
-      setIsBookingOpen(true);
-      
-      // Track view content when viewing sitter profile for booking
       metaPixel.trackViewContent('Sitter Profile', 'Pet Sitter');
       
-      // Scroll to booking section after a brief delay
       setTimeout(() => {
         const bookingSection = document.getElementById('booking-section');
         if (bookingSection) {
@@ -149,7 +122,6 @@ export default function SitterProfile() {
         }
       }, 100);
     } else if (shouldOpenBooking && !user) {
-      // Redirect to login if not logged in, preserving ALL URL parameters
       const currentUrl = `/sitter/${id}?${searchParams.toString()}`;
       navigate(`/auth?redirect=${encodeURIComponent(currentUrl)}`);
     }
@@ -418,7 +390,7 @@ export default function SitterProfile() {
                             source: 'profile_page'
                           }
                         });
-                        setIsBookingOpen(true);
+                        // Scroll to booking form
                         setTimeout(() => {
                           const bookingSection = document.getElementById('booking-section');
                           if (bookingSection) {
@@ -482,20 +454,38 @@ export default function SitterProfile() {
             
             {/* Prominent CTA for non-logged in users */}
             {!user && (
-              <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10 shadow-lg">
+              <Card className="border-2 border-primary shadow-xl bg-gradient-to-br from-background via-primary/5 to-primary/10 overflow-hidden">
+                {/* Urgency Banner */}
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
+                  <Calendar className="inline-block w-4 h-4 mr-1" />
+                  Christmas holidays filling fast! Book early to secure your dates
+                </div>
                 <CardContent className="p-6">
-                  <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-xl font-bold text-foreground mb-1">
-                        Ready to book {sitterData.display_name.split(' ')[0]}? 🐾
+                  <div className="flex flex-col gap-4">
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-foreground mb-2">
+                        Book {sitterData.display_name.split(' ')[0]} Today! 🐾
                       </h3>
                       <p className="text-muted-foreground">
-                        Create a free account to request a booking and get a quote
+                        Create a free account in 30 seconds to send a booking request
                       </p>
                     </div>
+                    
+                    <div className="flex flex-wrap justify-center gap-2 py-2">
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        ✓ Free to book
+                      </Badge>
+                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                        ✓ No payment now
+                      </Badge>
+                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                        ✓ Free cancellation
+                      </Badge>
+                    </div>
+                    
                     <Button 
                       size="lg"
-                      className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold px-8"
+                      className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all hover:scale-[1.02]"
                       onClick={() => {
                         const params = new URLSearchParams(searchParams);
                         params.set('booking', 'true');
@@ -504,17 +494,21 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-5 w-5" />
-                      Get a Free Quote
+                      Get Your Free Quote Now
                     </Button>
+                    
+                    <p className="text-center text-xs text-muted-foreground">
+                      💳 You won't be charged until the sitter accepts your request
+                    </p>
                   </div>
                 </CardContent>
               </Card>
             )}
             
-            {/* Booking Form - Only show if user is pet owner */}
+            {/* Booking Form - Always visible for pet owners */}
             {profile?.role === 'pet_owner' && (
               <div id="booking-section">
-                <BookingAccordion
+                <BookingFormDirect
                   sitter={{
                     id: sitterData.id,
                     name: sitterData.display_name,
@@ -524,7 +518,6 @@ export default function SitterProfile() {
                     avatar: sitterData.avatar
                   }}
                   servicesData={servicesData}
-                  isOpen={isBookingOpen}
                   onBookingComplete={() => navigate('/bookings')}
                   initialCheckIn={checkInDate || undefined}
                   initialCheckOut={checkOutDate || undefined}
@@ -743,13 +736,10 @@ export default function SitterProfile() {
           }}
           onBookingClick={() => {
             if (user) {
-              setIsBookingOpen(true);
-              setTimeout(() => {
-                const bookingSection = document.getElementById('booking-section');
-                if (bookingSection) {
-                  bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }, 100);
+              const bookingSection = document.getElementById('booking-section');
+              if (bookingSection) {
+                bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
             } else {
               const params = new URLSearchParams(searchParams);
               params.set('booking', 'true');
