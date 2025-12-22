@@ -211,71 +211,62 @@ const Index = () => {
                   className="relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-transparent hover:border-primary/30 transition-all duration-500 cursor-pointer rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2"
                   onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
                 >
-                  {/* Top accent bar */}
-                  <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
-                  
-                  <CardContent className="p-5">
-                    <div className="flex flex-col items-center text-center">
-                      {/* Avatar with animated ring */}
-                      <div className="relative mb-3">
-                        <div className="absolute -inset-2 bg-gradient-to-r from-primary via-accent to-primary rounded-full opacity-30 group-hover:opacity-100 blur-sm transition-opacity duration-500 animate-spin-slow" style={{ animationDuration: '8s' }} />
-                        <Avatar className="h-20 w-20 md:h-24 md:w-24 ring-4 ring-background relative z-10">
-                          <AvatarImage 
-                            src={sitter.avatar} 
-                            alt={sitter.name} 
-                            className="object-cover"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face';
-                            }}
-                          />
-                          <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-primary to-accent text-primary-foreground">
-                            {sitter.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                      
-                      {/* Name */}
-                      <h3 className="font-bold text-lg mb-1 group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-accent group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                  {/* Large Photo Header */}
+                  <div className="relative h-48 md:h-56 overflow-hidden">
+                    <img 
+                      src={sitter.avatar} 
+                      alt={sitter.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=400&h=400&fit=crop&crop=face';
+                      }}
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Badges overlay */}
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                      {sitter.verified && (
+                        <Badge className="bg-green-500/90 text-white border-0 shadow-md text-xs px-2 py-0.5">
+                          <Shield className="w-3 h-3 mr-1" />
+                          Verified
+                        </Badge>
+                      )}
+                      {sitter.hasPoliceVet && (
+                        <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 shadow-md text-xs px-2 py-0.5">
+                          ⭐ Gold
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    {/* Name overlay at bottom */}
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <h3 className="font-bold text-lg text-white drop-shadow-lg">
                         {sitter.name}
                       </h3>
-                      
-                      {/* Location */}
-                      <div className="flex items-center text-sm text-muted-foreground mb-2">
-                        <MapPin className="w-3 h-3 mr-1 text-primary" />
+                      <div className="flex items-center text-sm text-white/90">
+                        <MapPin className="w-3 h-3 mr-1" />
                         {sitter.location.split(',')[0]}
                       </div>
-                      
-                      {/* Bio snippet */}
-                      {sitter.bio && (
-                        <p className="text-xs text-muted-foreground line-clamp-2 mb-3 min-h-[2.5rem]">
-                          {sitter.bio}
-                        </p>
-                      )}
-                      
-                      {/* Badges */}
-                      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
-                        {sitter.verified && (
-                          <Badge className="bg-green-500/10 text-green-600 border border-green-500/30 hover:bg-green-500/20 text-xs px-2 py-0.5">
-                            <Shield className="w-3 h-3 mr-1" />
-                            Verified
-                          </Badge>
-                        )}
-                        {sitter.hasPoliceVet && (
-                          <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 shadow-md text-xs px-2 py-0.5">
-                            ⭐ Gold
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      {/* CTA Button */}
-                      <Button 
-                        size="sm"
-                        className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
-                      >
-                        View Profile
-                        <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-                      </Button>
                     </div>
+                  </div>
+                  
+                  <CardContent className="p-4">
+                    {/* Bio - full text, no truncation */}
+                    {sitter.bio && (
+                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                        {sitter.bio.length > 100 ? `${sitter.bio.substring(0, 100)}...` : sitter.bio}
+                      </p>
+                    )}
+                    
+                    {/* CTA Button */}
+                    <Button 
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+                    >
+                      View Profile
+                      <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
