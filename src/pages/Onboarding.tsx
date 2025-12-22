@@ -58,17 +58,23 @@ export default function Onboarding() {
   const stepStartTime = useRef<number>(Date.now());
   const onboardingStartTime = useRef<number>(Date.now());
   
+  // Check if terms were accepted during signup BEFORE any useState
+  const termsAcceptedDuringSignup = localStorage.getItem('terms_accepted_during_signup') === 'true';
+  
   const [step, setStep] = useState(() => {
+    // If terms were accepted during signup, start at step 1 (role selection)
+    if (termsAcceptedDuringSignup) return 1;
     const saved = localStorage.getItem('onboarding_step');
     return saved ? parseInt(saved) : 1;
   });
   const [isLoading, setIsLoading] = useState(false);
   const [profileId, setProfileId] = useState<string>('');
+  // CRITICAL: Never show terms if they were accepted during signup
   const [showTerms, setShowTerms] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
-  const [termsChecked, setTermsChecked] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(termsAcceptedDuringSignup);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const [hasAcceptedTermsLocally, setHasAcceptedTermsLocally] = useState(false);
+  const [hasAcceptedTermsLocally, setHasAcceptedTermsLocally] = useState(termsAcceptedDuringSignup);
   const [emailVerified, setEmailVerified] = useState(false);
 
   // Track onboarding page view - use ref to prevent double-tracking on React re-mounts
@@ -212,19 +218,29 @@ export default function Onboarding() {
       
       try {
         // Check if terms were just accepted during signup (localStorage persists across refreshes)
-        const termsAcceptedDuringSignup = localStorage.getItem('terms_accepted_during_signup') === 'true';
+        // CRITICAL: Check this ONCE and clean up immediately to prevent any race conditions
+        const termsAcceptedFlag = localStorage.getItem('terms_accepted_during_signup') === 'true';
         
-        if (termsAcceptedDuringSignup) {
-          console.log('✅ Terms were accepted during signup - skipping terms popup');
-          localStorage.removeItem('terms_accepted_during_signup'); // Clean up
+        if (termsAcceptedFlag) {
+          console.log('✅ Terms were accepted during signup - skipping terms popup completely');
+          // Clean up IMMEDIATELY to prevent double-processing
+          localStorage.removeItem('terms_accepted_during_signup');
           setTermsChecked(true);
           setShowTerms(false);
+          setHasAcceptedTermsLocally(true);
           
-          // Make sure we're not at step 0
+          // Make sure we're at step 1 (role selection)
           if (step === 0) {
             setStep(1);
             localStorage.setItem('onboarding_step', '1');
           }
+          
+          // Pre-fill names from user metadata
+          setData(prev => ({
+            ...prev,
+            first_name: user.user_metadata?.first_name || prev.first_name || '',
+            last_name: user.user_metadata?.last_name || prev.last_name || '',
+          }));
           
           setInitialLoadComplete(true);
           return;
@@ -256,8 +272,8 @@ export default function Onboarding() {
             // Email verification is now role-dependent (sitters only), handled in nextStep
             setShowEmailVerification(false);
           } else {
-            // Only show terms if not accepted AND not currently showing
-            if (!showTerms) {
+            // Only show terms if not accepted AND not currently showing AND not accepted locally
+            if (!showTerms && !hasAcceptedTermsLocally) {
               setShowTerms(true);
               setStep(0);
               localStorage.setItem('onboarding_step', '0');
@@ -283,10 +299,8 @@ export default function Onboarding() {
             avatar_url: parsedSavedData.avatar_url || profile.avatar_url || '',
           }));
         } else {
-          // If no profile exists, check if terms were just accepted during signup
-          const termsAcceptedDuringSignup = localStorage.getItem('terms_accepted_during_signup') === 'true';
-          
-          if (!termsAcceptedDuringSignup && !showTerms && !hasAcceptedTermsLocally) {
+          // If no profile exists yet
+          if (!hasAcceptedTermsLocally) {
             setShowTerms(true);
             setStep(0);
             localStorage.setItem('onboarding_step', '0');
@@ -623,7 +637,7 @@ export default function Onboarding() {
     }
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (step === 1 && !data.role) {
       toast({
         title: "Please select a role",
@@ -633,11 +647,95 @@ export default function Onboarding() {
       return;
     }
     
-    // CRITICAL: Pet owners skip basic info entirely - go straight to QuickStart
+    // CRITICAL: Pet owners skip to search immediately after selecting role
     if (step === 1 && data.role === 'pet_owner') {
-      console.log('Pet owner selected - jumping to step 2 (QuickStart)');
-      setStep(2);
-      return;
+      console.log('Pet owner selected - completing onboarding and redirecting to search');
+      
+      try {
+        // Update profile with role and mark onboarding complete
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ 
+            role: 'pet_owner',
+            onboarding_completed: true 
+          })
+          .eq('user_id', user?.id);
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+          throw profileError;
+        }
+
+        // Send welcome email
+        try {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('first_name, email, id')
+            .eq('user_id', user?.id)
+            .single();
+
+          if (profileData) {
+            const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
+            const searchSessionId = sessionStorage.getItem('search_session_id');
+            const sessionId = behaviorSessionId || searchSessionId;
+            
+            await supabase.functions.invoke('send-welcome-email', {
+              body: {
+                email: profileData.email,
+                firstName: profileData.first_name || 'there',
+                role: 'pet_owner',
+                sessionId: sessionId,
+              }
+            });
+            console.log('Pet owner welcome email sent');
+          }
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+        }
+
+        // Clear localStorage
+        localStorage.removeItem('onboarding_data');
+        localStorage.removeItem('onboarding_step');
+        
+        toast({
+          title: "🎉 Welcome to ZiggySitters!",
+          description: "Let's find the perfect sitter for your pet!",
+          duration: 4000,
+        });
+        
+        // Check if user had search context from before registration
+        const lastClickedSitter = sessionStorage.getItem('last_clicked_sitter_id');
+        const searchLocation = sessionStorage.getItem('search_location');
+        const searchServiceType = sessionStorage.getItem('search_service_type');
+        
+        // Clear these after use
+        sessionStorage.removeItem('last_clicked_sitter_id');
+        
+        if (lastClickedSitter) {
+          // User clicked a sitter before registering - take them back there
+          console.log('Redirecting to previously clicked sitter:', lastClickedSitter);
+          navigate(`/sitter/${lastClickedSitter}`, { replace: true });
+        } else if (searchLocation || searchServiceType) {
+          // User had a search in progress
+          const params = new URLSearchParams();
+          if (searchLocation) params.set('location', searchLocation);
+          if (searchServiceType) params.set('serviceType', searchServiceType);
+          console.log('Restoring search context');
+          navigate(`/find-sitters?${params.toString()}`, { replace: true });
+        } else {
+          // No prior context - go to search page
+          navigate('/find-sitters', { replace: true });
+        }
+        return;
+      } catch (error: any) {
+        console.error('Error completing pet owner onboarding:', error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to complete setup. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
     
     // Sitters need email verification before proceeding
@@ -899,9 +997,10 @@ export default function Onboarding() {
     console.log('[Onboarding] renderRoleSpecificOnboarding', { step, role: data.role, profileId: profile?.id, userId: user?.id });
     if (!data.role) return null;
 
+    // Pet owners complete immediately from step 1 via nextStep() - should never reach step 2
     if (data.role === 'pet_owner') {
-      console.log('[Onboarding] Rendering QuickStartPetOwner for pet_owner');
-      return <QuickStartPetOwner profileId={profile?.id || ''} userId={user?.id || ''} onComplete={handleOnboardingComplete} />;
+      console.log('[Onboarding] Pet owner should not reach renderRoleSpecificOnboarding - redirect happening in nextStep');
+      return null;
     }
     
     if (data.role === 'pet_sitter') {
@@ -937,13 +1036,12 @@ export default function Onboarding() {
 
   const getTotalSteps = () => {
     if (data.role === 'pet_sitter') return 7; // User type + Basic info + 5 sitter steps
-    if (data.role === 'pet_owner') return 2; // User type + QuickStart (skip basic info)
-    return 2;
+    if (data.role === 'pet_owner') return 1; // User type only - then straight to search
+    return 1;
   };
 
   const getStepTitle = () => {
     if (step === 1) return 'Choose Your Role';
-    if (data.role === 'pet_owner' && step === 2) return 'Meet Your Pet';
     if (data.role === 'pet_sitter' && step === 2) return 'Basic Information';
     if (data.role === 'pet_sitter') {
       // Steps 3-7 are handled by ImprovedSitterOnboarding
@@ -1075,7 +1173,18 @@ export default function Onboarding() {
                 }
                 className="px-6 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 hover:from-purple-600 hover:via-blue-600 hover:to-indigo-600 shadow-lg"
               >
-                {step === 2 ? 'Save & Continue ✨' : 'Next 🎉'}
+                {isLoading ? (
+                  <>
+                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
+                    Setting up...
+                  </>
+                ) : step === 1 && data.role === 'pet_owner' ? (
+                  'Find Sitters! 🔍'
+                ) : step === 2 ? (
+                  'Save & Continue ✨'
+                ) : (
+                  'Next 🎉'
+                )}
               </Button>
             </div>
           )}
