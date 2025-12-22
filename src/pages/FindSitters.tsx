@@ -71,80 +71,61 @@ export default function FindSitters() {
     }
   }, [searchPerformed, filteredSitters]);
 
-  // Load sitters from the secure database function
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load sitters from the secure database function - OPTIMIZED with parallel queries
   useEffect(() => {
     const fetchSitters = async () => {
+      setIsLoading(true);
       try {
         console.log('Fetching sitters...');
         
-        // Fetch ALL sitters using the security definer function (bypasses RLS)
-        const { data: sitterProfilesData, error: sitterProfilesError } = await supabase
-          .rpc('get_public_sitters');
+        // PARALLEL queries for faster loading
+        const [sittersResult, servicesResult, areasResult] = await Promise.all([
+          supabase.rpc('get_public_sitters'),
+          supabase.from('sitter_services').select('*').eq('is_offered', true),
+          supabase.from('sitter_service_areas').select('sitter_id, suburb, is_primary')
+        ]);
         
-        const profilesData = sitterProfilesData;
+        const profilesData = sittersResult.data;
+        const servicesData = servicesResult.data;
+        const serviceAreasData = areasResult.data;
         
-        console.log('Public sitters data:', profilesData);
-        console.log('Public sitters error:', sitterProfilesError);
-        
-        if (sitterProfilesError) {
-          console.error('Error fetching profiles:', sitterProfilesError);
+        if (sittersResult.error) {
+          console.error('Error fetching profiles:', sittersResult.error);
           setAllSitters([]);
           setFilteredSitters([]);
+          setIsLoading(false);
           return;
         }
-
-        // Fetch services for each sitter
-        const { data: servicesData, error: servicesError } = await supabase
-          .from('sitter_services')
-          .select('*')
-          .eq('is_offered', true);
-
-        console.log('Services data:', servicesData);
-        console.log('Services error:', servicesError);
-
-        if (servicesError) {
-          console.error('Error fetching services:', servicesError);
-        }
-
-        // Fetch service areas for each sitter
-        const { data: serviceAreasData, error: areasError } = await supabase
-          .from('sitter_service_areas')
-          .select('sitter_id, suburb, is_primary');
-
-        if (areasError) {
-          console.error('Error fetching service areas:', areasError);
-        }
-        console.log('Service areas data:', serviceAreasData);
 
         // Transform data
         const transformedSitters = (profilesData || []).map(sitter => {
           const sitterServices = (servicesData || []).filter(s => s.sitter_id === sitter.id);
           const sitterAreas = (serviceAreasData || []).filter(a => a.sitter_id === sitter.id);
           const serviceNames = sitterServices.map(s => {
-            // Map database service types to display names
-          const serviceMap: { [key: string]: string } = {
-            'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
-            'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
-            'drop_in_visits': 'Drop-in Visits'
-          };
+            const serviceMap: { [key: string]: string } = {
+              'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
+              'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)', 
+              'drop_in_visits': 'Drop-in Visits'
+            };
             return serviceMap[s.service_type] || s.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
           });
           
-          // Calculate rates from services
           const rates = sitterServices.map(s => s.hourly_rate || s.daily_rate || s.overnight_rate || 25).filter(r => r > 0);
           const minRate = rates.length > 0 ? Math.min(...rates) : 25;
 
-          const transformed = {
+          return {
             id: sitter.id,
             name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
             location: `${sitter.suburb || ''}, ${sitter.city || 'Auckland'}`.replace(/^, /, ''),
-            city: sitter.city || '', // Keep raw city for filtering
-            suburb: sitter.suburb || '', // Primary suburb
-            serviceAreas: sitterAreas.map(a => a.suburb), // All service areas
-            rating: null, // No rating system
-            feedback_count: null, // No reviews system
+            city: sitter.city || '',
+            suburb: sitter.suburb || '',
+            serviceAreas: sitterAreas.map(a => a.suburb),
+            rating: null,
+            feedback_count: null,
             baseRate: minRate,
-            hourlyRate: minRate, // Sitter's rate - 10% listing fee shown separately at checkout
+            hourlyRate: minRate,
             bio: sitter.bio || 'Experienced pet sitter who loves caring for animals.',
             image: sitter.avatar_url || null,
             services: serviceNames,
@@ -156,47 +137,32 @@ export default function FindSitters() {
             instant_booking: false,
             pet_types: ['dogs']
           };
-          
-          console.log('Transformed sitter:', transformed.name, 'Service areas:', transformed.serviceAreas);
-          return transformed;
         });
 
-        // Filter to only show bookable sitters (completed onboarding + has services)
+        // Filter to only show bookable sitters
         const bookableSitters = transformedSitters.filter(sitter => {
-          const hasServices = sitter.services && sitter.services.length > 0;
-          // Sitter must have at least one service to be bookable
-          if (!hasServices) {
-            console.log(`Sitter ${sitter.name} hidden: no services`);
-            return false;
-          }
-          return true;
+          return sitter.services && sitter.services.length > 0;
         });
         
-        console.log(`Bookable sitters: ${bookableSitters.length} of ${transformedSitters.length}`);
-        
-        // Sort sitters: Auckland sitters first, then golden badge, then others
+        // Sort sitters: Auckland first, then golden badge
         const sortedSitters = bookableSitters.sort((a, b) => {
           const aIsAuckland = (a.city || '').toLowerCase().includes('auckland');
           const bIsAuckland = (b.city || '').toLowerCase().includes('auckland');
-          
-          // Auckland sitters come first
           if (aIsAuckland && !bIsAuckland) return -1;
           if (!aIsAuckland && bIsAuckland) return 1;
-          
-          // Within same city priority, golden badge holders first
           if (a.golden_badge && !b.golden_badge) return -1;
           if (!a.golden_badge && b.golden_badge) return 1;
-          
-          return 0; // Keep original order if both have same status
+          return 0;
         });
         
-        console.log('All transformed sitters:', sortedSitters);
         setAllSitters(sortedSitters);
         setFilteredSitters(sortedSitters);
       } catch (error) {
         console.error('Error in fetchSitters:', error);
         setAllSitters([]);
         setFilteredSitters([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -620,8 +586,25 @@ export default function FindSitters() {
       {/* Results */}
       <div id="search-results" className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
+          {/* Loading State */}
+          {isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="overflow-hidden animate-pulse">
+                  <div className="h-48 bg-muted" />
+                  <CardContent className="p-4 space-y-3">
+                    <div className="h-4 bg-muted rounded w-3/4" />
+                    <div className="h-3 bg-muted rounded w-1/2" />
+                    <div className="h-3 bg-muted rounded w-full" />
+                    <div className="h-10 bg-muted rounded mt-4" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
           {/* Mobile: New Search button when results shown */}
-          {isMobile && searchPerformed && (
+          {!isLoading && isMobile && searchPerformed && (
             <div className="mb-6">
               <Link to="/">
                 <Button variant="outline" className="w-full h-12">
@@ -633,7 +616,7 @@ export default function FindSitters() {
           )}
           
           {/* Search Results Header */}
-          {searchPerformed && (
+          {!isLoading && searchPerformed && (
             <div className="mb-6 md:mb-8">
               {/* Subtle prompt to add pets */}
               <AddPetsPrompt />
@@ -660,7 +643,7 @@ export default function FindSitters() {
           )}
 
           {/* Sitter Cards Grid - Enhanced */}
-          {searchPerformed && filteredSitters.length > 0 && (
+          {!isLoading && searchPerformed && filteredSitters.length > 0 && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredSitters.map((sitter) => (
@@ -707,7 +690,7 @@ export default function FindSitters() {
           )}
 
           {/* No Results Found - Enhanced */}
-          {searchPerformed && filteredSitters.length === 0 && (
+          {!isLoading && searchPerformed && filteredSitters.length === 0 && (
             <NoResultsSection
               searchLocation={location}
               searchServiceType={serviceType}
@@ -740,7 +723,7 @@ export default function FindSitters() {
           )}
 
           {/* Default State - Show All Sitters */}
-          {!searchPerformed && allSitters.length > 0 && (
+          {!isLoading && !searchPerformed && allSitters.length > 0 && (
             <div>
               <div className="mb-6 md:mb-8">
                 <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
