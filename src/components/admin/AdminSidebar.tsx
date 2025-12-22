@@ -15,7 +15,8 @@ import {
   UserCheck,
   Ticket,
   Wrench,
-  Activity
+  Activity,
+  MapPinned
 } from 'lucide-react';
 import {
   Sidebar,
@@ -73,6 +74,12 @@ const navSections = [
         title: 'Sitter Recruitment',
         href: '/admin/sitter-recruitment',
         icon: Target,
+      },
+      {
+        title: 'Demand Gap',
+        href: '/admin/demand-gap',
+        icon: MapPinned,
+        highlight: true,
       },
       {
         title: 'Sitter Leads',
