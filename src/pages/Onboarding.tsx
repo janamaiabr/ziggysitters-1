@@ -144,14 +144,6 @@ export default function Onboarding() {
     localStorage.setItem('onboarding_step', step.toString());
   }, [step]);
 
-  // CRITICAL: Force pet owners to skip step 2 if they somehow land on it
-  useEffect(() => {
-    if (data.role === 'pet_owner' && step === 2) {
-      console.log('Pet owner detected on step 2 - keeping them here for QuickStart');
-      // Step 2 for pet owners IS the QuickStart form, so we keep them here
-    }
-  }, [step, data.role]);
-
   // Stripe returns are now handled in Profile.tsx payments tab
   // No need to handle them here anymore
 
@@ -208,6 +200,35 @@ export default function Onboarding() {
 
     checkUserStatus();
   }, [user, navigate]);
+
+  // CRITICAL: Pet owners should never be on step 2+ - redirect them to find sitters
+  useEffect(() => {
+    if (data.role === 'pet_owner' && step >= 2 && initialLoadComplete && !blockRender) {
+      console.log('Pet owner detected on step 2+ - redirecting to find-sitters');
+      
+      // Clear onboarding localStorage since they already picked their role
+      localStorage.removeItem('onboarding_step');
+      localStorage.removeItem('onboarding_data');
+      
+      // Check for search context
+      const lastClickedSitter = sessionStorage.getItem('last_clicked_sitter_id');
+      const searchLocation = sessionStorage.getItem('search_location');
+      const searchServiceType = sessionStorage.getItem('search_service_type');
+      
+      sessionStorage.removeItem('last_clicked_sitter_id');
+      
+      if (lastClickedSitter) {
+        navigate(`/sitter/${lastClickedSitter}`, { replace: true });
+      } else if (searchLocation || searchServiceType) {
+        const params = new URLSearchParams();
+        if (searchLocation) params.set('location', searchLocation);
+        if (searchServiceType) params.set('serviceType', searchServiceType);
+        navigate(`/find-sitters?${params.toString()}`, { replace: true });
+      } else {
+        navigate('/find-sitters', { replace: true });
+      }
+    }
+  }, [step, data.role, initialLoadComplete, blockRender, navigate]);
 
   useEffect(() => {
     if (!user) return;
