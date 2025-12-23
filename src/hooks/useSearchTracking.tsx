@@ -38,6 +38,37 @@ export const useSearchTracking = () => {
   const { user } = useAuth();
   const { profile } = useProfile();
   const [clickedSitters, setClickedSitters] = useState<string[]>([]);
+  const [hasLinkedSession, setHasLinkedSession] = useState(false);
+
+  // CRITICAL: Link previous anonymous searches to user after login
+  useEffect(() => {
+    const linkPreviousSearches = async () => {
+      if (!profile?.id || hasLinkedSession) return;
+      
+      const sessionId = getSessionId();
+      console.log('Linking previous searches for session:', sessionId, 'to user:', profile.id);
+      
+      try {
+        // Update all search events from this session that don't have a user_id
+        const { data, error } = await supabase
+          .from('search_events')
+          .update({ user_id: profile.id })
+          .eq('session_id', sessionId)
+          .is('user_id', null);
+        
+        if (error) {
+          console.error('Error linking previous searches:', error);
+        } else {
+          console.log('Successfully linked previous searches to user');
+          setHasLinkedSession(true);
+        }
+      } catch (err) {
+        console.error('Failed to link previous searches:', err);
+      }
+    };
+    
+    linkPreviousSearches();
+  }, [profile?.id, hasLinkedSession]);
 
   const trackSearch = async (params: SearchParams) => {
     try {
