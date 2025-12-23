@@ -379,6 +379,7 @@ export default function SitterProfile() {
                     </Button>
                     <Button 
                       size="lg"
+                      className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-lg font-bold"
                       onClick={() => {
                         // Track booking dialog open
                         trackEvent({
@@ -400,7 +401,8 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      Get a Quote
+                      Request Booking
+                      <span className="ml-2">→</span>
                     </Button>
                   </>
                 )}
@@ -419,15 +421,17 @@ export default function SitterProfile() {
                     </Button>
                     <Button 
                       size="lg"
+                      className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-lg font-bold animate-pulse-subtle"
                       onClick={() => {
                         const params = new URLSearchParams(searchParams);
                         params.set('booking', 'true');
                         const redirectUrl = `/sitter/${id}?${params.toString()}`;
-                        navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+                        navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      Get a Quote
+                      Request Booking
+                      <span className="ml-2">→</span>
                     </Button>
                   </>
                 )}
@@ -452,40 +456,40 @@ export default function SitterProfile() {
               </Alert>
             )}
             
-            {/* Prominent CTA for non-logged in users */}
+            {/* Prominent CTA for non-logged in users - CONVERSION FOCUSED */}
             {!user && (
-              <Card className="border-2 border-primary shadow-xl bg-gradient-to-br from-background via-primary/5 to-primary/10 overflow-hidden">
+              <Card className="border-2 border-primary shadow-2xl bg-gradient-to-br from-background via-primary/5 to-primary/10 overflow-hidden animate-pulse-subtle">
                 {/* Urgency Banner */}
-                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-3 px-4 text-sm font-bold">
                   <Calendar className="inline-block w-4 h-4 mr-1" />
-                  Christmas holidays filling fast! Book early to secure your dates
+                  🔥 Summer holidays filling fast! {sitterData.display_name.split(' ')[0]} is in high demand
                 </div>
                 <CardContent className="p-6">
                   <div className="flex flex-col gap-4">
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-foreground mb-2">
-                        Book {sitterData.display_name.split(' ')[0]} Today! 🐾
+                        Request a Booking with {sitterData.display_name.split(' ')[0]} 🐾
                       </h3>
-                      <p className="text-muted-foreground">
-                        Create a free account in 30 seconds to send a booking request
+                      <p className="text-muted-foreground text-lg">
+                        Takes 30 seconds • Free to request • No payment until confirmed
                       </p>
                     </div>
                     
-                    <div className="flex flex-wrap justify-center gap-2 py-2">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        ✓ Free to book
+                    <div className="flex flex-wrap justify-center gap-2 py-3">
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-sm py-1.5 px-3">
+                        ✓ Completely Free
                       </Badge>
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                        ✓ No payment now
+                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-sm py-1.5 px-3">
+                        ✓ No Card Required
                       </Badge>
-                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                        ✓ Free cancellation
+                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-sm py-1.5 px-3">
+                        ✓ Cancel Anytime
                       </Badge>
                     </div>
                     
                     <Button 
                       size="lg"
-                      className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all hover:scale-[1.02]"
+                      className="w-full h-16 text-xl font-bold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-xl shadow-primary/30 transition-all hover:scale-[1.02]"
                       onClick={() => {
                         const params = new URLSearchParams(searchParams);
                         params.set('booking', 'true');
@@ -493,13 +497,16 @@ export default function SitterProfile() {
                         navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
                       }}
                     >
-                      <Calendar className="mr-2 h-5 w-5" />
-                      Get Your Free Quote Now
+                      <Calendar className="mr-2 h-6 w-6" />
+                      Request Booking Now
+                      <span className="ml-2">→</span>
                     </Button>
                     
-                    <p className="text-center text-xs text-muted-foreground">
-                      💳 You won't be charged until the sitter accepts your request
-                    </p>
+                    <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                      <span>💳 Pay only after sitter confirms</span>
+                      <span>•</span>
+                      <span>📧 Get a response within hours</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

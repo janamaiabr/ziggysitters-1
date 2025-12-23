@@ -215,6 +215,20 @@
     animation: bounce-slow 2s ease-in-out infinite;
   }
 
+  /* Subtle pulse animation for CTAs */
+  @keyframes pulse-subtle {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 hsl(262 83% 58% / 0.4);
+    }
+    50% { 
+      box-shadow: 0 0 0 8px hsl(262 83% 58% / 0);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
   /* Playful gradient text */
   .text-gradient-playful {
     background: linear-gradient(135deg, hsl(262 83% 58%), hsl(221 83% 53%), hsl(262 83% 58%));
