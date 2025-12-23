@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { useProfile } from '@/contexts/ProfileContext';
 
 // Generate or retrieve session ID for tracking anonymous users
 const getSessionId = (): string => {
@@ -36,30 +35,30 @@ const SEARCH_CONTEXT_KEY = 'pre_login_search_context';
 
 export const useSearchTracking = () => {
   const { user } = useAuth();
-  const { profile } = useProfile();
   const [clickedSitters, setClickedSitters] = useState<string[]>([]);
   const [hasLinkedSession, setHasLinkedSession] = useState(false);
 
   // CRITICAL: Link previous anonymous searches to user after login
+  // Uses auth user.id (NOT profile.id) to match onboarding_funnel view
   useEffect(() => {
     const linkPreviousSearches = async () => {
-      if (!profile?.id || hasLinkedSession) return;
+      if (!user?.id || hasLinkedSession) return;
       
       const sessionId = getSessionId();
-      console.log('Linking previous searches for session:', sessionId, 'to user:', profile.id);
+      console.log('Linking previous searches for session:', sessionId, 'to auth user:', user.id);
       
       try {
         // Update all search events from this session that don't have a user_id
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('search_events')
-          .update({ user_id: profile.id })
+          .update({ user_id: user.id })
           .eq('session_id', sessionId)
           .is('user_id', null);
         
         if (error) {
           console.error('Error linking previous searches:', error);
         } else {
-          console.log('Successfully linked previous searches to user');
+          console.log('Successfully linked previous searches to auth user');
           setHasLinkedSession(true);
         }
       } catch (err) {
@@ -68,16 +67,17 @@ export const useSearchTracking = () => {
     };
     
     linkPreviousSearches();
-  }, [profile?.id, hasLinkedSession]);
+  }, [user?.id, hasLinkedSession]);
 
   const trackSearch = async (params: SearchParams) => {
     try {
       const sessionId = getSessionId();
       
+      // CRITICAL: Use auth user.id (NOT profile.id) to match onboarding_funnel view
       const { error } = await supabase
         .from('search_events')
         .insert({
-          user_id: profile?.id || null, // Use profile.id for consistency with welcome email queries
+          user_id: user?.id || null, // Use auth user.id for consistency with onboarding_funnel
           session_id: sessionId,
           search_timestamp: new Date().toISOString(),
           suburb: params.suburb,
@@ -92,6 +92,8 @@ export const useSearchTracking = () => {
 
       if (error) {
         console.error('Error tracking search:', error);
+      } else {
+        console.log('Search tracked successfully for user:', user?.id || 'anonymous');
       }
     } catch (err) {
       console.error('Failed to track search:', err);
