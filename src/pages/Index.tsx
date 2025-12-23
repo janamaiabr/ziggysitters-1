@@ -10,6 +10,7 @@ import { MapPin, Star, CheckCircle, Camera, Shield, Clock, DollarSign, Search, H
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services.jpg';
 import { supabase } from '@/integrations/supabase/client';
+import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 // Import hero versions - swap these to switch between versions
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
@@ -76,27 +77,55 @@ const Index = () => {
         .limit(4);
       
       if (data && data.length > 0) {
-        // Then check police vet status for each sitter
         const sitterIds = data.map(s => s.id);
-        const { data: policeVetData } = await supabase
-          .from('profiles')
-          .select('id, blue_card_document_url')
-          .in('id', sitterIds);
         
-        const policeVetMap = new Map(policeVetData?.map(p => [p.id, !!p.blue_card_document_url]) || []);
+        // Fetch services and police vet status in parallel
+        const [policeVetResult, servicesResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('id, blue_card_document_url')
+            .in('id', sitterIds),
+          supabase
+            .from('sitter_services')
+            .select('*')
+            .in('sitter_id', sitterIds)
+            .eq('is_offered', true)
+        ]);
         
-        setFeaturedSitters(data.map(sitter => ({
-          id: sitter.id,
-          name: `${sitter.first_name} ${sitter.last_name.charAt(0)}.`,
-          rating: sitter.rating || 4.8,
-          feedback_count: sitter.total_reviews || 0,
-          location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
-          services: ['Pet Sitting', 'Drop-in Visits'],
-          verified: sitter.is_verified,
-          hasPoliceVet: policeVetMap.get(sitter.id) || false,
-          avatar: sitter.avatar_url,
-          bio: sitter.bio || 'Experienced pet care provider'
-        })));
+        const policeVetMap = new Map(policeVetResult.data?.map(p => [p.id, !!p.blue_card_document_url]) || []);
+        const servicesMap = new Map<string, any[]>();
+        servicesResult.data?.forEach(s => {
+          if (!servicesMap.has(s.sitter_id)) servicesMap.set(s.sitter_id, []);
+          servicesMap.get(s.sitter_id)!.push(s);
+        });
+        
+        // Map service types to friendly names
+        const serviceTypeLabels: Record<string, string> = {
+          'pet_sitting_sitters_home': "Pet Sitting (Sitter's Home)",
+          'pet_sitting_owners_home': 'Pet Sitting (Your Home)',
+          'drop_in_visits': 'Drop-in Visits',
+        };
+        
+        setFeaturedSitters(data.map(sitter => {
+          const sitterServices = servicesMap.get(sitter.id) || [];
+          const baseRate = Math.min(
+            ...sitterServices.map(s => s.daily_rate || s.overnight_rate || 50).filter(r => r > 0),
+            50
+          );
+          
+          return {
+            id: sitter.id,
+            name: `${sitter.first_name} ${sitter.last_name?.charAt(0) || ''}.`,
+            location: `${sitter.suburb || 'Auckland'}, ${sitter.city || 'Auckland'}`,
+            baseRate: baseRate,
+            bio: sitter.bio || 'Experienced pet care provider',
+            image: sitter.avatar_url,
+            services: sitterServices.map(s => serviceTypeLabels[s.service_type] || s.service_type),
+            verified: sitter.is_verified || false,
+            golden_badge: policeVetMap.get(sitter.id) || false,
+            sitterServices: sitterServices,
+          };
+        }));
       }
     };
 
@@ -196,84 +225,15 @@ const Index = () => {
             </p>
           </div>
           
-          {/* Sitter Cards with Premium Design */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto">
-            {featuredSitters.map((sitter, index) => (
-              <div
+          {/* Sitter Cards using EnhancedSitterCard */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+            {featuredSitters.map((sitter) => (
+              <EnhancedSitterCard
                 key={sitter.id}
-                className="group relative"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 via-accent/50 to-primary/50 rounded-2xl blur-lg opacity-0 group-hover:opacity-75 transition-opacity duration-500" />
-                
-                <Card 
-                  className="relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-transparent hover:border-primary/30 transition-all duration-500 cursor-pointer rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2"
-                  onClick={() => {
-                    // Track the sitter click for analytics
-                    trackSitterClick(sitter.id, sitter.name);
-                    navigate(`/sitter/${sitter.id}?booking=true`);
-                  }}
-                >
-                  {/* Large Photo Header */}
-                  <div className="relative h-48 md:h-56 overflow-hidden">
-                    <img 
-                      src={sitter.avatar} 
-                      alt={sitter.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=400&h=400&fit=crop&crop=face';
-                      }}
-                    />
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-                    {/* Badges overlay */}
-                    <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                      {sitter.verified && (
-                        <Badge className="bg-green-500/90 text-white border-0 shadow-md text-xs px-2 py-0.5">
-                          <Shield className="w-3 h-3 mr-1" />
-                          Verified
-                        </Badge>
-                      )}
-                      {sitter.hasPoliceVet && (
-                        <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 shadow-md text-xs px-2 py-0.5">
-                          ⭐ Gold
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    {/* Name overlay at bottom */}
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <h3 className="font-bold text-lg text-white drop-shadow-lg">
-                        {sitter.name}
-                      </h3>
-                      <div className="flex items-center text-sm text-white/90">
-                        <MapPin className="w-3 h-3 mr-1" />
-                        {sitter.location.split(',')[0]}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <CardContent className="p-4">
-                    {/* Bio - full text, no truncation */}
-                    {sitter.bio && (
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                        {sitter.bio.length > 100 ? `${sitter.bio.substring(0, 100)}...` : sitter.bio}
-                      </p>
-                    )}
-                    
-                    {/* CTA Button - Action-oriented */}
-                    <Button 
-                      size="sm"
-                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
-                    >
-                      Request Booking
-                      <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
+                sitter={sitter}
+                onViewProfile={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                onSitterClick={(id, name) => trackSitterClick(id, name)}
+              />
             ))}
           </div>
           
