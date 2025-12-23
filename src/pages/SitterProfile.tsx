@@ -380,7 +380,7 @@ export default function SitterProfile() {
                     </Button>
                     <Button 
                       size="lg"
-                      className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-lg font-bold"
+                      className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
                       onClick={() => {
                         // Track booking dialog open
                         trackEvent({
@@ -419,7 +419,7 @@ export default function SitterProfile() {
                     </Button>
                     <Button 
                       size="lg"
-                      className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-lg font-bold animate-pulse-subtle"
+                      className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
                       onClick={() => {
                         const params = new URLSearchParams(searchParams);
                         params.set('booking', 'true');
@@ -487,7 +487,7 @@ export default function SitterProfile() {
                     
                     <Button 
                       size="lg"
-                      className="w-full h-16 text-xl font-bold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 shadow-xl shadow-primary/30 transition-all hover:scale-[1.02]"
+                      className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
                       onClick={() => {
                         const params = new URLSearchParams(searchParams);
                         params.set('booking', 'true');

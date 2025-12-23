@@ -115,18 +115,19 @@ const HeroSectionPlayful = ({
                   <span className="text-purple-600 dark:text-purple-400 font-bold">Trusted pet sitters in Auckland & Hamilton</span> with guaranteed daily photo updates. No guessing - just peace of mind! 📸
                 </p>
 
-                {/* Primary CTA - high visibility, drives immediate action */}
-                <div className="pt-3 space-y-3">
+                {/* Primary CTA - HIGH VISIBILITY - drives immediate action */}
+                <div className="pt-4 space-y-3">
                   <Button 
                     size="lg" 
-                    className="w-full lg:w-auto text-base md:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 px-8 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 animate-pulse-subtle"
+                    className="w-full lg:w-auto text-lg md:text-xl font-extrabold shadow-2xl hover:shadow-[0_25px_60px_-10px_rgba(34,197,94,0.5)] transition-all duration-300 hover:scale-110 py-7 md:py-8 px-10 md:px-12 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white border-4 border-white/30 rounded-2xl animate-bounce-gentle relative overflow-hidden group"
                     onClick={handleSearch}
                   >
-                    <Search className="mr-2 h-5 w-5" />
+                    <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <Search className="mr-3 h-6 w-6" />
                     Get a Free Quote Today
-                    <span className="ml-2">→</span>
+                    <span className="ml-3 text-2xl">→</span>
                   </Button>
-                  <p className="text-xs md:text-sm text-muted-foreground text-center lg:text-left">
+                  <p className="text-sm md:text-base text-foreground/80 font-medium text-center lg:text-left">
                     ✓ No payment required • ✓ Free to browse • ✓ No obligation
                   </p>
                 </div>
