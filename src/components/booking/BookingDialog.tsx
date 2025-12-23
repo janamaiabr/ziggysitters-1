@@ -672,7 +672,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
         }
         return false;
       case 3:
-        return selectedPetIds.length > 0 || (!user && ownerPets.length === 0);
+        // Allow proceeding without pets - they can add details later
+        return true;
       case 4:
         return true;
       case 5:
@@ -1012,7 +1013,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
     <div className="space-y-4">
       <div className="text-center mb-4 sm:mb-6">
         <h3 className="font-semibold text-lg sm:text-xl">Which pets need care?</h3>
-        <p className="text-sm text-muted-foreground">Select the pets for this booking</p>
+        <p className="text-sm text-muted-foreground">Select pets for this booking (optional - you can add later)</p>
       </div>
 
       {!user ? (
@@ -1111,8 +1112,8 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
               </div>
             ))}
           </div>
-          {selectedPetIds.length === 0 && (
-            <p className="text-sm text-orange-600 mt-2">Please select at least one pet</p>
+          {selectedPetIds.length === 0 && ownerPets.length > 0 && (
+            <p className="text-sm text-muted-foreground mt-2">No pets selected - you can add details later</p>
           )}
           
           <div className="mt-3 pt-3 border-t">
