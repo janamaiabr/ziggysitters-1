@@ -110,7 +110,7 @@ export function QuickPetOwnerWizard() {
       });
 
       // Navigate to search with pre-filled location
-      navigate(`/find-sitters?suburb=${encodeURIComponent(data.suburb)}`);
+      navigate(`/find-sitters?location=${encodeURIComponent(data.suburb)}`);
     } catch (error) {
       console.error('Error completing wizard:', error);
       toast({
@@ -125,11 +125,11 @@ export function QuickPetOwnerWizard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 flex items-center justify-center p-4">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>🐾</div>
-        <div className="absolute top-32 right-1/4 text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>💖</div>
-        <div className="absolute bottom-32 right-1/3 text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>✨</div>
+      {/* Subtle background decoration - no animation */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className="absolute top-20 left-1/4 text-5xl">🐾</div>
+        <div className="absolute top-32 right-1/4 text-4xl">💖</div>
+        <div className="absolute bottom-32 right-1/3 text-4xl">✨</div>
       </div>
 
       <Card className="w-full max-w-lg shadow-2xl border-2 border-purple-200 dark:border-purple-800 relative overflow-hidden">
