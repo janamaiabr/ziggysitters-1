@@ -26,17 +26,18 @@ interface Notification {
 const getNotificationIcon = (type: string) => {
   switch (type) {
     case 'message':
-      return <MessageSquare className="h-4 w-4 text-blue-500" />;
+    case 'enquiry':
+      return <MessageSquare className="h-5 w-5 text-blue-500" />;
     case 'booking_request':
     case 'booking_accepted':
     case 'booking_payment':
-      return <Calendar className="h-4 w-4 text-amber-500" />;
+      return <Calendar className="h-5 w-5 text-amber-500" />;
     case 'payout':
-      return <DollarSign className="h-4 w-4 text-green-500" />;
+      return <DollarSign className="h-5 w-5 text-green-500" />;
     case 'profile_view':
-      return <Eye className="h-4 w-4 text-purple-500" />;
+      return <Eye className="h-5 w-5 text-purple-500" />;
     default:
-      return <Bell className="h-4 w-4 text-muted-foreground" />;
+      return <Bell className="h-5 w-5 text-muted-foreground" />;
   }
 };
 
@@ -187,26 +188,26 @@ export default function NotificationBell() {
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
                   className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
-                    !notification.is_read ? 'bg-primary/5' : ''
+                    !notification.is_read ? 'bg-primary/5 border-l-4 border-l-primary' : ''
                   }`}
                 >
                   <div className="flex gap-3">
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="flex-shrink-0 mt-0.5 w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       {getNotificationIcon(notification.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${!notification.is_read ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      <p className={`text-sm font-semibold leading-tight ${!notification.is_read ? 'text-foreground' : 'text-muted-foreground'}`}>
                         {notification.title}
                       </p>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                         {notification.message}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground/70 mt-2">
                         {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                       </p>
                     </div>
                     {!notification.is_read && (
-                      <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
+                      <div className="w-3 h-3 rounded-full bg-primary animate-pulse flex-shrink-0 mt-1" />
                     )}
                   </div>
                 </div>
