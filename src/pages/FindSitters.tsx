@@ -37,7 +37,7 @@ export default function FindSitters() {
       initial_service: searchParams.get('serviceType')
     });
   }, []);
-  const [location, setLocation] = useState(searchParams.get('location') || '');
+  const [location, setLocation] = useState(searchParams.get('location') || searchParams.get('suburb') || '');
   const [selectedDate, setSelectedDate] = useState<Date>(
     searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined
   );
