@@ -85,19 +85,23 @@ export default function GuestEnquiryDialog({
     setLoading(true);
     
     try {
-      // Store as email capture for follow-up and send notification to sitter
-      await supabase.from('email_captures').upsert({
+      // Store as email capture for follow-up
+      const { error: captureError } = await supabase.from('email_captures').upsert({
         email: email.trim().toLowerCase(),
         name: name.trim(),
         source: 'guest_enquiry',
         search_service_type: 'enquiry',
-        search_location: recipientName, // Store sitter name for context
+        search_location: recipientName,
       }, {
         onConflict: 'email'
       });
 
-      // Send notification to sitter via edge function
-      const { error } = await supabase.functions.invoke('send-message-notification', {
+      if (captureError) {
+        console.error('Email capture error:', captureError);
+      }
+
+      // Send email notification to sitter via edge function
+      const { error: emailError } = await supabase.functions.invoke('send-message-notification', {
         body: {
           recipientId: recipientId,
           guestName: name.trim(),
@@ -107,7 +111,29 @@ export default function GuestEnquiryDialog({
         }
       });
 
-      if (error) throw error;
+      if (emailError) {
+        console.error('Email notification error:', emailError);
+      }
+
+      // Create in-app notification for sitter
+      const { error: notifError } = await supabase.functions.invoke('create-notification', {
+        body: {
+          user_id: recipientId,
+          type: 'enquiry',
+          title: `💬 New enquiry from ${name.trim()}`,
+          message: `"${message.trim().substring(0, 100)}${message.length > 100 ? '...' : ''}" — Reply to: ${email.trim()}`,
+          link: '/messages',
+          metadata: {
+            guestName: name.trim(),
+            guestEmail: email.trim(),
+            isGuestEnquiry: true
+          }
+        }
+      });
+
+      if (notifError) {
+        console.error('In-app notification error:', notifError);
+      }
 
       setSuccess(true);
       
@@ -142,33 +168,52 @@ export default function GuestEnquiryDialog({
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="max-w-md">
           <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+            <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+              <CheckCircle className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-xl font-bold">Enquiry Sent!</h3>
+            <h3 className="text-2xl font-bold text-foreground">Message Sent!</h3>
             <p className="text-muted-foreground">
-              {recipientName} will receive your message and reply to <strong>{email}</strong>
+              {recipientName} has received your enquiry and will reply to <strong className="text-foreground">{email}</strong>
             </p>
             
-            <div className="bg-primary/5 rounded-lg p-4 mt-4">
-              <p className="text-sm font-medium mb-2">Want to book directly next time?</p>
+            {/* Strong registration CTA */}
+            <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-xl p-5 mt-6 border border-primary/20">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <p className="text-lg font-semibold text-foreground">Create your free account</p>
+              </div>
+              <ul className="text-sm text-left space-y-2 mb-4">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span>Message sitters instantly with one click</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span>Track all your enquiries and bookings</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span>Save your favorite sitters</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span>Get notified when sitters reply</span>
+                </li>
+              </ul>
               <Button 
-                className="w-full"
+                className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-lg py-6"
                 onClick={() => {
                   handleClose();
-                  navigate('/auth?tab=signup');
+                  navigate('/auth?tab=signup&email=' + encodeURIComponent(email));
                 }}
               >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Create Free Account
+                <Sparkles className="w-5 h-5 mr-2" />
+                Sign Up Free — Takes 30 Seconds
               </Button>
-              <p className="text-xs text-muted-foreground mt-2">
-                Track your bookings, save favorites, and more
-              </p>
             </div>
             
-            <Button variant="outline" onClick={handleClose} className="mt-2">
-              Continue Browsing
+            <Button variant="ghost" onClick={handleClose} className="text-muted-foreground">
+              Maybe later
             </Button>
           </div>
         </DialogContent>
