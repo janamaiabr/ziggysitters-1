@@ -305,9 +305,15 @@ export default function Onboarding() {
           const savedData = localStorage.getItem('onboarding_data');
           const parsedSavedData = savedData ? JSON.parse(savedData) : {};
           
+          // CRITICAL: Only set role from DB if user has COMPLETED onboarding
+          // For new users, the DB defaults to 'pet_owner' but we want them to explicitly choose
+          // so we DON'T pre-fill the role unless onboarding is already complete
+          const shouldUseDbRole = profile.onboarding_completed === true;
+          
           setData(prev => ({
             ...prev,
-            role: (profile.role === 'pet_owner' || profile.role === 'pet_sitter') ? profile.role : prev.role,
+            // Only use DB role for existing completed users, otherwise let user choose
+            role: shouldUseDbRole ? (profile.role === 'pet_owner' || profile.role === 'pet_sitter' ? profile.role : prev.role) : (parsedSavedData.role || null),
             // CRITICAL: Pre-fill names from profile or user metadata - don't make users enter twice
             first_name: parsedSavedData.first_name || profile.first_name || user.user_metadata?.first_name || '',
             last_name: parsedSavedData.last_name || profile.last_name || user.user_metadata?.last_name || '',
