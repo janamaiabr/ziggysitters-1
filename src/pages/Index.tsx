@@ -66,19 +66,17 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // First get basic sitter info from public view
+      // Get sitters who have a profile photo - only show complete profiles
       const { data, error } = await supabase
         .from('public_sitters')
         .select('*')
+        .not('avatar_url', 'is', null)
+        .neq('avatar_url', '')
         .order('rating', { ascending: false })
         .limit(4);
       
-      console.log('Featured sitters data:', data);
-      console.log('Featured sitters error:', error);
-      
       if (data && data.length > 0) {
-        // Then check police vet status for each sitter (requires auth or admin)
-        // For now, we'll fetch with current user context
+        // Then check police vet status for each sitter
         const sitterIds = data.map(s => s.id);
         const { data: policeVetData } = await supabase
           .from('profiles')
@@ -96,7 +94,7 @@ const Index = () => {
           services: ['Pet Sitting', 'Drop-in Visits'],
           verified: sitter.is_verified,
           hasPoliceVet: policeVetMap.get(sitter.id) || false,
-          avatar: sitter.avatar_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face',
+          avatar: sitter.avatar_url,
           bio: sitter.bio || 'Experienced pet care provider'
         })));
       }
