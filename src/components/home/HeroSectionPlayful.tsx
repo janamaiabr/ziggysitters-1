@@ -61,6 +61,25 @@ const HeroSectionPlayful = ({
     navigate(`/find-sitters?${params.toString()}`);
   };
 
+  const handleCtaClick = () => {
+    // On mobile, if no search params entered, scroll to search form
+    const hasParams = location || serviceType || checkIn || checkOut;
+    if (!hasParams) {
+      const searchForm = document.getElementById('search-form');
+      if (searchForm) {
+        searchForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Focus the suburb input after scroll
+        setTimeout(() => {
+          const suburbInput = searchForm.querySelector('input');
+          if (suburbInput) suburbInput.focus();
+        }, 500);
+        return;
+      }
+    }
+    // If params exist or no form found, proceed with search
+    handleSearch();
+  };
+
   return (
     <section className="relative min-h-[100svh] md:min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
       {/* Floating emoji animations - fewer on mobile */}
@@ -120,7 +139,7 @@ const HeroSectionPlayful = ({
                   <Button 
                     size="lg" 
                     className="w-full lg:w-auto text-lg md:text-xl font-extrabold shadow-2xl hover:shadow-[0_25px_60px_-10px_rgba(34,197,94,0.5)] transition-all duration-300 hover:scale-105 py-7 md:py-8 px-10 md:px-12 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white border-4 border-white/30 rounded-2xl relative overflow-hidden group"
-                    onClick={handleSearch}
+                    onClick={handleCtaClick}
                   >
                     <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                     <Search className="mr-3 h-6 w-6" />
@@ -219,7 +238,7 @@ const HeroSectionPlayful = ({
 
           {/* Search Card - Playful Design */}
           <div className="w-full flex justify-center items-center">
-            <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-2xl border-2 border-purple-200 dark:border-purple-700 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.3)] transition-all duration-500 w-full max-w-4xl">
+            <div id="search-form" className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-2xl border-2 border-purple-200 dark:border-purple-700 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.3)] transition-all duration-500 w-full max-w-4xl">
               <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-4 md:mb-5 text-center">
                 <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Find Your Perfect Sitter</span>
                 <span className="ml-2">🔍</span>
