@@ -6,6 +6,7 @@ import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
 import petServicesImg from '@/assets/pet-services.jpg';
 import UrgencyIndicator from './UrgencyIndicator';
+import { useSearchTracking } from '@/hooks/useSearchTracking';
 
 interface HeroSectionPlayfulProps {
   location: string;
@@ -29,8 +30,29 @@ const HeroSectionPlayful = ({
   setCheckOut
 }: HeroSectionPlayfulProps) => {
   const navigate = useNavigate();
+  const { saveSearchContext, trackSearch } = useSearchTracking();
 
   const handleSearch = () => {
+    // CRITICAL: Save search context BEFORE navigation so it persists through auth
+    saveSearchContext({
+      location: location,
+      serviceType: serviceType,
+      checkIn: checkIn,
+      checkOut: checkOut,
+    });
+    
+    // Also save to sessionStorage for legacy compatibility
+    if (location) sessionStorage.setItem('search_location', location);
+    if (serviceType) sessionStorage.setItem('search_service_type', serviceType);
+    
+    // Track the search from homepage
+    trackSearch({
+      suburb: location || 'homepage_search',
+      city: 'Auckland',
+      serviceType: serviceType || 'any',
+      resultsCount: 0, // Will be updated when results load
+    });
+    
     const params = new URLSearchParams();
     if (location) params.set('location', location);
     if (serviceType) params.set('serviceType', serviceType);
@@ -249,7 +271,15 @@ const HeroSectionPlayful = ({
               
               {/* Browse All link - quick access without search */}
               <p className="text-center mt-4 text-sm text-muted-foreground">
-                or <button onClick={() => navigate('/find-sitters')} className="text-purple-600 dark:text-purple-400 font-semibold hover:underline">browse all available sitters →</button>
+                or <button onClick={() => {
+                  trackSearch({
+                    suburb: 'browse_all',
+                    city: 'Auckland',
+                    serviceType: 'any',
+                    resultsCount: 0,
+                  });
+                  navigate('/find-sitters');
+                }} className="text-purple-600 dark:text-purple-400 font-semibold hover:underline">browse all available sitters →</button>
               </p>
             </div>
           </div>

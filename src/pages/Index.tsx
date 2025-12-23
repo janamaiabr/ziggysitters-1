@@ -22,6 +22,7 @@ import ExitIntentPopup from '@/components/home/ExitIntentPopup';
 import GeoLocationBanner from '@/components/home/GeoLocationBanner';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import { useProfile } from '@/contexts/ProfileContext';
+import { useSearchTracking } from '@/hooks/useSearchTracking';
 
 // Pet photos for gallery section
 const petGalleryPhotos = [
@@ -39,6 +40,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { trackAction } = useBehaviorTracking();
+  const { trackSitterClick, trackSearch } = useSearchTracking();
   const [location, setLocation] = useState(searchParams.get('location') || '');
   const [serviceType, setServiceType] = useState(searchParams.get('serviceType') || '');
   const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || '');
@@ -209,7 +211,11 @@ const Index = () => {
                 
                 <Card 
                   className="relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-transparent hover:border-primary/30 transition-all duration-500 cursor-pointer rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2"
-                  onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
+                  onClick={() => {
+                    // Track the sitter click for analytics
+                    trackSitterClick(sitter.id, sitter.name);
+                    navigate(`/sitter/${sitter.id}?booking=true`);
+                  }}
                 >
                   {/* Large Photo Header */}
                   <div className="relative h-48 md:h-56 overflow-hidden">
@@ -278,7 +284,16 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              onClick={() => navigate('/find-sitters')}
+              onClick={() => {
+                // Track browse action from homepage
+                trackSearch({
+                  suburb: 'homepage_discover_all',
+                  city: 'Auckland',
+                  serviceType: 'any',
+                  resultsCount: 0,
+                });
+                navigate('/find-sitters');
+              }}
               className="border-2 border-primary/30 hover:border-primary hover:bg-primary/5 px-8 py-6 text-lg font-semibold group"
             >
               <Search className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
