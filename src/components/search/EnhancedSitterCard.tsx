@@ -181,16 +181,16 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           Usually responds within a few hours
         </div>
         
-        {/* CTA Button - Urgency-focused */}
+        {/* CTA Button - High visibility green for conversions */}
         <div className="mt-auto pt-3 space-y-2">
           <Button 
-            className="w-full font-bold shadow-md group-hover:shadow-lg transition-all text-base py-5 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+            className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white"
             onClick={(e) => {
               e.stopPropagation();
               handleClick();
             }}
           >
-            Request Booking
+            Get a Quote
             <span className="ml-2">→</span>
           </Button>
           <p className="text-xs text-center text-muted-foreground font-medium">
