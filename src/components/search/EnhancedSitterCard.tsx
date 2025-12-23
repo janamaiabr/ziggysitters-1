@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Clock, Shield, Star, Camera, Heart, Zap } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
+import QuickEnquiryButton from '@/components/search/QuickEnquiryButton';
 
 interface EnhancedSitterCardProps {
   sitter: {
@@ -80,11 +81,21 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
               </Badge>
             )}
           </div>
-          <SitterVerificationBadge 
-            isVerified={sitter.verified}
-            hasGoldenBadge={sitter.golden_badge}
-            size="sm"
-          />
+          <div className="flex items-center gap-2">
+            {/* Quick enquiry button - allows messaging without leaving search */}
+            <QuickEnquiryButton
+              sitterId={sitter.id}
+              sitterName={sitter.name}
+              sitterAvatar={sitter.image || undefined}
+              variant="icon"
+              className="shadow-lg"
+            />
+            <SitterVerificationBadge 
+              isVerified={sitter.verified}
+              hasGoldenBadge={sitter.golden_badge}
+              size="sm"
+            />
+          </div>
         </div>
         
         {/* Bottom price tag */}

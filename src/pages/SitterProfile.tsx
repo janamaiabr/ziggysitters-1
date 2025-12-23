@@ -30,6 +30,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import QuickQuestionDialog from '@/components/messaging/QuickQuestionDialog';
+import GuestEnquiryDialog from '@/components/messaging/GuestEnquiryDialog';
 import FloatingEnquiryButton from '@/components/sitter/FloatingEnquiryButton';
 
 interface SitterData {
@@ -411,10 +412,7 @@ export default function SitterProfile() {
                     <Button 
                       size="lg"
                       variant="outline"
-                      onClick={() => {
-                        const redirectUrl = `/sitter/${id}?inquiry=true`;
-                        navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
-                      }}
+                      onClick={() => setIsMessageDialogOpen(true)}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Ask a Question
@@ -719,8 +717,8 @@ export default function SitterProfile() {
         </div>
       </div>
       
-      {/* Quick Question Dialog for Enquiries */}
-      {sitterData && (
+      {/* Enquiry Dialogs - Different for logged in vs guest users */}
+      {sitterData && user && (
         <QuickQuestionDialog
           isOpen={isMessageDialogOpen}
           onClose={() => setIsMessageDialogOpen(false)}
@@ -730,17 +728,20 @@ export default function SitterProfile() {
         />
       )}
       
-      {/* Floating CTA Buttons for Mobile */}
+      {sitterData && !user && (
+        <GuestEnquiryDialog
+          isOpen={isMessageDialogOpen}
+          onClose={() => setIsMessageDialogOpen(false)}
+          recipientId={sitterData.id}
+          recipientName={sitterData.display_name}
+          recipientAvatar={sitterData.avatar}
+        />
+      )}
+      
+      {/* Floating CTA Buttons - Now visible on all devices when scrolled */}
       {sitterData && (profile?.role === 'pet_owner' || !user) && (
         <FloatingEnquiryButton 
-          onEnquiryClick={() => {
-            if (user) {
-              setIsMessageDialogOpen(true);
-            } else {
-              const redirectUrl = `/sitter/${id}?inquiry=true`;
-              navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
-            }
-          }}
+          onEnquiryClick={() => setIsMessageDialogOpen(true)}
           onBookingClick={() => {
             if (user) {
               const bookingSection = document.getElementById('booking-section');
@@ -751,7 +752,7 @@ export default function SitterProfile() {
               const params = new URLSearchParams(searchParams);
               params.set('booking', 'true');
               const redirectUrl = `/sitter/${id}?${params.toString()}`;
-              navigate(`/auth?redirect=${encodeURIComponent(redirectUrl)}`);
+              navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
             }
           }}
           sitterName={sitterData.display_name}

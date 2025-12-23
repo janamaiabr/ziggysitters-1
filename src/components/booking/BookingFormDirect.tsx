@@ -521,14 +521,21 @@ export default function BookingFormDirect({
         )}
 
         {ownerPets.length === 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
-            <strong>No pets added yet!</strong> You'll need to add your pet before booking.
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-sm space-y-3">
+            <div className="flex items-start gap-2">
+              <Users className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-foreground">Add your pet to complete the booking</p>
+                <p className="text-muted-foreground mt-1">
+                  Takes 30 seconds — we just need your pet's name and type.
+                </p>
+              </div>
+            </div>
             <Button 
-              variant="link" 
-              className="p-0 h-auto ml-1 text-amber-800 underline"
-              onClick={() => navigate('/profile?tab=pets')}
+              className="w-full"
+              onClick={() => navigate('/profile?tab=pets&returnTo=' + encodeURIComponent(window.location.pathname))}
             >
-              Add a pet now →
+              Add Your Pet Now
             </Button>
           </div>
         )}
