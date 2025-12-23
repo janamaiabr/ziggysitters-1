@@ -302,20 +302,20 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 overflow-hidden">
-      {/* Cute floating animations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💜</div>
-        <div className="absolute top-32 right-1/4 text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐾</div>
-        <div className="absolute top-40 left-1/3 text-3xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>✨</div>
-        <div className="absolute bottom-32 right-1/3 text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>🎉</div>
-        <div className="absolute bottom-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>💙</div>
+      {/* Subtle background decoration - no animations for better performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className="absolute top-20 left-1/4 text-5xl">💜</div>
+        <div className="absolute top-32 right-1/4 text-4xl">🐾</div>
+        <div className="absolute top-40 left-1/3 text-3xl">✨</div>
+        <div className="absolute bottom-32 right-1/3 text-4xl">🎉</div>
+        <div className="absolute bottom-20 left-1/4 text-5xl">💙</div>
       </div>
 
-      {/* Playful background blobs */}
+      {/* Subtle background blobs - no animations */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-300 dark:bg-indigo-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-300 dark:bg-indigo-700 rounded-full blur-3xl opacity-15"></div>
       </div>
 
       <div className="w-full max-w-xl relative z-10 space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-700">

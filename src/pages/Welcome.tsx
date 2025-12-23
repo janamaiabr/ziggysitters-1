@@ -120,20 +120,20 @@ export default function Welcome() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 flex items-center justify-center p-4 overflow-hidden relative">
-      {/* Cute floating animations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>🎉</div>
-        <div className="absolute top-32 right-1/4 text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>💖</div>
-        <div className="absolute top-40 left-1/3 text-3xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>✨</div>
-        <div className="absolute bottom-32 right-1/3 text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>🐾</div>
-        <div className="absolute bottom-20 left-1/4 text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>🎊</div>
+      {/* Subtle background decoration - reduced animations for performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className="absolute top-20 left-1/4 text-5xl">🎉</div>
+        <div className="absolute top-32 right-1/4 text-4xl">💖</div>
+        <div className="absolute top-40 left-1/3 text-3xl">✨</div>
+        <div className="absolute bottom-32 right-1/3 text-4xl">🐾</div>
+        <div className="absolute bottom-20 left-1/4 text-5xl">🎊</div>
       </div>
 
-      {/* Playful background blobs */}
+      {/* Subtle background blobs - reduced animation */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-pink-300 dark:bg-pink-700 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-15"></div>
       </div>
 
       <div className="w-full max-w-2xl space-y-6 relative z-10 animate-in fade-in-50 slide-in-from-bottom-4 duration-700">

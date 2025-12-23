@@ -30,7 +30,7 @@ const petOptions = [
 export function QuickPetOwnerWizard() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { profile, refetch } = useProfile();
+  const { profile, loading: profileLoading, refetch } = useProfile();
   const { trackOnboarding, trackConversion } = useEventTracking();
   
   const [step, setStep] = useState(1);
@@ -44,6 +44,24 @@ export function QuickPetOwnerWizard() {
   useEffect(() => {
     trackOnboarding('wizard_started', { step: 1 });
   }, []);
+
+  // Show loading state while profile is being fetched
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="text-4xl mb-4 animate-bounce">🐾</div>
+          <p className="text-muted-foreground">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no profile, redirect to onboarding
+  if (!profile) {
+    navigate('/onboarding', { replace: true });
+    return null;
+  }
 
   const progress = (step / 3) * 100;
 
@@ -73,30 +91,44 @@ export function QuickPetOwnerWizard() {
       return;
     }
 
+    if (!profile) {
+      toast({ title: "Profile not loaded. Please refresh the page.", variant: "destructive" });
+      return;
+    }
+
     setSaving(true);
     trackOnboarding('wizard_completing', { data });
 
     try {
-      // Update profile with suburb
-      if (profile) {
-        await supabase
-          .from('profiles')
-          .update({ suburb: data.suburb, city: 'Auckland' })
-          .eq('id', profile.id);
+      // Update profile with suburb - use profile.id which we've verified exists
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ suburb: data.suburb, city: 'Auckland' })
+        .eq('id', profile.id);
+
+      if (profileError) {
+        console.error('Error updating profile:', profileError);
+        throw profileError;
       }
 
       // Create pet
-      if (profile && data.petType && data.petName) {
-        await supabase
+      if (data.petType && data.petName) {
+        const { error: petError } = await supabase
           .from('pets')
           .insert({
             owner_id: profile.id,
             name: data.petName,
             species: data.petType,
           });
+
+        if (petError) {
+          console.error('Error creating pet:', petError);
+          // Don't throw - pet creation is non-critical
+        }
       }
 
-      await refetch();
+      // Don't call refetch() - it causes loading state issues
+      // Just navigate directly - FindSitters doesn't need the updated profile
       
       trackConversion('wizard_completed', { 
         pet_type: data.petType, 
@@ -118,7 +150,6 @@ export function QuickPetOwnerWizard() {
         description: "Please try again",
         variant: "destructive",
       });
-    } finally {
       setSaving(false);
     }
   };
