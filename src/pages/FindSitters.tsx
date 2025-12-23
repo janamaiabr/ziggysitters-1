@@ -157,6 +157,24 @@ export default function FindSitters() {
         
         setAllSitters(sortedSitters);
         setFilteredSitters(sortedSitters);
+        
+        // CRITICAL: Auto-track when page loads with results
+        // This ensures users who land on the page see tracked activity
+        if (sortedSitters.length > 0) {
+          const urlLocation = searchParams.get('location') || '';
+          const urlService = searchParams.get('serviceType') || '';
+          
+          console.log('Auto-tracking page load with sitters:', sortedSitters.length);
+          trackSearch({
+            suburb: urlLocation || 'browse_all',
+            city: 'Auckland',
+            serviceType: urlService || 'any',
+            resultsCount: sortedSitters.length,
+          });
+          
+          // Mark search as performed so UI shows properly
+          setSearchPerformed(true);
+        }
       } catch (error) {
         console.error('Error in fetchSitters:', error);
         setAllSitters([]);
@@ -169,9 +187,9 @@ export default function FindSitters() {
     fetchSitters();
   }, []);
 
-  // Auto-search when URL params are present
+  // Auto-search with filters when URL params are present
   useEffect(() => {
-    if (searchParams.get('checkIn') || searchParams.get('location') || searchParams.get('serviceType')) {
+    if (allSitters.length > 0 && (searchParams.get('checkIn') || searchParams.get('location') || searchParams.get('serviceType'))) {
       handleSearch();
     }
   }, [allSitters]); // Run when sitters are loaded
