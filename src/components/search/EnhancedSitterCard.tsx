@@ -170,19 +170,20 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           Usually responds within a few hours
         </div>
         
-        {/* CTA Button - Softer, enquiry-focused */}
+        {/* CTA Button - Urgency-focused */}
         <div className="mt-auto pt-3 space-y-2">
           <Button 
-            className="w-full font-semibold shadow-sm group-hover:shadow-md transition-shadow text-base py-5"
+            className="w-full font-bold shadow-md group-hover:shadow-lg transition-all text-base py-5 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent double-firing from card click
+              e.stopPropagation();
               handleClick();
             }}
           >
-            Get a Free Quote
+            Request Booking
+            <span className="ml-2">→</span>
           </Button>
-          <p className="text-xs text-center text-muted-foreground">
-            No payment upfront • Ask questions first
+          <p className="text-xs text-center text-muted-foreground font-medium">
+            ⚡ Usually responds within hours • No payment until confirmed
           </p>
         </div>
       </CardContent>

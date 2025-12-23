@@ -265,12 +265,12 @@ const Index = () => {
                       </p>
                     )}
                     
-                    {/* CTA Button */}
+                    {/* CTA Button - Action-oriented */}
                     <Button 
                       size="sm"
-                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
                     >
-                      View Profile
+                      Request Booking
                       <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                     </Button>
                   </CardContent>
@@ -279,10 +279,9 @@ const Index = () => {
             ))}
           </div>
           
-          {/* Bottom CTA */}
-          <div className="text-center mt-12 md:mt-16">
+          {/* Bottom CTA - More prominent */}
+          <div className="text-center mt-12 md:mt-16 space-y-4">
             <Button 
-              variant="outline" 
               size="lg" 
               onClick={() => {
                 // Track browse action from homepage
@@ -294,12 +293,15 @@ const Index = () => {
                 });
                 navigate('/find-sitters');
               }}
-              className="border-2 border-primary/30 hover:border-primary hover:bg-primary/5 px-8 py-6 text-lg font-semibold group"
+              className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 px-10 py-7 text-lg font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 animate-pulse-subtle"
             >
-              <Search className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-              Discover All Sitters
-              <span className="ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">→</span>
+              <Search className="w-5 h-5 mr-2" />
+              Find Your Perfect Sitter Now
+              <span className="ml-2">→</span>
             </Button>
+            <p className="text-sm text-muted-foreground">
+              ✓ Free to browse • ✓ No obligation • ✓ Trusted sitters only
+            </p>
           </div>
         </div>
       </section>

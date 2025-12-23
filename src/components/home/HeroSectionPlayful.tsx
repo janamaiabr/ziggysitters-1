@@ -115,16 +115,20 @@ const HeroSectionPlayful = ({
                   <span className="text-purple-600 dark:text-purple-400 font-bold">Trusted pet sitters in Auckland & Hamilton</span> with guaranteed daily photo updates. No guessing - just peace of mind! 📸
                 </p>
 
-                {/* Quick CTA for mobile - immediately visible */}
-                <div className="lg:hidden pt-2">
+                {/* Primary CTA - high visibility, drives immediate action */}
+                <div className="pt-3 space-y-3">
                   <Button 
                     size="lg" 
-                    className="w-full text-base font-bold shadow-lg bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
+                    className="w-full lg:w-auto text-base md:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 px-8 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 animate-pulse-subtle"
                     onClick={handleSearch}
                   >
                     <Search className="mr-2 h-5 w-5" />
-                    Find a Sitter Now
+                    Get a Free Quote Today
+                    <span className="ml-2">→</span>
                   </Button>
+                  <p className="text-xs md:text-sm text-muted-foreground text-center lg:text-left">
+                    ✓ No payment required • ✓ Free to browse • ✓ No obligation
+                  </p>
                 </div>
               </div>
 
