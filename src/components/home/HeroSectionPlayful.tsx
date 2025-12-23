@@ -119,7 +119,7 @@ const HeroSectionPlayful = ({
                 <div className="pt-4 space-y-3">
                   <Button 
                     size="lg" 
-                    className="w-full lg:w-auto text-lg md:text-xl font-extrabold shadow-2xl hover:shadow-[0_25px_60px_-10px_rgba(34,197,94,0.5)] transition-all duration-300 hover:scale-110 py-7 md:py-8 px-10 md:px-12 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white border-4 border-white/30 rounded-2xl animate-bounce-gentle relative overflow-hidden group"
+                    className="w-full lg:w-auto text-lg md:text-xl font-extrabold shadow-2xl hover:shadow-[0_25px_60px_-10px_rgba(34,197,94,0.5)] transition-all duration-300 hover:scale-105 py-7 md:py-8 px-10 md:px-12 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white border-4 border-white/30 rounded-2xl animate-pulse-glow relative overflow-hidden group"
                     onClick={handleSearch}
                   >
                     <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
