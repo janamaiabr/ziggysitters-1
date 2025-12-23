@@ -11,9 +11,13 @@ const corsHeaders = {
 
 interface MessageNotificationRequest {
   recipientId: string;
-  senderId: string;
-  senderName: string;
+  senderId?: string;
+  senderName?: string;
   messagePreview: string;
+  // Guest enquiry fields
+  isGuestEnquiry?: boolean;
+  guestName?: string;
+  guestEmail?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -22,9 +26,10 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { recipientId, senderId, senderName, messagePreview }: MessageNotificationRequest = await req.json();
+    const body: MessageNotificationRequest = await req.json();
+    const { recipientId, senderId, senderName, messagePreview, isGuestEnquiry, guestName, guestEmail } = body;
 
-    console.log(`[send-message-notification] New message from ${senderName} to recipient ${recipientId}`);
+    console.log(`[send-message-notification] ${isGuestEnquiry ? 'Guest enquiry' : 'Message'} to recipient ${recipientId}`);
 
     // Get recipient's email
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -61,6 +66,81 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Different email content for guest enquiries vs logged-in user messages
+    if (isGuestEnquiry && guestName && guestEmail) {
+      // GUEST ENQUIRY - Direct email to sitter with guest's contact info
+      const emailResponse = await resend.emails.send({
+        from: "Ziggy Sitters <enquiries@ziggysitters.co.nz>",
+        to: [recipient.email],
+        replyTo: guestEmail,
+        subject: `🔔 New enquiry from ${guestName}`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #F97316; margin: 0;">🐾 Ziggy Sitters</h1>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+              <p style="margin: 0; font-weight: 600; color: #92400e;">🎉 You have a new pet care enquiry!</p>
+            </div>
+            
+            <div style="background: #f9fafb; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+              <h2 style="margin: 0 0 16px 0; color: #111;">Hi ${recipient.first_name}!</h2>
+              
+              <p style="margin: 0 0 16px 0;">
+                <strong>${guestName}</strong> is interested in your pet care services and sent you a message:
+              </p>
+              
+              <div style="background: white; border-radius: 8px; padding: 16px; border-left: 4px solid #F97316; margin-bottom: 16px;">
+                <p style="margin: 0; color: #374151;">
+                  "${messagePreview}"
+                </p>
+              </div>
+              
+              <div style="background: #ecfdf5; border-radius: 8px; padding: 12px; border: 1px solid #d1fae5;">
+                <p style="margin: 0; font-size: 14px; color: #065f46;">
+                  <strong>Reply directly to:</strong> ${guestEmail}
+                </p>
+              </div>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 24px;">
+              <a href="mailto:${guestEmail}?subject=Re: Your pet care enquiry on Ziggy Sitters" style="display: inline-block; background: #F97316; color: white; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600;">
+                Reply to ${guestName} →
+              </a>
+            </div>
+            
+            <div style="background: #f0f9ff; border-radius: 8px; padding: 12px; margin-bottom: 24px;">
+              <p style="margin: 0; font-size: 13px; color: #0369a1; text-align: center;">
+                💡 <strong>Tip:</strong> Quick responses lead to more bookings! Try to reply within a few hours.
+              </p>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
+            
+            <p style="color: #999; font-size: 12px; text-align: center;">
+              © ${new Date().getFullYear()} Ziggy Sitters | Auckland, New Zealand
+            </p>
+          </body>
+          </html>
+        `,
+      });
+
+      console.log("[send-message-notification] Guest enquiry email sent:", emailResponse);
+
+      return new Response(
+        JSON.stringify({ success: true, emailId: emailResponse.data?.id }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // LOGGED-IN USER MESSAGE
     const messagesUrl = "https://ziggysitters.com/messages";
     
     const emailResponse = await resend.emails.send({
