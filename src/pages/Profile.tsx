@@ -1126,7 +1126,7 @@ export default function Profile() {
                   
                   {/* Role Badge */}
                   <Badge variant="outline" className="mb-3 capitalize">
-                    {profile.role === 'pet_sitter' ? '🐕 Pet Sitter' : profile.role === 'pet_owner' ? '🏠 Pet Owner' : profile.role.replace('_', ' ')}
+                    {hasYoungWalker ? '🚶 Young Walker Parent' : profile.role === 'pet_sitter' ? '🐕 Pet Sitter' : profile.role === 'pet_owner' ? '🏠 Pet Owner' : profile.role.replace('_', ' ')}
                   </Badge>
                   
                   {/* Verification Status Message for Sitters */}
@@ -1191,31 +1191,31 @@ export default function Profile() {
       {/* Main Content */}
       <div className="container mx-auto px-4 max-w-6xl py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full mb-6 ${profile.role === 'pet_owner' ? 'grid-cols-5' : profile.is_verified ? 'grid-cols-7' : 'grid-cols-8'}`}>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            {profile.role === 'pet_owner' && (
+          <TabsList className="flex flex-wrap gap-1 h-auto p-1 w-full justify-start">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+            {profile.role === 'pet_owner' && !hasYoungWalker && (
               <>
-                <TabsTrigger value="pets">My Pets</TabsTrigger>
-                <TabsTrigger value="client-reports">Daily Reports</TabsTrigger>
+                <TabsTrigger value="pets" className="text-xs sm:text-sm">My Pets</TabsTrigger>
+                <TabsTrigger value="client-reports" className="text-xs sm:text-sm">Daily Reports</TabsTrigger>
               </>
             )}
             {profile.role === 'pet_sitter' && (
               <>
-                <TabsTrigger value="services">Services & Pricing</TabsTrigger>
-                <TabsTrigger value="calendar">My Calendar</TabsTrigger>
-                <TabsTrigger value="sitter-reports">Daily Reports</TabsTrigger>
+                <TabsTrigger value="services" className="text-xs sm:text-sm">Services</TabsTrigger>
+                <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar</TabsTrigger>
+                <TabsTrigger value="sitter-reports" className="text-xs sm:text-sm">Reports</TabsTrigger>
               </>
             )}
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            {!hasYoungWalker && <TabsTrigger value="bookings" className="text-xs sm:text-sm">Bookings</TabsTrigger>}
             {profile.role === 'pet_sitter' && (
               <>
-                <TabsTrigger value="payments">Payments</TabsTrigger>
+                <TabsTrigger value="payments" className="text-xs sm:text-sm">Payments</TabsTrigger>
                 {!profile.is_verified && (
-                  <TabsTrigger value="verification">Verification</TabsTrigger>
+                  <TabsTrigger value="verification" className="text-xs sm:text-sm">Verify</TabsTrigger>
                 )}
               </>
             )}
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -1244,13 +1244,18 @@ export default function Profile() {
               />
             )}
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left Column */}
               <div className="lg:col-span-2 space-y-6">
-                {/* About */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>About Me</CardTitle>
+                {/* About Card */}
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <Edit3 className="h-4 w-4 text-primary" />
+                      </div>
+                      About Me
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     {isEditing ? (
@@ -1259,172 +1264,151 @@ export default function Profile() {
                         onChange={(e) => setEditData({...editData, bio: e.target.value})}
                         placeholder="Tell potential clients about yourself..."
                         rows={4}
+                        className="resize-none"
                       />
                     ) : (
-                      <p className="text-muted-foreground">{userProfile.bio}</p>
+                      <p className="text-muted-foreground leading-relaxed">{userProfile.bio || 'No bio yet. Click Edit Profile to add one!'}</p>
                     )}
                   </CardContent>
                 </Card>
 
-                {/* Contact Information */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Contact Information</CardTitle>
+                {/* Contact Information Card */}
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                        <Mail className="h-4 w-4 text-blue-500" />
+                      </div>
+                      Contact Information
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {isEditing && (
-                      <div className="mb-4 p-3 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">
-                          <span className="text-destructive">*</span> indicates required fields
-                        </p>
-                      </div>
-                    )}
                     {isEditing ? (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label>First Name <span className="text-destructive">*</span></Label>
-                            <Input
-                              value={editData.first_name}
-                              onChange={(e) => setEditData({...editData, first_name: e.target.value})}
-                              required
-                              placeholder="Required"
-                            />
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">First Name <span className="text-destructive">*</span></Label>
+                            <Input value={editData.first_name} onChange={(e) => setEditData({...editData, first_name: e.target.value})} className="h-11" />
                           </div>
-                          <div>
-                            <Label>Last Name <span className="text-destructive">*</span></Label>
-                            <Input
-                              value={editData.last_name}
-                              onChange={(e) => setEditData({...editData, last_name: e.target.value})}
-                              required
-                              placeholder="Required"
-                            />
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Last Name <span className="text-destructive">*</span></Label>
+                            <Input value={editData.last_name} onChange={(e) => setEditData({...editData, last_name: e.target.value})} className="h-11" />
                           </div>
                         </div>
-                        <div>
-                          <Label>Email <span className="text-destructive">*</span></Label>
-                          <Input
-                            type="email"
-                            value={editData.email}
-                            onChange={(e) => setEditData({...editData, email: e.target.value})}
-                            required
-                            placeholder="Required"
-                          />
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Email <span className="text-destructive">*</span></Label>
+                          <Input type="email" value={editData.email} onChange={(e) => setEditData({...editData, email: e.target.value})} className="h-11" />
                         </div>
-                        <div>
-                          <Label>Phone <span className="text-destructive">*</span></Label>
-                          <Input
-                            type="tel"
-                            value={editData.phone}
-                            onChange={(e) => setEditData({...editData, phone: e.target.value})}
-                            required
-                            placeholder="e.g., 021 123 4567 or +64 21 123 4567"
-                            className={profile?.role === 'pet_sitter' && editData.phone && !validateNZPhone(editData.phone) ? 'border-destructive' : ''}
-                          />
-                          {profile?.role === 'pet_sitter' && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {editData.phone && !validateNZPhone(editData.phone) 
-                                ? '⚠️ Please enter a valid NZ phone number' 
-                                : 'Valid NZ mobile or landline number required'}
-                            </p>
-                          )}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Phone {profile?.role === 'pet_sitter' && <span className="text-destructive">*</span>}</Label>
+                          <Input type="tel" value={editData.phone} onChange={(e) => setEditData({...editData, phone: e.target.value})} placeholder="021 xxx xxxx" className="h-11" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label>Suburb</Label>
-                            <Input
-                              value={editData.suburb}
-                              onChange={(e) => setEditData({...editData, suburb: e.target.value})}
-                            />
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Suburb</Label>
+                            <Input value={editData.suburb} onChange={(e) => setEditData({...editData, suburb: e.target.value})} className="h-11" />
                           </div>
-                          <div>
-                            <Label>City</Label>
-                            <Input
-                              value={editData.city}
-                              onChange={(e) => setEditData({...editData, city: e.target.value})}
-                            />
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">City</Label>
+                            <Input value={editData.city} onChange={(e) => setEditData({...editData, city: e.target.value})} className="h-11" />
                           </div>
                         </div>
-                        <div>
-                          <Label>Address <span className="text-destructive">*</span></Label>
-                          <Input
-                            value={editData.address}
-                            onChange={(e) => setEditData({...editData, address: e.target.value})}
-                            required
-                            placeholder="Required"
-                          />
-                        </div>
+                        {profile?.role === 'pet_sitter' && (
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Address <span className="text-destructive">*</span></Label>
+                            <Input value={editData.address} onChange={(e) => setEditData({...editData, address: e.target.value})} className="h-11" />
+                          </div>
+                        )}
                       </div>
                     ) : (
-                      <div className="space-y-3">
-                        <div className="flex items-center">
-                          <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
-                          <span>{userProfile.email}</span>
+                      <div className="grid gap-3">
+                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+                          <div className="p-2 bg-background rounded-lg shadow-sm"><Mail className="w-4 h-4 text-muted-foreground" /></div>
+                          <span className="text-sm">{userProfile.email}</span>
                         </div>
-                        <div className="flex items-center">
-                          <Phone className="w-4 h-4 mr-2 text-muted-foreground" />
-                          <span>{userProfile.phone}</span>
+                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+                          <div className="p-2 bg-background rounded-lg shadow-sm"><Phone className="w-4 h-4 text-muted-foreground" /></div>
+                          <span className="text-sm">{userProfile.phone || 'Not set'}</span>
                         </div>
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
-                          <span>{userProfile.location}</span>
+                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+                          <div className="p-2 bg-background rounded-lg shadow-sm"><MapPin className="w-4 h-4 text-muted-foreground" /></div>
+                          <span className="text-sm">{userProfile.location || 'Not set'}</span>
                         </div>
                       </div>
                     )}
                   </CardContent>
                 </Card>
 
-                {/* Recent Activity */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Bookings</CardTitle>
+                {/* Recent Activity Card */}
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <div className="p-2 bg-amber-500/10 rounded-lg">
+                        <Briefcase className="h-4 w-4 text-amber-500" />
+                      </div>
+                      Recent Bookings
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     {recentBookings.length > 0 ? (
                       <div className="space-y-3">
-                        {recentBookings.map((booking: any) => (
-                          <div key={booking.id} className="flex justify-between items-center p-3 border rounded-lg">
+                        {recentBookings.slice(0, 3).map((booking: any) => (
+                          <div key={booking.id} className="flex justify-between items-center p-4 bg-muted/30 hover:bg-muted/50 rounded-xl transition-colors">
                             <div>
-                              <p className="font-medium">{booking.service_type.replace(/_/g, ' ')}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d, yyyy')}
+                              <p className="font-medium text-sm">{booking.service_type.replace(/_/g, ' ')}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {format(new Date(booking.start_date), 'MMM d')} - {format(new Date(booking.end_date), 'MMM d')}
                               </p>
                             </div>
                             <div className="text-right">
-                              <Badge variant={
-                                booking.status === 'completed' ? 'default' :
-                                booking.status === 'confirmed' ? 'secondary' :
-                                'outline'
-                              }>
+                              <Badge variant={booking.status === 'completed' ? 'default' : booking.status === 'confirmed' ? 'secondary' : 'outline'} className="text-xs">
                                 {booking.status}
                               </Badge>
-                              <p className="text-sm text-muted-foreground mt-1">${booking.total_amount}</p>
+                              <p className="text-sm font-medium mt-1">${booking.total_amount}</p>
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground">No recent bookings</p>
+                      <div className="text-center py-8">
+                        <Briefcase className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+                        <p className="text-muted-foreground text-sm">No bookings yet</p>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Right Column - Statistics */}
+              {/* Right Column - Quick Stats */}
               <div className="space-y-6">
-                {/* Stats Card */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Users className="mr-2 h-5 w-5" />
-                      Statistics
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <Users className="h-4 w-4 text-primary" />
+                      </div>
+                      Quick Stats
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {userProfile.bookings_completed > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Rating:</span>
-                        <span className="font-medium">{userProfile.rating}/5 ⭐</span>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-4 bg-background rounded-xl text-center shadow-sm">
+                        <p className="text-2xl font-bold text-primary">{recentBookings.length}</p>
+                        <p className="text-xs text-muted-foreground">Bookings</p>
+                      </div>
+                      <div className="p-4 bg-background rounded-xl text-center shadow-sm">
+                        <p className="text-2xl font-bold text-amber-500">{userProfile.rating || '-'}</p>
+                        <p className="text-xs text-muted-foreground">Rating</p>
+                      </div>
+                    </div>
+                    {profile.role === 'pet_sitter' && userProfile.services.length > 0 && (
+                      <div className="pt-3 border-t">
+                        <p className="text-xs text-muted-foreground mb-2">Services Offered</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {userProfile.services.map((service: string, i: number) => (
+                            <Badge key={i} variant="outline" className="text-xs">{service}</Badge>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </CardContent>
