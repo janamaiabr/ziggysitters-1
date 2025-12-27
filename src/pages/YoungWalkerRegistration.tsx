@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import SEOHead from "@/components/seo/SEOHead";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/contexts/ProfileContext";
@@ -20,10 +21,12 @@ import {
   ArrowLeft,
   ArrowRight,
   User,
+  Users,
   Calendar,
   MapPin,
   Phone,
-  Mail
+  Mail,
+  Sparkles
 } from "lucide-react";
 import OnboardingLayout from "@/components/layout/OnboardingLayout";
 
@@ -71,6 +74,8 @@ export default function YoungWalkerRegistration() {
   
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const totalSteps = 4;
+  
   const [formData, setFormData] = useState<YoungWalkerFormData>({
     parentName: "",
     parentEmail: "",
@@ -176,7 +181,7 @@ export default function YoungWalkerRegistration() {
 
   const nextStep = () => {
     if (validateStep(step)) {
-      setStep(prev => Math.min(prev + 1, 4));
+      setStep(prev => Math.min(prev + 1, totalSteps));
     }
   };
 
@@ -256,6 +261,16 @@ export default function YoungWalkerRegistration() {
     "My child understands they cannot walk more than one dog at a time",
   ];
 
+  const getStepTitle = () => {
+    switch (step) {
+      case 1: return "Parent/Guardian Details";
+      case 2: return "Young Walker Details";
+      case 3: return "Location & Preferences";
+      case 4: return "Safety & Consent";
+      default: return "";
+    }
+  };
+
   return (
     <OnboardingLayout showNavigation={false}>
       <SEOHead 
@@ -265,38 +280,62 @@ export default function YoungWalkerRegistration() {
       />
 
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* Progress indicator */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Step {step} of 4</span>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/young-walkers")}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Info
-            </Button>
+        {/* Header Section */}
+        <div className="text-center space-y-2 mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <h1 className="text-xl sm:text-2xl font-bold">Young Walker Registration</h1>
+            <Sparkles className="h-6 w-6 text-primary" />
           </div>
-          <div className="w-full bg-muted rounded-full h-2">
-            <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(step / 4) * 100}%` }}
-            />
+          
+          <Alert className="bg-primary/10 border-primary/20 mb-4">
+            <Users className="h-4 w-4" />
+            <AlertDescription className="text-sm">
+              <strong>Parents:</strong> This form is for you to register your child ({YOUNG_WALKER_CONFIG.MIN_AGE}-{YOUNG_WALKER_CONFIG.MAX_AGE} years old) as a Young Dog Walker.
+            </AlertDescription>
+          </Alert>
+          
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Step {step} of {totalSteps}: {getStepTitle()}
+          </p>
+          
+          {/* Progress indicator */}
+          <div className="flex justify-center gap-2 mt-4">
+            {[1, 2, 3, 4].map(s => (
+              <div
+                key={s}
+                className={`h-2 w-12 rounded-full transition-colors ${
+                  s < step ? 'bg-green-500' :
+                  s === step ? 'bg-primary' :
+                  'bg-muted'
+                }`}
+              />
+            ))}
           </div>
         </div>
 
         {/* Step 1: Parent Information */}
         {step === 1 && (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-primary" />
-                Parent/Caregiver Information
-              </CardTitle>
-              <CardDescription>
-                As the parent or legal guardian, you'll manage your child's Young Walker account.
-              </CardDescription>
+            <CardHeader className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <User className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <CardTitle>Your Details (Parent/Guardian)</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    As the parent, you'll manage your child's account and receive all communications.
+                  </p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="parentName">Your Full Name</Label>
+                <Label htmlFor="parentName" className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  Your Full Name
+                </Label>
                 <Input
                   id="parentName"
                   value={formData.parentName}
@@ -305,7 +344,10 @@ export default function YoungWalkerRegistration() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="parentEmail">Your Email</Label>
+                <Label htmlFor="parentEmail" className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  Your Email
+                </Label>
                 <Input
                   id="parentEmail"
                   type="email"
@@ -315,7 +357,10 @@ export default function YoungWalkerRegistration() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="parentPhone">Your Phone Number</Label>
+                <Label htmlFor="parentPhone" className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  Your Phone Number
+                </Label>
                 <Input
                   id="parentPhone"
                   type="tel"
@@ -323,6 +368,7 @@ export default function YoungWalkerRegistration() {
                   onChange={(e) => handleInputChange("parentPhone", e.target.value)}
                   placeholder="021 xxx xxxx"
                 />
+                <p className="text-xs text-muted-foreground">We'll contact you for any booking requests.</p>
               </div>
             </CardContent>
           </Card>
@@ -331,19 +377,30 @@ export default function YoungWalkerRegistration() {
         {/* Step 2: Child Information */}
         {step === 2 && (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Dog className="h-5 w-5 text-primary" />
-                Young Walker Information
-              </CardTitle>
-              <CardDescription>
-                Tell us about the young person who will be walking dogs.
-              </CardDescription>
+            <CardHeader className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-amber-500/10 rounded-lg">
+                  <Dog className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <CardTitle>Your Child's Details</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Tell us about the young person who will be walking dogs.
+                  </p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <Alert className="bg-amber-50 border-amber-200">
+                <Sparkles className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-sm text-amber-800">
+                  This section is about <strong>your child</strong> who wants to become a Young Dog Walker.
+                </AlertDescription>
+              </Alert>
+              
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="childFirstName">First Name</Label>
+                  <Label htmlFor="childFirstName">Child's First Name</Label>
                   <Input
                     id="childFirstName"
                     value={formData.childFirstName}
@@ -352,7 +409,7 @@ export default function YoungWalkerRegistration() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="childLastName">Last Name</Label>
+                  <Label htmlFor="childLastName">Child's Last Name</Label>
                   <Input
                     id="childLastName"
                     value={formData.childLastName}
@@ -362,7 +419,7 @@ export default function YoungWalkerRegistration() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="childDob">Date of Birth</Label>
+                <Label htmlFor="childDob">Child's Date of Birth</Label>
                 <Input
                   id="childDob"
                   type="date"
@@ -374,22 +431,22 @@ export default function YoungWalkerRegistration() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="experienceWithDogs">Experience with Dogs</Label>
+                <Label htmlFor="experienceWithDogs">Child's Experience with Dogs</Label>
                 <Textarea
                   id="experienceWithDogs"
                   value={formData.experienceWithDogs}
                   onChange={(e) => handleInputChange("experienceWithDogs", e.target.value)}
-                  placeholder="e.g., We have a family dog, I've walked neighbours' dogs before..."
+                  placeholder="e.g., We have a family dog, they've walked neighbours' dogs before..."
                   rows={3}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bio">Short Bio (shown to dog owners)</Label>
+                <Label htmlFor="bio">Child's Short Bio (shown to dog owners)</Label>
                 <Textarea
                   id="bio"
                   value={formData.bio}
                   onChange={(e) => handleInputChange("bio", e.target.value)}
-                  placeholder="Tell dog owners a bit about yourself..."
+                  placeholder="Help your child write a bit about themselves and why they love dogs..."
                   rows={3}
                 />
               </div>
@@ -400,14 +457,18 @@ export default function YoungWalkerRegistration() {
         {/* Step 3: Location & Preferences */}
         {step === 3 && (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
-                Location & Preferences
-              </CardTitle>
-              <CardDescription>
-                Set your service area and availability.
-              </CardDescription>
+            <CardHeader className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-green-500/10 rounded-lg">
+                  <MapPin className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <CardTitle>Location & Preferences</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Set your child's service area and availability.
+                  </p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
@@ -432,13 +493,13 @@ export default function YoungWalkerRegistration() {
               </div>
 
               <div className="space-y-3">
-                <Label>Dog Sizes Accepted</Label>
+                <Label>Dog Sizes Your Child Can Walk</Label>
                 <div className="flex flex-wrap gap-2">
                   {["small", "medium"].map((size) => (
                     <Badge
                       key={size}
                       variant={formData.acceptedDogSizes.includes(size) ? "default" : "outline"}
-                      className="cursor-pointer"
+                      className="cursor-pointer px-4 py-2"
                       onClick={() => {
                         const newSizes = formData.acceptedDogSizes.includes(size)
                           ? formData.acceptedDogSizes.filter(s => s !== size)
@@ -456,48 +517,42 @@ export default function YoungWalkerRegistration() {
               </div>
 
               <div className="space-y-3">
-                <Label>Availability</Label>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
+                <Label>Your Child's Availability</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
                     <Checkbox 
                       id="afterSchool"
                       checked={formData.availableAfterSchool}
                       onCheckedChange={(checked) => handleInputChange("availableAfterSchool", checked)}
                     />
-                    <Label htmlFor="afterSchool" className="font-normal">After school (3pm-6pm weekdays)</Label>
+                    <div>
+                      <Label htmlFor="afterSchool" className="font-normal cursor-pointer">After School</Label>
+                      <p className="text-xs text-muted-foreground">3pm - 6pm weekdays</p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
                     <Checkbox 
                       id="weekends"
                       checked={formData.availableWeekends}
                       onCheckedChange={(checked) => handleInputChange("availableWeekends", checked)}
                     />
-                    <Label htmlFor="weekends" className="font-normal">Weekends</Label>
+                    <div>
+                      <Label htmlFor="weekends" className="font-normal cursor-pointer">Weekends</Label>
+                      <p className="text-xs text-muted-foreground">Saturday & Sunday</p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
                     <Checkbox 
-                      id="holidays"
+                      id="schoolHolidays"
                       checked={formData.availableSchoolHolidays}
                       onCheckedChange={(checked) => handleInputChange("availableSchoolHolidays", checked)}
                     />
-                    <Label htmlFor="holidays" className="font-normal">School holidays</Label>
+                    <div>
+                      <Label htmlFor="schoolHolidays" className="font-normal cursor-pointer">School Holidays</Label>
+                      <p className="text-xs text-muted-foreground">During school breaks</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="ratePerWalk">Rate per Walk (NZD)</Label>
-                <Input
-                  id="ratePerWalk"
-                  type="number"
-                  min={YOUNG_WALKER_CONFIG.MIN_RATE}
-                  max={YOUNG_WALKER_CONFIG.MAX_RATE}
-                  value={formData.ratePerWalk}
-                  onChange={(e) => handleInputChange("ratePerWalk", parseInt(e.target.value))}
-                />
-                <p className="text-sm text-muted-foreground">
-                  Suggested: ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK} for a 30-minute walk
-                </p>
               </div>
             </CardContent>
           </Card>
@@ -506,60 +561,83 @@ export default function YoungWalkerRegistration() {
         {/* Step 4: Safety & Consent */}
         {step === 4 && (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-primary" />
-                Safety Guidelines & Consent
-              </CardTitle>
-              <CardDescription>
-                Please read and acknowledge the safety requirements.
-              </CardDescription>
+            <CardHeader className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-red-500/10 rounded-lg">
+                  <Shield className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <CardTitle>Safety & Parent Consent</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Please review and acknowledge the safety guidelines.
+                  </p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
-                <h4 className="font-semibold">Safety Checklist</h4>
-                {safetyChecklist.map((item, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{item}</span>
-                  </div>
-                ))}
+              <Alert className="bg-red-50 border-red-200">
+                <Shield className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-sm text-red-800">
+                  <strong>Important:</strong> As the parent/guardian, you are responsible for ensuring your child follows these safety guidelines.
+                </AlertDescription>
+              </Alert>
+              
+              <div className="space-y-4">
+                <Label className="text-base font-semibold">Safety Checklist</Label>
+                <div className="space-y-3">
+                  {safetyChecklist.map((item, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-start gap-3 p-3 rounded-lg border border-muted bg-background"
+                    >
+                      <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-3 border rounded-lg">
+              <div className="space-y-4 pt-4 border-t">
+                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
                   <Checkbox 
-                    id="safetyAck"
+                    id="safetyAcknowledged"
                     checked={formData.safetyGuidelinesAcknowledged}
-                    onCheckedChange={(checked) => handleInputChange("safetyGuidelinesAcknowledged", checked === true)}
+                    onCheckedChange={(checked) => handleInputChange("safetyGuidelinesAcknowledged", checked)}
                   />
-                  <Label htmlFor="safetyAck" className="font-normal text-sm">
-                    I confirm that my child has read and understands the safety guidelines above.
-                  </Label>
+                  <div>
+                    <Label htmlFor="safetyAcknowledged" className="cursor-pointer font-medium">
+                      I have read and discussed these safety guidelines with my child
+                    </Label>
+                  </div>
                 </div>
 
-                <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
                   <Checkbox 
-                    id="checklist"
+                    id="parentChecklist"
                     checked={formData.parentChecklistCompleted}
-                    onCheckedChange={(checked) => handleInputChange("parentChecklistCompleted", checked === true)}
+                    onCheckedChange={(checked) => handleInputChange("parentChecklistCompleted", checked)}
                   />
-                  <Label htmlFor="checklist" className="font-normal text-sm">
-                    I have reviewed all the safety requirements in the checklist above and confirm they will be followed.
-                  </Label>
+                  <div>
+                    <Label htmlFor="parentChecklist" className="cursor-pointer font-medium">
+                      I confirm my child understands their responsibilities
+                    </Label>
+                  </div>
                 </div>
 
-                <div className="flex items-start space-x-3 p-3 border rounded-lg bg-primary/5">
+                <div className="flex items-start space-x-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
                   <Checkbox 
-                    id="consent"
+                    id="parentConsent"
                     checked={formData.parentConsentGiven}
-                    onCheckedChange={(checked) => handleInputChange("parentConsentGiven", checked === true)}
+                    onCheckedChange={(checked) => handleInputChange("parentConsentGiven", checked)}
                   />
-                  <Label htmlFor="consent" className="font-normal text-sm">
-                    <strong>Parent/Guardian Consent:</strong> I, as the legal parent or guardian, give permission 
-                    for my child ({formData.childFirstName || "my child"}) to participate in the Young Walker 
-                    program and agree to the terms of service.
-                  </Label>
+                  <div>
+                    <Label htmlFor="parentConsent" className="cursor-pointer font-medium">
+                      I give consent for my child to participate in the Young Walker program
+                    </Label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      By checking this box, I confirm I am the parent or legal guardian.
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -574,17 +652,25 @@ export default function YoungWalkerRegistration() {
               Previous
             </Button>
           ) : (
-            <div />
+            <Button variant="ghost" onClick={() => navigate("/young-walkers")}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Info
+            </Button>
           )}
-          
-          {step < 4 ? (
+
+          {step < totalSteps ? (
             <Button onClick={nextStep}>
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={isLoading}>
+            <Button 
+              onClick={handleSubmit} 
+              disabled={isLoading}
+              className="bg-green-600 hover:bg-green-700"
+            >
               {isLoading ? "Submitting..." : "Submit Registration"}
+              <CheckCircle2 className="ml-2 h-4 w-4" />
             </Button>
           )}
         </div>
