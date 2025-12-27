@@ -101,7 +101,7 @@ export default function FindYoungWalkers() {
               Affordable walks, happy dogs, and you're supporting local youth.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => navigate("/auth?role=pet_owner&intent=young_walker")}>
+              <Button size="lg" onClick={() => navigate("/search-young-walkers")}>
                 <Dog className="mr-2 h-5 w-5" />
                 Find Young Walkers Near Me
               </Button>
@@ -293,7 +293,7 @@ export default function FindYoungWalkers() {
             <Button 
               size="lg" 
               variant="secondary"
-              onClick={() => navigate("/auth?role=pet_owner")}
+              onClick={() => navigate("/search-young-walkers")}
             >
               Find Young Walkers Near Me
             </Button>

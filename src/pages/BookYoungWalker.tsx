@@ -162,7 +162,7 @@ export default function BookYoungWalker() {
     setIsSubmitting(true);
 
     try {
-      const platformFee = Math.round(walker.rate_per_walk * YOUNG_WALKER_CONFIG.PLATFORM_FEE_PERCENTAGE);
+      const platformFee = Math.round(walker.rate_per_walk * 0.15); // 15% platform fee
       const totalAmount = walker.rate_per_walk;
 
       const { data: booking, error } = await supabase

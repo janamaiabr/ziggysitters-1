@@ -101,11 +101,11 @@ export default function YoungWalkers() {
               specifically for young people to walk dogs safely in their neighbourhood.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => navigate("/auth?role=young_walker")}>
+              <Button size="lg" onClick={() => navigate("/young-walker-registration")}>
                 <Dog className="mr-2 h-5 w-5" />
                 Register as Young Walker
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/find-young-walkers")}>
+              <Button size="lg" variant="outline" onClick={() => navigate("/search-young-walkers")}>
                 I'm a Dog Owner
               </Button>
             </div>
@@ -232,7 +232,7 @@ export default function YoungWalkers() {
           <Button 
             size="lg" 
             variant="secondary"
-            onClick={() => navigate("/auth?role=young_walker")}
+            onClick={() => navigate("/young-walker-registration")}
           >
             Register Now (Parent Required)
           </Button>
