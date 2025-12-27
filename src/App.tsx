@@ -19,6 +19,8 @@ import FindSitters from "./pages/FindSitters";
 import FindSittersSuburb from "./pages/FindSittersSuburb";
 import BecomeSitter from "./pages/BecomeSitter";
 import BecomeSitterSuburb from "./pages/BecomeSitterSuburb";
+import YoungWalkers from "./pages/YoungWalkers";
+import FindYoungWalkers from "./pages/FindYoungWalkers";
 import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
@@ -150,6 +152,10 @@ function AppContent() {
             <Route path="/pet-sitters-auckland" element={<AucklandPetSitters />} />
             <Route path="/auckland" element={<AucklandPetSitters />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
+            
+            {/* Young Walker Routes */}
+            <Route path="/young-walkers" element={<YoungWalkers />} />
+            <Route path="/find-young-walkers" element={<FindYoungWalkers />} />
             
             {/* Auth Route - Public only */}
             <Route 

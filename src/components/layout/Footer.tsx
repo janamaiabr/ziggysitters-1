@@ -36,6 +36,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/young-walkers" className="text-gray-300 hover:text-white transition-colors">
+                  Young Dog Walkers
+                </Link>
+              </li>
+              <li>
                 <Link to="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
                   How it Works
                 </Link>
