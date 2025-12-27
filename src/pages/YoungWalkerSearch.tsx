@@ -10,6 +10,7 @@ import SEOHead from "@/components/seo/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { YOUNG_WALKER_CONFIG } from "@/config/features";
+import SitterVerificationBadge from "@/components/sitter/SitterVerificationBadge";
 import { 
   Dog, 
   MapPin, 
@@ -54,6 +55,7 @@ interface RegularSitter {
   rating: number | null;
   total_reviews: number | null;
   is_verified: boolean | null;
+  golden_badge_approved: boolean | null;
 }
 
 export default function YoungWalkerSearch() {
@@ -108,7 +110,7 @@ export default function YoungWalkerSearch() {
       // Fetch regular sitters using public_sitters view (RLS-safe)
       const { data: sittersData, error: sittersError } = await supabase
         .from("public_sitters")
-        .select("id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, is_verified")
+        .select("id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, is_verified, golden_badge_approved")
         .eq("onboarding_completed", true);
 
       if (sittersError) throw sittersError;
@@ -273,20 +275,78 @@ export default function YoungWalkerSearch() {
         </div>
       </section>
 
-      {/* Search/Filter Bar */}
-      <section className="py-6 bg-muted/30 border-b">
+      {/* Search/Filter Bar - More Prominent */}
+      <section className="py-8 bg-white border-b-2 shadow-md sticky top-0 z-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-xl p-4 shadow-sm border">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Search by name</label>
-                <Input
-                  type="text"
-                  placeholder="Search for a walker by name..."
-                  value={nameSearch}
-                  onChange={(e) => setNameSearch(e.target.value)}
-                  className="h-11"
-                />
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-lg border border-emerald-200">
+              <div className="flex items-center gap-2 mb-4">
+                <Search className="h-5 w-5 text-emerald-600" />
+                <h3 className="font-bold text-lg text-slate-800">Find a Dog Walker</h3>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Suburb Search */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                    <MapPin className="h-3 w-3" /> Suburb / Neighbourhood
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="e.g. Ponsonby, Grey Lynn..."
+                      value={suburbInput}
+                      onChange={(e) => setSuburbInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && addSuburb()}
+                      className="h-11 bg-white"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="secondary" 
+                      size="icon"
+                      onClick={addSuburb}
+                      className="h-11 w-11"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {searchSuburbs.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {searchSuburbs.map((suburb) => (
+                        <Badge key={suburb} variant="secondary" className="pr-1 bg-emerald-100 text-emerald-800">
+                          {suburb}
+                          <button 
+                            onClick={() => removeSuburb(suburb)}
+                            className="ml-1 hover:bg-emerald-200 rounded-full p-0.5"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Name Search */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                    <Search className="h-3 w-3" /> Walker Name (optional)
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Search by name..."
+                    value={nameSearch}
+                    onChange={(e) => setNameSearch(e.target.value)}
+                    className="h-11 bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Results summary */}
+              <div className="mt-4 pt-4 border-t border-emerald-200 text-sm text-slate-600">
+                Showing <span className="font-bold text-emerald-700">{filteredYoungWalkers.length}</span> young walkers 
+                and <span className="font-bold text-emerald-700">{filteredRegularSitters.length}</span> regular sitters
+                {searchSuburbs.length > 0 && ` in ${searchSuburbs.join(", ")}`}
               </div>
             </div>
           </div>
@@ -488,20 +548,30 @@ export default function YoungWalkerSearch() {
                             <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
                           </div>
                           
-                          {/* Top badges */}
+                          {/* Top badges - Using proper verification badge */}
                           <div className="absolute top-2 right-2">
-                            {sitter.is_verified && (
-                              <Badge className="bg-green-500 text-white shadow-lg">
-                                <Shield className="w-3 h-3 mr-1" />
-                                Verified
-                              </Badge>
-                            )}
+                            <SitterVerificationBadge 
+                              isVerified={sitter.is_verified || false}
+                              hasGoldenBadge={sitter.golden_badge_approved || false}
+                              size="sm"
+                              showLabel={true}
+                            />
                           </div>
                         </div>
                         
                         {/* Content Section */}
                         <CardHeader className="pb-2 pt-4">
-                          <CardTitle className="text-lg">{sitter.first_name} {sitter.last_name.charAt(0)}.</CardTitle>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">{sitter.first_name} {sitter.last_name.charAt(0)}.</CardTitle>
+                            {/* Rating */}
+                            {sitter.rating && sitter.total_reviews && sitter.total_reviews > 0 && (
+                              <div className="flex items-center gap-1 text-sm">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-medium">{sitter.rating.toFixed(1)}</span>
+                                <span className="text-muted-foreground">({sitter.total_reviews})</span>
+                              </div>
+                            )}
+                          </div>
                           <div className="flex items-center text-sm text-muted-foreground">
                             <MapPin className="w-3 h-3 mr-1" />
                             {sitter.suburb || sitter.city || "Auckland"}
