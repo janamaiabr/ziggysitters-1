@@ -115,14 +115,14 @@ export default function FindYoungWalkers() {
                   className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-lg px-8 py-6 rounded-full font-bold shadow-xl shadow-emerald-200 group"
                   onClick={() => navigate("/search-young-walkers")}
                 >
-                  <Dog className="mr-2 h-5 w-5" />
-                  Find Young Walkers
+                  <MapPin className="mr-2 h-5 w-5" />
+                  Search Young Walkers Near Me
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="border-2 border-slate-300 text-slate-700 hover:bg-slate-100 text-lg px-8 py-6 rounded-full font-bold"
+                  className="border-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-lg px-8 py-6 rounded-full font-bold"
                   onClick={() => navigate("/young-walkers")}
                 >
                   <Sparkles className="mr-2 h-5 w-5" />
