@@ -70,7 +70,7 @@ export default function YoungWalkerRegistration() {
   const [isLoading, setIsLoading] = useState(false);
   const [checkingExisting, setCheckingExisting] = useState(true);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const totalSteps = 4;
+  const totalSteps = 3;
   
   const [formData, setFormData] = useState<YoungWalkerFormData>({
     parentName: "",
@@ -203,13 +203,6 @@ export default function YoungWalkerRegistration() {
   const validateStep = (currentStep: number): boolean => {
     switch (currentStep) {
       case 1:
-        if (!formData.parentName.trim() || !formData.parentEmail.trim() || !formData.parentPhone.trim()) {
-          toast({ title: "Required", description: "Please fill in all parent details.", variant: "destructive" });
-          return false;
-        }
-        return true;
-      
-      case 2:
         if (!formData.childFirstName.trim() || !formData.childLastName.trim() || !formData.childDob) {
           toast({ title: "Required", description: "Please fill in your child's details.", variant: "destructive" });
           return false;
@@ -225,14 +218,14 @@ export default function YoungWalkerRegistration() {
         }
         return true;
       
-      case 3:
+      case 2:
         if (!formData.homeSuburb.trim()) {
           toast({ title: "Required", description: "Please enter your suburb.", variant: "destructive" });
           return false;
         }
         return true;
       
-      case 4:
+      case 3:
         if (!formData.safetyGuidelinesAcknowledged || !formData.parentConsentGiven || !formData.parentChecklistCompleted) {
           toast({ title: "Required", description: "Please acknowledge all safety requirements and give consent.", variant: "destructive" });
           return false;
@@ -255,7 +248,7 @@ export default function YoungWalkerRegistration() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(4)) return;
+    if (!validateStep(3)) return;
     if (!user || !profile) {
       toast({ title: "Error", description: "You must be logged in.", variant: "destructive" });
       return;
@@ -331,7 +324,6 @@ export default function YoungWalkerRegistration() {
   ];
 
   const stepInfo = [
-    { title: "Your Details", icon: User, color: "from-blue-500 to-indigo-500" },
     { title: "Young Walker", icon: Dog, color: "from-amber-500 to-orange-500" },
     { title: "Location", icon: MapPin, color: "from-emerald-500 to-teal-500" },
     { title: "Safety", icon: Shield, color: "from-rose-500 to-pink-500" },
@@ -420,70 +412,8 @@ export default function YoungWalkerRegistration() {
           </div>
 
           <div className="mt-12">
-            {/* Step 1: Parent Information */}
+            {/* Step 1: Child Information with Photo */}
             {step === 1 && (
-              <Card className="border-0 shadow-xl bg-white/80 dark:bg-card/80 backdrop-blur-sm">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl text-white shadow-lg shadow-blue-500/25">
-                      <User className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">Parent/Guardian Details</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        You'll manage bookings and receive all communications
-                      </p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="parentName" className="flex items-center gap-2 font-medium">
-                      <User className="h-4 w-4 text-blue-500" />
-                      Your Full Name
-                    </Label>
-                    <Input
-                      id="parentName"
-                      value={formData.parentName}
-                      onChange={(e) => handleInputChange("parentName", e.target.value)}
-                      placeholder="Jane Smith"
-                      className="h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="parentEmail" className="flex items-center gap-2 font-medium">
-                      <Mail className="h-4 w-4 text-blue-500" />
-                      Your Email
-                    </Label>
-                    <Input
-                      id="parentEmail"
-                      type="email"
-                      value={formData.parentEmail}
-                      onChange={(e) => handleInputChange("parentEmail", e.target.value)}
-                      placeholder="parent@email.com"
-                      className="h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="parentPhone" className="flex items-center gap-2 font-medium">
-                      <Phone className="h-4 w-4 text-blue-500" />
-                      Your Phone Number
-                    </Label>
-                    <Input
-                      id="parentPhone"
-                      type="tel"
-                      value={formData.parentPhone}
-                      onChange={(e) => handleInputChange("parentPhone", e.target.value)}
-                      placeholder="021 xxx xxxx"
-                      className="h-12"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Step 2: Child Information with Photo */}
-            {step === 2 && (
               <Card className="border-0 shadow-xl bg-white/80 dark:bg-card/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
                   <div className="flex items-center gap-3">
@@ -604,8 +534,8 @@ export default function YoungWalkerRegistration() {
               </Card>
             )}
 
-            {/* Step 3: Location & Preferences */}
-            {step === 3 && (
+            {/* Step 2: Location & Preferences */}
+            {step === 2 && (
               <Card className="border-0 shadow-xl bg-white/80 dark:bg-card/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
                   <div className="flex items-center gap-3">
@@ -724,8 +654,8 @@ export default function YoungWalkerRegistration() {
               </Card>
             )}
 
-            {/* Step 4: Safety & Consent */}
-            {step === 4 && (
+            {/* Step 3: Safety & Consent */}
+            {step === 3 && (
               <Card className="border-0 shadow-xl bg-white/80 dark:bg-card/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
                   <div className="flex items-center gap-3">
