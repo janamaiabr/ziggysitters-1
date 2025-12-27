@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import SEOHead from "@/components/seo/SEOHead";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/contexts/ProfileContext";
@@ -28,7 +29,9 @@ import {
   Star,
   Trophy,
   Target,
-  ArrowRight
+  ArrowRight,
+  CreditCard,
+  ExternalLink
 } from "lucide-react";
 
 interface YoungWalker {
@@ -56,13 +59,15 @@ interface Booking {
 
 export default function YoungWalkerDashboard() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const { profile } = useProfile();
+  const { profile, refetch } = useProfile();
   const { toast } = useToast();
   
   const [youngWalker, setYoungWalker] = useState<YoungWalker | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [stripeLoading, setStripeLoading] = useState(false);
   const [earnings, setEarnings] = useState({ total: 0, pending: 0 });
 
   useEffect(() => {
@@ -70,6 +75,15 @@ export default function YoungWalkerDashboard() {
       navigate("/auth?redirect=/young-walker-dashboard");
       return;
     }
+    
+    // Handle Stripe return
+    if (searchParams.get("stripe_success") === "true") {
+      toast({ title: "Payment Setup Complete!", description: "You can now receive payments for dog walks." });
+      refetch?.();
+    } else if (searchParams.get("stripe_refresh") === "true") {
+      toast({ title: "Please Complete Setup", description: "Complete your Stripe setup to receive payments.", variant: "destructive" });
+    }
+    
     fetchData();
   }, [user]);
 
@@ -128,7 +142,38 @@ export default function YoungWalkerDashboard() {
     }
   };
 
+  const handleStripeOnboarding = async () => {
+    setStripeLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("young-walker-stripe-onboarding");
+      
+      if (error) throw error;
+      if (!data?.url) throw new Error("No onboarding URL received");
+      
+      window.open(data.url, "_blank");
+    } catch (error: any) {
+      console.error("Stripe onboarding error:", error);
+      toast({ 
+        title: "Setup Failed", 
+        description: error.message || "Could not start payment setup.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setStripeLoading(false);
+    }
+  };
+
   const handleAcceptBooking = async (bookingId: string) => {
+    // Check if Stripe is set up first
+    if (!profile?.stripe_account_enabled) {
+      toast({ 
+        title: "Payment Setup Required", 
+        description: "Complete your Stripe setup before accepting bookings.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     try {
       const { error } = await supabase
         .from("young_walker_bookings")
@@ -137,7 +182,7 @@ export default function YoungWalkerDashboard() {
 
       if (error) throw error;
 
-      toast({ title: "Booking Accepted!", description: "The dog owner will be notified." });
+      toast({ title: "Booking Accepted!", description: "The dog owner will be notified to pay." });
       fetchData();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -282,6 +327,29 @@ export default function YoungWalkerDashboard() {
                 </div>
               )}
             </div>
+
+            {/* Stripe Setup Banner - Show if not set up */}
+            {!profile?.stripe_account_enabled && youngWalker.status === "active" && (
+              <Alert className="mb-6 border-amber-300 bg-amber-50">
+                <CreditCard className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-amber-800">Set Up Payments to Receive Earnings</p>
+                    <p className="text-sm text-amber-700">
+                      Complete Stripe setup to receive payments when dog owners book walks.
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={handleStripeOnboarding}
+                    disabled={stripeLoading}
+                    className="bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap"
+                  >
+                    {stripeLoading ? "Opening..." : "Set Up Payments"}
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">

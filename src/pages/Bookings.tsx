@@ -20,29 +20,42 @@ export default function Bookings() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('upcoming');
   const [bookings, setBookings] = useState([]);
+  const [youngWalkerBookings, setYoungWalkerBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [ywPaymentLoading, setYwPaymentLoading] = useState<string | null>(null);
 
   useEffect(() => {
     if (profile) {
       fetchBookings();
+      fetchYoungWalkerBookings();
       
       // Check for payment success in URL params
       const paymentStatus = searchParams.get('payment');
       const sessionId = searchParams.get('session_id');
       const bookingId = searchParams.get('booking_id');
+      const bookingParam = searchParams.get('booking');
       
       if (paymentStatus === 'success' && sessionId && bookingId) {
         verifyPaymentAndUpdateBooking(sessionId, bookingId);
-        // Clean up URL params
+        setSearchParams({});
+      }
+      
+      // Handle young walker payment success
+      if (paymentStatus === 'success' && bookingParam) {
+        toast({
+          title: "Payment Successful!",
+          description: "Your dog walk booking is confirmed.",
+        });
+        fetchYoungWalkerBookings();
         setSearchParams({});
       }
 
       // Poll every 3 seconds to keep bookings up to date
       const pollInterval = setInterval(() => {
         fetchBookings();
+        fetchYoungWalkerBookings();
       }, 3000);
 
-      // Cleanup polling on unmount
       return () => {
         clearInterval(pollInterval);
       };
@@ -128,6 +141,60 @@ export default function Bookings() {
       console.error('Error fetching bookings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchYoungWalkerBookings = async () => {
+    if (!profile) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('young_walker_bookings')
+        .select(`
+          *,
+          young_walker:young_walkers (
+            id,
+            child_first_name,
+            child_last_name,
+            home_suburb,
+            parent_email
+          )
+        `)
+        .eq('client_id', profile.id)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setYoungWalkerBookings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching young walker bookings:', error);
+    }
+  };
+
+  const handleYoungWalkerPayment = async (bookingId: string) => {
+    setYwPaymentLoading(bookingId);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-young-walker-payment', {
+        body: { bookingId }
+      });
+
+      if (error) throw error;
+      if (!data?.url) throw new Error('No payment URL received');
+
+      window.open(data.url, '_blank');
+      toast({
+        title: "Payment Window Opened",
+        description: "Complete payment in the new tab.",
+      });
+    } catch (error: any) {
+      console.error('Young walker payment error:', error);
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to start payment.",
+        variant: "destructive",
+      });
+    } finally {
+      setYwPaymentLoading(null);
     }
   };
 
