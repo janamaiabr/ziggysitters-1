@@ -26,8 +26,8 @@ export default function FindYoungWalkers() {
   const benefits = [
     {
       icon: <DollarSign className="h-8 w-8" />,
-      title: "Super Affordable",
-      description: `Just $${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK} per 30-min walk`,
+      title: "Fixed $10 Rate",
+      description: `Just $${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK} per ${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk`,
       color: "from-emerald-400 to-teal-500"
     },
     {
@@ -53,7 +53,7 @@ export default function FindYoungWalkers() {
   const requirements = [
     { icon: <Dog className="h-5 w-5" />, text: "Small to medium dogs only" },
     { icon: <Heart className="h-5 w-5" />, text: "Well-behaved, doesn't pull on lead" },
-    { icon: <Clock className="h-5 w-5" />, text: "30-minute walks maximum" },
+    { icon: <Clock className="h-5 w-5" />, text: `${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-minute walks` },
     { icon: <Calendar className="h-5 w-5" />, text: "After school (3pm+) & weekends" }
   ];
 
@@ -103,8 +103,8 @@ export default function FindYoungWalkers() {
               <div className="inline-flex items-center gap-3 bg-white border-2 border-emerald-200 rounded-2xl px-6 py-4 mb-8 shadow-lg">
                 <div className="text-4xl font-black text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">per 30-min walk</p>
-                  <p className="text-sm text-slate-500">Safe, supervised walks</p>
+                  <p className="font-semibold text-slate-800">per {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
+                  <p className="text-sm text-slate-500">Fixed price, no surprises</p>
                 </div>
               </div>
               
@@ -275,12 +275,12 @@ export default function FindYoungWalkers() {
                   <Badge className="w-fit mx-auto mb-2 bg-emerald-500 text-white border-0">Best Value</Badge>
                   <CardTitle className="text-2xl">Young Walker</CardTitle>
                   <div className="text-4xl font-black text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</div>
-                  <p className="text-sm text-slate-500">per 30-min walk</p>
+                  <p className="text-sm text-slate-500">per {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                    <span>30-minute neighbourhood walks</span>
+                    <span>{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-minute neighbourhood walks</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
