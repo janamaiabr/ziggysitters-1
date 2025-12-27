@@ -19,7 +19,7 @@ import { useEventTracking } from '@/hooks/useEventTracking';
 import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
-import AddPetsPrompt from '@/components/search/AddPetsPrompt';
+// AddPetsPrompt removed - competing CTA
 
 // No more mock data - using real database profiles
 
@@ -38,6 +38,7 @@ export default function FindSitters() {
     });
   }, []);
   const [location, setLocation] = useState(searchParams.get('location') || searchParams.get('suburb') || '');
+  const [nameSearch, setNameSearch] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>(
     searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined
   );
@@ -195,12 +196,20 @@ export default function FindSitters() {
   }, [allSitters]); // Run when sitters are loaded
 
   const handleSearch = async () => {
-    console.log('Performing search with:', { location, serviceType, petType, selectedDate, checkOutDate });
+    console.log('Performing search with:', { location, serviceType, petType, selectedDate, checkOutDate, nameSearch });
     
     // Track search event
     metaPixel.trackSearch(location || serviceType || 'sitters');
     
     let filtered = [...allSitters];
+
+    // Filter by name search
+    if (nameSearch.trim()) {
+      const searchName = nameSearch.toLowerCase().trim();
+      filtered = filtered.filter(sitter => 
+        sitter.name.toLowerCase().includes(searchName)
+      );
+    }
 
     // RELAXED FILTERING: Show sitters even without exact location match
     // Priority: service area match > exact match > partial match > same city > all sitters
@@ -501,6 +510,18 @@ export default function FindSitters() {
             <div className="bg-white rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
               {/* Mobile Optimized: Stack fields properly */}
               <div className="space-y-4">
+                {/* Name Search Row */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 block">Search by name</label>
+                  <Input
+                    type="text"
+                    placeholder="Search by sitter name..."
+                    value={nameSearch}
+                    onChange={(e) => setNameSearch(e.target.value)}
+                    className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                  />
+                </div>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   {serviceType !== 'pet_sitting_owners_home' && (
                     <div className="space-y-2">
@@ -647,9 +668,6 @@ export default function FindSitters() {
           {/* Search Results Header */}
           {!isLoading && searchPerformed && (
             <div className="mb-6 md:mb-8">
-              {/* Subtle prompt to add pets */}
-              <AddPetsPrompt />
-              
               <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
                 Available Pet Sitters
               </h2>
