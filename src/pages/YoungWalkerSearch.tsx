@@ -181,38 +181,80 @@ export default function YoungWalkerSearch() {
         canonical="/search-young-walkers"
       />
 
-      {/* Inspiring Hero */}
-      <section className="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 px-4 py-1">
-              <Dog className="mr-1 h-4 w-4" />
-              Budget-Friendly Dog Walking
-            </Badge>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              Find Your Perfect Dog Walker
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              From enthusiastic young walkers at just <span className="font-bold text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</span> per walk to experienced sitters — we've got your furry friend covered.
-            </p>
+      {/* Hero Section - Matching YoungWalkers style */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-16 md:py-20">
+        {/* Decorative blobs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-200/50 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-200/50 rounded-full blur-3xl" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left - Content */}
+            <div className="text-center lg:text-left">
+              <Badge className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 text-base px-4 py-2">
+                <Dog className="h-4 w-4 mr-2" />
+                Dog Walking Made Easy
+              </Badge>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                Find Your Pup's
+                <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600">
+                  Perfect Walking Buddy 🐕
+                </span>
+              </h1>
+              
+              <p className="text-xl text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                From enthusiastic young walkers at <span className="font-bold text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</span> per walk to experienced sitters — your furry friend is in good hands.
+              </p>
 
-            {/* Value Props */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
-                <DollarSign className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
-                <p className="text-sm font-medium">From $10/walk</p>
+              {/* Trust indicators */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-slate-600 text-sm">
+                <div className="flex items-center gap-2 bg-white/80 rounded-full px-4 py-2 shadow-sm">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span>Parent Supervised</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/80 rounded-full px-4 py-2 shadow-sm">
+                  <Clock className="h-4 w-4 text-green-600" />
+                  <span>{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min Walks</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/80 rounded-full px-4 py-2 shadow-sm">
+                  <DollarSign className="h-4 w-4 text-green-600" />
+                  <span>From ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}/walk</span>
+                </div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
-                <Shield className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
-                <p className="text-sm font-medium">Parent Supervised</p>
-              </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
-                <Clock className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
-                <p className="text-sm font-medium">{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min Walks</p>
-              </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
-                <Sparkles className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
-                <p className="text-sm font-medium">Young & Energetic</p>
+            </div>
+
+            {/* Right - Image */}
+            <div className="relative hidden lg:block">
+              <div className="relative">
+                <img 
+                  src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80" 
+                  alt="Happy dog ready for a walk"
+                  className="rounded-3xl shadow-2xl w-full h-[400px] object-cover"
+                />
+                
+                {/* Floating card - price */}
+                <div className="absolute -left-8 top-16 bg-white rounded-2xl shadow-xl p-4 animate-bounce" style={{ animationDuration: '3s' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</p>
+                      <p className="text-xs text-slate-500">per walk</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Floating card - walks */}
+                <div className="absolute -right-4 bottom-16 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl shadow-xl px-6 py-4">
+                  <p className="font-bold text-lg">{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION} mins</p>
+                  <p className="text-sm text-white/80">Local walks</p>
+                </div>
+
+                {/* Decorative paw prints */}
+                <div className="absolute -top-6 right-12 text-5xl opacity-20">🐾</div>
+                <div className="absolute -bottom-4 left-20 text-4xl opacity-20">🐾</div>
               </div>
             </div>
           </div>
@@ -493,37 +535,36 @@ export default function YoungWalkerSearch() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 bg-gradient-to-r from-emerald-500 to-teal-500">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+      <section className="py-16 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 text-6xl">🐕</div>
+          <div className="absolute bottom-10 right-10 text-6xl">🐾</div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="max-w-2xl mx-auto">
+            <Badge className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+              <Sparkles className="h-4 w-4 mr-1" />
+              Great Opportunity
+            </Badge>
+            
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
               Want Your Child to Become a Dog Walker?
             </h2>
-            <p className="text-white/90 mb-6 text-sm md:text-base">
-              Help your child earn pocket money while learning responsibility. 
-              Ages {YOUNG_WALKER_CONFIG.MIN_AGE}-{YOUNG_WALKER_CONFIG.MAX_AGE}, parent supervised.
+            <p className="text-xl text-white/90 mb-8">
+              Help your child earn <span className="font-bold">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</span> per walk while learning responsibility and building confidence. 
+              Ages {YOUNG_WALKER_CONFIG.MIN_AGE}-{YOUNG_WALKER_CONFIG.MAX_AGE}, fully parent supervised.
             </p>
             <Button 
               size="lg"
-              className="bg-white text-emerald-700 hover:bg-white/90 rounded-full font-bold"
+              className="bg-white text-emerald-700 hover:bg-white/90 rounded-full font-bold text-lg px-8 py-6 shadow-xl"
               onClick={() => navigate("/young-walkers")}
             >
-              <Sparkles className="mr-2 h-4 w-4" />
-              Learn More
+              <Sparkles className="mr-2 h-5 w-5" />
+              Learn More About the Program
             </Button>
           </div>
-        </div>
-      </section>
-
-      {/* Link to landing page */}
-      <section className="py-8 bg-muted/30">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">
-            Looking for more info about the Young Walker program?{" "}
-            <Link to="/find-young-walkers" className="text-primary hover:underline font-medium">
-              Visit our Young Walker landing page →
-            </Link>
-          </p>
         </div>
       </section>
     </>
