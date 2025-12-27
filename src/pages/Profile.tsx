@@ -1834,13 +1834,49 @@ export default function Profile() {
                   <CardTitle>Payment Setup</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                <div>
-                  <h3 className="font-medium mb-2">Connect Your Bank Account</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Connect your bank account to receive automatic payments after completing bookings. 
-                    We use Stripe to ensure secure payments. A 10% listing fee is charged to pet owners.
-                  </p>
+                <div className="space-y-4">
+                  <h3 className="font-medium">Connect Your Bank Account</h3>
                   
+                  {/* Trust & Security Section */}
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-white dark:bg-gray-800 rounded-full shadow-sm">
+                        <Shield className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-green-800 dark:text-green-200">Powered by Stripe - Bank-Level Security</h4>
+                        <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                          Stripe is a trusted 3rd-party payment processor used by companies like Shopify, Uber, and Amazon. 
+                          Your bank details are encrypted and stored securely by Stripe - <strong>ZiggySitters never sees your banking information</strong>.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-green-600 dark:text-green-400 pt-2 border-t border-green-200 dark:border-green-700">
+                      <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3" /> PCI DSS Certified</span>
+                      <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3" /> 256-bit Encryption</span>
+                      <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3" /> NZ Bank Support</span>
+                    </div>
+                  </div>
+
+                  {/* When is it needed */}
+                  <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-blue-900 dark:text-blue-100">When do I need Stripe?</p>
+                        <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                          <strong>You only need Stripe when you accept your first booking.</strong> You can browse the platform, 
+                          complete your profile, and even receive booking requests without it. We'll remind you when it's time!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-muted-foreground">
+                    Once connected, you'll receive automatic payments to your bank account after completing bookings. 
+                    Pet owners pay a 10% platform fee - you receive 100% of your listed rate.
+                  </p>
+                </div>
                   {checkingStripe ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
@@ -1977,7 +2013,6 @@ export default function Profile() {
                       </p>
                     </div>
                   )}
-                </div>
 
                 {/* Payment Fee Information */}
                 <div className="border-t pt-4">

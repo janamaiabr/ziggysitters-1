@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Upload, PlusCircle, X, Shield, Calendar, Trash2, DollarSign, Sparkles, CheckCircle2, AlertCircle, MapPin } from 'lucide-react';
+import { Upload, PlusCircle, X, Shield, Calendar, Trash2, DollarSign, Sparkles, CheckCircle2, AlertCircle, MapPin, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -1393,10 +1393,26 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           </CardHeader>
           <CardContent className="space-y-6">
             <Alert className="bg-primary/5 border-primary/20">
-              <AlertDescription>
-                Connect your bank account to receive payouts when you complete bookings. This uses Stripe Connect for secure payments.
+              <AlertDescription className="space-y-2">
+                <p>Connect your bank account to receive payouts when you complete bookings.</p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                  <Shield className="w-4 h-4 text-green-600" />
+                  <span><strong>Stripe</strong> is a trusted 3rd-party payment processor used by millions of businesses worldwide. Your bank details are never shared with ZiggySitters.</span>
+                </div>
               </AlertDescription>
             </Alert>
+            
+            <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-blue-900 dark:text-blue-100">You can set this up later!</p>
+                  <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                    Stripe is only required when you receive your first booking request. Feel free to skip this step and complete it later from your profile.
+                  </p>
+                </div>
+              </div>
+            </div>
 
             <div className="space-y-4">
               <div className="p-6 bg-muted/50 rounded-lg space-y-4">
@@ -1465,9 +1481,19 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                 </div>
               )}
 
-              <p className="text-sm text-muted-foreground text-center mt-4">
-                You can also set this up later from your profile settings.
-              </p>
+              <div className="text-center space-y-2 mt-4">
+                <p className="text-sm text-muted-foreground">
+                  Want to finish your profile first? No problem!
+                </p>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setCurrentStep(6)}
+                  className="text-primary hover:text-primary/80"
+                >
+                  Skip for now - I'll do this when I get a booking →
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

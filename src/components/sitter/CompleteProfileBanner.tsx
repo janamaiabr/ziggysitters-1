@@ -24,6 +24,7 @@ interface Step {
   completed: boolean;
   icon: React.ReactNode;
   action: string;
+  tooltip?: string;
 }
 
 export default function CompleteProfileBanner({ profile, onDismiss }: CompleteProfileBannerProps) {
@@ -79,8 +80,13 @@ export default function CompleteProfileBanner({ profile, onDismiss }: CompletePr
       completed: !!profile.stripe_account_enabled,
       icon: <CreditCard className="h-4 w-4" />,
       action: '/profile?tab=payments',
+      tooltip: 'Only required when accepting bookings',
     },
   ];
+
+  // Note: Stripe is optional until first booking - don't count it as blocking
+  const requiredSteps = steps.filter(s => s.key !== 'stripe');
+  const completedRequired = requiredSteps.filter(s => s.completed).length;
 
   const completedSteps = steps.filter(s => s.completed).length;
   const progress = (completedSteps / steps.length) * 100;
@@ -136,8 +142,11 @@ export default function CompleteProfileBanner({ profile, onDismiss }: CompletePr
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
                 step.completed 
                   ? 'bg-green-500/30 text-green-100' 
-                  : 'bg-white/10 text-white/70'
+                  : step.key === 'stripe' 
+                    ? 'bg-white/5 text-white/50 border border-white/20 border-dashed' 
+                    : 'bg-white/10 text-white/70'
               }`}
+              title={step.tooltip}
             >
               {step.completed ? (
                 <CheckCircle2 className="h-3.5 w-3.5" />
@@ -145,6 +154,9 @@ export default function CompleteProfileBanner({ profile, onDismiss }: CompletePr
                 step.icon
               )}
               <span>{step.label}</span>
+              {step.key === 'stripe' && !step.completed && (
+                <span className="text-[10px] opacity-70">(optional)</span>
+              )}
             </div>
           ))}
         </div>
