@@ -830,6 +830,7 @@ export type Database = {
           id_document_urls: string[] | null
           is_test_account: boolean
           is_verified: boolean | null
+          is_young_walker: boolean | null
           last_name: string
           last_onboarding_reminder_at: string | null
           latitude: number | null
@@ -875,6 +876,7 @@ export type Database = {
           id_document_urls?: string[] | null
           is_test_account?: boolean
           is_verified?: boolean | null
+          is_young_walker?: boolean | null
           last_name: string
           last_onboarding_reminder_at?: string | null
           latitude?: number | null
@@ -920,6 +922,7 @@ export type Database = {
           id_document_urls?: string[] | null
           is_test_account?: boolean
           is_verified?: boolean | null
+          is_young_walker?: boolean | null
           last_name?: string
           last_onboarding_reminder_at?: string | null
           latitude?: number | null
@@ -1705,6 +1708,335 @@ export type Database = {
         }
         Relationships: []
       }
+      young_walker_availability: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          is_available: boolean
+          notes: string | null
+          time_slot: string
+          young_walker_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+          time_slot: string
+          young_walker_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+          time_slot?: string
+          young_walker_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_walker_availability_young_walker_id_fkey"
+            columns: ["young_walker_id"]
+            isOneToOne: false
+            referencedRelation: "young_walkers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      young_walker_bookings: {
+        Row: {
+          booking_reference: string
+          client_confirmed_dog_temperament: boolean
+          client_confirmed_safety_guidelines: boolean
+          client_id: string
+          created_at: string
+          dog_breed: string | null
+          dog_name: string
+          dog_photo_url: string | null
+          dog_size: string
+          dog_temperament: string | null
+          duration_mins: number
+          id: string
+          paid_at: string | null
+          payment_status: string | null
+          pickup_address: string
+          platform_fee: number
+          rate: number
+          status: string
+          total_amount: number
+          updated_at: string
+          walk_area: string | null
+          walk_completed_at: string | null
+          walk_date: string
+          walk_notes: string | null
+          walk_photo_url: string | null
+          walk_time: string
+          young_walker_id: string
+        }
+        Insert: {
+          booking_reference?: string
+          client_confirmed_dog_temperament?: boolean
+          client_confirmed_safety_guidelines?: boolean
+          client_id: string
+          created_at?: string
+          dog_breed?: string | null
+          dog_name: string
+          dog_photo_url?: string | null
+          dog_size: string
+          dog_temperament?: string | null
+          duration_mins?: number
+          id?: string
+          paid_at?: string | null
+          payment_status?: string | null
+          pickup_address: string
+          platform_fee?: number
+          rate: number
+          status?: string
+          total_amount: number
+          updated_at?: string
+          walk_area?: string | null
+          walk_completed_at?: string | null
+          walk_date: string
+          walk_notes?: string | null
+          walk_photo_url?: string | null
+          walk_time: string
+          young_walker_id: string
+        }
+        Update: {
+          booking_reference?: string
+          client_confirmed_dog_temperament?: boolean
+          client_confirmed_safety_guidelines?: boolean
+          client_id?: string
+          created_at?: string
+          dog_breed?: string | null
+          dog_name?: string
+          dog_photo_url?: string | null
+          dog_size?: string
+          dog_temperament?: string | null
+          duration_mins?: number
+          id?: string
+          paid_at?: string | null
+          payment_status?: string | null
+          pickup_address?: string
+          platform_fee?: number
+          rate?: number
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          walk_area?: string | null
+          walk_completed_at?: string | null
+          walk_date?: string
+          walk_notes?: string | null
+          walk_photo_url?: string | null
+          walk_time?: string
+          young_walker_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_walker_bookings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "young_walker_bookings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walker_bookings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walker_bookings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walker_bookings_young_walker_id_fkey"
+            columns: ["young_walker_id"]
+            isOneToOne: false
+            referencedRelation: "young_walkers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      young_walkers: {
+        Row: {
+          accepted_dog_sizes: string[]
+          admin_approved_at: string | null
+          admin_approved_by: string | null
+          admin_notes: string | null
+          available_after_school: boolean | null
+          available_school_holidays: boolean | null
+          available_weekends: boolean | null
+          bio: string | null
+          child_date_of_birth: string
+          child_first_name: string
+          child_last_name: string
+          created_at: string
+          experience_with_dogs: string | null
+          home_city: string
+          home_suburb: string
+          id: string
+          max_distance_km: number
+          max_walk_duration_mins: number
+          parent_checklist_completed: boolean
+          parent_consent_given: boolean
+          parent_consent_given_at: string | null
+          parent_consent_ip: string | null
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          parent_profile_id: string
+          parent_user_id: string
+          profile_id: string
+          rate_per_walk: number
+          safety_guidelines_acknowledged: boolean
+          service_radius_km: number
+          status: Database["public"]["Enums"]["young_walker_status"]
+          updated_at: string
+        }
+        Insert: {
+          accepted_dog_sizes?: string[]
+          admin_approved_at?: string | null
+          admin_approved_by?: string | null
+          admin_notes?: string | null
+          available_after_school?: boolean | null
+          available_school_holidays?: boolean | null
+          available_weekends?: boolean | null
+          bio?: string | null
+          child_date_of_birth: string
+          child_first_name: string
+          child_last_name: string
+          created_at?: string
+          experience_with_dogs?: string | null
+          home_city?: string
+          home_suburb: string
+          id?: string
+          max_distance_km?: number
+          max_walk_duration_mins?: number
+          parent_checklist_completed?: boolean
+          parent_consent_given?: boolean
+          parent_consent_given_at?: string | null
+          parent_consent_ip?: string | null
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          parent_profile_id: string
+          parent_user_id: string
+          profile_id: string
+          rate_per_walk?: number
+          safety_guidelines_acknowledged?: boolean
+          service_radius_km?: number
+          status?: Database["public"]["Enums"]["young_walker_status"]
+          updated_at?: string
+        }
+        Update: {
+          accepted_dog_sizes?: string[]
+          admin_approved_at?: string | null
+          admin_approved_by?: string | null
+          admin_notes?: string | null
+          available_after_school?: boolean | null
+          available_school_holidays?: boolean | null
+          available_weekends?: boolean | null
+          bio?: string | null
+          child_date_of_birth?: string
+          child_first_name?: string
+          child_last_name?: string
+          created_at?: string
+          experience_with_dogs?: string | null
+          home_city?: string
+          home_suburb?: string
+          id?: string
+          max_distance_km?: number
+          max_walk_duration_mins?: number
+          parent_checklist_completed?: boolean
+          parent_consent_given?: boolean
+          parent_consent_given_at?: string | null
+          parent_consent_ip?: string | null
+          parent_email?: string
+          parent_name?: string
+          parent_phone?: string
+          parent_profile_id?: string
+          parent_user_id?: string
+          profile_id?: string
+          rate_per_walk?: number
+          safety_guidelines_acknowledged?: boolean
+          service_radius_km?: number
+          status?: Database["public"]["Enums"]["young_walker_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "young_walkers_parent_profile_id_fkey"
+            columns: ["parent_profile_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "young_walkers_parent_profile_id_fkey"
+            columns: ["parent_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walkers_parent_profile_id_fkey"
+            columns: ["parent_profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walkers_parent_profile_id_fkey"
+            columns: ["parent_profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walkers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "young_walkers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walkers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "young_walkers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       onboarding_funnel: {
@@ -1959,6 +2291,7 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_young_walker_age: { Args: { dob: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -2012,6 +2345,11 @@ export type Database = {
         | "drop_in_visits"
       user_role: "pet_owner" | "pet_sitter" | "admin"
       verification_status: "pending" | "verified" | "rejected"
+      young_walker_status:
+        | "pending_approval"
+        | "active"
+        | "suspended"
+        | "inactive"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2166,6 +2504,12 @@ export const Constants = {
       ],
       user_role: ["pet_owner", "pet_sitter", "admin"],
       verification_status: ["pending", "verified", "rejected"],
+      young_walker_status: [
+        "pending_approval",
+        "active",
+        "suspended",
+        "inactive",
+      ],
     },
   },
 } as const
