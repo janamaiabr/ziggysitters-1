@@ -41,6 +41,12 @@ interface YoungWalker {
   available_after_school: boolean;
   available_weekends: boolean;
   available_school_holidays: boolean;
+  after_school_start_time: string | null;
+  after_school_end_time: string | null;
+  weekend_start_time: string | null;
+  weekend_end_time: string | null;
+  holiday_start_time: string | null;
+  holiday_end_time: string | null;
   bio: string | null;
   parent_name: string;
   parent_email: string;
@@ -210,28 +216,55 @@ export default function BookYoungWalker() {
     }
   };
 
-  // Generate time slots (after 3pm only)
-  const timeSlots = [];
-  for (let hour = 15; hour <= 18; hour++) {
-    for (let min = 0; min < 60; min += 30) {
-      const time = `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}`;
-      timeSlots.push(time);
+  // Generate time slots based on walker's availability settings
+  const generateTimeSlots = (startTime: string, endTime: string): string[] => {
+    const slots: string[] = [];
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
+    
+    for (let hour = startHour; hour <= endHour; hour++) {
+      for (let min = 0; min < 60; min += 30) {
+        // Skip times before start
+        if (hour === startHour && min < startMin) continue;
+        // Skip times after end
+        if (hour === endHour && min > endMin) continue;
+        if (hour > endHour) continue;
+        
+        const time = `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}`;
+        slots.push(time);
+      }
     }
-  }
-  // Weekend slots can be earlier
-  const weekendTimeSlots = [];
-  for (let hour = 9; hour <= 18; hour++) {
-    for (let min = 0; min < 60; min += 30) {
-      const time = `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}`;
-      weekendTimeSlots.push(time);
-    }
-  }
+    return slots;
+  };
 
   const isWeekend = formData.walkDate 
     ? formData.walkDate.getDay() === 0 || formData.walkDate.getDay() === 6 
     : false;
 
-  const availableTimeSlots = isWeekend ? weekendTimeSlots : timeSlots;
+  // Use walker's custom time settings or defaults
+  const afterSchoolSlots = generateTimeSlots(
+    walker?.after_school_start_time || "15:00", 
+    walker?.after_school_end_time || "18:00"
+  );
+  const weekendSlots = generateTimeSlots(
+    walker?.weekend_start_time || "09:00", 
+    walker?.weekend_end_time || "17:00"
+  );
+
+  const availableTimeSlots = isWeekend ? weekendSlots : afterSchoolSlots;
+  
+  // Get display time range for user
+  const getTimeRangeDisplay = () => {
+    if (isWeekend) {
+      const start = walker?.weekend_start_time || "09:00";
+      const end = walker?.weekend_end_time || "17:00";
+      return `Weekend hours: ${start} - ${end}`;
+    } else {
+      const start = walker?.after_school_start_time || "15:00";
+      const end = walker?.after_school_end_time || "18:00";
+      return `After school: ${start} - ${end}`;
+    }
+  };
 
   if (isLoading) {
     return (
@@ -401,7 +434,7 @@ export default function BookYoungWalker() {
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    {isWeekend ? "Weekend hours: 9am-6pm" : "After school: 3pm-6pm"}
+                    {getTimeRangeDisplay()}
                   </p>
                 </div>
               </div>
