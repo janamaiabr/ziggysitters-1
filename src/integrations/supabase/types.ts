@@ -1878,6 +1878,8 @@ export type Database = {
           admin_approved_at: string | null
           admin_approved_by: string | null
           admin_notes: string | null
+          after_school_end_time: string | null
+          after_school_start_time: string | null
           available_after_school: boolean | null
           available_school_holidays: boolean | null
           available_weekends: boolean | null
@@ -1887,6 +1889,8 @@ export type Database = {
           child_last_name: string
           created_at: string
           experience_with_dogs: string | null
+          holiday_end_time: string | null
+          holiday_start_time: string | null
           home_city: string
           home_suburb: string
           id: string
@@ -1907,12 +1911,16 @@ export type Database = {
           service_radius_km: number
           status: Database["public"]["Enums"]["young_walker_status"]
           updated_at: string
+          weekend_end_time: string | null
+          weekend_start_time: string | null
         }
         Insert: {
           accepted_dog_sizes?: string[]
           admin_approved_at?: string | null
           admin_approved_by?: string | null
           admin_notes?: string | null
+          after_school_end_time?: string | null
+          after_school_start_time?: string | null
           available_after_school?: boolean | null
           available_school_holidays?: boolean | null
           available_weekends?: boolean | null
@@ -1922,6 +1930,8 @@ export type Database = {
           child_last_name: string
           created_at?: string
           experience_with_dogs?: string | null
+          holiday_end_time?: string | null
+          holiday_start_time?: string | null
           home_city?: string
           home_suburb: string
           id?: string
@@ -1942,12 +1952,16 @@ export type Database = {
           service_radius_km?: number
           status?: Database["public"]["Enums"]["young_walker_status"]
           updated_at?: string
+          weekend_end_time?: string | null
+          weekend_start_time?: string | null
         }
         Update: {
           accepted_dog_sizes?: string[]
           admin_approved_at?: string | null
           admin_approved_by?: string | null
           admin_notes?: string | null
+          after_school_end_time?: string | null
+          after_school_start_time?: string | null
           available_after_school?: boolean | null
           available_school_holidays?: boolean | null
           available_weekends?: boolean | null
@@ -1957,6 +1971,8 @@ export type Database = {
           child_last_name?: string
           created_at?: string
           experience_with_dogs?: string | null
+          holiday_end_time?: string | null
+          holiday_start_time?: string | null
           home_city?: string
           home_suburb?: string
           id?: string
@@ -1977,6 +1993,8 @@ export type Database = {
           service_radius_km?: number
           status?: Database["public"]["Enums"]["young_walker_status"]
           updated_at?: string
+          weekend_end_time?: string | null
+          weekend_start_time?: string | null
         }
         Relationships: [
           {
