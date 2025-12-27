@@ -143,3 +143,9 @@ verify_jwt = false
 
 [functions.check-abandoned-bookings]
 verify_jwt = false
+
+[functions.young-walker-stripe-onboarding]
+verify_jwt = true
+
+[functions.create-young-walker-payment]
+verify_jwt = true
