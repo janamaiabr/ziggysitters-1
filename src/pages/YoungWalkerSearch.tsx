@@ -70,6 +70,7 @@ export default function YoungWalkerSearch() {
     searchParams.get("suburb") ? [searchParams.get("suburb")!] : []
   );
   const [suburbInput, setSuburbInput] = useState("");
+  const [nameSearch, setNameSearch] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -77,7 +78,7 @@ export default function YoungWalkerSearch() {
 
   useEffect(() => {
     filterResults();
-  }, [youngWalkers, regularSitters, searchSuburbs]);
+  }, [youngWalkers, regularSitters, searchSuburbs, nameSearch]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -126,31 +127,42 @@ export default function YoungWalkerSearch() {
   };
 
   const filterResults = () => {
-    if (searchSuburbs.length === 0) {
-      // Show all results when no suburbs selected
-      setFilteredYoungWalkers(youngWalkers);
-      setFilteredRegularSitters(regularSitters);
-      return;
+    let filteredYW = [...youngWalkers];
+    let filteredRS = [...regularSitters];
+
+    // Filter by name search
+    if (nameSearch.trim()) {
+      const searchName = nameSearch.toLowerCase().trim();
+      filteredYW = filteredYW.filter(w => 
+        w.child_first_name.toLowerCase().includes(searchName) ||
+        w.child_last_name.toLowerCase().includes(searchName)
+      );
+      filteredRS = filteredRS.filter(s => 
+        s.first_name.toLowerCase().includes(searchName) ||
+        s.last_name.toLowerCase().includes(searchName)
+      );
     }
 
-    const searchTerms = searchSuburbs.map(s => s.toLowerCase());
-    
-    // Filter young walkers
-    const filteredYW = youngWalkers.filter(w => 
-      searchTerms.some(term => 
-        w.home_suburb.toLowerCase().includes(term) ||
-        w.home_city.toLowerCase().includes(term)
-      )
-    );
-    setFilteredYoungWalkers(filteredYW);
+    // Filter by suburbs
+    if (searchSuburbs.length > 0) {
+      const searchTerms = searchSuburbs.map(s => s.toLowerCase());
+      
+      filteredYW = filteredYW.filter(w => 
+        searchTerms.some(term => 
+          w.home_suburb.toLowerCase().includes(term) ||
+          w.home_city.toLowerCase().includes(term)
+        )
+      );
 
-    // Filter regular sitters
-    const filteredRS = regularSitters.filter(s => 
-      searchTerms.some(term => 
-        (s.suburb?.toLowerCase().includes(term)) ||
-        (s.city?.toLowerCase().includes(term))
-      )
-    );
+      filteredRS = filteredRS.filter(s => 
+        searchTerms.some(term => 
+          (s.suburb?.toLowerCase().includes(term)) ||
+          (s.city?.toLowerCase().includes(term))
+        )
+      );
+    }
+
+    setFilteredYoungWalkers(filteredYW);
     setFilteredRegularSitters(filteredRS);
   };
 
@@ -255,6 +267,26 @@ export default function YoungWalkerSearch() {
                 {/* Decorative paw prints */}
                 <div className="absolute -top-6 right-12 text-5xl opacity-20">🐾</div>
                 <div className="absolute -bottom-4 left-20 text-4xl opacity-20">🐾</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Search/Filter Bar */}
+      <section className="py-6 bg-muted/30 border-b">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-xl p-4 shadow-sm border">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Search by name</label>
+                <Input
+                  type="text"
+                  placeholder="Search for a walker by name..."
+                  value={nameSearch}
+                  onChange={(e) => setNameSearch(e.target.value)}
+                  className="h-11"
+                />
               </div>
             </div>
           </div>
