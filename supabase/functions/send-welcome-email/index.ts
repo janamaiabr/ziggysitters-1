@@ -93,7 +93,8 @@ function formatEventName(eventName: string): string {
     .replace(/\b\w/g, l => l.toUpperCase());
 }
 
-async function buildUserJourneyHtml(profileId: string, sessionId?: string): Promise<{ html: string; summary: Record<string, any> }> {
+async function buildUserJourneyHtml(profileId: string, sessionId?: string, role?: string): Promise<{ html: string; summary: Record<string, any> }> {
+  const isSitter = role === 'pet_sitter';
   console.log("Building user journey for profile:", profileId, "session:", sessionId);
   
   // Collect all session IDs we need to check
@@ -329,9 +330,21 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
     </div>
   `;
 
-  // Build DETAILED SEARCH ACTIVITY section
+  // Build DETAILED SEARCH ACTIVITY section (skip for sitters - they don't search)
   let searchActivityHtml = '';
-  if (searchEventsData.length > 0) {
+  if (isSitter) {
+    // Sitters don't search - show a positive note instead
+    searchActivityHtml = `
+      <div style="background: #dbeafe; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+        <h3 style="margin-top: 0; color: #1e40af;">🐕 Pet Sitter Registration</h3>
+        <p style="margin: 0; color: #1e3a8a;">
+          This user registered as a pet sitter. Search activity is not relevant for sitter registrations.
+          <br><br>
+          <strong>Next steps for this sitter:</strong> Complete profile, upload ID, set up services & Stripe.
+        </p>
+      </div>
+    `;
+  } else if (searchEventsData.length > 0) {
     const searchRows = searchEventsData.map((se, idx) => {
       const time = new Date(se.search_timestamp || se.created_at).toLocaleTimeString('en-NZ', { 
         hour: '2-digit', 
@@ -444,13 +457,20 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
   const issues: string[] = [];
   
   const zeroResultSearches = searchEventsData.filter(se => se.results_count === 0);
-  if (zeroResultSearches.length > 0) {
-    const locations = [...new Set(zeroResultSearches.map(s => s.suburb).filter(Boolean))];
-    issues.push(`🔴 Got 0 results ${zeroResultSearches.length} time(s)${locations.length > 0 ? ` searching in: ${locations.join(', ')}` : ''}`);
-  }
-  
-  if (clickedSittersInfo.length > 0) {
-    issues.push(`💔 Clicked ${clickedSittersInfo.length} sitter(s) but didn't complete a booking - what stopped them?`);
+  // Skip search-related issues for sitters (they don't search)
+  if (!isSitter) {
+    if (zeroResultSearches.length > 0) {
+      const locations = [...new Set(zeroResultSearches.map(s => s.suburb).filter(Boolean))];
+      issues.push(`🔴 Got 0 results ${zeroResultSearches.length} time(s)${locations.length > 0 ? ` searching in: ${locations.join(', ')}` : ''}`);
+    }
+    
+    if (clickedSittersInfo.length > 0) {
+      issues.push(`💔 Clicked ${clickedSittersInfo.length} sitter(s) but didn't complete a booking - what stopped them?`);
+    }
+    
+    if (searchEventsData.length === 0) {
+      issues.push('🔍 No searches performed at all');
+    }
   }
   
   if (summary.timeOnSite < 30) {
@@ -458,9 +478,6 @@ async function buildUserJourneyHtml(profileId: string, sessionId?: string): Prom
   }
   if (summary.idleEvents > 2) {
     issues.push('💤 Multiple idle periods - user seemed confused or distracted');
-  }
-  if (searchEventsData.length === 0) {
-    issues.push('🔍 No searches performed at all');
   }
   if (summary.formAbandons > 0) {
     issues.push('❌ Abandoned a form - friction in onboarding');
@@ -596,7 +613,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       let journeyHtml = '<p style="color: #666;">No journey data available</p>';
       if (sitterProfile) {
-        const { html } = await buildUserJourneyHtml(sitterProfile.id, sessionId);
+        const { html } = await buildUserJourneyHtml(sitterProfile.id, sessionId, 'pet_sitter');
         journeyHtml = html;
       }
 
@@ -680,7 +697,7 @@ const handler = async (req: Request): Promise<Response> => {
       // Build journey with session ID
       let journeyHtml = '<p style="color: #666;">No journey data available</p>';
       if (profile) {
-        const journeyData = await buildUserJourneyHtml(profile.id, sessionId);
+        const journeyData = await buildUserJourneyHtml(profile.id, sessionId, role);
         journeyHtml = journeyData.html;
       }
 
