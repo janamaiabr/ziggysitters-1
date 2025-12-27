@@ -516,6 +516,11 @@ export default function FindSitters() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 block">Service</label>
                     <Select value={serviceType} onValueChange={(val) => {
+                      // Redirect to young walker search if selected
+                      if (val === 'young_walker') {
+                        navigate('/search-young-walkers');
+                        return;
+                      }
                       setServiceType(val);
                       // Clear location when switching to owner's home
                       if (val === 'pet_sitting_owners_home') {
@@ -529,6 +534,12 @@ export default function FindSitters() {
                           <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
                           <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
                           <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
+                          <SelectItem value="young_walker">
+                            <span className="flex items-center gap-2">
+                              🐕 Young Dog Walker 
+                              <span className="text-xs text-emerald-600 font-medium">From $15</span>
+                            </span>
+                          </SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
