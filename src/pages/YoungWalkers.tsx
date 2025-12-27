@@ -149,7 +149,18 @@ export default function YoungWalkers() {
                 </span>
               </h1>
               
-              <p className="text-xl text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              {/* PROMINENT PRICING BANNER */}
+              <div className="inline-flex items-center gap-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl px-6 py-4 mb-6 shadow-xl shadow-emerald-200/50">
+                <div className="text-center">
+                  <span className="text-4xl md:text-5xl font-black">$10</span>
+                </div>
+                <div className="border-l border-white/30 pl-4 text-left">
+                  <p className="font-bold text-lg">per {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
+                  <p className="text-sm text-white/80">Fixed rate • Get paid via Stripe</p>
+                </div>
+              </div>
+              
+              <p className="text-xl text-slate-600 mb-6 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 Auckland's first safe, parent-approved platform for young entrepreneurs to earn money walking neighbourhood dogs.
               </p>
 
@@ -204,15 +215,15 @@ export default function YoungWalkers() {
                   className="rounded-3xl shadow-2xl w-full h-[550px] object-cover"
                 />
                 
-                {/* Floating card - earnings */}
-                <div className="absolute -left-8 top-20 bg-white rounded-2xl shadow-xl p-4 animate-bounce" style={{ animationDuration: '3s' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-                      <DollarSign className="h-6 w-6 text-emerald-600" />
+                {/* Floating card - earnings - MORE PROMINENT */}
+                <div className="absolute -left-8 top-20 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl shadow-xl p-5 animate-bounce" style={{ animationDuration: '3s' }}>
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                      <DollarSign className="h-7 w-7 text-white" />
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</p>
-                      <p className="text-xs text-slate-500">per walk</p>
+                      <p className="text-3xl font-black">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</p>
+                      <p className="text-sm text-white/80 font-medium">{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
                     </div>
                   </div>
                 </div>
