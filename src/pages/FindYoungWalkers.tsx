@@ -82,10 +82,16 @@ export default function FindYoungWalkers() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Content */}
             <div className="text-center lg:text-left">
-              <Badge className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 text-base px-4 py-2">
-                <DollarSign className="h-4 w-4 mr-2" />
-                Budget-Friendly Dog Walks
-              </Badge>
+              {/* SUPER PROMINENT PRICE BADGE */}
+              <div className="inline-flex items-center gap-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl px-6 py-4 mb-6 shadow-xl shadow-emerald-200/50">
+                <div className="text-center">
+                  <span className="text-5xl md:text-6xl font-black">$10</span>
+                </div>
+                <div className="border-l border-white/30 pl-4 text-left">
+                  <p className="font-bold text-xl">per {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
+                  <p className="text-sm text-white/80">Fixed price • No surprises</p>
+                </div>
+              </div>
               
               <h1 className="text-5xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
                 Affordable Dog Walks by
@@ -94,19 +100,9 @@ export default function FindYoungWalkers() {
                 </span>
               </h1>
               
-              <p className="text-xl text-slate-600 mb-6 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-xl text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 Perfect for small to medium dogs who need regular short walks. 
-                Support local youth while your dog gets exercise!
-              </p>
-
-              {/* Price highlight */}
-              <div className="inline-flex items-center gap-3 bg-white border-2 border-emerald-200 rounded-2xl px-6 py-4 mb-8 shadow-lg">
-                <div className="text-4xl font-black text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</div>
-                <div className="text-left">
-                  <p className="font-semibold text-slate-800">per {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
-                  <p className="text-sm text-slate-500">Fixed price, no surprises</p>
-                </div>
-              </div>
+                Support local youth while your dog gets exercise!</p>
               
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">

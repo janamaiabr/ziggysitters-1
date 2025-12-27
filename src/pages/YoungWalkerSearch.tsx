@@ -205,10 +205,16 @@ export default function YoungWalkerSearch() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Content */}
             <div className="text-center lg:text-left">
-              <Badge className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 text-base px-4 py-2">
-                <Dog className="h-4 w-4 mr-2" />
-                Dog Walking Made Easy
-              </Badge>
+              {/* SUPER PROMINENT PRICE BADGE */}
+              <div className="inline-flex items-center gap-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl px-6 py-4 mb-6 shadow-xl shadow-emerald-200/50 animate-pulse" style={{ animationDuration: '3s' }}>
+                <div className="text-center">
+                  <span className="text-5xl md:text-6xl font-black">$10</span>
+                </div>
+                <div className="border-l border-white/30 pl-4 text-left">
+                  <p className="font-bold text-xl">per {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk</p>
+                  <p className="text-sm text-white/80">Young Walker Rate</p>
+                </div>
+              </div>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 mb-6 leading-tight">
                 Find Your Pup's
@@ -218,7 +224,7 @@ export default function YoungWalkerSearch() {
               </h1>
               
               <p className="text-xl text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                From enthusiastic young walkers at <span className="font-bold text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</span> per walk to experienced sitters — your furry friend is in good hands.
+                Enthusiastic young walkers provide affordable neighbourhood walks. Your furry friend is in good hands!
               </p>
 
               {/* Trust indicators */}
@@ -231,9 +237,9 @@ export default function YoungWalkerSearch() {
                   <Clock className="h-4 w-4 text-green-600" />
                   <span>{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min Walks</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/80 rounded-full px-4 py-2 shadow-sm">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                  <span>From ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}/walk</span>
+                <div className="flex items-center gap-2 bg-emerald-100 rounded-full px-4 py-2 shadow-sm border-2 border-emerald-300">
+                  <DollarSign className="h-4 w-4 text-emerald-600" />
+                  <span className="font-bold text-emerald-700">Only $10/walk</span>
                 </div>
               </div>
             </div>
