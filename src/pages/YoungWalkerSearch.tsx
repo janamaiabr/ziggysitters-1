@@ -181,62 +181,39 @@ export default function YoungWalkerSearch() {
         canonical="/search-young-walkers"
       />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-8 md:py-12">
+      {/* Inspiring Hero */}
+      <section className="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <Badge className="mb-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0">
-              <Dog className="mr-1 h-3 w-3" />
-              Dog Walking
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge className="mb-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 px-4 py-1">
+              <Dog className="mr-1 h-4 w-4" />
+              Budget-Friendly Dog Walking
             </Badge>
-            <h1 className="text-2xl md:text-4xl font-bold mb-4">
-              Find a <span className="text-emerald-600">Dog Walker</span>
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              Find Your Perfect Dog Walker
             </h1>
-            <p className="text-muted-foreground mb-6 text-sm md:text-base">
-              Browse young dog walkers and experienced sitters in your area
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              From enthusiastic young walkers at just <span className="font-bold text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</span> per walk to experienced sitters — we've got your furry friend covered.
             </p>
 
-            {/* Multi-suburb Search */}
-            <div className="max-w-lg mx-auto space-y-3">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Add a suburb..."
-                    value={suburbInput}
-                    onChange={(e) => setSuburbInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addSuburb()}
-                    className="pl-10"
-                  />
-                </div>
-                <Button onClick={addSuburb} size="icon" variant="outline">
-                  <Plus className="h-4 w-4" />
-                </Button>
+            {/* Value Props */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+                <DollarSign className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
+                <p className="text-sm font-medium">From $10/walk</p>
               </div>
-              
-              {/* Selected suburbs */}
-              {searchSuburbs.length > 0 && (
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {searchSuburbs.map(suburb => (
-                    <Badge 
-                      key={suburb} 
-                      variant="secondary"
-                      className="px-3 py-1 gap-1"
-                    >
-                      {suburb}
-                      <button onClick={() => removeSuburb(suburb)}>
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                  <button 
-                    onClick={() => setSearchSuburbs([])}
-                    className="text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    Clear all
-                  </button>
-                </div>
-              )}
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+                <Shield className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
+                <p className="text-sm font-medium">Parent Supervised</p>
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+                <Clock className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
+                <p className="text-sm font-medium">{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min Walks</p>
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+                <Sparkles className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
+                <p className="text-sm font-medium">Young & Energetic</p>
+              </div>
             </div>
           </div>
         </div>

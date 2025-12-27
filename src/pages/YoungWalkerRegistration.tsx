@@ -41,9 +41,10 @@ interface YoungWalkerFormData {
   childLastName: string;
   childDob: string;
   
-  // Location
+  // Location - support multiple suburbs
   homeSuburb: string;
   homeCity: string;
+  additionalSuburbs: string[];
   
   // Service preferences
   ratePerWalk: number;
@@ -56,7 +57,7 @@ interface YoungWalkerFormData {
   availableWeekends: boolean;
   availableSchoolHolidays: boolean;
   
-  // Experience
+  // Experience (optional)
   experienceWithDogs: string;
   bio: string;
   
@@ -74,6 +75,7 @@ export default function YoungWalkerRegistration() {
   
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [checkingExisting, setCheckingExisting] = useState(true);
   const totalSteps = 4;
   
   const [formData, setFormData] = useState<YoungWalkerFormData>({
@@ -85,6 +87,7 @@ export default function YoungWalkerRegistration() {
     childDob: "",
     homeSuburb: "",
     homeCity: "Auckland",
+    additionalSuburbs: [],
     ratePerWalk: YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK,
     maxWalkDurationMins: YOUNG_WALKER_CONFIG.MAX_WALK_DURATION,
     serviceRadiusKm: YOUNG_WALKER_CONFIG.MAX_DISTANCE_KM,
@@ -98,6 +101,38 @@ export default function YoungWalkerRegistration() {
     parentConsentGiven: false,
     parentChecklistCompleted: false,
   });
+
+  // Check if already registered
+  useEffect(() => {
+    const checkExistingRegistration = async () => {
+      if (!user) return;
+      
+      try {
+        const { data: existing } = await supabase
+          .from("young_walkers")
+          .select("id, status")
+          .eq("parent_user_id", user.id)
+          .maybeSingle();
+        
+        if (existing) {
+          toast({
+            title: "Already Registered",
+            description: "You've already registered a Young Walker. Redirecting to dashboard...",
+          });
+          navigate("/young-walker-dashboard");
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking existing registration:", error);
+      } finally {
+        setCheckingExisting(false);
+      }
+    };
+    
+    if (user) {
+      checkExistingRegistration();
+    }
+  }, [user, navigate, toast]);
 
   // Pre-fill parent info from profile
   useEffect(() => {
@@ -271,6 +306,18 @@ export default function YoungWalkerRegistration() {
     }
   };
 
+  // Show loading while checking
+  if (checkingExisting) {
+    return (
+      <OnboardingLayout showNavigation={false}>
+        <div className="container mx-auto px-4 py-16 text-center">
+          <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-pulse" />
+          <p className="text-muted-foreground">Checking registration status...</p>
+        </div>
+      </OnboardingLayout>
+    );
+  }
+
   return (
     <OnboardingLayout showNavigation={false}>
       <SEOHead 
@@ -280,38 +327,41 @@ export default function YoungWalkerRegistration() {
       />
 
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* Header Section */}
-        <div className="text-center space-y-2 mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="h-6 w-6 text-primary" />
-            <h1 className="text-xl sm:text-2xl font-bold">Young Walker Registration</h1>
-            <Sparkles className="h-6 w-6 text-primary" />
+        {/* Inspiring Header */}
+        <div className="text-center space-y-4 mb-8">
+          <div className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-full mb-2">
+            <Dog className="h-5 w-5" />
+            <span className="font-medium">Young Walker Program</span>
           </div>
           
-          <Alert className="bg-primary/10 border-primary/20 mb-4">
-            <Users className="h-4 w-4" />
-            <AlertDescription className="text-sm">
-              <strong>Parents:</strong> This form is for you to register your child ({YOUNG_WALKER_CONFIG.MIN_AGE}-{YOUNG_WALKER_CONFIG.MAX_AGE} years old) as a Young Dog Walker.
-            </AlertDescription>
-          </Alert>
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            Your Child's First Business Adventure! 🐕
+          </h1>
           
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Step {step} of {totalSteps}: {getStepTitle()}
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Help your child earn ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK} per walk while learning responsibility and building confidence.
           </p>
           
           {/* Progress indicator */}
-          <div className="flex justify-center gap-2 mt-4">
+          <div className="flex items-center justify-center gap-2 mt-6">
             {[1, 2, 3, 4].map(s => (
-              <div
-                key={s}
-                className={`h-2 w-12 rounded-full transition-colors ${
-                  s < step ? 'bg-green-500' :
-                  s === step ? 'bg-primary' :
-                  'bg-muted'
-                }`}
-              />
+              <div key={s} className="flex items-center">
+                <div
+                  className={`h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                    s < step ? 'bg-green-500 text-white' :
+                    s === step ? 'bg-primary text-white' :
+                    'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  {s < step ? <CheckCircle2 className="h-5 w-5" /> : s}
+                </div>
+                {s < 4 && <div className={`h-1 w-8 mx-1 ${s < step ? 'bg-green-500' : 'bg-muted'}`} />}
+              </div>
             ))}
           </div>
+          <p className="text-sm text-muted-foreground">
+            Step {step}: {getStepTitle()}
+          </p>
         </div>
 
         {/* Step 1: Parent Information */}
@@ -471,9 +521,10 @@ export default function YoungWalkerRegistration() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Primary Suburb */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="homeSuburb">Your Suburb</Label>
+                  <Label htmlFor="homeSuburb">Primary Suburb</Label>
                   <Input
                     id="homeSuburb"
                     value={formData.homeSuburb}
@@ -488,6 +539,40 @@ export default function YoungWalkerRegistration() {
                     value={formData.homeCity}
                     onChange={(e) => handleInputChange("homeCity", e.target.value)}
                     placeholder="Auckland"
+                  />
+                </div>
+              </div>
+
+              {/* Additional Suburbs */}
+              <div className="space-y-3">
+                <Label>Additional Service Suburbs <span className="text-muted-foreground font-normal">(optional)</span></Label>
+                <p className="text-sm text-muted-foreground">Add nearby suburbs where your child can walk dogs.</p>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {formData.additionalSuburbs.map((suburb, index) => (
+                    <Badge key={index} variant="secondary" className="px-3 py-1 gap-1">
+                      {suburb}
+                      <button 
+                        onClick={() => handleInputChange("additionalSuburbs", formData.additionalSuburbs.filter((_, i) => i !== index))}
+                        className="ml-1 hover:text-destructive"
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add suburb..."
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const value = (e.target as HTMLInputElement).value.trim();
+                        if (value && !formData.additionalSuburbs.includes(value)) {
+                          handleInputChange("additionalSuburbs", [...formData.additionalSuburbs, value]);
+                          (e.target as HTMLInputElement).value = '';
+                        }
+                      }
+                    }}
                   />
                 </div>
               </div>
