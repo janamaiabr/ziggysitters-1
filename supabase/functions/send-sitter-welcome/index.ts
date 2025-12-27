@@ -94,10 +94,21 @@ const handler = async (req: Request): Promise<Response> => {
                 <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
                   <span style="background: #8B5CF6; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin-right: 12px; flex-shrink: 0;">5</span>
                   <div>
-                    <strong style="color: #1e293b;">Set up Stripe for payments</strong>
-                    <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">Connect your bank account to receive payments directly.</p>
+                    <strong style="color: #1e293b;">Set up Stripe for payments (optional for now)</strong>
+                    <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">
+                      Connect your bank account to receive payments. <strong>You can skip this step</strong> and complete it later when you receive your first booking request.
+                    </p>
                   </div>
                 </div>
+              </div>
+
+              <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #93c5fd;">
+                <h3 style="color: #1e40af; margin: 0 0 10px 0; font-size: 16px;">🔐 About Stripe - Bank-Level Security</h3>
+                <p style="color: #1e3a8a; margin: 0; font-size: 14px; line-height: 1.6;">
+                  We use <strong>Stripe</strong> for all payments - the same secure payment processor trusted by Uber, Shopify, and Amazon. 
+                  Your bank details are encrypted and stored by Stripe directly - <strong>ZiggySitters never sees your banking information</strong>. 
+                  Stripe is PCI DSS Level 1 certified, the highest level of security certification.
+                </p>
               </div>
 
               <div style="text-align: center; margin: 35px 0;">
