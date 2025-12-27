@@ -132,8 +132,8 @@ export default function Header() {
           <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Blog
           </Link>
-          <Link to="/christmas" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
-            🎄 Christmas
+          <Link to="/search-young-walkers" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
+            🐕 Young Walkers
           </Link>
           {user && profile?.role === 'pet_sitter' && (
             <Link to="/calendar" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1.5">
@@ -264,8 +264,8 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/christmas')}>
-                        🎄 Christmas
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/search-young-walkers')}>
+                        🐕 Young Walkers
                       </Button>
                       <Button variant="ghost" className="w-full justify-between" onClick={() => handleMobileNavigation('/messages')}>
                         <span className="flex items-center">
@@ -327,8 +327,8 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/christmas')}>
-                        🎄 Christmas
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/search-young-walkers')}>
+                        🐕 Young Walkers
                       </Button>
                     </div>
                     <div className="space-y-3 pt-4 border-t">
