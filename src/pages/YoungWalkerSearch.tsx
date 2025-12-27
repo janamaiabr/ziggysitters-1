@@ -95,6 +95,7 @@ export default function YoungWalkerSearch() {
   const filterWalkers = () => {
     let filtered = [...walkers];
     
+    // Only filter if user has entered a search term
     if (searchSuburb.trim()) {
       const search = searchSuburb.toLowerCase();
       filtered = filtered.filter(w => 
@@ -102,6 +103,7 @@ export default function YoungWalkerSearch() {
         w.home_city.toLowerCase().includes(search)
       );
     }
+    // If no search term, show all walkers (filtered already contains all walkers)
 
     setFilteredWalkers(filtered);
   };
