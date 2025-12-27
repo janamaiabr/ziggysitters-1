@@ -154,16 +154,16 @@ export default function YoungWalkers() {
               </p>
 
               {/* Important parent notice */}
-              <div className="inline-flex items-center gap-3 bg-amber-100 border border-amber-300 rounded-2xl px-5 py-3 mb-8">
-                <Users className="h-6 w-6 text-amber-600" />
-                <span className="font-semibold text-amber-800">Parents register their child - it's quick & safe!</span>
+              <div className="flex items-center gap-3 bg-amber-100 border border-amber-300 rounded-2xl px-5 py-3 mb-8 w-fit mx-auto lg:mx-0">
+                <Users className="h-5 w-5 text-amber-600 flex-shrink-0" />
+                <span className="font-semibold text-amber-800 text-sm sm:text-base">Parents register their child - it's quick & safe!</span>
               </div>
               
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-8">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-lg px-8 py-6 rounded-full font-bold shadow-xl shadow-purple-300 group"
+                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-full font-bold shadow-xl shadow-purple-300 group"
                   onClick={() => navigate("/young-walker-registration")}
                 >
                   <Rocket className="mr-2 h-5 w-5 group-hover:animate-bounce" />
@@ -173,7 +173,7 @@ export default function YoungWalkers() {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="border-2 border-slate-300 text-slate-700 hover:bg-slate-100 text-lg px-8 py-6 rounded-full font-bold"
+                  className="border-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-full font-bold"
                   onClick={() => navigate("/search-young-walkers")}
                 >
                   <Dog className="mr-2 h-5 w-5" />
