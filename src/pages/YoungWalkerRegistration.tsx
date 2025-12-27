@@ -53,6 +53,12 @@ interface YoungWalkerFormData {
   availableAfterSchool: boolean;
   availableWeekends: boolean;
   availableSchoolHolidays: boolean;
+  afterSchoolStartTime: string;
+  afterSchoolEndTime: string;
+  weekendStartTime: string;
+  weekendEndTime: string;
+  holidayStartTime: string;
+  holidayEndTime: string;
   experienceWithDogs: string;
   bio: string;
   safetyGuidelinesAcknowledged: boolean;
@@ -90,6 +96,12 @@ export default function YoungWalkerRegistration() {
     availableAfterSchool: true,
     availableWeekends: true,
     availableSchoolHolidays: true,
+    afterSchoolStartTime: "15:00",
+    afterSchoolEndTime: "18:00",
+    weekendStartTime: "09:00",
+    weekendEndTime: "17:00",
+    holidayStartTime: "09:00",
+    holidayEndTime: "17:00",
     experienceWithDogs: "",
     bio: "",
     safetyGuidelinesAcknowledged: false,
@@ -265,7 +277,7 @@ export default function YoungWalkerRegistration() {
           profile_id: profile.id,
           parent_name: formData.parentName,
           parent_email: formData.parentEmail,
-          parent_phone: formData.parentPhone,
+          parent_phone: profile.phone || "",
           child_first_name: formData.childFirstName,
           child_last_name: formData.childLastName,
           child_date_of_birth: formData.childDob,
@@ -278,6 +290,12 @@ export default function YoungWalkerRegistration() {
           available_after_school: formData.availableAfterSchool,
           available_weekends: formData.availableWeekends,
           available_school_holidays: formData.availableSchoolHolidays,
+          after_school_start_time: formData.afterSchoolStartTime,
+          after_school_end_time: formData.afterSchoolEndTime,
+          weekend_start_time: formData.weekendStartTime,
+          weekend_end_time: formData.weekendEndTime,
+          holiday_start_time: formData.holidayStartTime,
+          holiday_end_time: formData.holidayEndTime,
           experience_with_dogs: formData.experienceWithDogs,
           bio: formData.bio,
           safety_guidelines_acknowledged: formData.safetyGuidelinesAcknowledged,
@@ -631,23 +649,62 @@ export default function YoungWalkerRegistration() {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <Label className="font-medium">Availability</Label>
-                    <div className="grid gap-3">
-                      {[
-                        { id: "afterSchool", label: "After School", sublabel: "3pm - 6pm weekdays", checked: formData.availableAfterSchool, field: "availableAfterSchool" },
-                        { id: "weekends", label: "Weekends", sublabel: "Saturday & Sunday", checked: formData.availableWeekends, field: "availableWeekends" },
-                        { id: "schoolHolidays", label: "School Holidays", sublabel: "During school breaks", checked: formData.availableSchoolHolidays, field: "availableSchoolHolidays" },
-                      ].map((item) => (
-                        <div key={item.id} className={`flex items-center space-x-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${item.checked ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-muted hover:border-muted-foreground/30'}`}
-                          onClick={() => handleInputChange(item.field as keyof YoungWalkerFormData, !item.checked)}>
-                          <Checkbox id={item.id} checked={item.checked} onCheckedChange={(checked) => handleInputChange(item.field as keyof YoungWalkerFormData, checked)} />
-                          <div>
-                            <Label htmlFor={item.id} className="font-medium cursor-pointer">{item.label}</Label>
-                            <p className="text-xs text-muted-foreground">{item.sublabel}</p>
-                          </div>
+                    <p className="text-sm text-muted-foreground">Select when your child is available and set custom time ranges</p>
+                    
+                    {/* After School */}
+                    <div className={`p-4 rounded-xl border-2 transition-all ${formData.availableAfterSchool ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-muted'}`}>
+                      <div className="flex items-center gap-3 mb-3 cursor-pointer" onClick={() => handleInputChange("availableAfterSchool", !formData.availableAfterSchool)}>
+                        <Checkbox checked={formData.availableAfterSchool} onCheckedChange={(checked) => handleInputChange("availableAfterSchool", checked)} />
+                        <div>
+                          <Label className="font-medium cursor-pointer">After School</Label>
+                          <p className="text-xs text-muted-foreground">Weekdays</p>
                         </div>
-                      ))}
+                      </div>
+                      {formData.availableAfterSchool && (
+                        <div className="flex items-center gap-2 ml-7">
+                          <Input type="time" value={formData.afterSchoolStartTime} onChange={(e) => handleInputChange("afterSchoolStartTime", e.target.value)} className="w-28 h-9" />
+                          <span className="text-muted-foreground">to</span>
+                          <Input type="time" value={formData.afterSchoolEndTime} onChange={(e) => handleInputChange("afterSchoolEndTime", e.target.value)} className="w-28 h-9" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Weekends */}
+                    <div className={`p-4 rounded-xl border-2 transition-all ${formData.availableWeekends ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-muted'}`}>
+                      <div className="flex items-center gap-3 mb-3 cursor-pointer" onClick={() => handleInputChange("availableWeekends", !formData.availableWeekends)}>
+                        <Checkbox checked={formData.availableWeekends} onCheckedChange={(checked) => handleInputChange("availableWeekends", checked)} />
+                        <div>
+                          <Label className="font-medium cursor-pointer">Weekends</Label>
+                          <p className="text-xs text-muted-foreground">Saturday & Sunday</p>
+                        </div>
+                      </div>
+                      {formData.availableWeekends && (
+                        <div className="flex items-center gap-2 ml-7">
+                          <Input type="time" value={formData.weekendStartTime} onChange={(e) => handleInputChange("weekendStartTime", e.target.value)} className="w-28 h-9" />
+                          <span className="text-muted-foreground">to</span>
+                          <Input type="time" value={formData.weekendEndTime} onChange={(e) => handleInputChange("weekendEndTime", e.target.value)} className="w-28 h-9" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* School Holidays */}
+                    <div className={`p-4 rounded-xl border-2 transition-all ${formData.availableSchoolHolidays ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-muted'}`}>
+                      <div className="flex items-center gap-3 mb-3 cursor-pointer" onClick={() => handleInputChange("availableSchoolHolidays", !formData.availableSchoolHolidays)}>
+                        <Checkbox checked={formData.availableSchoolHolidays} onCheckedChange={(checked) => handleInputChange("availableSchoolHolidays", checked)} />
+                        <div>
+                          <Label className="font-medium cursor-pointer">School Holidays</Label>
+                          <p className="text-xs text-muted-foreground">During school breaks</p>
+                        </div>
+                      </div>
+                      {formData.availableSchoolHolidays && (
+                        <div className="flex items-center gap-2 ml-7">
+                          <Input type="time" value={formData.holidayStartTime} onChange={(e) => handleInputChange("holidayStartTime", e.target.value)} className="w-28 h-9" />
+                          <span className="text-muted-foreground">to</span>
+                          <Input type="time" value={formData.holidayEndTime} onChange={(e) => handleInputChange("holidayEndTime", e.target.value)} className="w-28 h-9" />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
