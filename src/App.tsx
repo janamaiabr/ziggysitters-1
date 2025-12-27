@@ -21,6 +21,10 @@ import BecomeSitter from "./pages/BecomeSitter";
 import BecomeSitterSuburb from "./pages/BecomeSitterSuburb";
 import YoungWalkers from "./pages/YoungWalkers";
 import FindYoungWalkers from "./pages/FindYoungWalkers";
+import YoungWalkerRegistration from "./pages/YoungWalkerRegistration";
+import YoungWalkerSearch from "./pages/YoungWalkerSearch";
+import BookYoungWalker from "./pages/BookYoungWalker";
+import YoungWalkerDashboard from "./pages/YoungWalkerDashboard";
 import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
@@ -156,6 +160,10 @@ function AppContent() {
             {/* Young Walker Routes */}
             <Route path="/young-walkers" element={<YoungWalkers />} />
             <Route path="/find-young-walkers" element={<FindYoungWalkers />} />
+            <Route path="/young-walker-registration" element={<ProtectedRoute><YoungWalkerRegistration /></ProtectedRoute>} />
+            <Route path="/search-young-walkers" element={<YoungWalkerSearch />} />
+            <Route path="/book-young-walker/:id" element={<BookYoungWalker />} />
+            <Route path="/young-walker-dashboard" element={<ProtectedRoute><YoungWalkerDashboard /></ProtectedRoute>} />
             
             {/* Auth Route - Public only */}
             <Route 
