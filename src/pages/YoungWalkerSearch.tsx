@@ -104,13 +104,11 @@ export default function YoungWalkerSearch() {
 
       setYoungWalkers(walkersWithAge);
 
-      // Fetch regular sitters who offer dog walking - show all with completed onboarding
+      // Fetch regular sitters using public_sitters view (RLS-safe)
       const { data: sittersData, error: sittersError } = await supabase
-        .from("profiles")
+        .from("public_sitters")
         .select("id, first_name, last_name, suburb, city, bio, avatar_url, rating, total_reviews, is_verified")
-        .eq("role", "pet_sitter")
-        .eq("onboarding_completed", true)
-        .eq("is_test_account", false);
+        .eq("onboarding_completed", true);
 
       if (sittersError) throw sittersError;
       setRegularSitters(sittersData || []);
