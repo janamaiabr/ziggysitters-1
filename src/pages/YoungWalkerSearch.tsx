@@ -332,13 +332,24 @@ export default function YoungWalkerSearch() {
                   <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
                     <Search className="h-3 w-3" /> Walker Name (optional)
                   </label>
-                  <Input
-                    type="text"
-                    placeholder="Search by name..."
-                    value={nameSearch}
-                    onChange={(e) => setNameSearch(e.target.value)}
-                    className="h-11 bg-white"
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="Search by name..."
+                      value={nameSearch}
+                      onChange={(e) => setNameSearch(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && filterResults()}
+                      className="h-11 bg-white"
+                    />
+                    <Button 
+                      type="button" 
+                      onClick={filterResults}
+                      className="h-11 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold"
+                    >
+                      <Search className="h-4 w-4 mr-2" />
+                      Search
+                    </Button>
+                  </div>
                 </div>
               </div>
 
