@@ -54,13 +54,13 @@ export const YOUNG_WALKER_CONFIG = {
 
   // Service restrictions
   MAX_DOGS: 1,           // Only one dog at a time for safety
-  MAX_WALK_DURATION: 30, // Maximum 30 minutes per walk
+  MAX_WALK_DURATION: 40, // Maximum 40 minutes per walk
   MAX_DISTANCE_KM: 2,    // Maximum distance from home
   
-  // Pricing
-  SUGGESTED_RATE_PER_WALK: 15, // $15 per walk (cheaper than adult walkers)
+  // Pricing - fixed rate
+  SUGGESTED_RATE_PER_WALK: 10, // $10 per walk (fixed price)
   MIN_RATE: 10,
-  MAX_RATE: 25,
+  MAX_RATE: 10, // Fixed rate
 
   // Safety requirements
   REQUIRES_PARENT_CONSENT: true,
