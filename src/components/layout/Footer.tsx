@@ -41,6 +41,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/search-young-walkers" className="text-gray-300 hover:text-white transition-colors">
+                  Find Young Walkers
+                </Link>
+              </li>
+              <li>
                 <Link to="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
                   How it Works
                 </Link>

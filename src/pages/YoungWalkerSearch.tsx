@@ -281,40 +281,63 @@ export default function YoungWalkerSearch() {
                 ) : (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {filteredYoungWalkers.map((walker) => (
-                      <Card key={walker.id} className="hover:shadow-lg transition-shadow border-emerald-100">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start gap-3">
-                            <Avatar className="h-12 w-12 md:h-14 md:w-14">
-                              <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white text-lg">
-                                {walker.child_first_name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <CardTitle className="text-base md:text-lg truncate">
-                                {walker.child_first_name} {walker.child_last_name.charAt(0)}.
-                              </CardTitle>
-                              <div className="flex items-center text-xs md:text-sm text-muted-foreground mt-0.5">
-                                <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-                                <span className="truncate">{walker.home_suburb}</span>
-                              </div>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Badge variant="secondary" className="text-xs">
-                                  Age {walker.age}
-                                </Badge>
-                                <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">
-                                  ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}
-                                </Badge>
+                      <Card 
+                        key={walker.id} 
+                        className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-emerald-200/50 hover:border-emerald-400/50 cursor-pointer"
+                        onClick={() => navigate(`/book-young-walker/${walker.id}`)}
+                      >
+                        {/* Image Section */}
+                        <div className="relative">
+                          <div className="aspect-[4/3] bg-gradient-to-br from-emerald-100 to-teal-100 relative overflow-hidden">
+                            <div className="w-full h-full flex items-center justify-center">
+                              <div className="text-center">
+                                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                  <span className="text-3xl font-bold text-white">
+                                    {walker.child_first_name.charAt(0)}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-emerald-700 font-medium">{walker.child_first_name}</p>
                               </div>
                             </div>
+                            {/* Gradient overlay */}
+                            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
+                          </div>
+                          
+                          {/* Top badges */}
+                          <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
+                            <Badge className="bg-white/90 text-emerald-700 shadow-lg text-xs">
+                              Age {walker.age}
+                            </Badge>
+                            <Badge className="bg-emerald-500 text-white shadow-lg">
+                              <Shield className="w-3 h-3 mr-1" />
+                              Parent Supervised
+                            </Badge>
+                          </div>
+                          
+                          {/* Bottom price tag */}
+                          <div className="absolute bottom-2 left-2">
+                            <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+                              <span className="font-bold text-emerald-600">${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}</span>
+                              <span className="text-muted-foreground text-sm">/{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}min</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Content Section */}
+                        <CardHeader className="pb-2 pt-4">
+                          <CardTitle className="text-lg">{walker.child_first_name} {walker.child_last_name.charAt(0)}.</CardTitle>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {walker.home_suburb}, {walker.home_city}
                           </div>
                         </CardHeader>
-                        <CardContent className="space-y-3 pt-0">
+                        
+                        <CardContent className="space-y-3 flex flex-col flex-grow pt-0">
                           {walker.bio && (
-                            <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
-                              {walker.bio}
-                            </p>
+                            <p className="text-sm text-muted-foreground line-clamp-2">{walker.bio}</p>
                           )}
-
+                          
+                          {/* Dog sizes */}
                           <div className="flex flex-wrap gap-1">
                             {walker.accepted_dog_sizes.map(size => (
                               <Badge key={size} variant="outline" className="text-xs">
@@ -322,19 +345,29 @@ export default function YoungWalkerSearch() {
                               </Badge>
                             ))}
                           </div>
-
-                          <div className="flex items-center gap-2 text-xs text-emerald-600">
-                            <Shield className="h-3 w-3" />
-                            <span>{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walks • Parent supervised</span>
+                          
+                          {/* Availability */}
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Clock className="w-3 h-3" />
+                            {getAvailabilityText(walker)}
                           </div>
-
-                          <Button 
-                            className="w-full bg-emerald-500 hover:bg-emerald-600" 
-                            size="sm"
-                            onClick={() => navigate(`/book-young-walker/${walker.id}`)}
-                          >
-                            Book Walk
-                          </Button>
+                          
+                          {/* CTA Button */}
+                          <div className="mt-auto pt-3">
+                            <Button 
+                              className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-400 text-white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/book-young-walker/${walker.id}`);
+                              }}
+                            >
+                              Book Walk – ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}
+                              <span className="ml-2">→</span>
+                            </Button>
+                            <p className="text-xs text-center text-muted-foreground font-medium mt-2">
+                              🐕 {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Safe & supervised
+                            </p>
+                          </div>
                         </CardContent>
                       </Card>
                     ))}
@@ -374,57 +407,94 @@ export default function YoungWalkerSearch() {
                 ) : (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {filteredRegularSitters.slice(0, 6).map((sitter) => (
-                      <Card key={sitter.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start gap-3">
-                            <Avatar className="h-12 w-12 md:h-14 md:w-14">
-                              <AvatarImage src={sitter.avatar_url || undefined} />
-                              <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                                {sitter.first_name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <CardTitle className="text-base md:text-lg truncate">
-                                {sitter.first_name} {sitter.last_name.charAt(0)}.
-                              </CardTitle>
-                              <div className="flex items-center text-xs md:text-sm text-muted-foreground mt-0.5">
-                                <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-                                <span className="truncate">{sitter.suburb || sitter.city || "Auckland"}</span>
-                              </div>
-                              {sitter.rating && (
-                                <div className="flex items-center gap-1 mt-1">
-                                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                                  <span className="text-xs font-medium">{sitter.rating.toFixed(1)}</span>
-                                  <span className="text-xs text-muted-foreground">
-                                    ({sitter.total_reviews} reviews)
-                                  </span>
+                      <Card 
+                        key={sitter.id} 
+                        className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-border/50 hover:border-primary/30 cursor-pointer"
+                        onClick={() => navigate(`/sitter/${sitter.id}`)}
+                      >
+                        {/* Image Section */}
+                        <div className="relative">
+                          <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                            {sitter.avatar_url ? (
+                              <img 
+                                src={sitter.avatar_url} 
+                                alt={`${sitter.first_name}'s profile`}
+                                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                                <div className="text-center">
+                                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
+                                    <span className="text-3xl font-bold text-primary">
+                                      {sitter.first_name.charAt(0)}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground font-medium">{sitter.first_name}</p>
                                 </div>
-                              )}
+                              </div>
+                            )}
+                            {/* Gradient overlay */}
+                            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
+                          </div>
+                          
+                          {/* Top badges */}
+                          <div className="absolute top-2 right-2">
+                            {sitter.is_verified && (
+                              <Badge className="bg-green-500 text-white shadow-lg">
+                                <Shield className="w-3 h-3 mr-1" />
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {/* Rating badge */}
+                          {sitter.rating && sitter.rating > 0 && (
+                            <div className="absolute bottom-2 left-2">
+                              <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                <span className="font-bold">{sitter.rating.toFixed(1)}</span>
+                                <span className="text-muted-foreground text-sm">({sitter.total_reviews})</span>
+                              </div>
                             </div>
+                          )}
+                        </div>
+                        
+                        {/* Content Section */}
+                        <CardHeader className="pb-2 pt-4">
+                          <CardTitle className="text-lg">{sitter.first_name} {sitter.last_name.charAt(0)}.</CardTitle>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {sitter.suburb || sitter.city || "Auckland"}
                           </div>
                         </CardHeader>
-                        <CardContent className="space-y-3 pt-0">
+                        
+                        <CardContent className="space-y-3 flex flex-col flex-grow pt-0">
                           {sitter.bio && (
-                            <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
-                              {sitter.bio}
+                            <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
+                          )}
+                          
+                          {/* Response time */}
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Clock className="w-3 h-3" />
+                            Usually responds within hours
+                          </div>
+                          
+                          {/* CTA Button */}
+                          <div className="mt-auto pt-3">
+                            <Button 
+                              className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/sitter/${sitter.id}`);
+                              }}
+                            >
+                              Get a Quote
+                              <span className="ml-2">→</span>
+                            </Button>
+                            <p className="text-xs text-center text-muted-foreground font-medium mt-2">
+                              ⚡ No payment until confirmed
                             </p>
-                          )}
-
-                          {sitter.is_verified && (
-                            <div className="flex items-center gap-2 text-xs text-primary">
-                              <Shield className="h-3 w-3" />
-                              <span>Verified sitter</span>
-                            </div>
-                          )}
-
-                          <Button 
-                            className="w-full" 
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigate(`/sitter/${sitter.id}`)}
-                          >
-                            View Profile
-                          </Button>
+                          </div>
                         </CardContent>
                       </Card>
                     ))}
