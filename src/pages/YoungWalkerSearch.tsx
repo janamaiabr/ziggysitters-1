@@ -497,17 +497,6 @@ export default function YoungWalkerSearch() {
                               </Badge>
                             )}
                           </div>
-                          
-                          {/* Rating badge */}
-                          {sitter.rating && sitter.rating > 0 && (
-                            <div className="absolute bottom-2 left-2">
-                              <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
-                                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                                <span className="font-bold">{sitter.rating.toFixed(1)}</span>
-                                <span className="text-muted-foreground text-sm">({sitter.total_reviews})</span>
-                              </div>
-                            </div>
-                          )}
                         </div>
                         
                         {/* Content Section */}

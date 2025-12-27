@@ -2,9 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Clock, Shield, Star, Camera, Heart, Zap } from 'lucide-react';
+import { MapPin, Clock, Shield, Star, Camera, Heart, Zap, Dog } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import QuickEnquiryButton from '@/components/search/QuickEnquiryButton';
+import { YOUNG_WALKER_CONFIG } from '@/config/features';
 
 interface EnhancedSitterCardProps {
   sitter: {
@@ -18,6 +19,9 @@ interface EnhancedSitterCardProps {
     verified: boolean;
     golden_badge: boolean;
     sitterServices?: any[];
+    isYoungWalker?: boolean;
+    youngWalkerAge?: number;
+    acceptedDogSizes?: string[];
   };
   onViewProfile: () => void;
   onSitterClick?: (sitterId: string, sitterName?: string) => void;
@@ -74,46 +78,77 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         
         {/* Top badges */}
         <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
-          <div className="flex gap-1">
-            {experienceYears >= 2 && (
+          <div className="flex gap-1 flex-wrap">
+            {sitter.isYoungWalker && (
+              <Badge className="text-xs shadow-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0">
+                <Dog className="w-3 h-3 mr-1" />
+                Young Walker
+              </Badge>
+            )}
+            {sitter.isYoungWalker && sitter.youngWalkerAge && (
+              <Badge variant="secondary" className="text-xs shadow-lg">
+                Age {sitter.youngWalkerAge}
+              </Badge>
+            )}
+            {!sitter.isYoungWalker && experienceYears >= 2 && (
               <Badge variant="secondary" className="text-xs shadow-lg">
                 {experienceYears}+ yrs exp
               </Badge>
             )}
           </div>
           <div className="flex items-center gap-2">
-            {/* Quick enquiry button - allows messaging without leaving search */}
-            <QuickEnquiryButton
-              sitterId={sitter.id}
-              sitterName={sitter.name}
-              sitterAvatar={sitter.image || undefined}
-              variant="icon"
-              className="shadow-lg"
-            />
-            <SitterVerificationBadge 
-              isVerified={sitter.verified}
-              hasGoldenBadge={sitter.golden_badge}
-              size="sm"
-            />
+            {/* Quick enquiry button - allows messaging without leaving search (only for regular sitters) */}
+            {!sitter.isYoungWalker && (
+              <QuickEnquiryButton
+                sitterId={sitter.id}
+                sitterName={sitter.name}
+                sitterAvatar={sitter.image || undefined}
+                variant="icon"
+                className="shadow-lg"
+              />
+            )}
+            {sitter.isYoungWalker ? (
+              <Badge className="bg-green-500 text-white shadow-lg">
+                <Shield className="w-3 h-3 mr-1" />
+                Parent Supervised
+              </Badge>
+            ) : (
+              <SitterVerificationBadge 
+                isVerified={sitter.verified}
+                hasGoldenBadge={sitter.golden_badge}
+                size="sm"
+              />
+            )}
           </div>
         </div>
         
         {/* Bottom price tag */}
         <div className="absolute bottom-2 left-2">
           <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
-            <span className="text-muted-foreground text-sm">from </span>
-            <span className="font-bold text-foreground">${sitter.baseRate}</span>
-            <span className="text-muted-foreground text-sm">/day</span>
+            {sitter.isYoungWalker ? (
+              <>
+                <span className="font-bold text-emerald-600">${sitter.baseRate}</span>
+                <span className="text-muted-foreground text-sm">/{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}min walk</span>
+              </>
+            ) : (
+              <>
+                <span className="text-muted-foreground text-sm">from </span>
+                <span className="font-bold text-foreground">${sitter.baseRate}</span>
+                <span className="text-muted-foreground text-sm">/day</span>
+              </>
+            )}
           </div>
         </div>
         
-        {/* Photo guarantee badge */}
-        <div className="absolute bottom-2 right-2">
-          <div className="bg-primary/90 text-primary-foreground px-2 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg">
-            <Camera className="w-3 h-3" />
-            Daily photos
+        {/* Photo guarantee badge - only for regular sitters */}
+        {!sitter.isYoungWalker && (
+          <div className="absolute bottom-2 right-2">
+            <div className="bg-primary/90 text-primary-foreground px-2 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg">
+              <Camera className="w-3 h-3" />
+              Daily photos
+            </div>
           </div>
-        </div>
+        )}
       </div>
       
       {/* Content Section */}
@@ -184,17 +219,24 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         {/* CTA Button - High visibility green for conversions */}
         <div className="mt-auto pt-3 space-y-2">
           <Button 
-            className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white"
+            className={`w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 text-white ${
+              sitter.isYoungWalker 
+                ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-400'
+                : 'bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400'
+            }`}
             onClick={(e) => {
               e.stopPropagation();
               handleClick();
             }}
           >
-            Get a Quote
+            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : 'Get a Quote'}
             <span className="ml-2">→</span>
           </Button>
           <p className="text-xs text-center text-muted-foreground font-medium">
-            ⚡ Usually responds within hours • No payment until confirmed
+            {sitter.isYoungWalker 
+              ? `🐕 ${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Parent supervised`
+              : '⚡ Usually responds within hours • No payment until confirmed'
+            }
           </p>
         </div>
       </CardContent>

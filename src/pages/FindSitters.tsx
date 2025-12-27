@@ -81,16 +81,18 @@ export default function FindSitters() {
       try {
         console.log('Fetching sitters...');
         
-        // PARALLEL queries for faster loading
-        const [sittersResult, servicesResult, areasResult] = await Promise.all([
+        // PARALLEL queries for faster loading - including young walkers
+        const [sittersResult, servicesResult, areasResult, youngWalkersResult] = await Promise.all([
           supabase.rpc('get_public_sitters'),
           supabase.from('sitter_services').select('*').eq('is_offered', true),
-          supabase.from('sitter_service_areas').select('sitter_id, suburb, is_primary')
+          supabase.from('sitter_service_areas').select('sitter_id, suburb, is_primary'),
+          supabase.from('young_walkers').select('*').eq('status', 'active')
         ]);
         
         const profilesData = sittersResult.data;
         const servicesData = servicesResult.data;
         const serviceAreasData = areasResult.data;
+        const youngWalkersData = youngWalkersResult.data;
         
         if (sittersResult.error) {
           console.error('Error fetching profiles:', sittersResult.error);
@@ -136,7 +138,46 @@ export default function FindSitters() {
             verified: sitter.is_verified || false,
             golden_badge: sitter.golden_badge_approved || false,
             instant_booking: false,
-            pet_types: ['dogs']
+            pet_types: ['dogs'],
+            isYoungWalker: false
+          };
+        });
+
+        // Transform young walkers to match sitter format
+        const transformedYoungWalkers = (youngWalkersData || []).map(walker => {
+          // Calculate age
+          const today = new Date();
+          const birthDate = new Date(walker.child_date_of_birth);
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          
+          return {
+            id: walker.id,
+            name: `${walker.child_first_name} ${walker.child_last_name.charAt(0)}.`,
+            location: `${walker.home_suburb}, ${walker.home_city}`,
+            city: walker.home_city || '',
+            suburb: walker.home_suburb || '',
+            serviceAreas: [walker.home_suburb],
+            rating: null,
+            feedback_count: null,
+            baseRate: walker.rate_per_walk,
+            hourlyRate: walker.rate_per_walk,
+            bio: walker.bio || `Young dog walker, age ${age}. ${walker.experience_with_dogs || 'Enthusiastic about walking dogs!'}`,
+            image: null,
+            services: ['Dog Walking'],
+            sitterServices: [],
+            age: age,
+            experience: 'Young walker',
+            verified: true, // Parent supervised
+            golden_badge: false,
+            instant_booking: false,
+            pet_types: ['dogs'],
+            isYoungWalker: true,
+            youngWalkerAge: age,
+            acceptedDogSizes: walker.accepted_dog_sizes
           };
         });
 
@@ -144,9 +185,12 @@ export default function FindSitters() {
         const bookableSitters = transformedSitters.filter(sitter => {
           return sitter.services && sitter.services.length > 0;
         });
+
+        // Combine sitters and young walkers
+        const allListings = [...bookableSitters, ...transformedYoungWalkers];
         
         // Sort sitters: Auckland first, then golden badge
-        const sortedSitters = bookableSitters.sort((a, b) => {
+        const sortedSitters = allListings.sort((a, b) => {
           const aIsAuckland = (a.city || '').toLowerCase().includes('auckland');
           const bIsAuckland = (b.city || '').toLowerCase().includes('auckland');
           if (aIsAuckland && !bIsAuckland) return -1;
@@ -699,11 +743,15 @@ export default function FindSitters() {
                     sitter={sitter}
                     onSitterClick={trackSitterClick}
                     onViewProfile={() => {
-                      const params = new URLSearchParams({ booking: 'true' });
-                      if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
-                      if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
-                      if (serviceType) params.set('serviceType', serviceType);
-                      navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                      if (sitter.isYoungWalker) {
+                        navigate(`/book-young-walker/${sitter.id}`);
+                      } else {
+                        const params = new URLSearchParams({ booking: 'true' });
+                        if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                        if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                        if (serviceType) params.set('serviceType', serviceType);
+                        navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                      }
                     }}
                   />
                 ))}
@@ -722,11 +770,15 @@ export default function FindSitters() {
                         sitter={sitter}
                         onSitterClick={trackSitterClick}
                         onViewProfile={() => {
-                          const params = new URLSearchParams({ booking: 'true' });
-                          if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
-                          if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
-                          if (serviceType) params.set('serviceType', serviceType);
-                          navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                          if (sitter.isYoungWalker) {
+                            navigate(`/book-young-walker/${sitter.id}`);
+                          } else {
+                            const params = new URLSearchParams({ booking: 'true' });
+                            if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                            if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                            if (serviceType) params.set('serviceType', serviceType);
+                            navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                          }
                         }}
                       />
                     ))}
@@ -788,11 +840,15 @@ export default function FindSitters() {
                     sitter={sitter}
                     onSitterClick={trackSitterClick}
                     onViewProfile={() => {
-                      const params = new URLSearchParams({ booking: 'true' });
-                      if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
-                      if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
-                      if (serviceType) params.set('serviceType', serviceType);
-                      navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                      if (sitter.isYoungWalker) {
+                        navigate(`/book-young-walker/${sitter.id}`);
+                      } else {
+                        const params = new URLSearchParams({ booking: 'true' });
+                        if (selectedDate) params.set('checkIn', selectedDate.toISOString().split('T')[0]);
+                        if (checkOutDate) params.set('checkOut', checkOutDate.toISOString().split('T')[0]);
+                        if (serviceType) params.set('serviceType', serviceType);
+                        navigate(`/sitter/${sitter.id}?${params.toString()}`);
+                      }
                     }}
                   />
                 ))}
