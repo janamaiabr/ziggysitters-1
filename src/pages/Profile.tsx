@@ -16,7 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle, Settings, UserX } from 'lucide-react';
+import { Calendar, MapPin, Phone, Mail, Edit3, Save, X, Camera, DollarSign, Users, Briefcase, Shield, CameraIcon, Upload, Plus, FileText, CheckCircle, AlertCircle, Settings, UserX, Dog } from 'lucide-react';
 import { format } from 'date-fns';
 import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 import PetsManagement from '@/components/PetsManagement';
@@ -1032,28 +1032,64 @@ export default function Profile() {
     )
   };
 
+  // Check if user has young walker registrations
+  const [hasYoungWalker, setHasYoungWalker] = useState(false);
+  
+  useEffect(() => {
+    const checkYoungWalker = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from("young_walkers")
+        .select("id")
+        .eq("parent_user_id", user.id)
+        .maybeSingle();
+      setHasYoungWalker(!!data);
+    };
+    checkYoungWalker();
+  }, [user]);
+
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Stripe Live Mode Warning for Sitters */}
-        <StripeLiveModeWarning />
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      {/* Hero Header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background border-b">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
         
-        {/* Profile Header */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8">
-              <div className="relative">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage 
-                    src={userProfile.avatar} 
-                    alt={userProfile.name} 
-                    className="object-cover"
-                  />
-                  <AvatarFallback className="text-2xl">
-                    {userProfile.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="absolute -bottom-2 -right-2">
+        <div className="container mx-auto px-4 max-w-6xl relative z-10 py-8">
+          {/* Stripe Live Mode Warning for Sitters */}
+          <StripeLiveModeWarning />
+          
+          {/* Quick Links for special features */}
+          {hasYoungWalker && (
+            <div className="mb-6">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/young-walker-dashboard')}
+                className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 hover:border-emerald-300 text-emerald-700"
+              >
+                <Dog className="w-4 h-4 mr-2" />
+                Go to Young Walker Dashboard
+              </Button>
+            </div>
+          )}
+          
+          {/* Profile Header Card */}
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                {/* Avatar with upload */}
+                <div className="relative group">
+                  <Avatar className="h-24 w-24 md:h-28 md:w-28 ring-4 ring-background shadow-xl">
+                    <AvatarImage 
+                      src={userProfile.avatar} 
+                      alt={userProfile.name} 
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="text-2xl md:text-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+                      {userProfile.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
                   <input
                     type="file"
                     accept="image/*"
@@ -1062,97 +1098,100 @@ export default function Profile() {
                     id="profile-photo-upload"
                   />
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     onClick={() => document.getElementById('profile-photo-upload')?.click()}
-                    className="h-8 w-8 rounded-full p-0"
+                    className="absolute -bottom-2 -right-2 h-9 w-9 rounded-full p-0 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Camera className="w-4 h-4" />
                   </Button>
                 </div>
-              </div>
-              
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-bold">{userProfile.name}</h1>
-                  {userProfile.verified && (
-                    <Shield className="w-6 h-6 text-green-500" />
-                  )}
-                  {profile.role === 'pet_sitter' && (
-                    <Badge 
-                      variant={
-                        profile.verification_status === 'verified' ? 'default' : 
-                        profile.verification_status === 'rejected' ? 'destructive' : 
-                        'secondary'
-                      }
-                      className="ml-2"
-                    >
-                      {profile.verification_status === 'verified' ? 'Verified Sitter' : 
-                       profile.verification_status === 'rejected' ? 'Verification Rejected' : 
-                       'Under Review'}
-                    </Badge>
-                  )}
-                </div>
                 
-                {/* Verification Status Message for Sitters */}
-                {profile.role === 'pet_sitter' && profile.verification_status !== 'verified' && (
-                  <div className={`p-3 rounded-lg mb-3 ${
-                    profile.verification_status === 'rejected' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
-                  }`}>
-                    <p className={`text-sm ${
-                      profile.verification_status === 'rejected' ? 'text-red-700' : 'text-blue-700'
+                {/* User Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 className="text-2xl md:text-3xl font-bold truncate">{userProfile.name}</h1>
+                    {userProfile.verified && (
+                      <Badge className="bg-green-500 text-white border-0">
+                        <Shield className="w-3 h-3 mr-1" />
+                        Verified
+                      </Badge>
+                    )}
+                    {profile.role === 'pet_sitter' && !userProfile.verified && (
+                      <Badge variant={profile.verification_status === 'rejected' ? 'destructive' : 'secondary'}>
+                        {profile.verification_status === 'rejected' ? 'Rejected' : 'Under Review'}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {/* Role Badge */}
+                  <Badge variant="outline" className="mb-3 capitalize">
+                    {profile.role === 'pet_sitter' ? '🐕 Pet Sitter' : profile.role === 'pet_owner' ? '🏠 Pet Owner' : profile.role.replace('_', ' ')}
+                  </Badge>
+                  
+                  {/* Verification Status Message for Sitters */}
+                  {profile.role === 'pet_sitter' && profile.verification_status !== 'verified' && (
+                    <div className={`p-3 rounded-lg mb-3 text-sm ${
+                      profile.verification_status === 'rejected' 
+                        ? 'bg-destructive/10 border border-destructive/20 text-destructive' 
+                        : 'bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-300'
                     }`}>
                       {profile.verification_status === 'rejected' 
                         ? '⚠️ Your profile verification was not approved. Please update your profile and resubmit for review.'
                         : profile.verification_documents_uploaded_at
-                        ? '⏳ Your profile is under review. You will receive an email notification once the review is complete.'
-                        : '📋 Complete your profile verification by uploading required documents below.'
+                        ? '⏳ Your profile is under review. We\'ll notify you once complete.'
+                        : '📋 Complete verification by uploading required documents in the Verification tab.'
                       }
-                    </p>
+                    </div>
+                  )}
+                  
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>{userProfile.location || 'Auckland'}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      <span>Member since {userProfile.memberSince}</span>
+                    </div>
+                    {userProfile.bookings_completed > 0 && (
+                      <div className="flex items-center gap-1">
+                        <Briefcase className="w-4 h-4" />
+                        <span>{userProfile.bookings_completed} reviews</span>
+                      </div>
+                    )}
                   </div>
-                )}
-                
-                <div className="flex items-center text-muted-foreground mb-3">
-                  <MapPin className="w-4 h-4 mr-1" />
-                  {userProfile.location}
                 </div>
                 
-                <div className="flex flex-wrap gap-4 text-sm">
-                  <div className="text-muted-foreground">
-                    {userProfile.completedBookings} bookings completed
-                  </div>
-                  <div className="text-muted-foreground">
-                    Member since {userProfile.memberSince}
-                  </div>
+                {/* Edit Button */}
+                <div className="flex-shrink-0">
+                  {isEditing ? (
+                    <div className="flex gap-2">
+                      <Button onClick={handleSaveProfile} className="shadow-lg">
+                        <Save className="w-4 h-4 mr-2" />
+                        Save
+                      </Button>
+                      <Button variant="outline" onClick={() => setIsEditing(false)}>
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button variant="outline" onClick={() => setIsEditing(true)} className="shadow-sm">
+                      <Edit3 className="w-4 h-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  )}
                 </div>
               </div>
-              
-              <div className="flex flex-col space-y-2">
-                {isEditing ? (
-                  <div className="flex space-x-2">
-                    <Button onClick={handleSaveProfile}>
-                      <Save className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>
-                      <X className="w-4 h-4 mr-2" />
-                      Cancel
-                    </Button>
-                  </div>
-                ) : (
-                  <Button onClick={() => setIsEditing(true)}>
-                    <Edit3 className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-        {/* Navigation Tabs */}
+      {/* Main Content */}
+      <div className="container mx-auto px-4 max-w-6xl py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${profile.role === 'pet_owner' ? 'grid-cols-5' : profile.is_verified ? 'grid-cols-7' : 'grid-cols-8'}`}>
+          <TabsList className={`grid w-full mb-6 ${profile.role === 'pet_owner' ? 'grid-cols-5' : profile.is_verified ? 'grid-cols-7' : 'grid-cols-8'}`}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             {profile.role === 'pet_owner' && (
               <>
