@@ -353,19 +353,6 @@ export default function SitterProfile() {
                 {sitterData.location}
               </div>
               
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="font-medium">{sitterData.rating}</span>
-                   <span className="text-sm text-muted-foreground ml-1">
-                     ({sitterData.feedback_count} bookings)
-                   </span>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="w-4 h-4 mr-1" />
-                  
-                </div>
-              </div>
               
               <div className="flex flex-wrap gap-3">
                 {profile?.role === 'pet_owner' && (
