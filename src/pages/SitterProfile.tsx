@@ -317,7 +317,7 @@ export default function SitterProfile() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-br from-slate-50 to-gray-100 py-8">
+      <div className="bg-background py-8">
         <div className="container mx-auto px-4">
           <Button 
             variant="outline" 
