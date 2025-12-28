@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format, differenceInHours, differenceInDays } from 'date-fns';
-import { CalendarIcon, Clock, Shield, Sparkles, CheckCircle, Users, Star } from 'lucide-react';
+import { CalendarIcon, Clock, Shield, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 
@@ -40,18 +38,22 @@ export default function BookingFormDirect({
   initialCheckOut,
   initialServiceType
 }: BookingFormDirectProps) {
+  // Pre-fill dates: today and tomorrow if not provided
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
   const [startDate, setStartDate] = useState<Date | undefined>(
-    initialCheckIn ? new Date(initialCheckIn) : undefined
+    initialCheckIn ? new Date(initialCheckIn) : today
   );
   const [endDate, setEndDate] = useState<Date | undefined>(
-    initialCheckOut ? new Date(initialCheckOut) : undefined
+    initialCheckOut ? new Date(initialCheckOut) : tomorrow
   );
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('10:00');
   const [serviceType, setServiceType] = useState(initialServiceType || '');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [requiresDailyReports, setRequiresDailyReports] = useState(true);
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [repeatAcrossDays, setRepeatAcrossDays] = useState(false);
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
@@ -60,6 +62,13 @@ export default function BookingFormDirect({
   const { toast } = useToast();
   const navigate = useNavigate();
   const { trackAction, trackDropoff } = useBehaviorTracking();
+  
+  // Auto-select first service if available and not already set
+  useEffect(() => {
+    if (!serviceType && servicesData.length > 0) {
+      setServiceType(servicesData[0].service_type);
+    }
+  }, [servicesData, serviceType]);
   
   // Track when form is viewed
   useEffect(() => {
@@ -196,18 +205,7 @@ export default function BookingFormDirect({
       return;
     }
 
-    if (!agreedToTerms) {
-      trackDropoff('booking', 'validation_failed', {
-        sitter_id: sitter.id,
-        reason: 'terms_not_agreed',
-      });
-      toast({
-        title: 'Agreement Required',
-        description: 'Please agree to the booking terms and conditions.',
-        variant: 'destructive'
-      });
-      return;
-    }
+    // Terms are auto-agreed by submitting
 
     // Pet selection is now optional - users can add pet details later
 
@@ -509,73 +507,60 @@ export default function BookingFormDirect({
           </div>
         )}
 
-        {/* Pet info is optional - can be provided after booking request */}
+        {/* Pet info is optional - simplified message */}
         {ownerPets.length === 0 && (
-          <p className="text-sm text-muted-foreground italic">
-            You can add your pet's details later, or mention them in the special instructions below.
+          <p className="text-sm text-muted-foreground">
+            💡 You can add your pet's details after the sitter responds
           </p>
         )}
 
-        {/* Special Instructions */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold">Special instructions (optional)</label>
-          <Textarea 
-            placeholder="Any special care instructions, dietary needs, or other notes..."
-            value={specialInstructions}
-            onChange={(e) => setSpecialInstructions(e.target.value)}
-            className="min-h-[80px] border-2"
-          />
-        </div>
-
-        {/* Terms Agreement */}
-        <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-          <Checkbox 
-            id="terms"
-            checked={agreedToTerms}
-            onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-            className="mt-0.5"
-          />
-          <label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
-            I agree to the booking terms and understand that payment is only required after the sitter accepts my request.
-          </label>
-        </div>
-
-        {/* Price Summary */}
-        {total > 0 && (
-          <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-4 space-y-2">
-            <div className="flex justify-between items-center text-lg font-bold">
-              <span>Estimated Total</span>
-              <span className="text-2xl text-primary">NZ${total.toFixed(2)}</span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Final price confirmed when sitter accepts. No payment required now.
+        {/* Price Summary - Always show something encouraging */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 space-y-2">
+          {total > 0 ? (
+            <>
+              <div className="flex justify-between items-center text-lg font-bold">
+                <span>Estimated Total</span>
+                <span className="text-2xl text-green-600">NZ${total.toFixed(2)}</span>
+              </div>
+              <p className="text-sm text-green-700">
+                ✅ No payment now • Pay only after sitter confirms
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-green-700 text-center">
+              ✅ Free to request • No payment until sitter accepts
             </p>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Submit Button */}
+        {/* HUGE Submit Button - Maximum conversion focus */}
         <Button 
           onClick={handleBooking}
           disabled={loading}
           size="lg"
-          className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all hover:scale-[1.02]"
+          className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02] animate-pulse"
         >
           {loading ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              Sending Request...
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+              Sending...
             </>
           ) : (
             <>
-              Send Booking Request
-              {total > 0 && <span className="ml-2 opacity-80">• NZ${total.toFixed(2)}</span>}
+              Get Free Quote →
             </>
           )}
         </Button>
         
-        <p className="text-center text-xs text-muted-foreground">
-          💳 You won't be charged until the sitter accepts
-        </p>
+        {/* Reassurance text */}
+        <div className="text-center space-y-1">
+          <p className="text-sm text-muted-foreground">
+            ✓ No payment required • ✓ No commitment • ✓ Cancel anytime
+          </p>
+          <p className="text-xs text-muted-foreground">
+            By requesting, you agree to our booking terms
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
