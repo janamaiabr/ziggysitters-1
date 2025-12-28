@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Clock, Shield, Star, Camera, Heart, Zap, Dog } from 'lucide-react';
+import { MapPin, Clock, Shield, Camera, Heart, Zap, Dog } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import QuickEnquiryButton from '@/components/search/QuickEnquiryButton';
 import { YOUNG_WALKER_CONFIG } from '@/config/features';
@@ -216,7 +216,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           Usually responds within a few hours
         </div>
         
-        {/* CTA Button - High visibility green for conversions */}
+        {/* CTA Button - Low commitment messaging */}
         <div className="mt-auto pt-3 space-y-2">
           <Button 
             className={`w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 text-white ${
@@ -229,13 +229,13 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
               handleClick();
             }}
           >
-            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : 'Get a Quote'}
+            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : 'Get Free Quote'}
             <span className="ml-2">→</span>
           </Button>
           <p className="text-xs text-center text-muted-foreground font-medium">
             {sitter.isYoungWalker 
               ? `🐕 ${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Parent supervised`
-              : '⚡ Usually responds within hours • No payment until confirmed'
+              : '💬 Just an enquiry • No payment • No commitment'
             }
           </p>
         </div>
