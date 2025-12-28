@@ -67,12 +67,15 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // Get sitters who have a profile photo - only show complete profiles
+      // Get sitters who have completed onboarding and have a profile photo
+      // CRITICAL: Only show sitters who completed onboarding to avoid "Sitter not found" errors
       const { data, error } = await supabase
         .from('public_sitters')
         .select('*')
+        .eq('onboarding_completed', true) // Only show complete profiles
         .not('avatar_url', 'is', null)
         .neq('avatar_url', '')
+        .order('golden_badge_approved', { ascending: false }) // Golden badge first
         .order('rating', { ascending: false })
         .limit(4);
       
