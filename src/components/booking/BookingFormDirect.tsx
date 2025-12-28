@@ -303,12 +303,9 @@ export default function BookingFormDirect({
               className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
             />
             <div>
-              <div className="text-xl font-bold">Book {sitter.name}</div>
-              <div className="text-sm text-muted-foreground flex items-center gap-2">
-                <span className="flex items-center">
-                  <CheckCircle className="w-3 h-3 mr-1 text-green-500" />
-                  Verified
-                </span>
+              <div className="text-lg font-bold">Ask {sitter.name} for a Quote</div>
+              <div className="text-sm text-green-600 font-medium">
+                Free • No commitment • Quick response
               </div>
             </div>
           </div>
@@ -539,32 +536,35 @@ export default function BookingFormDirect({
           )}
         </div>
 
-        {/* HUGE Submit Button - Maximum conversion focus */}
-        <Button 
-          onClick={handleBooking}
-          disabled={loading}
-          size="lg"
-          className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02] animate-pulse"
-        >
-          {loading ? (
-            <>
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-              Sending...
-            </>
-          ) : (
-            <>
-              Get Free Quote →
-            </>
-          )}
-        </Button>
+        {/* Two CTA options - Low commitment path */}
+        <div className="space-y-3">
+          {/* Primary: Send enquiry - lowest commitment */}
+          <Button 
+            onClick={handleBooking}
+            disabled={loading}
+            size="lg"
+            className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+          >
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                Sending...
+              </>
+            ) : (
+              <>
+                Send Enquiry - It's Free →
+              </>
+            )}
+          </Button>
+        </div>
         
-        {/* Reassurance text */}
-        <div className="text-center space-y-1">
-          <p className="text-sm text-muted-foreground">
-            ✓ No payment required • ✓ No commitment • ✓ Cancel anytime
+        {/* Strong reassurance - address commitment anxiety */}
+        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-center space-y-1">
+          <p className="text-sm font-medium text-blue-800">
+            💬 This is just an enquiry, not a booking
           </p>
-          <p className="text-xs text-muted-foreground">
-            By requesting, you agree to our booking terms
+          <p className="text-xs text-blue-600">
+            No payment required • Sitter will respond within 24 hours • You decide after chatting
           </p>
         </div>
       </CardContent>

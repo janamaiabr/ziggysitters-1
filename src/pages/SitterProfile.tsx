@@ -7,7 +7,6 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   MapPin, 
-  Star, 
   Heart, 
   Calendar,
   DollarSign,
