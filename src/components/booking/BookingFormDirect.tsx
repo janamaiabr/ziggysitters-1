@@ -209,18 +209,7 @@ export default function BookingFormDirect({
       return;
     }
 
-    if (selectedPetIds.length === 0) {
-      trackDropoff('booking', 'validation_failed', {
-        sitter_id: sitter.id,
-        reason: 'no_pets_selected',
-      });
-      toast({
-        title: 'No Pets Selected',
-        description: 'Please select at least one pet for this booking.',
-        variant: 'destructive'
-      });
-      return;
-    }
+    // Pet selection is now optional - users can add pet details later
 
     setLoading(true);
     
@@ -493,7 +482,7 @@ export default function BookingFormDirect({
         {/* Pet Selection */}
         {ownerPets.length > 0 && (
           <div className="space-y-2">
-            <label className="text-sm font-semibold">Which pets? <span className="text-red-500">*</span></label>
+            <label className="text-sm font-semibold">Which pets? <span className="text-muted-foreground font-normal">(optional)</span></label>
             <div className="flex flex-wrap gap-2">
               {ownerPets.map((pet) => (
                 <Badge
@@ -520,24 +509,11 @@ export default function BookingFormDirect({
           </div>
         )}
 
+        {/* Pet info is optional - can be provided after booking request */}
         {ownerPets.length === 0 && (
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-sm space-y-3">
-            <div className="flex items-start gap-2">
-              <Users className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-foreground">Add your pet to complete the booking</p>
-                <p className="text-muted-foreground mt-1">
-                  Takes 30 seconds — we just need your pet's name and type.
-                </p>
-              </div>
-            </div>
-            <Button 
-              className="w-full"
-              onClick={() => navigate('/profile?tab=pets&returnTo=' + encodeURIComponent(window.location.pathname))}
-            >
-              Add Your Pet Now
-            </Button>
-          </div>
+          <p className="text-sm text-muted-foreground italic">
+            You can add your pet's details later, or mention them in the special instructions below.
+          </p>
         )}
 
         {/* Special Instructions */}
@@ -580,7 +556,7 @@ export default function BookingFormDirect({
         {/* Submit Button */}
         <Button 
           onClick={handleBooking}
-          disabled={loading || ownerPets.length === 0}
+          disabled={loading}
           size="lg"
           className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all hover:scale-[1.02]"
         >
