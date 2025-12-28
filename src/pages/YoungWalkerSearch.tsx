@@ -281,89 +281,52 @@ export default function YoungWalkerSearch() {
         </div>
       </section>
 
-      {/* Search/Filter Bar - More Prominent */}
-      <section className="py-8 bg-white border-b-2 shadow-md sticky top-0 z-20">
+      {/* SIMPLIFIED Search Bar */}
+      <section className="py-6 bg-white border-b shadow-sm sticky top-0 z-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-lg border border-emerald-200">
-              <div className="flex items-center gap-2 mb-4">
-                <Search className="h-5 w-5 text-emerald-600" />
-                <h3 className="font-bold text-lg text-slate-800">Find a Dog Walker</h3>
+          <div className="max-w-3xl mx-auto">
+            {/* Simple search - just one input */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1 relative">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-600" />
+                <Input
+                  type="text"
+                  placeholder="Enter your suburb (e.g. Ponsonby, Grey Lynn...)"
+                  value={suburbInput}
+                  onChange={(e) => {
+                    setSuburbInput(e.target.value);
+                    // Real-time search as user types
+                    if (e.target.value.trim()) {
+                      setSearchSuburbs([e.target.value.trim()]);
+                    } else {
+                      setSearchSuburbs([]);
+                    }
+                  }}
+                  className="h-14 pl-12 pr-4 text-lg bg-white border-2 border-emerald-200 focus:border-emerald-500 rounded-xl shadow-sm"
+                />
+              </div>
+              <Button 
+                type="button" 
+                onClick={filterResults}
+                className="h-14 px-8 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-lg rounded-xl shadow-lg"
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Find Walkers
+              </Button>
+            </div>
+
+            {/* Results + Fee info */}
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="text-sm text-slate-600">
+                Found <span className="font-bold text-emerald-700">{filteredYoungWalkers.length}</span> young walkers 
+                and <span className="font-bold text-slate-700">{filteredRegularSitters.length}</span> regular sitters
+                {searchSuburbs.length > 0 && searchSuburbs[0] && ` near "${searchSuburbs[0]}"`}
               </div>
               
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Suburb Search */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                    <MapPin className="h-3 w-3" /> Suburb / Neighbourhood
-                  </label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      placeholder="e.g. Ponsonby, Grey Lynn..."
-                      value={suburbInput}
-                      onChange={(e) => setSuburbInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && addSuburb()}
-                      className="h-11 bg-white"
-                    />
-                    <Button 
-                      type="button" 
-                      variant="secondary" 
-                      size="icon"
-                      onClick={addSuburb}
-                      className="h-11 w-11"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  {searchSuburbs.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {searchSuburbs.map((suburb) => (
-                        <Badge key={suburb} variant="secondary" className="pr-1 bg-emerald-100 text-emerald-800">
-                          {suburb}
-                          <button 
-                            onClick={() => removeSuburb(suburb)}
-                            className="ml-1 hover:bg-emerald-200 rounded-full p-0.5"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Name Search */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                    <Search className="h-3 w-3" /> Walker Name (optional)
-                  </label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      placeholder="Search by name..."
-                      value={nameSearch}
-                      onChange={(e) => setNameSearch(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && filterResults()}
-                      className="h-11 bg-white"
-                    />
-                    <Button 
-                      type="button" 
-                      onClick={filterResults}
-                      className="h-11 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold"
-                    >
-                      <Search className="h-4 w-4 mr-2" />
-                      Search
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Results summary */}
-              <div className="mt-4 pt-4 border-t border-emerald-200 text-sm text-slate-600">
-                Showing <span className="font-bold text-emerald-700">{filteredYoungWalkers.length}</span> young walkers 
-                and <span className="font-bold text-emerald-700">{filteredRegularSitters.length}</span> regular sitters
-                {searchSuburbs.length > 0 && ` in ${searchSuburbs.join(", ")}`}
+              {/* Platform fee transparency */}
+              <div className="flex items-center gap-2 text-xs bg-emerald-50 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200">
+                <Shield className="h-4 w-4" />
+                <span><strong>$10 flat rate</strong> for young walker walks • 10% service fee included</span>
               </div>
             </div>
           </div>
@@ -480,21 +443,26 @@ export default function YoungWalkerSearch() {
                             {getAvailabilityText(walker)}
                           </div>
                           
-                          {/* CTA Button */}
-                          <div className="mt-auto pt-3">
+                          {/* CTA Button - More prominent with clear pricing */}
+                          <div className="mt-auto pt-3 space-y-2">
                             <Button 
-                              className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-400 text-white"
+                              className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-lg py-6 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-400 text-white"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 navigate(`/book-young-walker/${walker.id}`);
                               }}
                             >
-                              Book Walk – ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}
-                              <span className="ml-2">→</span>
+                              Book Now – Only ${YOUNG_WALKER_CONFIG.SUGGESTED_RATE_PER_WALK}
+                              <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
-                            <p className="text-xs text-center text-muted-foreground font-medium mt-2">
-                              🐕 {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Safe & supervised
-                            </p>
+                            <div className="text-center space-y-1">
+                              <p className="text-xs text-emerald-700 font-semibold">
+                                ✅ {YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Parent supervised
+                              </p>
+                              <p className="text-xs text-slate-500">
+                                No payment until walk is confirmed
+                              </p>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -606,21 +574,26 @@ export default function YoungWalkerSearch() {
                             Usually responds within hours
                           </div>
                           
-                          {/* CTA Button */}
-                          <div className="mt-auto pt-3">
+                          {/* CTA Button - Clear action */}
+                          <div className="mt-auto pt-3 space-y-2">
                             <Button 
-                              className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white"
+                              className="w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-lg py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 navigate(`/sitter/${sitter.id}`);
                               }}
                             >
-                              Get a Quote
-                              <span className="ml-2">→</span>
+                              View Profile & Book
+                              <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
-                            <p className="text-xs text-center text-muted-foreground font-medium mt-2">
-                              ⚡ No payment until confirmed
-                            </p>
+                            <div className="text-center space-y-1">
+                              <p className="text-xs text-primary font-semibold">
+                                💬 Send a message or request booking
+                              </p>
+                              <p className="text-xs text-slate-500">
+                                Free to enquire • No commitment
+                              </p>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
