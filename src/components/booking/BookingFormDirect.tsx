@@ -333,7 +333,13 @@ export default function BookingFormDirect({
           <label className="text-sm font-semibold flex items-center gap-1">
             What service do you need? <span className="text-red-500">*</span>
           </label>
-          <Select value={serviceType} onValueChange={setServiceType}>
+          <Select value={serviceType} onValueChange={(value) => {
+            setServiceType(value);
+            trackAction('booking_service_selected', {
+              sitter_id: sitter.id,
+              service_type: value,
+            });
+          }}>
             <SelectTrigger className="h-12 text-base border-2 focus:border-primary">
               <SelectValue placeholder="Select a service..." />
             </SelectTrigger>
