@@ -293,7 +293,7 @@ export default function BookingFormDirect({
   const isHourlyService = serviceType === 'dog_walking' || serviceType === 'drop_in_visits';
 
   return (
-    <Card className="border-2 border-primary/20 shadow-xl bg-gradient-to-br from-background via-background to-primary/5 overflow-hidden relative">
+    <Card className="border shadow-lg bg-card overflow-hidden relative">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-3">
