@@ -30,6 +30,17 @@ interface FunnelData {
   totalSitters: number;
 }
 
+interface BookingFormAnalytics {
+  formViews: number;
+  serviceSelections: number;
+  dateSelections: number;
+  submitAttempts: number;
+  successfulSubmits: number;
+  validationFailures: number;
+  abandonments: number;
+  avgTimeToSubmit: number;
+}
+
 interface DropoffInsight {
   stage: string;
   dropoffRate: number;
@@ -52,6 +63,8 @@ export default function AdminConversionFunnel() {
   const [recentSearches, setRecentSearches] = useState<any[]>([]);
   const [bookingsByStatus, setBookingsByStatus] = useState<{ status: string; count: number }[]>([]);
   const [stuckBookings, setStuckBookings] = useState<any[]>([]);
+  const [bookingFormAnalytics, setBookingFormAnalytics] = useState<BookingFormAnalytics | null>(null);
+  const [recentBookingEvents, setRecentBookingEvents] = useState<any[]>([]);
 
   useEffect(() => {
     fetchAllData();
@@ -75,6 +88,7 @@ export default function AdminConversionFunnel() {
         fetchRecentSearches(),
         fetchBookingsByStatus(),
         fetchStuckBookings(),
+        fetchBookingFormAnalytics(),
       ]);
     } catch (error) {
       console.error('Error fetching funnel data:', error);
@@ -195,6 +209,53 @@ export default function AdminConversionFunnel() {
       .order('created_at', { ascending: true });
 
     setStuckBookings(data || []);
+  };
+
+  const fetchBookingFormAnalytics = async () => {
+    const periodStart = new Date(Date.now() - getPeriodMs()).toISOString();
+    
+    // Fetch all booking-related events
+    const { data: events } = await supabase
+      .from('user_events')
+      .select('*')
+      .gte('created_at', periodStart)
+      .or('event_name.ilike.%booking%,event_name.ilike.%dropoff%')
+      .order('created_at', { ascending: false });
+
+    if (!events) {
+      setBookingFormAnalytics(null);
+      setRecentBookingEvents([]);
+      return;
+    }
+
+    // Save recent events for display
+    setRecentBookingEvents(events.slice(0, 50));
+
+    // Analyze booking form interactions
+    const formViews = events.filter(e => e.event_name === 'booking_form_viewed').length;
+    const serviceSelections = events.filter(e => e.event_name === 'booking_service_selected').length;
+    const dateSelections = events.filter(e => e.event_name === 'booking_date_selected').length;
+    const submitAttempts = events.filter(e => e.event_name === 'booking_submit_attempted').length;
+    const successfulSubmits = events.filter(e => e.event_name === 'booking_request_sent').length;
+    
+    // Dropoffs/failures
+    const dropoffEvents = events.filter(e => e.event_type === 'dropoff' && e.event_name?.includes('booking'));
+    const validationFailures = dropoffEvents.filter(e => {
+      const data = e.event_data as Record<string, unknown> | null;
+      return data?.reason === 'validation_failed' || data?.reason === 'missing_fields';
+    }).length;
+    const abandonments = formViews - submitAttempts; // Views without attempt
+
+    setBookingFormAnalytics({
+      formViews,
+      serviceSelections,
+      dateSelections,
+      submitAttempts,
+      successfulSubmits,
+      validationFailures,
+      abandonments: Math.max(0, abandonments),
+      avgTimeToSubmit: 0, // Would need session timing to calculate
+    });
   };
 
   const getConversionRate = (current: number, previous: number) => {
@@ -489,7 +550,147 @@ export default function AdminConversionFunnel() {
         </Card>
       </div>
 
-      {/* Stuck Bookings */}
+      {/* Booking Form Analytics - THE KEY INSIGHT */}
+      <Card className="border-2 border-primary/50">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <CalendarCheck className="h-5 w-5 text-primary" />
+            📊 Booking Form Analytics (WHY users don't request bookings)
+          </CardTitle>
+          <CardDescription>
+            Track exactly where users abandon the booking form
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {bookingFormAnalytics ? (
+            <div className="space-y-6">
+              {/* Booking Form Funnel */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg text-center">
+                  <div className="text-3xl font-bold text-blue-600">{bookingFormAnalytics.formViews}</div>
+                  <div className="text-sm text-muted-foreground">Form Views</div>
+                </div>
+                <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg text-center">
+                  <div className="text-3xl font-bold text-purple-600">{bookingFormAnalytics.serviceSelections}</div>
+                  <div className="text-sm text-muted-foreground">Service Selected</div>
+                  {bookingFormAnalytics.formViews > 0 && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {getConversionRate(bookingFormAnalytics.serviceSelections, bookingFormAnalytics.formViews)}% of views
+                    </div>
+                  )}
+                </div>
+                <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-center">
+                  <div className="text-3xl font-bold text-amber-600">{bookingFormAnalytics.submitAttempts}</div>
+                  <div className="text-sm text-muted-foreground">Submit Attempts</div>
+                  {bookingFormAnalytics.formViews > 0 && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {getConversionRate(bookingFormAnalytics.submitAttempts, bookingFormAnalytics.formViews)}% of views
+                    </div>
+                  )}
+                </div>
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-center">
+                  <div className="text-3xl font-bold text-green-600">{bookingFormAnalytics.successfulSubmits}</div>
+                  <div className="text-sm text-muted-foreground">Successful Requests</div>
+                  {bookingFormAnalytics.submitAttempts > 0 && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {getConversionRate(bookingFormAnalytics.successfulSubmits, bookingFormAnalytics.submitAttempts)}% success rate
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Critical Drop-off Analysis */}
+              {bookingFormAnalytics.formViews > 0 && bookingFormAnalytics.submitAttempts === 0 && (
+                <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
+                  <div className="flex items-center gap-2 text-destructive font-medium mb-2">
+                    <AlertTriangle className="h-5 w-5" />
+                    CRITICAL: {bookingFormAnalytics.formViews} form views, 0 submit attempts!
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Users are seeing the booking form but not even trying to submit. This suggests:
+                  </p>
+                  <ul className="text-sm text-muted-foreground mt-2 space-y-1 list-disc list-inside">
+                    <li>Form may be confusing or overwhelming</li>
+                    <li>Required fields may be unclear</li>
+                    <li>Price may be a concern (not displayed clearly)</li>
+                    <li>Users may be "just browsing" without intent to book</li>
+                  </ul>
+                </div>
+              )}
+
+              {/* Failure Analysis */}
+              {(bookingFormAnalytics.validationFailures > 0 || bookingFormAnalytics.abandonments > 0) && (
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
+                    <div className="text-2xl font-bold text-destructive">{bookingFormAnalytics.validationFailures}</div>
+                    <div className="text-sm font-medium text-destructive">Validation Failures</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Users tried to submit but hit errors
+                    </div>
+                  </div>
+                  <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                    <div className="text-2xl font-bold text-amber-600">{bookingFormAnalytics.abandonments}</div>
+                    <div className="text-sm font-medium text-amber-600">Form Abandonments</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Viewed form but never submitted
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Recent Booking Events */}
+              {recentBookingEvents.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Recent Booking Form Events</h4>
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                    {recentBookingEvents.map((event) => {
+                      const eventData = event.event_data as Record<string, unknown> | null;
+                      return (
+                        <div key={event.id} className="flex items-center justify-between p-2 bg-muted/50 rounded text-sm">
+                          <div className="flex items-center gap-3">
+                            <Badge 
+                              variant={
+                                event.event_name?.includes('sent') ? 'default' :
+                                event.event_name?.includes('attempt') ? 'secondary' :
+                                event.event_type === 'dropoff' ? 'destructive' : 'outline'
+                              }
+                            >
+                              {event.event_name?.replace(/_/g, ' ')}
+                            </Badge>
+                            {eventData?.sitter_name && (
+                              <span className="text-muted-foreground">
+                                → {String(eventData.sitter_name)}
+                              </span>
+                            )}
+                            {eventData?.service_type && (
+                              <span className="text-xs text-muted-foreground">
+                                ({String(eventData.service_type).replace(/_/g, ' ')})
+                              </span>
+                            )}
+                            {eventData?.reason && (
+                              <span className="text-xs text-destructive">
+                                Reason: {String(eventData.reason)}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(event.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              No booking form events tracked yet. Users need to view booking forms for data to appear.
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {stuckBookings.length > 0 && (
         <Card className="border-amber-500/50">
           <CardHeader>
