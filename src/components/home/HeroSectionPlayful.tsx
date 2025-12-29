@@ -100,7 +100,7 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  A pet sitting platform <span className="font-bold text-foreground">built for pets, not humans</span>. Get daily photo updates from ID-verified sitters in Auckland & Hamilton.
+                  A pet sitting platform <span className="font-bold text-foreground">built for pets, not humans</span>. ID-verified sitters send you daily photo updates so you never have to wonder how they{"'"}re doing.
                 </p>
 
                 {/* Primary CTA - Green gradient */}
