@@ -100,25 +100,26 @@ const HeroSectionPlayful = ({
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 md:w-64 h-32 md:h-64 bg-indigo-300 dark:bg-indigo-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
       </div>
 
-      {/* SPCA Charity Badge - repositioned to avoid overlap */}
-      <div className="absolute top-4 md:top-8 right-4 md:left-8 md:right-auto z-20 animate-fade-in">
-        <div className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full px-3 md:px-5 py-2 md:py-2.5 shadow-lg font-bold text-xs md:text-sm hover:scale-105 transition-transform">
-          <Heart className="w-3 h-3 md:w-4 md:h-4 fill-current" />
-          <span className="hidden sm:inline">5% Donated to SPCA NZ</span>
-          <span className="sm:hidden">5% to SPCA</span>
-          <span className="hidden sm:inline">💜</span>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8 pt-36 md:pt-12 md:py-20 relative z-10">
+      {/* SPCA Charity Badge - moved inside content flow to avoid overlap */}
+      <div className="container mx-auto px-4 py-8 pt-8 md:pt-12 md:py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
+          {/* SPCA Badge at top of content */}
+          <div className="flex justify-center lg:justify-start mb-6 animate-fade-in">
+            <div className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full px-3 md:px-5 py-2 md:py-2.5 shadow-lg font-bold text-xs md:text-sm hover:scale-105 transition-transform">
+              <Heart className="w-3 h-3 md:w-4 md:h-4 fill-current" />
+              <span className="hidden sm:inline">5% Donated to SPCA NZ</span>
+              <span className="sm:hidden">5% to SPCA</span>
+              <span className="hidden sm:inline">💜</span>
+            </div>
+          </div>
+          
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center mb-6 md:mb-12">
             {/* Left side - Content */}
             <div className="space-y-5 md:space-y-8 animate-fade-in text-center lg:text-left">
               {/* Cute badge */}
               <div className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 border-2 border-purple-200 dark:border-purple-700 rounded-full">
                 <span className="text-base md:text-xl">🐾</span>
-                <span className="text-xs md:text-sm font-bold text-purple-600 dark:text-purple-400 tracking-wide uppercase">Premium Pet Care</span>
+                <span className="text-xs md:text-sm font-bold text-purple-600 dark:text-purple-400 tracking-wide uppercase">For Pets, By Pet Lovers</span>
                 <span className="text-base md:text-xl">🐾</span>
               </div>
 
@@ -131,7 +132,7 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  <span className="text-purple-600 dark:text-purple-400 font-bold">Your pet picks the sitter.</span> We just make sure they{"'"}re verified, trusted, and send you daily photo proof they{"'"}re having a blast! 📸
+                  <span className="text-purple-600 dark:text-purple-400 font-bold">Verified sitters who treat your pet like family.</span> Daily photo updates so you never have to wonder how they{"'"}re doing! 📸
                 </p>
 
                 {/* Primary CTA - HIGH VISIBILITY - drives immediate action */}
