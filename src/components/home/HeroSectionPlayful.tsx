@@ -81,82 +81,52 @@ const HeroSectionPlayful = ({
   };
 
   return (
-    <section className="relative min-h-[100svh] md:min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
-      {/* Floating emoji animations - fewer on mobile */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-24 left-[10%] text-3xl md:text-5xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>💜</div>
-        <div className="absolute top-32 right-[15%] text-2xl md:text-4xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐾</div>
-        <div className="hidden md:block absolute top-48 left-[40%] text-3xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>✨</div>
-        <div className="hidden md:block absolute bottom-40 right-[35%] text-4xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.2s' }}>🎉</div>
-        <div className="absolute bottom-32 left-[20%] text-3xl md:text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}>💙</div>
-        <div className="hidden lg:block absolute top-[60%] right-[10%] text-3xl animate-bounce" style={{ animationDelay: '0.8s', animationDuration: '2.3s' }}>🐕</div>
-        <div className="hidden lg:block absolute top-[30%] left-[8%] text-4xl animate-bounce" style={{ animationDelay: '1.2s', animationDuration: '2.6s' }}>🐱</div>
-      </div>
+    <section className="relative min-h-[85svh] md:min-h-[80vh] flex items-center overflow-hidden bg-background">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 via-background to-blue-50/30 dark:from-purple-950/10 dark:via-background dark:to-blue-950/10" />
 
-      {/* Playful background blobs - smaller on mobile */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 right-10 md:right-20 w-40 md:w-80 h-40 md:h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
-        <div className="absolute bottom-20 left-5 md:left-10 w-48 md:w-96 h-48 md:h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 md:w-64 h-32 md:h-64 bg-indigo-300 dark:bg-indigo-700 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-      </div>
-
-      {/* SPCA Charity Badge - moved inside content flow to avoid overlap */}
-      <div className="container mx-auto px-4 py-8 pt-8 md:pt-12 md:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
-          {/* SPCA Badge at top of content */}
-          <div className="flex justify-center lg:justify-start mb-6 animate-fade-in">
-            <div className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full px-3 md:px-5 py-2 md:py-2.5 shadow-lg font-bold text-xs md:text-sm hover:scale-105 transition-transform">
-              <Heart className="w-3 h-3 md:w-4 md:h-4 fill-current" />
-              <span className="hidden sm:inline">5% Donated to SPCA NZ</span>
-              <span className="sm:hidden">5% to SPCA</span>
-              <span className="hidden sm:inline">💜</span>
-            </div>
-          </div>
-          
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center mb-6 md:mb-12">
             {/* Left side - Content */}
-            <div className="space-y-5 md:space-y-8 animate-fade-in text-center lg:text-left">
+            <div className="space-y-6 md:space-y-8 animate-fade-in text-center lg:text-left">
 
               {/* Main Headline */}
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
                   <span className="block text-foreground">Pet Sitting Made</span>
                   <span className="block text-gradient-playful py-1">For Pets</span>
-                  <span className="block text-muted-foreground text-2xl sm:text-3xl md:text-4xl lg:text-5xl">(Humans Just Pay The Bills 🐾)</span>
+                  <span className="block text-muted-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl mt-2">(Humans Just Pay The Bills 🐾)</span>
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  Get <span className="text-purple-600 dark:text-purple-400 font-bold">daily photo updates</span> of your furry friend while you{"'"}re away. Real photos, real moments - so you never have to wonder how they{"'"}re doing! 📸
+                  Get <span className="text-primary font-bold">daily photo updates</span> of your furry friend while you{"'"}re away. Real photos, real moments.
                 </p>
 
-                {/* Primary CTA - HIGH VISIBILITY - drives immediate action */}
-                <div className="pt-4 space-y-3">
+                {/* Primary CTA */}
+                <div className="pt-2 space-y-3">
                   <Button 
                     size="lg" 
-                    className="w-full lg:w-auto text-lg md:text-xl font-extrabold shadow-2xl hover:shadow-[0_25px_60px_-10px_rgba(34,197,94,0.5)] transition-all duration-300 hover:scale-105 py-7 md:py-8 px-10 md:px-12 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white border-4 border-white/30 rounded-2xl relative overflow-hidden group"
+                    className="w-full lg:w-auto text-lg md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 md:py-7 px-8 md:px-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
                     onClick={handleCtaClick}
                   >
-                    <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                    <Search className="mr-3 h-6 w-6" />
-                    Get a Free Quote Today
-                    <span className="ml-3 text-2xl">→</span>
+                    <Search className="mr-2 h-5 w-5" />
+                    Get a Free Quote
                   </Button>
-                  <p className="text-sm md:text-base text-foreground/80 font-medium text-center lg:text-left">
-                    ✓ No payment required • ✓ Free to browse • ✓ No obligation
+                  <p className="text-sm text-muted-foreground">
+                    No payment required • Free to browse
                   </p>
                 </div>
               </div>
 
-              {/* Feature badges - Daily Photos & Verified Sitters only, more prominent */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-4">
-                <div className="flex items-center gap-2 md:gap-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full px-4 md:px-6 py-3 md:py-4 shadow-xl font-bold text-sm md:text-base hover:scale-105 transition-transform cursor-default">
-                  <span className="text-lg md:text-2xl">📷</span>
-                  <span>Daily Photo Reports</span>
-                </div>
-                <div className="flex items-center gap-2 md:gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full px-4 md:px-6 py-3 md:py-4 shadow-xl font-bold text-sm md:text-base hover:scale-105 transition-transform cursor-default">
-                  <span className="text-lg md:text-2xl">🛡️</span>
-                  <span>ID Verified Sitters</span>
-                </div>
+              {/* Simple trust indicators */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-2">
+                  <span className="text-lg">📷</span> Daily Photo Reports
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="text-lg">🛡️</span> ID Verified Sitters
+                </span>
               </div>
 
               {/* Mobile image - shown only on mobile */}
