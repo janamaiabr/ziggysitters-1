@@ -118,16 +118,16 @@ const HeroSectionPlayful = ({
                 </div>
               </div>
 
-              {/* Feature pills - subtle styling to not compete with CTA */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2">
-                <div className="flex items-center gap-1.5 bg-muted/60 text-foreground rounded-full px-3 py-1.5 text-sm">
+              {/* Feature pills */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
+                <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
                   <span>📷</span> Daily Photo Reports
                 </div>
-                <div className="flex items-center gap-1.5 bg-muted/60 text-foreground rounded-full px-3 py-1.5 text-sm">
+                <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
                   <span>🛡️</span> ID Verified
                 </div>
-                <div className="flex items-center gap-1.5 bg-muted/60 text-foreground rounded-full px-3 py-1.5 text-sm">
-                  <Heart className="w-3.5 h-3.5 text-pink-500" /> 5% to SPCA NZ
+                <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
+                  <Heart className="w-4 h-4 text-pink-500 fill-pink-500" /> 5% to SPCA NZ
                 </div>
               </div>
 
