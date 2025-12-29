@@ -125,13 +125,13 @@ const HeroSectionPlayful = ({
               {/* Main Headline */}
               <div className="space-y-3 md:space-y-4">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                  <span className="block text-foreground">Never Wonder</span>
-                  <span className="block text-gradient-playful py-1">{'"'}How{"'"}s My Pet?{'"'}</span>
-                  <span className="block text-foreground">Again!</span>
+                  <span className="block text-foreground">Pet Sitting Made</span>
+                  <span className="block text-gradient-playful py-1">For Pets</span>
+                  <span className="block text-muted-foreground text-2xl sm:text-3xl md:text-4xl lg:text-5xl">(Humans Just Pay The Bills 🐾)</span>
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  <span className="text-purple-600 dark:text-purple-400 font-bold">Trusted pet sitters in Auckland & Hamilton</span> with guaranteed daily photo updates. No guessing - just peace of mind! 📸
+                  <span className="text-purple-600 dark:text-purple-400 font-bold">Your pet picks the sitter.</span> We just make sure they{"'"}re verified, trusted, and send you daily photo proof they{"'"}re having a blast! 📸
                 </p>
 
                 {/* Primary CTA - HIGH VISIBILITY - drives immediate action */}
