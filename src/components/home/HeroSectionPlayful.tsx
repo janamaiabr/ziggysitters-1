@@ -116,12 +116,6 @@ const HeroSectionPlayful = ({
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center mb-6 md:mb-12">
             {/* Left side - Content */}
             <div className="space-y-5 md:space-y-8 animate-fade-in text-center lg:text-left">
-              {/* Cute badge */}
-              <div className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 border-2 border-purple-200 dark:border-purple-700 rounded-full">
-                <span className="text-base md:text-xl">🐾</span>
-                <span className="text-xs md:text-sm font-bold text-purple-600 dark:text-purple-400 tracking-wide uppercase">For Pets, By Pet Lovers</span>
-                <span className="text-base md:text-xl">🐾</span>
-              </div>
 
               {/* Main Headline */}
               <div className="space-y-3 md:space-y-4">
@@ -132,7 +126,7 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  <span className="text-purple-600 dark:text-purple-400 font-bold">Verified sitters who treat your pet like family.</span> Daily photo updates so you never have to wonder how they{"'"}re doing! 📸
+                  Get <span className="text-purple-600 dark:text-purple-400 font-bold">daily photo updates</span> of your furry friend while you{"'"}re away. Real photos, real moments - so you never have to wonder how they{"'"}re doing! 📸
                 </p>
 
                 {/* Primary CTA - HIGH VISIBILITY - drives immediate action */}
@@ -153,22 +147,16 @@ const HeroSectionPlayful = ({
                 </div>
               </div>
 
-              {/* Feature badges with emojis - smaller on mobile */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3">
-                {[
-                  { emoji: "📷", text: "Daily Photos", fullText: "Daily Photo Reports", gradient: "from-purple-500 to-indigo-600" },
-                  { emoji: "🛡️", text: "Verified", fullText: "Verified Sitters", gradient: "from-blue-500 to-indigo-600" },
-                  { emoji: "⭐", text: "4.9 Rating", fullText: "4.9 Rating", gradient: "from-indigo-500 to-purple-600" }
-                ].map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className={`flex items-center gap-1.5 md:gap-2 bg-gradient-to-r ${item.gradient} text-white rounded-full px-3 md:px-4 py-2 md:py-2.5 shadow-lg font-bold text-xs md:text-sm hover:scale-105 transition-transform cursor-default`}
-                  >
-                    <span className="text-sm md:text-lg">{item.emoji}</span>
-                    <span className="md:hidden">{item.text}</span>
-                    <span className="hidden md:inline">{item.fullText}</span>
-                  </div>
-                ))}
+              {/* Feature badges - Daily Photos & Verified Sitters only, more prominent */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-4">
+                <div className="flex items-center gap-2 md:gap-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full px-4 md:px-6 py-3 md:py-4 shadow-xl font-bold text-sm md:text-base hover:scale-105 transition-transform cursor-default">
+                  <span className="text-lg md:text-2xl">📷</span>
+                  <span>Daily Photo Reports</span>
+                </div>
+                <div className="flex items-center gap-2 md:gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full px-4 md:px-6 py-3 md:py-4 shadow-xl font-bold text-sm md:text-base hover:scale-105 transition-transform cursor-default">
+                  <span className="text-lg md:text-2xl">🛡️</span>
+                  <span>ID Verified Sitters</span>
+                </div>
               </div>
 
               {/* Mobile image - shown only on mobile */}
