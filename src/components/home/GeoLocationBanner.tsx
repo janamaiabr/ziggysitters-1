@@ -13,18 +13,18 @@ export default function GeoLocationBanner() {
   }
 
   return (
-    <div className="bg-gray-900 text-white py-2.5 px-4">
-      <div className="container mx-auto flex items-center justify-between gap-4">
-        <p className="text-sm md:text-base">
-          🌏 Currently in <span className="font-bold">Auckland & Hamilton, NZ</span> — expanding soon!
+    <div className="bg-muted/80 border-b border-border py-2 px-4">
+      <div className="container mx-auto flex items-center justify-center gap-4">
+        <p className="text-sm text-muted-foreground">
+          🌏 Currently in <span className="font-medium text-foreground">Auckland & Hamilton, NZ</span> — expanding soon!
         </p>
         <Button
           variant="ghost"
           size="sm"
-          className="text-white hover:bg-white/20 flex-shrink-0"
+          className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground flex-shrink-0"
           onClick={() => setDismissed(true)}
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </Button>
       </div>
     </div>
