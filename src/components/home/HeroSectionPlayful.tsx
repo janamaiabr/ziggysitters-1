@@ -110,8 +110,7 @@ const HeroSectionPlayful = ({
                     className="w-full lg:w-auto text-lg md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 md:py-7 px-8 md:px-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl"
                     onClick={handleCtaClick}
                   >
-                    <Search className="mr-2 h-5 w-5" />
-                    Find Your Perfect Sitter
+                    🐾 Find Your Perfect Sitter
                   </Button>
                   <p className="text-sm text-muted-foreground">
                     No payment required • Free to browse
@@ -119,16 +118,16 @@ const HeroSectionPlayful = ({
                 </div>
               </div>
 
-              {/* Feature pills */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-3">
-                <div className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full px-4 py-2.5 shadow-md font-semibold text-sm">
+              {/* Feature pills - subtle styling to not compete with CTA */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2">
+                <div className="flex items-center gap-1.5 bg-muted/60 text-foreground rounded-full px-3 py-1.5 text-sm">
                   <span>📷</span> Daily Photo Reports
                 </div>
-                <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full px-4 py-2.5 shadow-md font-semibold text-sm">
-                  <span>🛡️</span> ID Verified Sitters
+                <div className="flex items-center gap-1.5 bg-muted/60 text-foreground rounded-full px-3 py-1.5 text-sm">
+                  <span>🛡️</span> ID Verified
                 </div>
-                <div className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full px-4 py-2.5 shadow-md font-semibold text-sm">
-                  <Heart className="w-4 h-4" /> 5% to SPCA NZ
+                <div className="flex items-center gap-1.5 bg-muted/60 text-foreground rounded-full px-3 py-1.5 text-sm">
+                  <Heart className="w-3.5 h-3.5 text-pink-500" /> 5% to SPCA NZ
                 </div>
               </div>
 
