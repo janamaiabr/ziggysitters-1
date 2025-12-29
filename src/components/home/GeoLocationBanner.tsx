@@ -18,10 +18,7 @@ export default function GeoLocationBanner() {
         <div className="flex items-center gap-3 flex-1">
           <Globe className="w-5 h-5 flex-shrink-0" />
           <p className="text-sm md:text-base">
-            <span className="font-semibold">Hi there from {country || 'overseas'}!</span>
-            {' '}ZiggySitters currently only operates in{' '}
-            <span className="font-bold">Auckland & Hamilton, New Zealand</span>.
-            {' '}We're expanding soon - stay tuned! 🌏
+            We currently serve <span className="font-bold">Auckland & Hamilton, NZ</span> only.
           </p>
         </div>
         <Button
