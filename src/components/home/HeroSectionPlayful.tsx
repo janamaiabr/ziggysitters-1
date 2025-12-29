@@ -111,7 +111,7 @@ const HeroSectionPlayful = ({
                     onClick={handleCtaClick}
                   >
                     <Search className="mr-2 h-5 w-5" />
-                    Find Pet Sitters
+                    Find Your Perfect Sitter
                   </Button>
                   <p className="text-sm text-muted-foreground">
                     No payment required • Free to browse
