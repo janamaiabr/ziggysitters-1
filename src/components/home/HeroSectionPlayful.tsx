@@ -83,7 +83,7 @@ const HeroSectionPlayful = ({
   return (
     <section className="relative min-h-[85svh] md:min-h-[80vh] flex items-center overflow-hidden bg-background">
       {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 via-background to-blue-50/30 dark:from-purple-950/10 dark:via-background dark:to-blue-950/10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-green-50/40 via-background to-blue-50/40 dark:from-green-950/10 dark:via-background dark:to-blue-950/10" />
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
@@ -92,22 +92,22 @@ const HeroSectionPlayful = ({
             <div className="space-y-6 md:space-y-8 animate-fade-in text-center lg:text-left">
 
               {/* Main Headline */}
-              <div className="space-y-4 md:space-y-6">
+              <div className="space-y-4 md:space-y-5">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                  <span className="block text-foreground">Pet Sitting Made</span>
-                  <span className="block text-gradient-playful py-1">For Pets</span>
-                  <span className="block text-muted-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl mt-2">(Humans Just Pay The Bills 🐾)</span>
+                  <span className="block text-foreground">Never Wonder</span>
+                  <span className="block text-gradient-playful py-1">{'"'}How{"'"}s My Pet?{'"'}</span>
+                  <span className="block text-foreground">Again!</span>
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  Get <span className="text-primary font-bold">daily photo updates</span> of your furry friend while you{"'"}re away. Real photos, real moments.
+                  A pet sitting platform <span className="font-bold text-foreground">built for pets, not humans</span>. Get daily photo updates from ID-verified sitters in Auckland & Hamilton.
                 </p>
 
-                {/* Primary CTA */}
-                <div className="pt-2 space-y-3">
+                {/* Primary CTA - Green gradient */}
+                <div className="pt-3 space-y-3">
                   <Button 
                     size="lg" 
-                    className="w-full lg:w-auto text-lg md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 md:py-7 px-8 md:px-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                    className="w-full lg:w-auto text-lg md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 md:py-7 px-8 md:px-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl"
                     onClick={handleCtaClick}
                   >
                     <Search className="mr-2 h-5 w-5" />
@@ -119,14 +119,17 @@ const HeroSectionPlayful = ({
                 </div>
               </div>
 
-              {/* Simple trust indicators */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-2">
-                  <span className="text-lg">📷</span> Daily Photo Reports
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="text-lg">🛡️</span> ID Verified Sitters
-                </span>
+              {/* Feature pills */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+                <div className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full px-4 py-2.5 shadow-md font-semibold text-sm">
+                  <span>📷</span> Daily Photo Reports
+                </div>
+                <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full px-4 py-2.5 shadow-md font-semibold text-sm">
+                  <span>🛡️</span> ID Verified Sitters
+                </div>
+                <div className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full px-4 py-2.5 shadow-md font-semibold text-sm">
+                  <Heart className="w-4 h-4" /> 5% to SPCA NZ
+                </div>
               </div>
 
               {/* Mobile image - shown only on mobile */}
