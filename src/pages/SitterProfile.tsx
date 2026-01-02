@@ -440,82 +440,42 @@ export default function SitterProfile() {
               </Alert>
             )}
             
-            {/* Prominent CTA for non-logged in users - CONVERSION FOCUSED */}
-            {!user && (
-              <Card className="border-2 border-primary shadow-2xl bg-gradient-to-br from-background via-primary/5 to-primary/10 overflow-hidden animate-pulse-subtle">
-                {/* Urgency Banner */}
-                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-3 px-4 text-sm font-bold">
-                  <Calendar className="inline-block w-4 h-4 mr-1" />
-                  🔥 Summer holidays filling fast! {sitterData.display_name.split(' ')[0]} is in high demand
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex flex-col gap-4">
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold text-foreground mb-2">
-                        Request a Booking with {sitterData.display_name.split(' ')[0]} 🐾
-                      </h3>
-                      <p className="text-muted-foreground text-lg">
-                        Takes 30 seconds • Free to request • No payment until confirmed
-                      </p>
-                    </div>
-                    
-                    <div className="flex flex-wrap justify-center gap-2 py-3">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-sm py-1.5 px-3">
-                        ✓ Completely Free
-                      </Badge>
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-sm py-1.5 px-3">
-                        ✓ No Card Required
-                      </Badge>
-                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-sm py-1.5 px-3">
-                        ✓ Cancel Anytime
-                      </Badge>
-                    </div>
-                    
-                    <Button 
-                      size="lg"
-                      className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
-                      onClick={() => {
-                        const params = new URLSearchParams(searchParams);
-                        params.set('booking', 'true');
-                        const redirectUrl = `/sitter/${id}?${params.toString()}`;
-                        navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
-                      }}
-                    >
-                      <Calendar className="mr-2 h-6 w-6" />
-                      Request Booking Now
-                      <span className="ml-2">→</span>
-                    </Button>
-                    
-                    <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                      <span>💳 Pay only after sitter confirms</span>
-                      <span>•</span>
-                      <span>📧 Get a response within hours</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* Booking Form - Always visible, but guests see it disabled with signup prompt */}
+            <div id="booking-section">
+              <BookingFormDirect
+                sitter={{
+                  id: sitterData.id,
+                  name: sitterData.display_name,
+                  location: sitterData.location,
+                  hourlyRate: sitterData.hourlyRate,
+                  services: sitterData.services,
+                  avatar: sitterData.avatar
+                }}
+                servicesData={servicesData}
+                onBookingComplete={() => navigate('/bookings')}
+                initialCheckIn={checkInDate || undefined}
+                initialCheckOut={checkOutDate || undefined}
+                initialServiceType={serviceTypeParam || undefined}
+                isGuestPreview={!user}
+                onGuestSignup={() => {
+                  // Track guest CTA click
+                  trackEvent({
+                    eventType: 'booking',
+                    eventName: 'guest_booking_cta_clicked',
+                    eventData: {
+                      sitter_id: sitterData.id,
+                      sitter_name: sitterData.display_name,
+                      source: 'profile_booking_form'
+                    }
+                  });
+                  const params = new URLSearchParams(searchParams);
+                  params.set('booking', 'true');
+                  const redirectUrl = `/sitter/${id}?${params.toString()}`;
+                  navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
+                }}
+              />
+            </div>
             
-            {/* Booking Form - Always visible for pet owners */}
-            {profile?.role === 'pet_owner' && (
-              <div id="booking-section">
-                <BookingFormDirect
-                  sitter={{
-                    id: sitterData.id,
-                    name: sitterData.display_name,
-                    location: sitterData.location,
-                    hourlyRate: sitterData.hourlyRate,
-                    services: sitterData.services,
-                    avatar: sitterData.avatar
-                  }}
-                  servicesData={servicesData}
-                  onBookingComplete={() => navigate('/bookings')}
-                  initialCheckIn={checkInDate || undefined}
-                  initialCheckOut={checkOutDate || undefined}
-                  initialServiceType={serviceTypeParam || undefined}
-                />
-              </div>
-            )}
             {/* About */}
             <Card>
               <CardHeader>

@@ -11,6 +11,7 @@ interface FunnelStats {
   clickedSitter: number;
   viewedProfile: number;
   openedForm: number;
+  clickedSignupCTA: number;
   madeBooking: number;
   completedBooking: number;
 }
@@ -25,6 +26,7 @@ export function OnboardingFunnel() {
     clickedSitter: 0,
     viewedProfile: 0,
     openedForm: 0,
+    clickedSignupCTA: 0,
     madeBooking: 0,
     completedBooking: 0,
   });
@@ -89,7 +91,7 @@ export function OnboardingFunnel() {
       let eventsQuery = supabase
         .from('user_events')
         .select('event_name')
-        .in('event_name', ['sitter_profile_view', 'booking_form_opened', 'booking_accordion_opened', 'booking_form_viewed']);
+        .in('event_name', ['sitter_profile_view', 'booking_form_opened', 'booking_accordion_opened', 'booking_form_viewed', 'guest_booking_cta_clicked']);
       
       if (dateFilter) {
         eventsQuery = eventsQuery.gte('created_at', dateFilter);
@@ -99,11 +101,13 @@ export function OnboardingFunnel() {
 
       let viewedProfileCount = 0;
       let openedFormCount = 0;
+      let clickedSignupCTACount = 0;
       if (!eventsError && eventsData) {
         viewedProfileCount = eventsData.filter(e => e.event_name === 'sitter_profile_view').length;
         openedFormCount = eventsData.filter(e => 
           e.event_name === 'booking_form_opened' || e.event_name === 'booking_accordion_opened' || e.event_name === 'booking_form_viewed'
         ).length;
+        clickedSignupCTACount = eventsData.filter(e => e.event_name === 'guest_booking_cta_clicked').length;
       }
 
       if (data) {
@@ -114,6 +118,7 @@ export function OnboardingFunnel() {
           clickedSitter: clickedCount,
           viewedProfile: viewedProfileCount,
           openedForm: openedFormCount,
+          clickedSignupCTA: clickedSignupCTACount,
           madeBooking: data.filter(d => d.made_booking).length,
           completedBooking: data.filter(d => d.completed_booking).length,
         });
@@ -137,6 +142,7 @@ export function OnboardingFunnel() {
     { label: 'Clicked Sitter', value: stats.clickedSitter, icon: MousePointerClick, color: 'bg-orange-500' },
     { label: 'Viewed Profile', value: stats.viewedProfile, icon: Eye, color: 'bg-rose-500' },
     { label: 'Opened Form', value: stats.openedForm, icon: FormInput, color: 'bg-amber-500' },
+    { label: 'Clicked Signup CTA', value: stats.clickedSignupCTA, icon: MousePointerClick, color: 'bg-cyan-500' },
     { label: 'Made Booking', value: stats.madeBooking, icon: CalendarCheck, color: 'bg-lime-500' },
     { label: 'Completed', value: stats.completedBooking, icon: CheckCircle, color: 'bg-green-500' },
   ];
