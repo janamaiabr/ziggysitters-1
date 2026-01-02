@@ -441,7 +441,7 @@ export default function SitterProfile() {
             )}
             
             {/* Booking Form - Always visible, but guests see it disabled with signup prompt */}
-            <div id="booking-section">
+            <div id="booking-section" className="space-y-4">
               <BookingFormDirect
                 sitter={{
                   id: sitterData.id,
@@ -474,6 +474,24 @@ export default function SitterProfile() {
                   navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
                 }}
               />
+              
+              {/* Quick Question - Lower commitment alternative */}
+              <Card className="border border-dashed border-muted-foreground/30">
+                <CardContent className="p-4 text-center">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Not ready to book? Just have a question?
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => setIsMessageDialogOpen(true)}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Ask {sitterData.display_name.split(' ')[0]} a Quick Question
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
             
             {/* About */}
