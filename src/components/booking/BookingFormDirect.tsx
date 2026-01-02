@@ -298,86 +298,76 @@ export default function BookingFormDirect({
   const isHourlyService = serviceType === 'dog_walking' || serviceType === 'drop_in_visits';
 
   return (
-    <Card className="border shadow-lg bg-card overflow-hidden relative">
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img 
-              src={sitter.avatar} 
-              alt={sitter.name}
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
-            />
-            <div>
-              <div className="text-lg font-bold">Ask {sitter.name} for a Quote</div>
-              <div className="text-sm text-green-600 font-medium">
-                Free • No commitment • Quick response
-              </div>
+    <Card className="border-2 border-primary/20 shadow-xl bg-card overflow-hidden relative">
+      <CardHeader className="pb-3 bg-gradient-to-r from-green-50 to-emerald-50">
+        <CardTitle className="flex items-center gap-3">
+          <img 
+            src={sitter.avatar} 
+            alt={sitter.name}
+            className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/30"
+          />
+          <div>
+            <div className="text-xl font-bold">Get a Free Quote from {sitter.name.split(' ')[0]}</div>
+            <div className="text-sm text-green-600 font-semibold flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              No payment required • Quick response
             </div>
           </div>
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-5 pt-4">
-        {/* Trust Indicators - Only factual claims */}
-        <div className="flex flex-wrap gap-2 pb-2">
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-            <Shield className="w-3 h-3 mr-1" />
-            Secure Payment via Stripe
-          </Badge>
-          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            ID Verified
-          </Badge>
-        </div>
+      <CardContent className="space-y-4 pt-4">
 
-        {/* Service Selection - Make it prominent */}
+        {/* Service Selection - Compact chips */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold flex items-center gap-1">
-            What service do you need? <span className="text-red-500">*</span>
-          </label>
-          <Select value={serviceType} onValueChange={(value) => {
-            setServiceType(value);
-            trackAction('booking_service_selected', {
-              sitter_id: sitter.id,
-              service_type: value,
-            });
-          }}>
-            <SelectTrigger className="h-12 text-base border-2 focus:border-primary">
-              <SelectValue placeholder="Select a service..." />
-            </SelectTrigger>
-            <SelectContent>
-              {servicesData.length > 0 ? (
-                servicesData.map((service) => {
-                  const getServiceDisplayName = (type: string) => {
-                    switch (type) {
-                      case 'dog_walking': return '🚶 Dog Walking';
-                      case 'pet_sitting_owners_home': return '🏠 Pet Sitting (Your Home)';
-                      case 'pet_sitting_sitters_home': return '🏡 Pet Sitting (Sitter\'s Home)';
-                      case 'drop_in_visits': return '👀 Drop-in Visits';
-                      default: return type.replace(/_/g, ' ');
-                    }
-                  };
+          <label className="text-sm font-semibold">Service</label>
+          <div className="flex flex-wrap gap-2">
+            {servicesData.length > 0 ? (
+              servicesData.map((service) => {
+                const getServiceDisplayName = (type: string) => {
+                  switch (type) {
+                    case 'dog_walking': return '🚶 Walking';
+                    case 'pet_sitting_owners_home': return '🏠 At Your Home';
+                    case 'pet_sitting_sitters_home': return '🏡 At Sitter\'s';
+                    case 'drop_in_visits': return '👀 Drop-ins';
+                    default: return type.replace(/_/g, ' ');
+                  }
+                };
 
-                  const getRate = () => {
-                    if (service.hourly_rate) return `NZ$${service.hourly_rate.toFixed(2)}/hour`;
-                    if (service.daily_rate) return `NZ$${service.daily_rate.toFixed(2)}/day`;
-                    return '';
-                  };
+                const getRate = () => {
+                  if (service.hourly_rate) return `$${service.hourly_rate}/hr`;
+                  if (service.daily_rate) return `$${service.daily_rate}/day`;
+                  return '';
+                };
 
-                  return (
-                    <SelectItem key={service.id} value={service.service_type} className="py-3">
-                      <div className="flex justify-between items-center w-full gap-4">
-                        <span className="font-medium">{getServiceDisplayName(service.service_type)}</span>
-                        <span className="text-primary font-semibold">{getRate()}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })
-              ) : (
-                <SelectItem value="pet_sitting_owners_home">Pet Sitting</SelectItem>
-              )}
-            </SelectContent>
-          </Select>
+                const isSelected = serviceType === service.service_type;
+
+                return (
+                  <Badge
+                    key={service.id}
+                    variant={isSelected ? "default" : "outline"}
+                    className={cn(
+                      "cursor-pointer py-2 px-3 text-sm transition-all",
+                      isSelected 
+                        ? "bg-primary text-primary-foreground shadow-md" 
+                        : "hover:bg-primary/10 hover:border-primary/50"
+                    )}
+                    onClick={() => {
+                      setServiceType(service.service_type);
+                      trackAction('booking_service_selected', {
+                        sitter_id: sitter.id,
+                        service_type: service.service_type,
+                      });
+                    }}
+                  >
+                    {getServiceDisplayName(service.service_type)} • {getRate()}
+                  </Badge>
+                );
+              })
+            ) : (
+              <Badge variant="outline" className="py-2 px-3">Pet Sitting</Badge>
+            )}
+          </div>
         </div>
 
         {/* Date Selection */}
@@ -522,66 +512,45 @@ export default function BookingFormDirect({
           </p>
         )}
 
-        {/* Price Summary - Always show something encouraging */}
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 space-y-2">
-          {total > 0 ? (
-            <>
-              <div className="flex justify-between items-center text-lg font-bold">
-                <span>Estimated Total</span>
-                <span className="text-2xl text-green-600">NZ${total.toFixed(2)}</span>
-              </div>
-              <p className="text-sm text-green-700">
-                ✅ No payment now • Pay only after sitter confirms
-              </p>
-            </>
-          ) : (
-            <p className="text-sm text-green-700 text-center">
-              ✅ Free to request • No payment until sitter accepts
-            </p>
-          )}
-        </div>
+        {/* Price Summary - Compact */}
+        {total > 0 && (
+          <div className="flex justify-between items-center bg-muted/50 rounded-lg p-3">
+            <span className="font-medium">Estimated</span>
+            <span className="text-xl font-bold text-primary">NZ${total.toFixed(2)}</span>
+          </div>
+        )}
 
-        {/* Two CTA options - Low commitment path */}
-        <div className="space-y-3">
-          {/* Primary CTA - different for guests vs logged-in users */}
-          {isGuestPreview ? (
-            <Button 
-              onClick={onGuestSignup}
-              size="lg"
-              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
-            >
-              Sign Up Free to Send Enquiry →
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleBooking}
-              disabled={loading}
-              size="lg"
-              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                  Sending...
-                </>
-              ) : (
-                <>
-                  Send Enquiry - It's Free →
-                </>
-              )}
-            </Button>
-          )}
-        </div>
+        {/* Primary CTA - BIG and prominent */}
+        {isGuestPreview ? (
+          <Button 
+            onClick={onGuestSignup}
+            size="lg"
+            className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+          >
+            Get Free Quote →
+          </Button>
+        ) : (
+          <Button 
+            onClick={handleBooking}
+            disabled={loading}
+            size="lg"
+            className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+          >
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                Sending...
+              </>
+            ) : (
+              'Send Enquiry - Free'
+            )}
+          </Button>
+        )}
         
-        {/* Strong reassurance - address commitment anxiety */}
-        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-center space-y-1">
-          <p className="text-sm font-medium text-blue-800">
-            💬 This is just an enquiry, not a booking
-          </p>
-          <p className="text-xs text-blue-600">
-            No payment required • Sitter will respond within 24 hours • You decide after chatting
-          </p>
-        </div>
+        {/* Compact reassurance */}
+        <p className="text-xs text-center text-muted-foreground">
+          No payment now • Sitter responds within 24hrs
+        </p>
       </CardContent>
     </Card>
   );
