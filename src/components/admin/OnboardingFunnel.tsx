@@ -89,7 +89,7 @@ export function OnboardingFunnel() {
       let eventsQuery = supabase
         .from('user_events')
         .select('event_name')
-        .in('event_name', ['sitter_profile_view', 'booking_form_opened', 'booking_accordion_opened']);
+        .in('event_name', ['sitter_profile_view', 'booking_form_opened', 'booking_accordion_opened', 'booking_form_viewed']);
       
       if (dateFilter) {
         eventsQuery = eventsQuery.gte('created_at', dateFilter);
@@ -102,7 +102,7 @@ export function OnboardingFunnel() {
       if (!eventsError && eventsData) {
         viewedProfileCount = eventsData.filter(e => e.event_name === 'sitter_profile_view').length;
         openedFormCount = eventsData.filter(e => 
-          e.event_name === 'booking_form_opened' || e.event_name === 'booking_accordion_opened'
+          e.event_name === 'booking_form_opened' || e.event_name === 'booking_accordion_opened' || e.event_name === 'booking_form_viewed'
         ).length;
       }
 
