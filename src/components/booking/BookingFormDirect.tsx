@@ -28,6 +28,8 @@ interface BookingFormDirectProps {
   initialCheckIn?: string;
   initialCheckOut?: string;
   initialServiceType?: string;
+  isGuestPreview?: boolean;
+  onGuestSignup?: () => void;
 }
 
 export default function BookingFormDirect({ 
@@ -36,7 +38,9 @@ export default function BookingFormDirect({
   onBookingComplete,
   initialCheckIn,
   initialCheckOut,
-  initialServiceType
+  initialServiceType,
+  isGuestPreview = false,
+  onGuestSignup
 }: BookingFormDirectProps) {
   // Pre-fill dates: today and tomorrow if not provided
   const today = new Date();
@@ -70,13 +74,14 @@ export default function BookingFormDirect({
     }
   }, [servicesData, serviceType]);
   
-  // Track when form is viewed
+  // Track when form is viewed (for both guests and logged-in users)
   useEffect(() => {
     trackAction('booking_form_viewed', {
       sitter_id: sitter.id,
       sitter_name: sitter.name,
       has_initial_dates: !!(initialCheckIn && initialCheckOut),
       has_initial_service: !!initialServiceType,
+      is_guest: isGuestPreview,
     });
   }, []);
 
@@ -538,24 +543,34 @@ export default function BookingFormDirect({
 
         {/* Two CTA options - Low commitment path */}
         <div className="space-y-3">
-          {/* Primary: Send enquiry - lowest commitment */}
-          <Button 
-            onClick={handleBooking}
-            disabled={loading}
-            size="lg"
-            className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                Sending...
-              </>
-            ) : (
-              <>
-                Send Enquiry - It's Free →
-              </>
-            )}
-          </Button>
+          {/* Primary CTA - different for guests vs logged-in users */}
+          {isGuestPreview ? (
+            <Button 
+              onClick={onGuestSignup}
+              size="lg"
+              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+            >
+              Sign Up Free to Send Enquiry →
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleBooking}
+              disabled={loading}
+              size="lg"
+              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+            >
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                  Sending...
+                </>
+              ) : (
+                <>
+                  Send Enquiry - It's Free →
+                </>
+              )}
+            </Button>
+          )}
         </div>
         
         {/* Strong reassurance - address commitment anxiety */}
