@@ -420,11 +420,16 @@ export default function BookingDetails() {
       if (booking.owner) {
         await supabase.functions.invoke('send-booking-cancellation', {
           body: {
-            bookingId: booking.id,
-            recipientEmail: booking.owner.email,
-            recipientName: `${booking.owner.first_name} ${booking.owner.last_name}`,
-            bookingReference: booking.booking_reference,
-            cancellationReason: 'Declined by sitter',
+            recipient_email: booking.owner.email,
+            recipient_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+            cancelled_by_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+            cancelled_by_type: 'sitter',
+            service_type: booking.service_type,
+            start_date: booking.start_date,
+            end_date: booking.end_date,
+            booking_reference: booking.booking_reference,
+            total_amount: booking.total_amount,
+            was_paid: false
           },
         });
       }
@@ -439,6 +444,53 @@ export default function BookingDetails() {
       toast({
         title: 'Error',
         description: error.message || 'Failed to decline booking',
+        variant: 'destructive',
+      });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleOwnerCancelBooking = async () => {
+    if (!booking) return;
+    
+    setActionLoading(true);
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', booking.id);
+
+      if (error) throw error;
+
+      // Send cancellation email to sitter
+      if (booking.sitter) {
+        await supabase.functions.invoke('send-booking-cancellation', {
+          body: {
+            recipient_email: booking.sitter.email,
+            recipient_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+            cancelled_by_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+            cancelled_by_type: 'owner',
+            service_type: booking.service_type,
+            start_date: booking.start_date,
+            end_date: booking.end_date,
+            booking_reference: booking.booking_reference,
+            total_amount: booking.total_amount,
+            was_paid: false
+          },
+        });
+      }
+
+      toast({
+        title: 'Booking Cancelled',
+        description: 'The sitter has been notified.',
+      });
+
+      navigate('/profile?tab=bookings');
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to cancel booking',
         variant: 'destructive',
       });
     } finally {
@@ -1224,6 +1276,27 @@ export default function BookingDetails() {
                   disabled={actionLoading}
                 >
                   Decline Booking
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Owner Cancel Button for Pending/Awaiting Payment bookings */}
+          {isOwner && (booking.status === 'pending' || booking.status === 'awaiting_payment') && (
+            <Card>
+              <CardContent className="pt-6 space-y-3">
+                <p className="text-sm text-muted-foreground text-center mb-2">
+                  {booking.status === 'pending' 
+                    ? 'Waiting for sitter to respond' 
+                    : 'Complete payment to confirm'}
+                </p>
+                <Button 
+                  className="w-full" 
+                  variant="destructive"
+                  onClick={handleOwnerCancelBooking}
+                  disabled={actionLoading}
+                >
+                  {actionLoading ? 'Cancelling...' : 'Cancel Booking'}
                 </Button>
               </CardContent>
             </Card>

@@ -2220,6 +2220,10 @@ export type Database = {
         Args: { sitter_profile_id: string }
         Returns: boolean
       }
+      can_owner_view_sitter_profile: {
+        Args: { sitter_profile_id: string }
+        Returns: boolean
+      }
       can_sitter_view_owner_profile: {
         Args: { owner_profile_id: string }
         Returns: boolean
