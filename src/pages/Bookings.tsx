@@ -1022,10 +1022,9 @@ export default function Bookings() {
                              variant="destructive" 
                              size="sm" 
                              onClick={() => handleCancelBooking(booking)}
-                             disabled={booking.status === 'pending'}
-                             className="flex-1 sm:flex-none sm:min-w-[80px] disabled:opacity-50 disabled:cursor-not-allowed"
+                             className="flex-1 sm:flex-none sm:min-w-[80px]"
                            >
-                             Cancel
+                             Cancel Booking
                            </Button>
                          )}
                           {booking.status === 'confirmed' && booking.sitter_id === profile?.id && (
