@@ -641,7 +641,7 @@ export default function FindSitters() {
                   onClick={handleSearch}
                 >
                    <Search className="mr-2 h-5 w-5" />
-                   Search Sitters
+                   View Available Sitters
                 </Button>
                 <Button 
                   variant="outline"

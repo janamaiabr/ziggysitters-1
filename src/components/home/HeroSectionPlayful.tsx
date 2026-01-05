@@ -249,7 +249,7 @@ const HeroSectionPlayful = ({
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                  Search Sitters
+                  View Available Sitters
                   <Sparkles className="ml-2 h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               </div>
