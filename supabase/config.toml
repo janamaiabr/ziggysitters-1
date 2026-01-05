@@ -152,3 +152,6 @@ verify_jwt = true
 
 [functions.send-booking-cancellation]
 verify_jwt = false
+
+[functions.send-new-user-admin-notification]
+verify_jwt = false
