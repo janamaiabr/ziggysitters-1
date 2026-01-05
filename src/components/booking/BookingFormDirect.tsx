@@ -547,9 +547,9 @@ export default function BookingFormDirect({
           </Button>
         )}
         
-        {/* Compact reassurance */}
-        <p className="text-xs text-center text-muted-foreground">
-          No payment now • Sitter responds within 24hrs
+        {/* Compact reassurance - directly adjacent to CTA */}
+        <p className="text-xs text-center text-muted-foreground font-medium">
+          This sends an enquiry, not a booking. You'll confirm before any payment.
         </p>
       </CardContent>
     </Card>
