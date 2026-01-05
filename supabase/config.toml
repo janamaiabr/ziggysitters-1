@@ -149,3 +149,6 @@ verify_jwt = true
 
 [functions.create-young-walker-payment]
 verify_jwt = true
+
+[functions.send-booking-cancellation]
+verify_jwt = false
