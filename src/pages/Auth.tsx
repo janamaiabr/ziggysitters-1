@@ -203,10 +203,26 @@ export default function Auth() {
           }
         }
         
-        // Note: Role-specific welcome emails are sent during onboarding
-        // when the user actually selects their role. At signup, we don't know
-        // if they're a pet owner or sitter yet.
-        console.log('User signed up - role-specific welcome email will be sent during onboarding');
+        // Send admin notification about new signup immediately
+        // This ensures admins know about ALL signups, even if users abandon onboarding
+        try {
+          const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
+          const searchSessionId = sessionStorage.getItem('search_session_id');
+          const sessionId = behaviorSessionId || searchSessionId;
+          
+          await supabase.functions.invoke('send-new-user-admin-notification', {
+            body: {
+              email: formData.email.trim(),
+              firstName: formData.firstName.trim(),
+              lastName: formData.lastName.trim(),
+              sessionId: sessionId,
+            }
+          });
+          console.log('Admin notification sent for new signup');
+        } catch (notifyError) {
+          console.error('Failed to send admin signup notification:', notifyError);
+          // Don't block signup if notification fails
+        }
         
         // Track registration completion
         metaPixel.trackCompleteRegistration();
