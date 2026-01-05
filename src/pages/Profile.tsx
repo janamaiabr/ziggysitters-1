@@ -919,7 +919,7 @@ export default function Profile() {
 
     setSubmittingCancel(true);
     try {
-      const { error } = await supabase.functions.invoke('request-account-cancellation', {
+      const { data, error } = await supabase.functions.invoke('request-account-cancellation', {
         body: {
           userId: user?.id,
           userEmail: profile?.email,
@@ -930,10 +930,22 @@ export default function Profile() {
 
       if (error) throw error;
 
-      toast({
-        title: "Cancellation Request Submitted",
-        description: "Your account cancellation request has been submitted. Our team will contact you within 24-48 hours.",
-      });
+      if (data?.deleted) {
+        // Account was deleted immediately
+        toast({
+          title: "Account Deleted",
+          description: "Your account has been successfully deleted. You will be signed out.",
+        });
+        // Sign out the user
+        await supabase.auth.signOut();
+        navigate('/');
+      } else {
+        // Requires manual review
+        toast({
+          title: "Cancellation Request Submitted",
+          description: data?.message || "Your request has been submitted. Our team will contact you within 24-48 hours.",
+        });
+      }
 
       setShowCancelDialog(false);
       setCancelReason('');
