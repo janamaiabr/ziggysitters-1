@@ -7,8 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, MapPin, Shield, Calendar, Heart, ArrowRight, Search, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 
 // Suburb data for SEO content
 const SUBURB_DATA: Record<string, { 
@@ -235,6 +234,9 @@ export default function FindSittersSuburb() {
     sitterServices: sitter.sitterServices,
   });
 
+  // Total sitters available (local + nearby)
+  const totalSitters = sitters.length + nearbySitters.length;
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
@@ -245,10 +247,8 @@ export default function FindSittersSuburb() {
         structuredData={structuredData}
       />
       
-      <Header />
-      
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16 lg:py-24">
+      {/* Hero Section - Compact with sitter count */}
+      <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-10 lg:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
@@ -256,31 +256,28 @@ export default function FindSittersSuburb() {
               {suburbName}, Auckland
             </Badge>
             
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
               Pet Sitters in {suburbName}
             </h1>
             
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground mb-4 max-w-2xl mx-auto">
               {suburbData?.description || `Find trusted, verified pet sitters in ${suburbName} who will care for your pets like family.`}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                onClick={() => navigate(`/find-sitters?location=${encodeURIComponent(suburbName)}`)}
-                className="gap-2"
-              >
-                <Search className="w-4 h-4" />
-                Search Available Sitters
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => navigate('/how-it-works')}
-              >
-                How It Works
-              </Button>
-            </div>
+            {/* Show sitter availability count immediately */}
+            {!loading && (
+              <p className="text-primary font-semibold text-lg mb-2">
+                {sitters.length > 0 
+                  ? `${sitters.length} sitter${sitters.length > 1 ? 's' : ''} available in ${suburbName}`
+                  : totalSitters > 0 
+                    ? `${totalSitters} sitters available nearby`
+                    : 'Searching for sitters...'
+                }
+              </p>
+            )}
+            <p className="text-sm text-muted-foreground">
+              No payment required • Free to browse & enquire
+            </p>
           </div>
         </div>
       </section>
@@ -343,12 +340,23 @@ export default function FindSittersSuburb() {
                 />
               ))}
             </div>
+          ) : nearbySitters.length > 0 ? (
+            // No exact suburb match but have nearby sitters - show them directly
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {nearbySitters.map(sitter => (
+                <EnhancedSitterCard
+                  key={sitter.id}
+                  sitter={mapSitterToCardProps(sitter)}
+                  onViewProfile={() => handleBookSitter(sitter.id)}
+                />
+              ))}
+            </div>
           ) : (
             <div className="text-center py-12">
               <Users className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
               <h3 className="text-xl font-semibold mb-2">No sitters in {suburbName} yet</h3>
               <p className="text-muted-foreground mb-6">
-                We're growing! Check out sitters in nearby suburbs below.
+                We're growing! Check out all available sitters.
               </p>
               <Button onClick={() => navigate('/find-sitters')}>
                 View All Auckland Sitters
@@ -428,7 +436,7 @@ export default function FindSittersSuburb() {
                 onClick={() => navigate(`/find-sitters?location=${encodeURIComponent(suburbName)}`)}
                 className="gap-2"
               >
-                Find a Sitter Now
+                View Available Sitters
                 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button 
@@ -443,7 +451,7 @@ export default function FindSittersSuburb() {
         </div>
       </section>
 
-      <Footer />
+      
     </div>
   );
 }
