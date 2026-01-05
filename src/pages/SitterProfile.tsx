@@ -31,6 +31,7 @@ import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge
 import QuickQuestionDialog from '@/components/messaging/QuickQuestionDialog';
 import GuestEnquiryDialog from '@/components/messaging/GuestEnquiryDialog';
 import FloatingEnquiryButton from '@/components/sitter/FloatingEnquiryButton';
+import FAQAccordion from '@/components/sitter/FAQAccordion';
 
 interface SitterData {
   id: string;
@@ -615,6 +616,14 @@ export default function SitterProfile() {
                 </CardContent>
               </Card>
             )}
+
+            {/* FAQ Section */}
+            <FAQAccordion 
+              sitterName={sitterData.display_name}
+              services={sitterData.services}
+              hasGoldenBadge={sitterData.hasPoliceVet}
+              isVerified={sitterData.verified}
+            />
           </div>
 
           {/* Sidebar */}

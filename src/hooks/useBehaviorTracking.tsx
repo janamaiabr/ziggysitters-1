@@ -187,7 +187,7 @@ export function useBehaviorTracking() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [trackEvent]);
 
-  // Track clicks and interactions
+  // Track clicks and interactions with heatmap coordinates
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       interactionCount.current++;
@@ -196,22 +196,38 @@ export function useBehaviorTracking() {
       const target = e.target as HTMLElement;
       const elementInfo = getElementInfo(target);
       
+      // Get viewport-relative coordinates for heatmap
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const xPercent = Math.round((e.clientX / viewportWidth) * 100);
+      const yPercent = Math.round((e.clientY / viewportHeight) * 100);
+      const scrollY = window.scrollY;
+      const pageY = e.pageY;
+      
       if (elementInfo) {
         clickedElements.current.push(elementInfo);
         
-        // Track specific important clicks
-        if (isImportantClick(target)) {
-          trackEvent({
-            event_type: 'interaction',
-            event_name: 'element_clicked',
-            event_data: {
-              element: elementInfo,
-              text: target.textContent?.substring(0, 100),
-              href: (target as HTMLAnchorElement).href || null,
-              time_on_page: Math.round((Date.now() - pageEntryTime.current) / 1000),
-            },
-          });
-        }
+        // Track ALL clicks with heatmap data
+        trackEvent({
+          event_type: 'interaction',
+          event_name: 'click_heatmap',
+          event_data: {
+            element: elementInfo,
+            text: target.textContent?.substring(0, 50),
+            href: (target as HTMLAnchorElement).href || null,
+            // Heatmap coordinates
+            x: e.clientX,
+            y: e.clientY,
+            x_percent: xPercent,
+            y_percent: yPercent,
+            page_y: pageY,
+            scroll_y: scrollY,
+            viewport_width: viewportWidth,
+            viewport_height: viewportHeight,
+            time_on_page: Math.round((Date.now() - pageEntryTime.current) / 1000),
+            is_important: isImportantClick(target),
+          },
+        });
       }
     };
 
