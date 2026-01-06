@@ -158,3 +158,6 @@ verify_jwt = false
 
 [functions.send-abandoned-enquiry-recovery]
 verify_jwt = false
+
+[functions.send-daily-signup-digest]
+verify_jwt = false
