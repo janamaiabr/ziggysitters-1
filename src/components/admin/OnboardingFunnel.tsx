@@ -2,16 +2,15 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
-import { TrendingUp, Users, PawPrint, Search, MousePointerClick, CalendarCheck, CheckCircle, Eye, FormInput } from 'lucide-react';
+import { TrendingUp, Users, Search, MousePointerClick, CalendarCheck, CheckCircle, Eye, FormInput } from 'lucide-react';
 
 interface FunnelStats {
   totalSignups: number;
-  addedPet: number;
   searched: number;
   clickedSitter: number;
   viewedProfile: number;
   openedForm: number;
-  clickedSignupCTA: number;
+  submittedEnquiry: number;
   madeBooking: number;
   completedBooking: number;
 }
@@ -21,12 +20,11 @@ type Period = '7d' | '30d' | '90d' | 'all';
 export function OnboardingFunnel() {
   const [stats, setStats] = useState<FunnelStats>({
     totalSignups: 0,
-    addedPet: 0,
     searched: 0,
     clickedSitter: 0,
     viewedProfile: 0,
     openedForm: 0,
-    clickedSignupCTA: 0,
+    submittedEnquiry: 0,
     madeBooking: 0,
     completedBooking: 0,
   });
@@ -91,7 +89,7 @@ export function OnboardingFunnel() {
       let eventsQuery = supabase
         .from('user_events')
         .select('event_name')
-        .in('event_name', ['sitter_profile_view', 'booking_form_opened', 'booking_accordion_opened', 'booking_form_viewed', 'guest_booking_cta_clicked']);
+        .in('event_name', ['sitter_profile_view', 'booking_form_opened', 'booking_accordion_opened', 'booking_form_viewed', 'booking_request_sent', 'booking_submit_attempted']);
       
       if (dateFilter) {
         eventsQuery = eventsQuery.gte('created_at', dateFilter);
@@ -101,24 +99,26 @@ export function OnboardingFunnel() {
 
       let viewedProfileCount = 0;
       let openedFormCount = 0;
-      let clickedSignupCTACount = 0;
+      let submittedEnquiryCount = 0;
       if (!eventsError && eventsData) {
         viewedProfileCount = eventsData.filter(e => e.event_name === 'sitter_profile_view').length;
         openedFormCount = eventsData.filter(e => 
           e.event_name === 'booking_form_opened' || e.event_name === 'booking_accordion_opened' || e.event_name === 'booking_form_viewed'
         ).length;
-        clickedSignupCTACount = eventsData.filter(e => e.event_name === 'guest_booking_cta_clicked').length;
+        // Track actual enquiry submissions (more meaningful than CTA clicks)
+        submittedEnquiryCount = eventsData.filter(e => 
+          e.event_name === 'booking_request_sent' || e.event_name === 'booking_submit_attempted'
+        ).length;
       }
 
       if (data) {
         setStats({
           totalSignups: data.length,
-          addedPet: data.filter(d => d.added_pet).length,
           searched: data.filter(d => d.searched).length,
           clickedSitter: clickedCount,
           viewedProfile: viewedProfileCount,
           openedForm: openedFormCount,
-          clickedSignupCTA: clickedSignupCTACount,
+          submittedEnquiry: submittedEnquiryCount,
           madeBooking: data.filter(d => d.made_booking).length,
           completedBooking: data.filter(d => d.completed_booking).length,
         });
@@ -137,13 +137,12 @@ export function OnboardingFunnel() {
 
   const funnelSteps = [
     { label: 'Signed Up', value: stats.totalSignups, icon: Users, color: 'bg-blue-500' },
-    { label: 'Added Pet', value: stats.addedPet, icon: PawPrint, color: 'bg-purple-500' },
     { label: 'Searched', value: stats.searched, icon: Search, color: 'bg-pink-500' },
     { label: 'Clicked Sitter', value: stats.clickedSitter, icon: MousePointerClick, color: 'bg-orange-500' },
     { label: 'Viewed Profile', value: stats.viewedProfile, icon: Eye, color: 'bg-rose-500' },
     { label: 'Opened Form', value: stats.openedForm, icon: FormInput, color: 'bg-amber-500' },
-    { label: 'Clicked Signup CTA', value: stats.clickedSignupCTA, icon: MousePointerClick, color: 'bg-cyan-500' },
-    { label: 'Made Booking', value: stats.madeBooking, icon: CalendarCheck, color: 'bg-lime-500' },
+    { label: 'Submitted Enquiry', value: stats.submittedEnquiry, icon: CalendarCheck, color: 'bg-cyan-500' },
+    { label: 'Booking Created', value: stats.madeBooking, icon: CalendarCheck, color: 'bg-lime-500' },
     { label: 'Completed', value: stats.completedBooking, icon: CheckCircle, color: 'bg-green-500' },
   ];
 

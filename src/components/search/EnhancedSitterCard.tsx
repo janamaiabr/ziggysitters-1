@@ -122,20 +122,24 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           </div>
         </div>
         
-        {/* Bottom price tag */}
+        {/* Bottom price tag with estimate */}
         <div className="absolute bottom-2 left-2">
-          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
             {sitter.isYoungWalker ? (
-              <>
+              <div className="flex flex-col">
                 <span className="font-bold text-emerald-600">${sitter.baseRate}</span>
-                <span className="text-muted-foreground text-sm">/{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}min walk</span>
-              </>
+                <span className="text-muted-foreground text-xs">/{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}min walk</span>
+              </div>
             ) : (
-              <>
-                <span className="text-muted-foreground text-sm">from </span>
-                <span className="font-bold text-foreground">${sitter.baseRate}</span>
-                <span className="text-muted-foreground text-sm">/day</span>
-              </>
+              <div className="flex flex-col">
+                <div>
+                  <span className="font-bold text-foreground">${sitter.baseRate}</span>
+                  <span className="text-muted-foreground text-sm">/day</span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  ~${Math.round(sitter.baseRate * 7 * 1.1)} for 7 days
+                </span>
+              </div>
             )}
           </div>
         </div>
