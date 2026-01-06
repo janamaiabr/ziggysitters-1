@@ -351,9 +351,90 @@ export default function Onboarding() {
     fetchExistingProfile();
   }, [user, navigate, initialLoadComplete, showTerms, step, hasAcceptedTermsLocally]);
 
-  const handleRoleSelection = (role: UserRole) => {
+  const handleRoleSelection = async (role: UserRole) => {
     trackAction('onboarding_role_selected', { role });
     setData(prev => ({ ...prev, role }));
+    
+    // CRITICAL FIX: For pet owners, complete onboarding IMMEDIATELY on role selection
+    // This eliminates the extra "Continue" button click that was causing 100% dropoff
+    if (role === 'pet_owner') {
+      console.log('Pet owner selected - completing onboarding immediately');
+      setIsLoading(true);
+      
+      try {
+        // Update profile with role and mark onboarding complete
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ 
+            role: 'pet_owner',
+            onboarding_completed: true 
+          })
+          .eq('user_id', user?.id);
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+          throw profileError;
+        }
+
+        // Send welcome email (async, don't block)
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name, email, id')
+          .eq('user_id', user?.id)
+          .single();
+
+        if (profileData) {
+          const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
+          const searchSessionId = sessionStorage.getItem('search_session_id');
+          const sessionId = behaviorSessionId || searchSessionId;
+          
+          supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email: profileData.email,
+              firstName: profileData.first_name || 'there',
+              role: 'pet_owner',
+              sessionId: sessionId,
+            }
+          }).catch(e => console.error('Welcome email failed:', e));
+        }
+
+        // Clear localStorage
+        localStorage.removeItem('onboarding_data');
+        localStorage.removeItem('onboarding_step');
+        
+        toast({
+          title: "🎉 Welcome to ZiggySitters!",
+          description: "Let's find the perfect sitter for your pet!",
+          duration: 3000,
+        });
+        
+        // Check for pre-registration search context
+        const lastClickedSitter = sessionStorage.getItem('last_clicked_sitter_id');
+        const searchLocation = sessionStorage.getItem('search_location');
+        const searchServiceType = sessionStorage.getItem('search_service_type');
+        
+        sessionStorage.removeItem('last_clicked_sitter_id');
+        
+        if (lastClickedSitter) {
+          navigate(`/sitter/${lastClickedSitter}`, { replace: true });
+        } else if (searchLocation || searchServiceType) {
+          const params = new URLSearchParams();
+          if (searchLocation) params.set('location', searchLocation);
+          if (searchServiceType) params.set('serviceType', searchServiceType);
+          navigate(`/find-sitters?${params.toString()}`, { replace: true });
+        } else {
+          navigate('/find-sitters', { replace: true });
+        }
+      } catch (error: any) {
+        console.error('Error completing pet owner onboarding:', error);
+        setIsLoading(false);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to complete setup. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleInputChange = (field: string, value: any) => {
@@ -674,96 +755,8 @@ export default function Onboarding() {
       return;
     }
     
-    // CRITICAL: Pet owners skip to search immediately after selecting role
-    if (step === 1 && data.role === 'pet_owner') {
-      console.log('Pet owner selected - completing onboarding and redirecting to search');
-      
-      try {
-        // Update profile with role and mark onboarding complete
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ 
-            role: 'pet_owner',
-            onboarding_completed: true 
-          })
-          .eq('user_id', user?.id);
-
-        if (profileError) {
-          console.error('Error updating profile:', profileError);
-          throw profileError;
-        }
-
-        // Send welcome email
-        try {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('first_name, email, id')
-            .eq('user_id', user?.id)
-            .single();
-
-          if (profileData) {
-            const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
-            const searchSessionId = sessionStorage.getItem('search_session_id');
-            const sessionId = behaviorSessionId || searchSessionId;
-            
-            await supabase.functions.invoke('send-welcome-email', {
-              body: {
-                email: profileData.email,
-                firstName: profileData.first_name || 'there',
-                role: 'pet_owner',
-                sessionId: sessionId,
-              }
-            });
-            console.log('Pet owner welcome email sent');
-          }
-        } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError);
-        }
-
-        // Clear localStorage
-        localStorage.removeItem('onboarding_data');
-        localStorage.removeItem('onboarding_step');
-        
-        toast({
-          title: "🎉 Welcome to ZiggySitters!",
-          description: "Let's find the perfect sitter for your pet!",
-          duration: 4000,
-        });
-        
-        // Check if user had search context from before registration
-        const lastClickedSitter = sessionStorage.getItem('last_clicked_sitter_id');
-        const searchLocation = sessionStorage.getItem('search_location');
-        const searchServiceType = sessionStorage.getItem('search_service_type');
-        
-        // Clear these after use
-        sessionStorage.removeItem('last_clicked_sitter_id');
-        
-        if (lastClickedSitter) {
-          // User clicked a sitter before registering - take them back there
-          console.log('Redirecting to previously clicked sitter:', lastClickedSitter);
-          navigate(`/sitter/${lastClickedSitter}`, { replace: true });
-        } else if (searchLocation || searchServiceType) {
-          // User had a search in progress
-          const params = new URLSearchParams();
-          if (searchLocation) params.set('location', searchLocation);
-          if (searchServiceType) params.set('serviceType', searchServiceType);
-          console.log('Restoring search context');
-          navigate(`/find-sitters?${params.toString()}`, { replace: true });
-        } else {
-          // No prior context - go to search page
-          navigate('/find-sitters', { replace: true });
-        }
-        return;
-      } catch (error: any) {
-        console.error('Error completing pet owner onboarding:', error);
-        toast({
-          title: "Error",
-          description: error.message || "Failed to complete setup. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
+    // Pet owners are now handled immediately in handleRoleSelection
+    // This nextStep only handles sitters
     
     // Sitters need email verification before proceeding
     if (step === 1 && data.role === 'pet_sitter' && !emailVerified) {
@@ -803,34 +796,32 @@ export default function Onboarding() {
         <div 
           className={`relative cursor-pointer transition-all duration-300 transform hover:scale-[1.02] ${
             data.role === 'pet_owner' ? 'ring-4 ring-purple-400 shadow-2xl' : 'hover:shadow-xl'
-          }`}
-          onClick={() => handleRoleSelection('pet_owner')}
+          } ${isLoading ? 'pointer-events-none opacity-75' : ''}`}
+          onClick={() => !isLoading && handleRoleSelection('pet_owner')}
         >
           <Card className="border-2 border-purple-200 dark:border-purple-800 overflow-hidden bg-gradient-to-br from-purple-50 via-background to-blue-50 dark:from-purple-950/20 dark:via-background dark:to-blue-950/20">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-center gap-5">
                 <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Heart className="w-8 h-8 md:w-10 md:h-10 text-white" fill="currentColor" />
+                  {isLoading && data.role === 'pet_owner' ? (
+                    <div className="animate-spin rounded-full h-8 w-8 border-3 border-white border-t-transparent"></div>
+                  ) : (
+                    <Heart className="w-8 h-8 md:w-10 md:h-10 text-white" fill="currentColor" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-xl md:text-2xl font-bold mb-1 flex items-center gap-2">
-                    Pet Owner
+                    {isLoading && data.role === 'pet_owner' ? 'Setting up...' : 'Pet Owner'}
                     <span className="text-2xl">💜</span>
                   </h3>
                   <p className="text-sm md:text-base text-muted-foreground">
-                    Find trusted sitters for your beloved pets
+                    {isLoading && data.role === 'pet_owner' 
+                      ? 'Taking you to find sitters...' 
+                      : 'Find trusted sitters for your beloved pets'}
                   </p>
                 </div>
                 <div className="flex-shrink-0">
-                  <RadioGroup value={data.role || ''}>
-                    <div className="flex items-center">
-                      <RadioGroupItem 
-                        value="pet_owner" 
-                        id="pet_owner" 
-                        className="h-6 w-6 border-2 border-purple-500 data-[state=checked]:bg-purple-500"
-                      />
-                    </div>
-                  </RadioGroup>
+                  <ArrowRight className="h-6 w-6 text-purple-500" />
                 </div>
               </div>
             </CardContent>
@@ -903,7 +894,7 @@ export default function Onboarding() {
         </div>
       </div>
 
-      {data.role && (
+      {data.role === 'pet_sitter' && (
         <div className="text-center mt-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
           <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
             <span className="text-lg">👍</span>
@@ -1207,8 +1198,8 @@ export default function Onboarding() {
             {step >= 3 && data.role === 'pet_sitter' && renderRoleSpecificOnboarding()}
           </CardContent>
           
-          {/* Navigation buttons - hide for pet owners after step 1 */}
-          {step <= 2 && !(data.role === 'pet_owner' && step >= 2) && (
+          {/* Navigation buttons - only show for sitters, pet owners complete immediately on role selection */}
+          {((step === 1 && data.role === 'pet_sitter') || (step === 2 && data.role === 'pet_sitter')) && (
             <div className="flex justify-between gap-4 px-6 pb-6 pt-0">
               <Button
                 variant="outline"
@@ -1233,8 +1224,6 @@ export default function Onboarding() {
                     <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
                     Setting up...
                   </>
-                ) : step === 1 && data.role === 'pet_owner' ? (
-                  'Find Sitters! 🔍'
                 ) : step === 2 ? (
                   'Save & Continue ✨'
                 ) : (
