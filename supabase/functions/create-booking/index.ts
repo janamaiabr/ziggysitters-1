@@ -25,6 +25,28 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-BOOKING] ${step}${detailsStr}`);
 };
 
+// Retry helper with exponential backoff - emails MUST be sent
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> => {
+  let lastError: Error | null = null;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      logStep(`Attempt ${attempt + 1}/${maxRetries} failed`, { error: lastError.message });
+      if (attempt < maxRetries - 1) {
+        const delay = baseDelay * Math.pow(2, attempt);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+};
+
 serve(async (req) => {
   try {
     console.log("[CREATE-BOOKING] === FUNCTION INVOKED ===");
@@ -401,51 +423,97 @@ serve(async (req) => {
     }
     logStep("Booking created - payment will occur after sitter acceptance", { bookingId: booking.id, reference: booking.booking_reference });
 
-    // Send booking notification email to sitter - different email based on Stripe status
+    // CRITICAL: Send booking notification emails with retries - these MUST succeed
+    const notificationFunction = hasStripeSetup 
+      ? 'send-booking-notification' 
+      : 'send-booking-notification-no-stripe';
+    
+    const sitterEmailPayload = {
+      booking_id: booking.id,
+      sitter_email: sitterProfile.email,
+      sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
+      owner_name: `${profile.first_name} ${profile.last_name}`,
+      owner_email: profile.email,
+      service_type: dbServiceType,
+      start_date: bookingData.startDate,
+      end_date: bookingData.endDate,
+      booking_reference: booking.booking_reference,
+      total_amount: bookingData.totalAmount,
+      special_instructions: bookingData.specialInstructions || ''
+    };
+
+    const adminEmailPayload = {
+      booking_id: booking.id,
+      owner_name: `${profile.first_name} ${profile.last_name}`,
+      owner_email: profile.email,
+      sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
+      sitter_email: sitterProfile.email,
+      service_type: dbServiceType,
+      start_date: bookingData.startDate,
+      end_date: bookingData.endDate,
+      booking_reference: booking.booking_reference,
+      total_amount: bookingData.totalAmount
+    };
+
+    // Send both emails with retry logic
+    let sitterEmailSent = false;
+    let adminEmailSent = false;
+
     try {
-      const notificationFunction = hasStripeSetup 
-        ? 'send-booking-notification' 
-        : 'send-booking-notification-no-stripe';
-      
-      await supabaseClient.functions.invoke(notificationFunction, {
-        body: {
-          booking_id: booking.id,
-          sitter_email: sitterProfile.email,
-          sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
-          owner_name: `${profile.first_name} ${profile.last_name}`,
-          service_type: dbServiceType,
-          start_date: bookingData.startDate,
-          end_date: bookingData.endDate,
-          booking_reference: booking.booking_reference,
-          total_amount: bookingData.totalAmount
-        }
+      await retryWithBackoff(async () => {
+        const result = await supabaseClient.functions.invoke(notificationFunction, {
+          body: sitterEmailPayload
+        });
+        if (result.error) throw new Error(result.error.message || 'Email function failed');
+        return result;
+      }, 3, 500);
+      sitterEmailSent = true;
+      logStep(`✅ Sitter notification email sent successfully (${notificationFunction})`, { 
+        sitter: sitterProfile.email, 
+        booking: booking.booking_reference 
       });
-      logStep(`Booking notification email sent to sitter (${notificationFunction})`);
     } catch (emailError) {
-      logStep("Failed to send booking notification email", { error: emailError.message });
-      // Don't fail the booking if email fails
+      console.error("[CREATE-BOOKING] ❌ CRITICAL: Failed to send sitter email after 3 retries", {
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+        sitter_email: sitterProfile.email,
+        booking_reference: booking.booking_reference
+      });
+      // Store failed email for manual follow-up
+      try {
+        await supabaseClient.from('notifications').insert({
+          user_id: sitterProfile.id,
+          type: 'email_failed',
+          title: 'Booking notification failed to send',
+          message: `Email to ${sitterProfile.email} for booking ${booking.booking_reference} failed. Manual follow-up required.`,
+          metadata: { 
+            booking_id: booking.id, 
+            email_type: notificationFunction,
+            payload: sitterEmailPayload,
+            error: emailError instanceof Error ? emailError.message : String(emailError)
+          }
+        });
+      } catch (notifError) {
+        logStep("Failed to create fallback notification", { error: notifError });
+      }
     }
 
-    // Send notification to admin
     try {
-      await supabaseClient.functions.invoke('send-admin-booking-notification', {
-        body: {
-          booking_id: booking.id,
-          owner_name: `${profile.first_name} ${profile.last_name}`,
-          owner_email: profile.email,
-          sitter_name: `${sitterProfile.first_name} ${sitterProfile.last_name}`,
-          service_type: dbServiceType,
-          start_date: bookingData.startDate,
-          end_date: bookingData.endDate,
-          booking_reference: booking.booking_reference,
-          total_amount: bookingData.totalAmount
-        }
-      });
-      logStep("Admin notification email sent");
+      await retryWithBackoff(async () => {
+        const result = await supabaseClient.functions.invoke('send-admin-booking-notification', {
+          body: adminEmailPayload
+        });
+        if (result.error) throw new Error(result.error.message || 'Admin email function failed');
+        return result;
+      }, 3, 500);
+      adminEmailSent = true;
+      logStep("✅ Admin notification email sent successfully");
     } catch (emailError) {
-      logStep("Failed to send admin notification email", { error: emailError.message });
-      // Don't fail the booking if email fails
+      console.error("[CREATE-BOOKING] ❌ Failed to send admin email after 3 retries", {
+        error: emailError instanceof Error ? emailError.message : String(emailError)
+      });
     }
+
+    logStep("Email delivery status", { sitterEmailSent, adminEmailSent });
 
     return new Response(JSON.stringify({ 
       success: true,
