@@ -412,31 +412,49 @@ export default function BookingDetails() {
     try {
       const { error } = await supabase
         .from('bookings')
-        .update({ status: 'cancelled' })
+        .update({ status: 'declined' })
         .eq('id', booking.id);
 
       if (error) throw error;
 
+      // Send decline notification to owner
       if (booking.owner) {
-        await supabase.functions.invoke('send-booking-cancellation', {
+        await supabase.functions.invoke('send-booking-decline-notification', {
           body: {
-            recipient_email: booking.owner.email,
-            recipient_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
-            cancelled_by_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-            cancelled_by_type: 'sitter',
+            owner_email: booking.owner.email,
+            owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+            sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
             service_type: booking.service_type,
             start_date: booking.start_date,
             end_date: booking.end_date,
             booking_reference: booking.booking_reference,
-            total_amount: booking.total_amount,
-            was_paid: false
-          },
+            total_amount: booking.total_amount
+          }
         });
       }
 
+      // Send admin status update
+      await supabase.functions.invoke('send-admin-status-update', {
+        body: {
+          booking_reference: booking.booking_reference,
+          old_status: 'pending',
+          new_status: 'declined',
+          owner_name: booking.owner ? `${booking.owner.first_name} ${booking.owner.last_name}` : 'Unknown',
+          owner_email: booking.owner?.email,
+          sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+          sitter_email: booking.sitter.email,
+          service_type: booking.service_type,
+          start_date: booking.start_date,
+          end_date: booking.end_date,
+          total_amount: booking.total_amount,
+          platform_fee: booking.platform_fee,
+          additional_info: `Booking declined by sitter.`
+        }
+      }).catch(err => console.error('Admin notification failed:', err));
+
       toast({
         title: 'Booking Declined',
-        description: 'The booking has been cancelled.',
+        description: 'The owner has been notified.',
       });
 
       fetchBookingDetails();
