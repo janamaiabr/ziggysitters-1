@@ -158,9 +158,14 @@ export default function AdminDocumentReview() {
 
       if (error) throw error;
 
+      // Send congratulations email
+      await supabase.functions.invoke('send-golden-badge-congratulations', {
+        body: { sitterId: sitter.id }
+      });
+
       toast({
         title: "Gold Star Badge Awarded! ⭐",
-        description: `${sitter.first_name} now has the gold star badge`,
+        description: `${sitter.first_name} now has the gold star badge and has been notified by email`,
       });
 
       fetchSitters();
