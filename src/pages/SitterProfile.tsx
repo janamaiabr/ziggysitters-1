@@ -363,7 +363,7 @@ export default function SitterProfile() {
                       onClick={() => setIsMessageDialogOpen(true)}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Ask a Question
+                      💬 Quick Question
                     </Button>
                     <Button 
                       size="lg"
@@ -389,7 +389,7 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      Get Free Quote
+                      💬 Send Free Enquiry
                       <span className="ml-2">→</span>
                     </Button>
                   </>
@@ -402,7 +402,7 @@ export default function SitterProfile() {
                       onClick={() => setIsMessageDialogOpen(true)}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Ask a Question
+                      💬 Quick Question
                     </Button>
                     <Button 
                       size="lg"
@@ -415,7 +415,7 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      Get Free Quote
+                      💬 Send Free Enquiry
                       <span className="ml-2">→</span>
                     </Button>
                   </>

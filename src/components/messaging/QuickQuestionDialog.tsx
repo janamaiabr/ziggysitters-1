@@ -146,12 +146,19 @@ export default function QuickQuestionDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-primary" />
-            Ask {recipientName} a Question
+            💬 Quick Question for {recipientName}
           </DialogTitle>
           <DialogDescription>
-            Get to know this sitter before booking. They typically respond within a few hours.
+            Just a friendly chat — no commitment, no payment details needed. Most sitters respond within a few hours.
           </DialogDescription>
         </DialogHeader>
+        
+        {/* Reassurance banner */}
+        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-2 text-center mb-2">
+          <p className="text-xs font-medium text-green-700 dark:text-green-300">
+            🛡️ This is not a booking — just a conversation starter
+          </p>
+        </div>
 
         <div className="space-y-4">
           {/* Quick question buttons */}
