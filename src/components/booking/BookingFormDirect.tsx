@@ -299,7 +299,7 @@ export default function BookingFormDirect({
 
   return (
     <Card className="border-2 border-primary/20 shadow-xl bg-card overflow-hidden relative">
-      <CardHeader className="pb-3 bg-gradient-to-r from-green-50 to-emerald-50">
+      <CardHeader className="pb-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
         <CardTitle className="flex items-center gap-3">
           <img 
             src={sitter.avatar} 
@@ -307,13 +307,20 @@ export default function BookingFormDirect({
             className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/30"
           />
           <div>
-            <div className="text-xl font-bold">Get a Free Quote from {sitter.name.split(' ')[0]}</div>
-            <div className="text-sm text-green-600 font-semibold flex items-center gap-2">
+            <div className="text-xl font-bold">💬 Ask {sitter.name.split(' ')[0]} for a Quote</div>
+            <div className="text-sm text-green-600 dark:text-green-400 font-semibold flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
-              No payment required • Quick response
+              Free • No commitment • Responds in hours
             </div>
           </div>
         </CardTitle>
+        
+        {/* Prominent reassurance banner */}
+        <div className="mt-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-center">
+          <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+            🛡️ This is just an enquiry — you won't be charged anything
+          </p>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-4">
@@ -527,7 +534,7 @@ export default function BookingFormDirect({
             size="lg"
             className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
           >
-            Get Free Quote →
+            💬 Send Free Enquiry →
           </Button>
         ) : (
           <Button 
@@ -542,15 +549,27 @@ export default function BookingFormDirect({
                 Sending...
               </>
             ) : (
-              'Send Enquiry - Free'
+              '💬 Send Free Enquiry'
             )}
           </Button>
         )}
         
-        {/* Compact reassurance - directly adjacent to CTA */}
-        <p className="text-xs text-center text-muted-foreground font-medium">
-          This sends an enquiry, not a booking. You'll confirm before any payment.
-        </p>
+        {/* Triple reassurance - directly adjacent to CTA */}
+        <div className="space-y-2">
+          <p className="text-sm text-center text-green-700 dark:text-green-400 font-semibold">
+            ✓ Not a booking — just a question to {sitter.name.split(' ')[0]}
+          </p>
+          <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              No payment info needed
+            </span>
+            <span className="flex items-center gap-1">
+              <CheckCircle className="w-3 h-3" />
+              Cancel anytime
+            </span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

@@ -233,13 +233,13 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
               handleClick();
             }}
           >
-            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : 'Get Free Quote'}
+            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : '💬 Send Free Enquiry'}
             <span className="ml-2">→</span>
           </Button>
           <p className="text-xs text-center text-muted-foreground font-medium">
             {sitter.isYoungWalker 
               ? `🐕 ${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Parent supervised`
-              : '💬 Just an enquiry • No payment • No commitment'
+              : '✓ Just a question • No payment • No commitment'
             }
           </p>
         </div>

@@ -227,12 +227,19 @@ export default function GuestEnquiryDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-primary" />
-            Ask {recipientName} a Question
+            💬 Quick Question for {recipientName}
           </DialogTitle>
           <DialogDescription>
-            No account needed — just enter your details and we'll connect you.
+            No account needed — just a friendly chat. No payment, no commitment.
           </DialogDescription>
         </DialogHeader>
+        
+        {/* Reassurance banner */}
+        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-2 text-center">
+          <p className="text-xs font-medium text-green-700 dark:text-green-300">
+            🛡️ This is not a booking — just a conversation starter
+          </p>
+        </div>
 
         <div className="space-y-4">
           {/* Quick question buttons */}
@@ -305,12 +312,16 @@ export default function GuestEnquiryDialog({
           <Button 
             onClick={sendEnquiry}
             disabled={!message.trim() || !name.trim() || !email.trim() || loading}
-            className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+            className="w-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400"
             size="lg"
           >
             <Send className="h-4 w-4 mr-2" />
-            {loading ? 'Sending...' : 'Send Enquiry'}
+            {loading ? 'Sending...' : '💬 Send Free Enquiry'}
           </Button>
+          
+          <p className="text-xs text-center text-muted-foreground">
+            ✓ Not a booking — just a question. {recipientName} will reply to your email.
+          </p>
         </div>
       </DialogContent>
     </Dialog>
