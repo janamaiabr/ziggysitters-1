@@ -79,26 +79,31 @@ export default function InlinePetAdder({ profileId, onPetAdded }: InlinePetAdder
 
   if (!isAdding) {
     return (
-      <button
-        type="button"
-        onClick={() => setIsAdding(true)}
-        className="w-full bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border-2 border-dashed border-amber-300 dark:border-amber-700 rounded-lg p-4 hover:border-amber-400 dark:hover:border-amber-600 transition-all group"
-      >
-        <div className="flex items-center justify-center gap-3">
-          <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-            <PawPrint className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+      <div className="space-y-2">
+        <button
+          type="button"
+          onClick={() => setIsAdding(true)}
+          className="w-full bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border-2 border-dashed border-amber-300 dark:border-amber-700 rounded-lg p-4 hover:border-amber-400 dark:hover:border-amber-600 transition-all group"
+        >
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+              <PawPrint className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-amber-800 dark:text-amber-200">
+                Want to add your pet? (Optional)
+              </p>
+              <p className="text-sm text-amber-600 dark:text-amber-400">
+                Helps sitters prepare — or skip and add later
+              </p>
+            </div>
+            <Plus className="w-5 h-5 text-amber-500 ml-auto" />
           </div>
-          <div className="text-left">
-            <p className="font-semibold text-amber-800 dark:text-amber-200">
-              Add your pet first
-            </p>
-            <p className="text-sm text-amber-600 dark:text-amber-400">
-              Just takes 10 seconds → helps sitters prepare
-            </p>
-          </div>
-          <Plus className="w-5 h-5 text-amber-500 ml-auto" />
-        </div>
-      </button>
+        </button>
+        <p className="text-xs text-center text-muted-foreground">
+          ✓ You can skip this and add pet details later
+        </p>
+      </div>
     );
   }
 
