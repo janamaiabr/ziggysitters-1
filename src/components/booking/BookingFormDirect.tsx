@@ -8,12 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, differenceInHours, differenceInDays } from 'date-fns';
 import { CalendarIcon, Clock, Shield, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
-
+import InlinePetAdder from './InlinePetAdder';
 interface BookingFormDirectProps {
   sitter: {
     id: string;
@@ -63,6 +64,7 @@ export default function BookingFormDirect({
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   const { user } = useAuth();
+  const { profile } = useProfile();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { trackAction, trackDropoff } = useBehaviorTracking();
@@ -512,10 +514,21 @@ export default function BookingFormDirect({
           </div>
         )}
 
-        {/* Pet info is optional - simplified message */}
-        {ownerPets.length === 0 && (
+        {/* Inline pet adder for users without pets - CRITICAL for conversion */}
+        {ownerPets.length === 0 && profile?.id && !isGuestPreview && (
+          <InlinePetAdder 
+            profileId={profile.id}
+            onPetAdded={(newPet) => {
+              setOwnerPets(prev => [...prev, newPet]);
+              setSelectedPetIds(prev => [...prev, newPet.id]);
+            }}
+          />
+        )}
+        
+        {/* For guests, show simple message */}
+        {isGuestPreview && (
           <p className="text-sm text-muted-foreground">
-            💡 You can add your pet's details after the sitter responds
+            💡 You'll add your pet's details after signing up
           </p>
         )}
 

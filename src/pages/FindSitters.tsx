@@ -19,7 +19,7 @@ import { useEventTracking } from '@/hooks/useEventTracking';
 import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
-// AddPetsPrompt removed - competing CTA
+import AddPetsPrompt from '@/components/search/AddPetsPrompt';
 
 // No more mock data - using real database profiles
 
@@ -722,6 +722,9 @@ export default function FindSitters() {
           {/* Search Results Header */}
           {!isLoading && searchPerformed && (
             <div className="mb-6 md:mb-8">
+              {/* Add Pets Prompt - subtle but persistent */}
+              <AddPetsPrompt />
+              
               <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
                 Available Pet Sitters
               </h2>
