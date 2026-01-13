@@ -84,6 +84,7 @@ import AdminMarketingInsights from "./pages/AdminMarketingInsights";
 import AdminConversionFunnel from "./pages/AdminConversionFunnel";
 import AdminUserBehavior from "./pages/AdminUserBehavior";
 import AdminSitterDemandGap from "./pages/AdminSitterDemandGap";
+import AdminBookingInsights from "./pages/AdminBookingInsights";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Calendar from "./pages/Calendar";
@@ -265,6 +266,7 @@ function AppContent() {
               <Route path="/admin/conversion-funnel" element={<AdminConversionFunnel />} />
               <Route path="/admin/user-behavior" element={<AdminUserBehavior />} />
               <Route path="/admin/demand-gap" element={<AdminSitterDemandGap />} />
+              <Route path="/admin/booking-insights" element={<AdminBookingInsights />} />
               <Route path="/admin/document-fix" element={<AdminDocumentFix />} />
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />

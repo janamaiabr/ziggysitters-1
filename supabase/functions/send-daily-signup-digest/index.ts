@@ -345,8 +345,8 @@ serve(async (req) => {
 
     // Send email
     const { error: emailError } = await resend.emails.send({
-      from: "ZiggySitters <admin@ziggysitters.com>",
-      to: ["admin@ziggysitters.com"],
+      from: "ZiggySitters <hello@ziggysitters.com>",
+      to: ["janamaia@gmail.com"],
       subject: `📊 Daily Signups: ${stats.petOwners} owners, ${stats.sitters} sitters (${ratio}:1 ratio)`,
       html,
     });
