@@ -20,6 +20,11 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "🎯 Booking Insights",
+    href: "/admin/booking-insights",
+    icon: BarChart3,
+  },
+  {
     title: "Search Analytics",
     href: "/admin/search-analytics",
     icon: BarChart3,
