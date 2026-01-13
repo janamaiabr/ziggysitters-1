@@ -514,21 +514,26 @@ export default function BookingFormDirect({
           </div>
         )}
 
-        {/* Inline pet adder for users without pets - CRITICAL for conversion */}
+        {/* Inline pet adder for users without pets - OPTIONAL for conversion */}
         {ownerPets.length === 0 && profile?.id && !isGuestPreview && (
-          <InlinePetAdder 
-            profileId={profile.id}
-            onPetAdded={(newPet) => {
-              setOwnerPets(prev => [...prev, newPet]);
-              setSelectedPetIds(prev => [...prev, newPet.id]);
-            }}
-          />
+          <div className="space-y-1">
+            <InlinePetAdder 
+              profileId={profile.id}
+              onPetAdded={(newPet) => {
+                setOwnerPets(prev => [...prev, newPet]);
+                setSelectedPetIds(prev => [...prev, newPet.id]);
+              }}
+            />
+            <p className="text-xs text-center text-muted-foreground">
+              💡 No pet profile yet? No worries — you can still send this enquiry!
+            </p>
+          </div>
         )}
         
         {/* For guests, show simple message */}
         {isGuestPreview && (
           <p className="text-sm text-muted-foreground">
-            💡 You'll add your pet's details after signing up
+            💡 You'll add your pet's details after signing up (optional)
           </p>
         )}
 
