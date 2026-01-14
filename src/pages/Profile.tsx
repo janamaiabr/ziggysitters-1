@@ -27,6 +27,7 @@ import SitterPayouts from '@/components/SitterPayouts';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import SitterDashboard from '@/components/sitter/SitterDashboard';
 import CompleteProfileBanner from '@/components/sitter/CompleteProfileBanner';
+import ProfileCompletionCard from '@/components/sitter/ProfileCompletionCard';
 import { useConfetti } from '@/hooks/useConfetti';
 
 export default function Profile() {
@@ -1244,6 +1245,15 @@ export default function Profile() {
                 suburb={profile.suburb}
                 city={profile.city}
                 onboardingCompleted={profile.onboarding_completed || false}
+              />
+            )}
+            
+            {/* Profile Completion Card for Sitters */}
+            {profile.role === 'pet_sitter' && (
+              <ProfileCompletionCard 
+                profile={profile}
+                portfolioPhotosCount={portfolioPhotos.length}
+                servicesCount={sitterServices.filter((s: any) => s.is_offered).length}
               />
             )}
             
