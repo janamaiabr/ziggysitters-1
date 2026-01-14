@@ -17,6 +17,7 @@ import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
 // import HeroSectionV2 from '@/components/home/HeroSectionV2';
 // import HeroSectionOriginal from '@/components/home/HeroSectionOriginal';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
+import TrustGuarantees from '@/components/home/TrustGuarantees';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import TrustSignalsSection from '@/components/home/TrustSignalsSection';
 import ExitIntentPopup from '@/components/home/ExitIntentPopup';
@@ -264,6 +265,13 @@ const Index = () => {
               ✓ Free to browse • ✓ No obligation • ✓ Trusted sitters only
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Named Trust Guarantees - Above How It Works */}
+      <section className="py-12 md:py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <TrustGuarantees />
         </div>
       </section>
 
@@ -593,21 +601,16 @@ const Index = () => {
               Ready for Guaranteed Peace of Mind?
             </h2>
             <p className="text-lg md:text-xl mb-6 md:mb-8 text-muted-foreground">
-              Join thousands of pet owners who choose the care their pets deserve
+              Join pet owners across Auckland who trust our verified sitters
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-              <Button size="lg" className="px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => navigate('/auth')}>
-                Find a Sitter Now
-              </Button>
-              <Button 
-                variant="outline"
-                size="lg" 
-                className="px-8 shadow-lg hover:shadow-xl transition-all" 
-                onClick={() => navigate('/auth')}
-              >
-                Join as a Sitter
+              <Button size="lg" className="px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => navigate('/find-sitters')}>
+                Find a Trusted Sitter Now
               </Button>
             </div>
+            <p className="text-sm text-muted-foreground mt-4">
+              ✓ Free meet & greet • ✓ No payment until sitter accepts • ✓ Daily updates guaranteed
+            </p>
           </div>
         </div>
       </section>

@@ -27,24 +27,28 @@ export default function FAQAccordion({
 }: FAQAccordionProps) {
   const faqs: FAQ[] = [
     {
-      question: 'What happens after I send an enquiry?',
-      answer: `${sitterName} will receive your enquiry and typically responds within 24 hours. You can discuss dates, meet your pet, and agree on details before any payment is needed. There's no commitment until you both confirm the booking.`
+      question: 'Is this a binding booking or just an enquiry?',
+      answer: `This is just an enquiry — you're asking ${sitterName} about availability. No payment is required, and you're not committed to anything. Once they respond, you can discuss details, arrange a free meet & greet, and only book if you're completely happy.`
     },
     {
-      question: 'How does payment work?',
-      answer: 'Payment is only collected after the sitter accepts your booking request. We use secure Stripe processing, and funds are held safely until the booking is completed. If there are any issues, our support team will help resolve them.'
+      question: 'What if I need to cancel after booking?',
+      answer: 'If you cancel more than 48 hours before the booking starts, you receive a full refund. For cancellations within 48 hours, a partial refund may apply depending on circumstances. If something unexpected happens, reach out to us — we\'re flexible and understanding.'
     },
     {
-      question: 'Can I meet the sitter before booking?',
-      answer: 'Absolutely! We encourage a meet-and-greet before your first booking. Send a message through our platform to arrange a time. This helps ensure your pet is comfortable with the sitter.'
+      question: 'How does payment work? Is it secure?',
+      answer: 'Payments are processed securely through Stripe. You only pay after the sitter accepts your request. Funds are held safely until the booking is completed, protecting you if anything goes wrong. Our Secure Payment Protection means you\'re covered.'
     },
     {
-      question: 'What if I need to cancel?',
-      answer: 'Cancellation policies vary by sitter. Generally, cancelling more than 48 hours before the booking starts allows for a full refund. For last-minute changes, reach out to the sitter directly to discuss options.'
+      question: 'Can I meet the sitter before committing?',
+      answer: 'Absolutely! We strongly encourage a free meet & greet before your first booking. This lets your pet get comfortable with the sitter and gives you peace of mind. It\'s completely obligation-free — no pressure to book afterwards.'
     },
     {
-      question: 'Will I get updates about my pet?',
-      answer: 'You can request daily photo reports when making your booking. Sitters who agree to provide daily updates are accountable - if they don\'t deliver, they receive a 15% reduction in payment. This ensures transparency when you want it.'
+      question: 'What happens if the sitter doesn\'t deliver promised updates?',
+      answer: 'That\'s covered by our Daily Update Promise. If you requested daily photo updates and the sitter fails to deliver, they receive a 15% reduction in their payment. This accountability ensures sitters take the commitment seriously.'
+    },
+    {
+      question: 'What if something goes wrong during my pet\'s stay?',
+      answer: 'Our ZiggyCare Guarantee means we step in immediately if there\'s any issue. Contact our support team and we\'ll work with you and the sitter to resolve problems quickly. Your pet\'s wellbeing is our absolute priority.'
     },
     ...(hasGoldenBadge ? [{
       question: 'What does the Gold Star badge mean?',
@@ -54,10 +58,6 @@ export default function FAQAccordion({
       question: 'What does ID Verified mean?',
       answer: `${sitterName} has submitted their ID documents, which have been reviewed and approved by our team. This confirms their identity and adds an extra layer of trust.`
     }] : []),
-    {
-      question: 'What if something goes wrong?',
-      answer: 'Our support team is here to help. If there\'s any issue with your booking, contact us and we\'ll work with you and the sitter to find a fair resolution. Your pet\'s wellbeing is our priority.'
-    },
   ];
 
   return (

@@ -12,8 +12,9 @@ const steps = [
   {
     icon: UserCheck,
     number: "2", 
-    title: "Review Profiles",
-    description: "Read reviews, view photos, and choose the perfect match for your pet",
+    title: "Free Meet & Greet",
+    description: "Arrange a no-obligation meetup — your pet can check them out before you commit",
+    highlight: true,
     color: "from-cyan-500 to-blue-500",
     image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=250&fit=crop"
   },
@@ -21,7 +22,7 @@ const steps = [
     icon: CreditCard,
     number: "3",
     title: "Book & Pay Securely",
-    description: "Simple, transparent pricing with no hidden fees — pay safely online",
+    description: "Simple, transparent pricing with no hidden fees — pay safely via Stripe",
     color: "from-blue-500 to-indigo-500",
     image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=250&fit=crop"
   },
@@ -29,16 +30,16 @@ const steps = [
     icon: Camera,
     number: "4",
     title: "Daily Photo Updates",
-    description: "Receive guaranteed daily photos — because they're part of your family",
+    description: "Request daily updates and hold sitters accountable — they deliver or get penalized",
     color: "from-indigo-500 to-violet-500",
     image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=250&fit=crop"
   }
 ];
 
 const trustBadges = [
-  { icon: Shield, text: "Verified Sitters" },
-  { icon: CheckCircle, text: "Secure Payments" },
-  { icon: Camera, text: "Daily Updates Guaranteed" }
+  { icon: Shield, text: "ID Verified Sitters" },
+  { icon: CheckCircle, text: "Secure Payment Protection" },
+  { icon: Camera, text: "Daily Update Promise" }
 ];
 
 export default function HowItWorksSection() {
@@ -80,7 +81,13 @@ export default function HowItWorksSection() {
                 <div className="hidden lg:block absolute top-24 left-1/2 w-full h-0.5 bg-gradient-to-r from-teal-200 to-blue-200 dark:from-teal-800 dark:to-blue-800" />
               )}
               
-              <div className="relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-teal-100 dark:border-teal-800 hover:border-teal-300 dark:hover:border-teal-600 group-hover:-translate-y-2">
+              <div className={`relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border ${(step as any).highlight ? 'border-green-400 ring-2 ring-green-200 dark:ring-green-800' : 'border-teal-100 dark:border-teal-800'} hover:border-teal-300 dark:hover:border-teal-600 group-hover:-translate-y-2`}>
+                {/* Free badge for meet & greet */}
+                {(step as any).highlight && (
+                  <div className="absolute top-2 left-2 z-20 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    FREE
+                  </div>
+                )}
                 {/* Image */}
                 <div className="relative h-32 md:h-36 overflow-hidden">
                   <img 
