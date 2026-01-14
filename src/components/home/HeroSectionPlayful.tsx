@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import petServicesImg from '@/assets/pet-services.jpg';
 import UrgencyIndicator from './UrgencyIndicator';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
+import CompactSteps from './CompactSteps';
+import LocalSocialProof from './LocalSocialProof';
 
 interface HeroSectionPlayfulProps {
   location: string;
@@ -91,40 +93,48 @@ const HeroSectionPlayful = ({
             {/* Left side - Content */}
             <div className="space-y-6 md:space-y-8 animate-fade-in text-center lg:text-left">
 
-              {/* Main Headline */}
+              {/* Main Headline - Emotional + Practical */}
               <div className="space-y-4 md:space-y-5">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                  <span className="block text-foreground">Never Wonder</span>
-                  <span className="block text-gradient-playful py-1">{'"'}How{"'"}s My Pet?{'"'}</span>
-                  <span className="block text-foreground">Again!</span>
+                  <span className="block text-foreground">Find a Verified</span>
+                  <span className="block text-gradient-playful py-1">Local Pet Sitter</span>
+                  <span className="block text-foreground text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-2">+ Get Daily Photo Updates</span>
                 </h1>
                 
                 <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  A pet sitting platform <span className="font-bold text-foreground">built for pets, not humans</span>. ID-verified sitters send you daily photo updates so you never have to wonder how they{"'"}re doing.
+                  ID-verified sitters who send you <span className="font-bold text-foreground">daily photos & videos</span> so you never wonder how your pet is doing. <span className="font-semibold text-green-600">Free to browse, no obligation.</span>
                 </p>
 
-                {/* Primary CTA - Green gradient */}
+                {/* Single Primary CTA - No competing sitter CTA */}
                 <div className="pt-3 space-y-3">
                   <Button 
                     size="lg" 
                     className="w-full lg:w-auto text-lg md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 md:py-7 px-8 md:px-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl"
                     onClick={handleCtaClick}
                   >
-                    🐾 Find Your Perfect Sitter
+                    🐾 Find a Trusted Sitter Near Me
                   </Button>
-                  <p className="text-sm text-muted-foreground">
-                    No payment required • Free to browse
-                  </p>
+                  {/* Trust reassurance right next to CTA */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-sm">
+                    <span className="text-muted-foreground">✓ Free to browse</span>
+                    <span className="text-muted-foreground">✓ No payment until sitter accepts</span>
+                    <span className="text-muted-foreground">✓ Meet first, book later</span>
+                  </div>
                 </div>
+              </div>
+
+              {/* Compact 4-step visual - booking clarity */}
+              <div className="pt-2">
+                <CompactSteps />
               </div>
 
               {/* Feature pills */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
-                  <span>📷</span> Daily Photo Reports
+                  <span>📷</span> Daily Update Promise
                 </div>
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
-                  <span>🛡️</span> ID Verified
+                  <span>🛡️</span> ZiggyCare Guarantee
                 </div>
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
                   <Heart className="w-4 h-4 text-pink-500 fill-pink-500" /> 5% to SPCA NZ
@@ -274,20 +284,16 @@ const HeroSectionPlayful = ({
             <UrgencyIndicator location={location} />
           </div>
 
-          {/* Social Proof - better mobile layout */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 md:gap-6 mt-4 md:mt-6 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.5s' }}>
-            <div className="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-md">
-              <span className="font-bold text-foreground text-base md:text-lg">500+</span>
-              <span className="text-xs md:text-sm">Happy Pet Owners 🎉</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-md">
-              <span className="font-bold text-foreground text-base md:text-lg">98%</span>
-              <span className="text-xs md:text-sm">Report Completion ✅</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-md">
-              <span className="font-bold text-foreground text-base md:text-lg">24/7</span>
-              <span className="text-xs md:text-sm">Support 💬</span>
-            </div>
+          {/* Local Social Proof - suburb names, recent bookings */}
+          <div className="mt-6 md:mt-8">
+            <LocalSocialProof />
+          </div>
+
+          {/* Urgency nudge */}
+          <div className="text-center mt-4">
+            <p className="text-sm text-muted-foreground bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-full px-4 py-2 inline-flex items-center gap-2">
+              ⏰ <span className="font-medium text-amber-700 dark:text-amber-300">Most owners book within 24 hours</span> of finding their sitter
+            </p>
           </div>
         </div>
       </div>
