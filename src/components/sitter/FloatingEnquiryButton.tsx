@@ -55,7 +55,7 @@ export default function FloatingEnquiryButton({ onEnquiryClick, onBookingClick, 
           className="rounded-full px-5 shadow-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white font-bold animate-pulse-glow"
         >
           <Calendar className="h-5 w-5 mr-2" />
-          Get a Quote
+          Check Availability
         </Button>
       </div>
     </div>

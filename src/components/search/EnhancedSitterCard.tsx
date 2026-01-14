@@ -220,7 +220,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           Usually responds within a few hours
         </div>
         
-        {/* CTA Button - Low commitment messaging */}
+        {/* CTA Button - Action-oriented messaging */}
         <div className="mt-auto pt-3 space-y-2">
           <Button 
             className={`w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 text-white ${
@@ -233,13 +233,13 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
               handleClick();
             }}
           >
-            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : '💬 Send Free Enquiry'}
+            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : '📅 Check Availability'}
             <span className="ml-2">→</span>
           </Button>
           <p className="text-xs text-center text-muted-foreground font-medium">
             {sitter.isYoungWalker 
               ? `🐕 ${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Parent supervised`
-              : '✓ Just a question • No payment • No commitment'
+              : '✓ Free to enquire • No payment until confirmed'
             }
           </p>
         </div>

@@ -389,7 +389,7 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      💬 Send Free Enquiry
+                      📅 Check Availability
                       <span className="ml-2">→</span>
                     </Button>
                   </>
@@ -415,7 +415,7 @@ export default function SitterProfile() {
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      💬 Send Free Enquiry
+                      📅 Check Availability
                       <span className="ml-2">→</span>
                     </Button>
                   </>

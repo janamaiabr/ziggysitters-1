@@ -309,10 +309,10 @@ export default function BookingFormDirect({
             className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/30"
           />
           <div>
-            <div className="text-xl font-bold">💬 Ask {sitter.name.split(' ')[0]} for a Quote</div>
+            <div className="text-xl font-bold">📅 Check {sitter.name.split(' ')[0]}'s Availability</div>
             <div className="text-sm text-green-600 dark:text-green-400 font-semibold flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
-              Free • No commitment • Responds in hours
+              Free to enquire • No payment until confirmed
             </div>
           </div>
         </CardTitle>
