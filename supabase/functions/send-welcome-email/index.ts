@@ -617,30 +617,24 @@ const handler = async (req: Request): Promise<Response> => {
         journeyHtml = html;
       }
 
-      // Notify admin about new sitter
+      // Queue admin notification for weekly digest
       try {
-        await resend.emails.send({
-          from: "ZiggySitters <hello@ziggysitters.com>",
-          to: ["janamaia@gmail.com"],
-          subject: `🆕 New Sitter Signup: ${firstName}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f5f5;">
-              <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h2 style="color: #8B5CF6; margin-top: 0;">🆕 New Pet Sitter Registration</h2>
-                
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                  <p><strong>Name:</strong> ${firstName}</p>
-                  <p><strong>Email:</strong> ${email}</p>
-                </div>
-
-                <h3 style="color: #374151; margin-top: 30px;">📊 User Journey</h3>
-                ${journeyHtml}
-              </div>
-            </div>
-          `,
-        });
+        await supabase
+          .from("admin_event_queue")
+          .insert({
+            event_type: "new_user",
+            event_data: {
+              firstName,
+              email,
+              role: 'pet_sitter',
+              suburb: sitterProfile?.suburb,
+              city: sitterProfile?.city,
+              registered_at: new Date().toISOString()
+            }
+          });
+        console.log("Sitter signup queued for weekly digest");
       } catch (adminError) {
-        console.error("Failed to send admin notification:", adminError);
+        console.error("Failed to queue admin notification:", adminError);
       }
 
       return new Response(JSON.stringify({ success: true }), {
@@ -717,42 +711,20 @@ const handler = async (req: Request): Promise<Response> => {
         `;
       }
 
-      await resend.emails.send({
-        from: "ZiggySitters <hello@ziggysitters.com>",
-        to: ["janamaia@gmail.com"],
-        subject: `🏠 New Pet Owner: ${firstName}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f5f5;">
-            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-              <h2 style="color: #667eea; margin-top: 0;">👤 New Pet Owner Registration</h2>
-              
-              <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                <p style="margin: 5px 0;"><strong>Name:</strong> ${firstName}</p>
-                <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
-                <p style="margin: 5px 0;"><strong>Location:</strong> ${profile?.suburb ? `${profile.suburb}, ${profile.city}` : 'Not provided'}</p>
-                <p style="margin: 5px 0;"><strong>Session ID:</strong> <code>${sessionId || 'NOT PROVIDED'}</code></p>
-              </div>
-
-              <div style="background: #f0f9ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                ${petsInfo}
-              </div>
-
-              <h3 style="color: #374151; margin-top: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-                📊 COMPLETE USER JOURNEY
-              </h3>
-              ${journeyHtml}
-
-              <div style="margin-top: 30px; text-align: center;">
-                <a href="https://ziggysitters.com/admin/user-details/${profile?.id}" 
-                   style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                  View Full Profile
-                </a>
-              </div>
-            </div>
-          </div>
-        `,
-      });
-      console.log("Admin notification sent");
+      await supabase
+        .from("admin_event_queue")
+        .insert({
+          event_type: "new_user",
+          event_data: {
+            firstName,
+            email,
+            role: 'pet_owner',
+            suburb: profile?.suburb,
+            city: profile?.city,
+            registered_at: new Date().toISOString()
+          }
+        });
+      console.log("Pet owner signup queued for weekly digest");
     } catch (adminError) {
       console.error("Failed to send admin notification:", adminError);
     }

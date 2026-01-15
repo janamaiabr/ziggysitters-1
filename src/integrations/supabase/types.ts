@@ -50,6 +50,30 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_event_queue: {
+        Row: {
+          created_at: string
+          event_data: Json
+          event_type: string
+          id: string
+          included_in_digest_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_data: Json
+          event_type: string
+          id?: string
+          included_in_digest_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json
+          event_type?: string
+          id?: string
+          included_in_digest_at?: string | null
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           booking_reference: string | null

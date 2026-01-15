@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -25,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, subject, message }: ContactEmailRequest = await req.json();
 
-    // Send confirmation email to user
+    // Send confirmation email to user (this stays - user should get immediate confirmation)
     const userEmailResponse = await resend.emails.send({
       from: "ZiggySitters <hello@ziggysitters.com>",
       to: [email],
@@ -56,33 +57,32 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    // Send notification email to admin
-    const adminEmailResponse = await resend.emails.send({
-      from: "ZiggySitters <hello@ziggysitters.com>",
-      to: ["janamaia@gmail.com"],
-      subject: `New Contact Form Submission: ${subject}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #333;">New Contact Form Submission</h1>
-          
-          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3>Contact Details:</h3>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
-          </div>
-          
-          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3>Message:</h3>
-            <p>${message.replace(/\n/g, '<br>')}</p>
-          </div>
-          
-          <p><strong>Reply to:</strong> <a href="mailto:${email}">${email}</a></p>
-        </div>
-      `,
-    });
+    console.log("User confirmation email sent:", userEmailResponse);
 
-    console.log("Emails sent successfully:", { userEmailResponse, adminEmailResponse });
+    // Queue admin notification for weekly digest instead of sending immediately
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { error: queueError } = await supabase
+      .from("admin_event_queue")
+      .insert({
+        event_type: "contact_form",
+        event_data: {
+          name,
+          email,
+          subject,
+          message: message.substring(0, 500), // Truncate for digest
+          submitted_at: new Date().toISOString()
+        }
+      });
+
+    if (queueError) {
+      console.error("Failed to queue contact form event:", queueError);
+      // Don't throw - user email was sent successfully
+    } else {
+      console.log("Contact form event queued for weekly digest");
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
