@@ -74,11 +74,60 @@ export default function Auth() {
         
         // Check if user doesn't have an account - switch to signup tab
         if (error.message.includes('Invalid login credentials')) {
+          // Could be: 1) No account, 2) Wrong password, 3) Unconfirmed email
+          // Offer multiple options
           setNoAccountMessage(true);
           setActiveTab('signup');
           toast({
-            title: "No account found",
-            description: "Let's create one for you! Just fill in your details below.",
+            title: "Sign In Failed",
+            description: "This could mean no account exists, wrong password, or unconfirmed email. Try signing up or resending confirmation.",
+            action: (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={async () => {
+                  const { error } = await supabase.auth.resend({
+                    type: 'signup',
+                    email: formData.email.trim(),
+                  });
+                  if (!error) {
+                    toast({
+                      title: "Confirmation Email Sent! 📧",
+                      description: "Check your inbox and spam folder.",
+                    });
+                  }
+                }}
+                className="ml-2 whitespace-nowrap"
+              >
+                Resend Email
+              </Button>
+            ),
+          });
+        } else if (error.message.includes('Email not confirmed')) {
+          toast({
+            title: "Email Not Confirmed",
+            description: "Please check your email for the confirmation link, or we can resend it.",
+            action: (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={async () => {
+                  const { error } = await supabase.auth.resend({
+                    type: 'signup',
+                    email: formData.email.trim(),
+                  });
+                  if (!error) {
+                    toast({
+                      title: "Confirmation Email Sent! 📧",
+                      description: "Check your inbox and spam folder.",
+                    });
+                  }
+                }}
+                className="ml-2"
+              >
+                Resend
+              </Button>
+            ),
           });
         } else {
           toast({
@@ -107,6 +156,39 @@ export default function Auth() {
     }
   };
 
+  const handleResendConfirmation = async () => {
+    if (!formData.email.trim()) return;
+    
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: formData.email.trim(),
+      });
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Confirmation Email Sent! 📧",
+          description: "Please check your inbox and spam folder for the confirmation link.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to resend confirmation email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const executeSignUp = async () => {
     setIsLoading(true);
     const signupStartTime = Date.now();
@@ -127,11 +209,24 @@ export default function Auth() {
         });
         
         if (error.message.includes('already registered')) {
+          // Check if this might be an unconfirmed account
+          // Offer to resend confirmation email
           toast({
             title: "Account Already Exists",
-            description: "An account with this email already exists. Please sign in instead.",
-            variant: "destructive",
+            description: "If you haven't confirmed your email yet, we can resend the confirmation link.",
+            action: (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleResendConfirmation}
+                className="ml-2"
+              >
+                Resend Email
+              </Button>
+            ),
           });
+          // Also switch to sign-in tab in case they forgot they have an account
+          setActiveTab('signin');
         } else {
           toast({
             title: "Sign Up Failed",
