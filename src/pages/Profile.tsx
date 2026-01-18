@@ -375,8 +375,9 @@ export default function Profile() {
     // Remove spaces, hyphens, and parentheses
     const cleaned = phone.replace(/[\s\-()]/g, '');
     
-    // NZ mobile: 02x xxx xxxx or +6421/22/27/28/29 followed by 6-8 digits
-    const nzMobileRegex = /^(?:\+?64|0)2[1-9]\d{6,8}$/;
+    // NZ mobile: 02x xxx xxxx - includes 020, 021, 022, 027, 028, 029 prefixes
+    // 020 numbers can have 6-8 digits after prefix, others typically 7-8
+    const nzMobileRegex = /^(?:\+?64|0)2[0-9]\d{6,8}$/;
     
     // NZ landline: 0x xxx xxxx (3-9 area codes)
     const nzLandlineRegex = /^(?:\+?64|0)[3-9]\d{7,9}$/;
