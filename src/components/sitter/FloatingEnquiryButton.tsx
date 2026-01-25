@@ -6,9 +6,15 @@ interface FloatingEnquiryButtonProps {
   onEnquiryClick: () => void;
   onBookingClick: () => void;
   sitterName: string;
+  isGuest?: boolean;
 }
 
-export default function FloatingEnquiryButton({ onEnquiryClick, onBookingClick, sitterName }: FloatingEnquiryButtonProps) {
+export default function FloatingEnquiryButton({ 
+  onEnquiryClick, 
+  onBookingClick, 
+  sitterName,
+  isGuest = false
+}: FloatingEnquiryButtonProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasScrolledPastHeader, setHasScrolledPastHeader] = useState(false);
 
@@ -35,6 +41,18 @@ export default function FloatingEnquiryButton({ onEnquiryClick, onBookingClick, 
     };
   }, []);
 
+  const handleAvailabilityClick = () => {
+    if (isGuest) {
+      // For guests, scroll to calendar instead of requiring login
+      const calendarSection = document.querySelector('[data-availability-calendar]');
+      if (calendarSection) {
+        calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } else {
+      onBookingClick();
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -50,12 +68,12 @@ export default function FloatingEnquiryButton({ onEnquiryClick, onBookingClick, 
           Ask {sitterName.split(' ')[0]}
         </Button>
         <Button
-          onClick={onBookingClick}
+          onClick={handleAvailabilityClick}
           size="lg"
           className="rounded-full px-5 shadow-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white font-bold animate-pulse-glow"
         >
           <Calendar className="h-5 w-5 mr-2" />
-          Check Availability
+          {isGuest ? 'View Availability' : 'Check Availability'}
         </Button>
       </div>
     </div>

@@ -20,6 +20,7 @@ import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import AddPetsPrompt from '@/components/search/AddPetsPrompt';
+import { format } from 'date-fns';
 
 // No more mock data - using real database profiles
 
@@ -728,14 +729,40 @@ export default function FindSitters() {
               <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
                 Available Pet Sitters
               </h2>
+              
+              {/* Active filters display */}
+              {(selectedDate || checkOutDate || location || serviceType) && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {selectedDate && checkOutDate && (
+                    <Badge variant="secondary" className="text-sm">
+                      📅 {format(selectedDate, 'MMM d')} - {format(checkOutDate, 'MMM d')}
+                      <span className="ml-1 text-green-600">✓ Filtered</span>
+                    </Badge>
+                  )}
+                  {location && (
+                    <Badge variant="secondary" className="text-sm">
+                      📍 {location}
+                    </Badge>
+                  )}
+                  {serviceType && (
+                    <Badge variant="secondary" className="text-sm">
+                      🏠 {serviceType === 'pet_sitting_owners_home' ? 'Your Home' : 
+                         serviceType === 'pet_sitting_sitters_home' ? "Sitter's Home" : 'Drop-ins'}
+                    </Badge>
+                  )}
+                </div>
+              )}
+              
               <p className="text-gray-600">
                 {filteredSitters.length === 0 
                   ? 'No sitters found matching your criteria. Try adjusting your filters.' 
-                  : serviceType === 'pet_sitting_owners_home'
-                    ? 'Showing sitters who will come to your home'
-                    : location 
-                      ? `Showing sitters near ${location}`
-                      : 'Showing available sitters in your area'}
+                  : selectedDate && checkOutDate
+                    ? `${filteredSitters.length} sitters available for your selected dates`
+                    : serviceType === 'pet_sitting_owners_home'
+                      ? 'Showing sitters who will come to your home'
+                      : location 
+                        ? `Showing sitters near ${location}`
+                        : 'Showing available sitters in your area'}
               </p>
               {serviceType === 'pet_sitting_owners_home' && filteredSitters.length > 0 && (
                 <p className="text-sm text-primary mt-1 flex items-center gap-1">

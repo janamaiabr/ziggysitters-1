@@ -32,6 +32,7 @@ import QuickQuestionDialog from '@/components/messaging/QuickQuestionDialog';
 import GuestEnquiryDialog from '@/components/messaging/GuestEnquiryDialog';
 import FloatingEnquiryButton from '@/components/sitter/FloatingEnquiryButton';
 import FAQAccordion from '@/components/sitter/FAQAccordion';
+import PublicAvailabilityCalendar from '@/components/calendar/PublicAvailabilityCalendar';
 
 interface SitterData {
   id: string;
@@ -408,14 +409,25 @@ export default function SitterProfile() {
                       size="lg"
                       className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
                       onClick={() => {
-                        const params = new URLSearchParams(searchParams);
-                        params.set('booking', 'true');
-                        const redirectUrl = `/sitter/${id}?${params.toString()}`;
-                        navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
+                        // Scroll to availability calendar first (no login required to see it)
+                        const calendarSection = document.querySelector('[data-availability-calendar]');
+                        if (calendarSection) {
+                          calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        // Track the action
+                        trackEvent({
+                          eventType: 'booking',
+                          eventName: 'guest_check_availability_clicked',
+                          eventData: {
+                            sitter_id: sitterData.id,
+                            sitter_name: sitterData.display_name,
+                            source: 'profile_header'
+                          }
+                        });
                       }}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      📅 Check Availability
+                      📅 View Availability
                       <span className="ml-2">→</span>
                     </Button>
                   </>
@@ -650,20 +662,13 @@ export default function SitterProfile() {
               </CardContent>
             </Card>
 
-            {/* Availability */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Availability</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {sitterData.availability.map((time) => (
-                    <div key={time} className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                      <span className="text-sm">{time}</span>
-                    </div>
-                  ))}
-                </div>
+            {/* Public Availability Calendar - NO LOGIN REQUIRED */}
+            <Card data-availability-calendar>
+              <CardContent className="pt-4">
+                <PublicAvailabilityCalendar 
+                  sitterId={sitterData.id}
+                  sitterName={sitterData.display_name}
+                />
               </CardContent>
             </Card>
 
@@ -716,19 +721,13 @@ export default function SitterProfile() {
         <FloatingEnquiryButton 
           onEnquiryClick={() => setIsMessageDialogOpen(true)}
           onBookingClick={() => {
-            if (user) {
-              const bookingSection = document.getElementById('booking-section');
-              if (bookingSection) {
-                bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            } else {
-              const params = new URLSearchParams(searchParams);
-              params.set('booking', 'true');
-              const redirectUrl = `/sitter/${id}?${params.toString()}`;
-              navigate(`/auth?tab=signup&redirect=${encodeURIComponent(redirectUrl)}`);
+            const bookingSection = document.getElementById('booking-section');
+            if (bookingSection) {
+              bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
           }}
           sitterName={sitterData.display_name}
+          isGuest={!user}
         />
       )}
     </div>
