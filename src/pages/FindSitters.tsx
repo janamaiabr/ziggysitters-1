@@ -259,16 +259,62 @@ export default function FindSitters() {
     // RELAXED FILTERING: Show sitters even without exact location match
     // Priority: service area match > exact match > partial match > same city > all sitters
     // This increases visibility and conversion since we have limited sitters
+    
+    // ALL Auckland suburbs - sitters in ANY of these are considered "Auckland sitters"
+    const AUCKLAND_SUBURBS = [
+      'ponsonby', 'newmarket', 'mount eden', 'mt eden', 'parnell', 'remuera', 'epsom',
+      'grey lynn', 'freemans bay', 'herne bay', 'grafton', 'eden terrace', 'newton',
+      'kingsland', 'morningside', 'saint lukes', 'st lukes', 'mount albert', 'mt albert',
+      'sandringham', 'balmoral', 'mount roskill', 'mt roskill', 'three kings', 'onehunga',
+      'royal oak', 'ellerslie', 'penrose', 'mount wellington', 'mt wellington', 'sylvia park',
+      'panmure', 'glen innes', 'point england', 'kohimarama', 'mission bay', 'saint heliers',
+      'st heliers', 'glendowie', 'meadowbank', 'orakei', 'devonport', 'takapuna', 'milford',
+      'forrest hill', 'sunnynook', 'glenfield', 'birkenhead', 'northcote', 'hillcrest',
+      'beach haven', 'birkdale', 'browns bay', 'rothesay bay', 'murrays bay', 'mairangi bay',
+      'campbells bay', 'castor bay', 'long bay', 'torbay', 'albany', 'henderson', 'new lynn',
+      'glen eden', 'titirangi', 'green bay', 'kelston', 'avondale', 'blockhouse bay',
+      'new windsor', 'rosebank', 'waterview', 'point chevalier', 'western springs', 'westmere',
+      'mangere', 'otahuhu', 'papatoetoe', 'manurewa', 'papakura', 'pukekohe', 'waiuku',
+      'botany downs', 'botany', 'howick', 'pakuranga', 'bucklands beach', 'half moon bay',
+      'beachlands', 'maraetai', 'manukau', 'te atatu', 'hobsonville', 'massey', 'westgate',
+      'kumeu', 'huapai', 'riverhead', 'helensville', 'orewa', 'whangaparaoa', 'silverdale',
+      'auckland central', 'auckland cbd', 'city centre'
+    ];
+    
+    // Helper to check if a suburb is in Auckland
+    const isAucklandSuburb = (suburb: string) => {
+      if (!suburb) return false;
+      const normalized = suburb.toLowerCase().trim();
+      return AUCKLAND_SUBURBS.some(auckSuburb => 
+        normalized.includes(auckSuburb) || auckSuburb.includes(normalized)
+      );
+    };
+    
+    // Helper to check if a sitter covers Auckland
+    const sitterCoversAuckland = (sitter: any) => {
+      // Check their city
+      const city = (sitter.city || '').toLowerCase();
+      if (city.includes('auckland') || city === '') {
+        return true;
+      }
+      // Check their suburb
+      if (isAucklandSuburb(sitter.suburb)) {
+        return true;
+      }
+      // Check their service areas
+      if (sitter.serviceAreas?.some((area: string) => isAucklandSuburb(area))) {
+        return true;
+      }
+      return false;
+    };
+    
     if (location && serviceType !== 'pet_sitting_owners_home') {
       const searchTerm = location.toLowerCase().trim();
       
-      // If searching for "Auckland" or similar, show all Auckland-area sitters
+      // If searching for "Auckland" or similar, show ALL sitters who serve any Auckland suburb
       if (searchTerm === 'auckland' || searchTerm.includes('auckland')) {
-        filtered = filtered.filter(sitter => {
-          const sitterLocation = sitter.location.toLowerCase();
-          const sitterCity = sitter.city?.toLowerCase() || '';
-          return sitterCity.includes('auckland') || sitterCity === '' || sitterLocation.includes('auckland');
-        });
+        filtered = filtered.filter(sitter => sitterCoversAuckland(sitter));
+        console.log('Auckland search - found sitters:', filtered.length);
       } else {
         // For specific suburb searches, check service areas first, then location
         // Sort by relevance: service area match first, then suburb match, then city match
