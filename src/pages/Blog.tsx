@@ -3,49 +3,22 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight } from 'lucide-react';
-import blogHeroImage from '@/assets/blog-pet-care-sheet-hero.jpg';
-import profileTipsHero from '@/assets/blog-profile-tips-hero.jpg';
+import { getAllPosts } from '@/data/blogPosts';
 
-interface BlogPost {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  author: string;
-  image: string;
-  readTime: string;
-  tag: 'For Pet Owners' | 'For Sitters';
-}
-
-const blogPosts: BlogPost[] = [
-  {
-    slug: 'profile-tips-stand-out',
-    title: 'Get Spotted — 3 Tips To Make Your Profile Stand Out',
-    excerpt: 'Your profile is your first impression, and a great one does most of the work for you. Learn from our most successful pet sitters how to create a profile that really shines.',
-    date: '2025-11-16',
-    author: 'Jana and Rachel',
-    image: profileTipsHero,
-    readTime: '3 min read',
-    tag: 'For Sitters'
-  },
-  {
-    slug: 'pet-care-sheet-guide',
-    title: 'Your Pet Care Sheet — The Small Step That Makes a Big Difference',
-    excerpt: 'What makes the difference for your pet from a good sit to a great one - good information about their needs. Learn how to create a care sheet that helps your sitter provide the best care.',
-    date: '2025-11-16',
-    author: 'Jana and Rachel',
-    image: blogHeroImage,
-    readTime: '4 min read',
-    tag: 'For Pet Owners'
-  }
-];
+// Fallback images for posts without uploaded images
+const fallbackImages: Record<string, string> = {
+  'pet-care-sheet-guide': '/assets/blog-pet-care-sheet-hero.jpg',
+  'profile-tips-stand-out': '/assets/blog-profile-tips-hero.jpg',
+};
 
 export default function Blog() {
+  const blogPosts = getAllPosts();
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Blog",
     "name": "ZiggySitters Blog",
-    "description": "Pet care tips, advice, and guides from Auckland's trusted pet sitting service",
+    "description": "Pet care tips, advice, and guides from New Zealand's trusted pet sitting service",
     "url": "https://ziggysitters.com/blog",
     "publisher": {
       "@type": "Organization",
@@ -57,12 +30,22 @@ export default function Blog() {
     }
   };
 
+  const getTagColor = (tag: string) => {
+    switch (tag) {
+      case 'For Pet Owners': return 'bg-blue-100 text-blue-800';
+      case 'For Sitters': return 'bg-green-100 text-green-800';
+      case 'Pet Care Tips': return 'bg-purple-100 text-purple-800';
+      case 'Auckland Guide': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <>
       <SEOHead
-        title="Pet Care Blog & Tips"
-        description="Expert pet care advice, tips, and guides from ZiggySitters. Learn how to provide the best care for your pets in Auckland."
-        keywords="pet care blog, pet sitting tips, Auckland pet care, pet care advice, pet owner guides"
+        title="Pet Care Blog & Tips | ZiggySitters NZ"
+        description="Expert pet care advice, tips, and guides from ZiggySitters. Learn about pet sitting in Auckland, choosing sitters, and keeping your pets happy."
+        keywords="pet care blog, pet sitting tips, Auckland pet care, pet care advice, pet owner guides, dog sitting nz, cat sitting auckland"
         canonical="/blog"
         structuredData={structuredData}
       />
@@ -73,7 +56,7 @@ export default function Blog() {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Pet Care Blog</h1>
               <p className="text-lg text-muted-foreground">
-                Expert advice and tips to help you provide the best care for your beloved pets
+                Expert advice and tips to help you provide the best care for your beloved pets in New Zealand
               </p>
             </div>
           </div>
@@ -81,61 +64,74 @@ export default function Blog() {
 
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="grid gap-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {blogPosts.map((post) => (
                   <Link key={post.slug} to={`/blog/${post.slug}`}>
-                    <Card className="hover:shadow-lg transition-shadow overflow-hidden group">
-                      <div className="md:flex">
-                        <div className="md:w-2/5">
-                          <div className="aspect-video md:aspect-square relative overflow-hidden">
-                            <img
-                              src={post.image}
-                              alt={post.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        </div>
-                        <div className="md:w-3/5">
-                          <CardHeader>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                              <div className="flex items-center gap-1">
-                                <Calendar className="h-4 w-4" />
-                                <time dateTime={post.date}>
-                                  {new Date(post.date).toLocaleDateString('en-NZ', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                  })}
-                                </time>
-                              </div>
-                              <span>•</span>
-                              <span>{post.readTime}</span>
-                              <span>•</span>
-                              <Badge variant="secondary" className="font-normal">
-                                {post.tag}
-                              </Badge>
-                            </div>
-                            <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors">
-                              {post.title}
-                            </CardTitle>
-                            <CardDescription className="text-base">
-                              {post.excerpt}
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="flex items-center text-sm text-primary font-medium group-hover:gap-2 transition-all">
-                              Read more
-                              <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                            </div>
-                          </CardContent>
-                        </div>
+                    <Card className="h-full hover:shadow-lg transition-shadow overflow-hidden group">
+                      <div className="aspect-video relative overflow-hidden">
+                        <img
+                          src={fallbackImages[post.slug] || post.image || '/assets/blog-default.jpg'}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/assets/blog-default.jpg';
+                          }}
+                        />
+                        <Badge 
+                          className={`absolute top-3 left-3 ${getTagColor(post.tag)}`}
+                        >
+                          {post.tag}
+                        </Badge>
                       </div>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                          <Calendar className="h-4 w-4" />
+                          <time dateTime={post.date}>
+                            {new Date(post.date).toLocaleDateString('en-NZ', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </time>
+                          <span>•</span>
+                          <span>{post.readTime}</span>
+                        </div>
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2">
+                          {post.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="text-base line-clamp-3 mb-4">
+                          {post.excerpt}
+                        </CardDescription>
+                        <div className="flex items-center text-sm text-primary font-medium group-hover:gap-2 transition-all">
+                          Read more
+                          <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </CardContent>
                     </Card>
                   </Link>
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 bg-primary/5">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold mb-4">Ready to Find a Pet Sitter?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Browse verified pet sitters in Auckland and across New Zealand. All sitters are reviewed by real pet owners.
+            </p>
+            <Link 
+              to="/find-sitters"
+              className="inline-flex items-center justify-center px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            >
+              Find Pet Sitters Near You
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
           </div>
         </section>
       </main>
