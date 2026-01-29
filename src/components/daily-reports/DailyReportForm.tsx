@@ -74,13 +74,17 @@ export default function DailyReportForm({ bookingId, sitterId, reportDate, onSub
       }
 
       try {
-        const fileExt = file.name.split('.').pop();
+        // Compress image before upload
+        const { compressImage, compressionPresets } = await import('@/lib/imageCompression');
+        const compressedFile = await compressImage(file, compressionPresets.portfolio);
+        
+        const fileExt = compressedFile.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const filePath = `daily-reports/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from('pet-photos')
-          .upload(filePath, file);
+          .upload(filePath, compressedFile);
 
         if (uploadError) throw uploadError;
 

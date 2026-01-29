@@ -11,6 +11,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { compressImage, compressionPresets } from '@/lib/imageCompression';
 
 interface SitterPortfolioProps {
   profileId: string;
@@ -39,16 +40,6 @@ export default function SitterPortfolio({
 
     try {
       for (const file of Array.from(files)) {
-        // Validate file
-        if (file.size > 5 * 1024 * 1024) {
-          toast({
-            title: "File too large",
-            description: `${file.name} is over 5MB. Please use a smaller image.`,
-            variant: "destructive",
-          });
-          continue;
-        }
-
         if (!file.type.startsWith('image/')) {
           toast({
             title: "Invalid file",
@@ -58,13 +49,18 @@ export default function SitterPortfolio({
           continue;
         }
 
-        const fileExt = file.name.split('.').pop();
+        // Compress image before upload (reduces 10MB+ files to ~500KB)
+        const compressedFile = await compressImage(file, compressionPresets.portfolio);
+        
+        console.log(`[Upload] Original: ${(file.size / 1024 / 1024).toFixed(2)}MB → Compressed: ${(compressedFile.size / 1024).toFixed(0)}KB`);
+
+        const fileExt = compressedFile.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
         const filePath = `${userId}/portfolio/${fileName}`;
 
         const { error } = await supabase.storage
           .from('profile-photos')
-          .upload(filePath, file);
+          .upload(filePath, compressedFile);
 
         if (error) {
           console.error('Upload error:', error);

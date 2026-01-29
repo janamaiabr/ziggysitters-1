@@ -693,13 +693,17 @@ export default function Profile() {
     if (!file || !profile) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
+      // Compress image before upload
+      const { compressImage, compressionPresets } = await import('@/lib/imageCompression');
+      const compressedFile = await compressImage(file, compressionPresets.portfolio);
+      
+      const fileExt = compressedFile.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
       const filePath = `${profile.user_id}/portfolio/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
-        .upload(filePath, file);
+        .upload(filePath, compressedFile);
 
       if (uploadError) throw uploadError;
 
@@ -968,13 +972,16 @@ export default function Profile() {
     if (!file || !profile) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `avatar.${fileExt}`;
+      // Compress avatar before upload
+      const { compressImage, compressionPresets } = await import('@/lib/imageCompression');
+      const compressedFile = await compressImage(file, compressionPresets.avatar);
+      
+      const fileName = `avatar.jpg`;
       const filePath = `${profile.user_id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, compressedFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 

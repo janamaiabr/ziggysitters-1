@@ -524,12 +524,15 @@ export default function Onboarding() {
     if (!file) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-avatar.${fileExt}`;
+      // Compress avatar before upload
+      const { compressImage, compressionPresets } = await import('@/lib/imageCompression');
+      const compressedFile = await compressImage(file, compressionPresets.avatar);
+      
+      const fileName = `${user?.id}-avatar.jpg`;
       
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, compressedFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 
