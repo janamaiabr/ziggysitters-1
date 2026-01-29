@@ -93,6 +93,7 @@ import CalendarTests from "./pages/CalendarTests";
 import Areas from "./pages/Areas";
 import Messages from "./pages/Messages";
 import AucklandPetSitters from "./pages/AucklandPetSitters";
+import AdminStorageOptimizer from "./pages/AdminStorageOptimizer";
 
 const queryClient = new QueryClient();
 
@@ -271,6 +272,7 @@ function AppContent() {
               <Route path="/admin/stripe-reset" element={<AdminStripeReset />} />
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
               <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
+              <Route path="/admin/storage-optimizer" element={<AdminStorageOptimizer />} />
             </Route>
             <Route path="/admin" element={<Navigate to="/admin-dashboard" replace />} />
             
