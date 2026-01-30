@@ -3,6 +3,9 @@ project_id = "qermxzepyzbenemcordv"
 [functions.storage-optimizer]
 verify_jwt = false
 
+[functions.compress-storage-images]
+verify_jwt = false
+
 [functions.check-incomplete-onboarding]
 verify_jwt = false
 
