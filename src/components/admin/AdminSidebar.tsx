@@ -16,7 +16,8 @@ import {
   Ticket,
   Wrench,
   Activity,
-  MapPinned
+  MapPinned,
+  HardDrive
 } from 'lucide-react';
 import {
   Sidebar,
@@ -140,6 +141,11 @@ const navSections = [
         title: 'Fix Issues',
         href: '/admin/fix-broken-bookings',
         icon: Wrench,
+      },
+      {
+        title: 'Storage Optimizer',
+        href: '/admin/storage-optimizer',
+        icon: HardDrive,
       },
     ],
   },
