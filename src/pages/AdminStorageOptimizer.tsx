@@ -37,42 +37,59 @@ export default function AdminStorageOptimizer() {
   const fetchLargeFiles = async () => {
     setLoading(true);
     try {
-      // Use edge function to list large files (has service role access)
-      const { data, error } = await supabase.functions.invoke('storage-optimizer', {
-        body: {},
-        method: 'GET'
-      });
+      // List files directly from storage buckets
+      const buckets = ['profile-photos', 'pet-photos', 'verification-docs'];
+      const allFiles: LargeFile[] = [];
 
-      if (error) throw error;
+      for (const bucket of buckets) {
+        const { data: storageFiles, error } = await supabase.storage
+          .from(bucket)
+          .list('', { limit: 500 });
 
-      if (!data?.success) {
-        throw new Error(data?.error || 'Failed to fetch files');
+        if (error) {
+          console.warn(`Error listing ${bucket}:`, error);
+          continue;
+        }
+
+        for (const file of storageFiles || []) {
+          // Skip folders
+          if (!file.name || file.id === null) continue;
+          
+          const sizeMB = file.metadata?.size 
+            ? Math.round((file.metadata.size / 1024 / 1024) * 100) / 100 
+            : 0;
+
+          // Only include files > 1MB
+          if (sizeMB > 1) {
+            allFiles.push({
+              id: file.id || file.name,
+              name: file.name,
+              size: file.metadata?.size || 0,
+              sizeMB,
+              bucket,
+              created_at: file.created_at || '',
+              selected: true,
+              status: 'pending' as const
+            });
+          }
+        }
       }
 
-      const files: LargeFile[] = (data.files || []).map((f: any) => ({
-        id: f.id,
-        name: f.name,
-        size: f.sizeMB * 1024 * 1024,
-        sizeMB: f.sizeMB,
-        bucket: f.bucket || 'profile-photos',
-        created_at: f.created_at,
-        selected: true,
-        status: 'pending' as const
-      }));
-
-      setLargeFiles(files);
+      // Sort by size descending
+      allFiles.sort((a, b) => b.sizeMB - a.sizeMB);
+      setLargeFiles(allFiles);
       
-      if (files.length === 0) {
+      if (allFiles.length === 0) {
         toast({
           title: "All optimized!",
-          description: `No files larger than 1MB found. Total storage: ${data.totalLargeFilesMB || 0}MB`,
+          description: "No files larger than 1MB found in storage.",
         });
       }
     } catch (err) {
       console.error('Error fetching files:', err);
       toast({
         title: "Error",
-        description: "Failed to fetch large files. Check console for details.",
+        description: "Failed to fetch files. Make sure you have admin access.",
         variant: "destructive"
       });
     }

@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,46 +24,36 @@ Deno.serve(async (req) => {
     const minSizeMB = parseFloat(url.searchParams.get('minSize') || '1')
 
     if (action === 'list') {
-      // List large files
-      const { data: files, error } = await supabase
-        .from('storage.objects' as any)
-        .select('id, name, metadata, created_at, bucket_id')
-        .eq('bucket_id', bucket)
-        .order('created_at', { ascending: false })
+      // List files via storage API
+      const { data: storageFiles, error: listError } = await supabase.storage
+        .from(bucket)
+        .list('', { limit: 1000 })
 
-      if (error) {
-        // Fallback: list via storage API
-        const { data: storageFiles, error: listError } = await supabase.storage
-          .from(bucket)
-          .list('', { limit: 1000 })
+      if (listError) throw listError
 
-        if (listError) throw listError
-
-        return new Response(JSON.stringify({
-          success: true,
-          message: 'Listed files (no size info available via storage API)',
-          files: storageFiles?.slice(0, 50) || [],
-          note: 'Use Supabase Dashboard SQL Editor to query storage.objects for sizes'
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        })
+      // Get file details with sizes
+      const filesWithSizes = []
+      for (const file of storageFiles || []) {
+        if (file.name) {
+          // Get public URL to check if file exists
+          const { data } = supabase.storage.from(bucket).getPublicUrl(file.name)
+          filesWithSizes.push({
+            id: file.id,
+            name: file.name,
+            sizeMB: file.metadata?.size ? Math.round((file.metadata.size) / 1024 / 1024 * 100) / 100 : 0,
+            bucket: bucket,
+            created_at: file.created_at,
+            url: data.publicUrl
+          })
+        }
       }
 
-      const largeFiles = (files || [])
-        .filter((f: any) => {
-          const size = f.metadata?.size || 0
-          return size > minSizeMB * 1024 * 1024
-        })
-        .map((f: any) => ({
-          id: f.id,
-          name: f.name,
-          sizeMB: Math.round((f.metadata?.size || 0) / 1024 / 1024 * 100) / 100,
-          bucket: f.bucket_id,
-          created_at: f.created_at
-        }))
-        .sort((a: any, b: any) => b.sizeMB - a.sizeMB)
+      // Filter to large files
+      const largeFiles = filesWithSizes
+        .filter(f => f.sizeMB > minSizeMB)
+        .sort((a, b) => b.sizeMB - a.sizeMB)
 
-      const totalMB = largeFiles.reduce((sum: number, f: any) => sum + f.sizeMB, 0)
+      const totalMB = largeFiles.reduce((sum, f) => sum + f.sizeMB, 0)
 
       return new Response(JSON.stringify({
         success: true,
@@ -91,7 +81,7 @@ Deno.serve(async (req) => {
         })
       }
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from(bucket)
         .remove(filesToDelete)
 
@@ -112,13 +102,15 @@ Deno.serve(async (req) => {
       const stats = []
 
       for (const b of buckets) {
-        const { data, error } = await supabase
-          .from('storage.objects' as any)
-          .select('metadata')
-          .eq('bucket_id', b)
+        const { data, error } = await supabase.storage
+          .from(b)
+          .list('', { limit: 1000 })
 
         if (!error && data) {
-          const totalSize = data.reduce((sum: number, f: any) => sum + (f.metadata?.size || 0), 0)
+          let totalSize = 0
+          for (const file of data) {
+            totalSize += file.metadata?.size || 0
+          }
           stats.push({
             bucket: b,
             fileCount: data.length,
