@@ -36,45 +36,82 @@ export default function AdminStorageOptimizer() {
 
   const fetchLargeFiles = async () => {
     setLoading(true);
+    console.log('[StorageOptimizer] Starting to fetch files from storage buckets...');
+    
     try {
-      // List files directly from storage buckets
       const buckets = ['profile-photos', 'pet-photos', 'verification-docs'];
       const allFiles: LargeFile[] = [];
 
       for (const bucket of buckets) {
-        const { data: storageFiles, error } = await supabase.storage
+        console.log(`[StorageOptimizer] Listing files in bucket: ${bucket}`);
+        
+        // List root level files
+        const { data: rootFiles, error: rootError } = await supabase.storage
           .from(bucket)
           .list('', { limit: 500 });
 
-        if (error) {
-          console.warn(`Error listing ${bucket}:`, error);
+        if (rootError) {
+          console.warn(`[StorageOptimizer] Error listing ${bucket}:`, rootError);
           continue;
         }
 
-        for (const file of storageFiles || []) {
-          // Skip folders
-          if (!file.name || file.id === null) continue;
-          
-          const sizeMB = file.metadata?.size 
-            ? Math.round((file.metadata.size / 1024 / 1024) * 100) / 100 
-            : 0;
+        console.log(`[StorageOptimizer] Found ${rootFiles?.length || 0} items in ${bucket}`);
 
-          // Only include files > 1MB
-          if (sizeMB > 1) {
-            allFiles.push({
-              id: file.id || file.name,
-              name: file.name,
-              size: file.metadata?.size || 0,
-              sizeMB,
-              bucket,
-              created_at: file.created_at || '',
-              selected: true,
-              status: 'pending' as const
-            });
+        // Process files - some might be in subdirectories
+        for (const item of rootFiles || []) {
+          // Check if it's a folder (has no metadata or id is null)
+          if (!item.metadata && item.id === null) {
+            // It's a folder, list its contents
+            const { data: subFiles } = await supabase.storage
+              .from(bucket)
+              .list(item.name, { limit: 500 });
+            
+            for (const subFile of subFiles || []) {
+              if (!subFile.name || subFile.id === null) continue;
+              
+              const sizeMB = subFile.metadata?.size 
+                ? Math.round((subFile.metadata.size / 1024 / 1024) * 100) / 100 
+                : 0;
+
+              if (sizeMB > 1) {
+                allFiles.push({
+                  id: subFile.id || `${item.name}/${subFile.name}`,
+                  name: `${item.name}/${subFile.name}`,
+                  size: subFile.metadata?.size || 0,
+                  sizeMB,
+                  bucket,
+                  created_at: subFile.created_at || '',
+                  selected: true,
+                  status: 'pending' as const
+                });
+              }
+            }
+          } else {
+            // It's a file
+            if (!item.name) continue;
+            
+            const sizeMB = item.metadata?.size 
+              ? Math.round((item.metadata.size / 1024 / 1024) * 100) / 100 
+              : 0;
+
+            if (sizeMB > 1) {
+              allFiles.push({
+                id: item.id || item.name,
+                name: item.name,
+                size: item.metadata?.size || 0,
+                sizeMB,
+                bucket,
+                created_at: item.created_at || '',
+                selected: true,
+                status: 'pending' as const
+              });
+            }
           }
         }
       }
 
+      console.log(`[StorageOptimizer] Total large files found: ${allFiles.length}`);
+      
       // Sort by size descending
       allFiles.sort((a, b) => b.sizeMB - a.sizeMB);
       setLargeFiles(allFiles);
@@ -85,11 +122,11 @@ export default function AdminStorageOptimizer() {
           description: "No files larger than 1MB found in storage.",
         });
       }
-    } catch (err) {
-      console.error('Error fetching files:', err);
+    } catch (err: any) {
+      console.error('[StorageOptimizer] Error fetching files:', err);
       toast({
         title: "Error",
-        description: "Failed to fetch files. Make sure you have admin access.",
+        description: err?.message || "Failed to fetch files. Make sure you have admin access.",
         variant: "destructive"
       });
     }
