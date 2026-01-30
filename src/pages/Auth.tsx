@@ -72,36 +72,14 @@ export default function Auth() {
       if (error) {
         trackAction('signin_failed', { error: error.message });
         
-        // Check if user doesn't have an account - switch to signup tab
+        // Handle invalid credentials - stay on signin tab, don't auto-switch
         if (error.message.includes('Invalid login credentials')) {
-          // Could be: 1) No account, 2) Wrong password, 3) Unconfirmed email
-          // Offer multiple options
-          setNoAccountMessage(true);
-          setActiveTab('signup');
+          // Could be: 1) Wrong password, 2) No account exists, 3) Unconfirmed email
+          // Show clear message but DON'T auto-switch to signup - it's confusing
           toast({
-            title: "Sign In Failed",
-            description: "This could mean no account exists, wrong password, or unconfirmed email. Try signing up or resending confirmation.",
-            action: (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={async () => {
-                  const { error } = await supabase.auth.resend({
-                    type: 'signup',
-                    email: formData.email.trim(),
-                  });
-                  if (!error) {
-                    toast({
-                      title: "Confirmation Email Sent! 📧",
-                      description: "Check your inbox and spam folder.",
-                    });
-                  }
-                }}
-                className="ml-2 whitespace-nowrap"
-              >
-                Resend Email
-              </Button>
-            ),
+            title: "Invalid Email or Password",
+            description: "Please check your credentials and try again. If you forgot your password, use the link below.",
+            variant: "destructive",
           });
         } else if (error.message.includes('Email not confirmed')) {
           toast({
