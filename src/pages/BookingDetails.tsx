@@ -13,10 +13,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   ArrowLeft, Calendar, Clock, DollarSign, MapPin, 
   User, Mail, Phone, FileText, AlertCircle, CheckCircle,
-  Home, PawPrint, Plus, Edit2, Trash2, Upload, X
+  Home, PawPrint, Plus, Edit2, Trash2, Upload, X, Star
 } from 'lucide-react';
 import { format, addDays, startOfDay } from 'date-fns';
 import DailyReportForm from '@/components/daily-reports/DailyReportForm';
+import ReviewForm from '@/components/reviews/ReviewForm';
 
 interface Pet {
   id: string;
@@ -109,6 +110,8 @@ export default function BookingDetails() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -183,6 +186,23 @@ export default function BookingDetails() {
 
         if (!reportsError && reportsData) {
           setDailyReports(reportsData);
+        }
+      }
+
+      // Check if owner has already reviewed this booking
+      if (profile?.id === ownerData.id && bookingData.status === 'completed') {
+        const { data: existingReview } = await supabase
+          .from('reviews')
+          .select('id')
+          .eq('booking_id', id)
+          .eq('reviewer_id', profile.id)
+          .eq('is_for_sitter', true)
+          .maybeSingle();
+
+        setHasReviewed(!!existingReview);
+        // Auto-show review form if booking completed and not reviewed yet
+        if (!existingReview) {
+          setShowReviewForm(true);
         }
       }
     } catch (error) {
@@ -775,6 +795,71 @@ export default function BookingDetails() {
                   </span>) has been notified and needs to complete payment to confirm the booking. You'll be notified once payment is received.
                 </p>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Review Section - Show for completed bookings (owners reviewing sitters) */}
+      {isOwner && booking.status === 'completed' && !hasReviewed && showReviewForm && (
+        <div className="mb-8">
+          <ReviewForm
+            bookingId={booking.id}
+            reviewerId={profile?.id || ''}
+            revieweeId={booking.sitter.id}
+            revieweeName={`${booking.sitter.first_name} ${booking.sitter.last_name}`}
+            isForSitter={true}
+            onSubmit={() => {
+              setHasReviewed(true);
+              setShowReviewForm(false);
+            }}
+            onCancel={() => setShowReviewForm(false)}
+          />
+        </div>
+      )}
+
+      {/* Review Completed Badge */}
+      {isOwner && booking.status === 'completed' && hasReviewed && (
+        <Card className="mb-8 border-2 border-primary/30 bg-primary/5">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                <Star className="h-6 w-6 text-primary fill-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Thank you for your review!</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your feedback helps {booking.sitter.first_name} and other pet parents.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Prompt to leave review (collapsed view) */}
+      {isOwner && booking.status === 'completed' && !hasReviewed && !showReviewForm && (
+        <Card className="mb-8 border-2 border-amber-400/50 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <Star className="h-8 w-8 text-white" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="text-lg font-bold text-amber-900 dark:text-amber-100">
+                  How was your experience?
+                </h3>
+                <p className="text-amber-800 dark:text-amber-200 text-sm">
+                  Share your feedback to help {booking.sitter.first_name} and other pet parents.
+                </p>
+              </div>
+              <Button
+                onClick={() => setShowReviewForm(true)}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white"
+              >
+                <Star className="h-4 w-4 mr-2" />
+                Leave a Review
+              </Button>
             </div>
           </CardContent>
         </Card>

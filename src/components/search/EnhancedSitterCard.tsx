@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Clock, Shield, Camera, Heart, Zap, Dog } from 'lucide-react';
+import { MapPin, Clock, Shield, Camera, Heart, Zap, Dog, Star, Sparkles } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import QuickEnquiryButton from '@/components/search/QuickEnquiryButton';
 import { YOUNG_WALKER_CONFIG } from '@/config/features';
@@ -22,6 +22,8 @@ interface EnhancedSitterCardProps {
     isYoungWalker?: boolean;
     youngWalkerAge?: number;
     acceptedDogSizes?: string[];
+    rating?: number | null;
+    feedback_count?: number | null;
   };
   onViewProfile: () => void;
   onSitterClick?: (sitterId: string, sitterName?: string) => void;
@@ -169,6 +171,33 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
             <div className="flex items-center text-sm text-muted-foreground">
               <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
               <span className="truncate">{sitter.location}</span>
+            </div>
+            {/* Rating or New Badge */}
+            <div className="flex items-center gap-1 mt-1">
+              {sitter.feedback_count && sitter.feedback_count > 0 ? (
+                <>
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-3 w-3 ${
+                          star <= Math.round(sitter.rating || 0)
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-muted-foreground/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    ({sitter.feedback_count})
+                  </span>
+                </>
+              ) : (
+                <Badge variant="secondary" className="text-xs py-0 h-5 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-300 border-0">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  New to Ziggy
+                </Badge>
+              )}
             </div>
           </div>
         </div>
