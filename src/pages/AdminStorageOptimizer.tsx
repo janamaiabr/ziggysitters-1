@@ -37,49 +37,37 @@ export default function AdminStorageOptimizer() {
   const fetchLargeFiles = async () => {
     setLoading(true);
     try {
-      // Fetch files > 1MB from profile-photos bucket
-      const { data, error } = await supabase
-        .from('storage.objects' as any)
-        .select('id, name, metadata, created_at, bucket_id')
-        .eq('bucket_id', 'profile-photos')
-        .order('metadata->size', { ascending: false });
+      // Use edge function to list large files (has service role access)
+      const { data, error } = await supabase.functions.invoke('storage-optimizer', {
+        body: {},
+        method: 'GET'
+      });
 
-      if (error) {
-        // Fallback: list files directly from storage
-        const { data: files, error: listError } = await supabase.storage
-          .from('profile-photos')
-          .list('', { limit: 500 });
+      if (error) throw error;
 
-        if (listError) throw listError;
-
-        // We need to get file metadata individually - this is limited
-        console.log('Listed files:', files?.length);
-        toast({
-          title: "Limited access",
-          description: "Cannot query storage metadata directly. Please use Supabase dashboard.",
-          variant: "destructive"
-        });
-        setLoading(false);
-        return;
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to fetch files');
       }
 
-      const files: LargeFile[] = (data || [])
-        .filter((f: any) => {
-          const size = f.metadata?.size || 0;
-          return size > 1000000; // > 1MB
-        })
-        .map((f: any) => ({
-          id: f.id,
-          name: f.name,
-          size: f.metadata?.size || 0,
-          sizeMB: Math.round((f.metadata?.size || 0) / 1024 / 1024 * 100) / 100,
-          bucket: f.bucket_id,
-          created_at: f.created_at,
-          selected: true,
-          status: 'pending' as const
-        }));
+      const files: LargeFile[] = (data.files || []).map((f: any) => ({
+        id: f.id,
+        name: f.name,
+        size: f.sizeMB * 1024 * 1024,
+        sizeMB: f.sizeMB,
+        bucket: f.bucket || 'profile-photos',
+        created_at: f.created_at,
+        selected: true,
+        status: 'pending' as const
+      }));
 
       setLargeFiles(files);
+      
+      if (files.length === 0) {
+        toast({
+          title: "All optimized!",
+          description: `No files larger than 1MB found. Total storage: ${data.totalLargeFilesMB || 0}MB`,
+        });
+      }
     } catch (err) {
       console.error('Error fetching files:', err);
       toast({
