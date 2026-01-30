@@ -1224,6 +1224,943 @@ export const blogPosts: BlogPostData[] = [
         </p>
       </div>
     `
+  },
+
+  // ===== NEW SEO POSTS - 31 January 2026 =====
+
+  {
+    slug: 'pet-sitting-hamilton-nz-guide',
+    title: 'Pet Sitting in Hamilton NZ: Your Complete Local Guide (2026)',
+    excerpt: 'Discover trusted pet sitters in Hamilton, New Zealand. From the Waikato River trails to pet-friendly suburbs, find the perfect care for your furry family member.',
+    date: '2026-01-31',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=630&fit=crop',
+    readTime: '9 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Find trusted pet sitters in Hamilton NZ. Complete guide to pet sitting services, costs, suburbs, and dog-friendly spots in the Waikato region for 2026.',
+    keywords: ['pet sitting hamilton', 'pet sitter hamilton nz', 'dog sitting hamilton', 'cat sitting waikato', 'hamilton pet care', 'pet sitting waikato'],
+    content: `
+      <p class="text-lg text-muted-foreground mb-8">
+        Hamilton — the heart of the Waikato — is one of New Zealand's fastest-growing cities, and its pet-loving community is thriving. Whether you're heading away for a weekend trip, a business conference, or an extended holiday, finding reliable pet care in Hamilton doesn't have to be stressful. This guide covers everything Hamilton pet owners need to know about pet sitting services in 2026.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Why Hamilton Pet Owners Love Pet Sitting</h2>
+      <p class="mb-6">
+        Hamilton is a city built around outdoor living and community. With the Waikato River winding through town, lush parks on every corner, and a lifestyle that revolves around the great outdoors, it's no surprise that Hamilton has one of the highest rates of pet ownership in New Zealand. Around 65% of Waikato households include at least one pet — and those pets deserve top-quality care when their owners are away.
+      </p>
+      <p class="mb-6">
+        Traditional boarding kennels exist in the greater Hamilton area, but more and more local pet owners are turning to home-based pet sitting. The reasons are simple: less stress for pets, personalised one-on-one attention, and the comfort of a real home environment rather than a cage or pen.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&h=450&fit=crop" alt="Happy dog enjoying outdoor time in a New Zealand park" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Types of Pet Sitting Services in Hamilton</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">In-Home Pet Sitting</h3>
+      <p class="mb-6">
+        A sitter comes to your Hamilton home to care for your pet in their familiar surroundings. This is ideal for anxious pets, older animals, or those on medication. Your pet keeps their routine — same bed, same smells, same backyard — while getting dedicated company and care. Many Hamilton sitters also bring in your mail, water plants, and keep your home looking lived-in, which is a bonus for security.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Host Family Sitting</h3>
+      <p class="mb-6">
+        Your pet stays at the sitter's home, joining their household temporarily. This is popular with sociable dogs who love company. Hamilton sitters often have fully fenced sections and other pets for companionship, making it a home away from home. Many host families are located in pet-friendly suburbs like Rototuna, Flagstaff, and Hillcrest.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Drop-In Visits</h3>
+      <p class="mb-6">
+        Perfect for cats and independent pets, drop-in visits involve a sitter popping by your home once or twice a day to feed, play with, and check on your pet. Hamilton's compact city layout means sitters can reach most suburbs within 15-20 minutes, making this an efficient and affordable option for shorter absences.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Dog Walking</h3>
+      <p class="mb-6">
+        Not just for when you're away — regular dog walking is popular with busy Hamilton professionals who want their dogs exercised during the workday. Hamilton's riverside paths and parks make for brilliant dog walking routes.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Costs in Hamilton</h2>
+      <p class="mb-6">
+        Hamilton pet sitting rates are generally slightly lower than Auckland or Wellington, reflecting the lower cost of living in the Waikato. Here's what you can expect to pay:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Overnight home sitting:</strong> $45–$70 per night</li>
+        <li><strong>Host family sitting:</strong> $40–$65 per night</li>
+        <li><strong>Drop-in visits:</strong> $18–$30 per visit</li>
+        <li><strong>Dog walking:</strong> $18–$35 per walk</li>
+        <li><strong>Day care:</strong> $35–$55 per day</li>
+      </ul>
+      <p class="mb-6">
+        Prices vary depending on the number of pets, specific needs (medication, special diets), and time of year. Peak holiday periods like Christmas, Easter, and school holidays may attract a small surcharge. Booking early is the best way to secure your preferred sitter and avoid premium pricing.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Best Hamilton Suburbs for Pet Owners</h2>
+      <p class="mb-6">
+        Hamilton's suburbs each have their own character when it comes to pet friendliness. Here's a quick overview:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Rototuna & Flagstaff</h3>
+      <p class="mb-6">
+        The newer northern suburbs are hugely popular with young families and pet owners. Wide streets, new parks, and walkways along the fringes make these suburbs ideal for dogs. Plenty of ZiggySitters operate in this area.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Hillcrest & Silverdale</h3>
+      <p class="mb-6">
+        Close to the University of Waikato, these established suburbs have generous section sizes and mature trees. Many university students and staff offer pet sitting here, combining their love of animals with flexible schedules.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Hamilton East & Hamilton Lake</h3>
+      <p class="mb-6">
+        The Hamilton Lake (Rotoroa) walkway is a pet owner's dream — a flat, scenic loop around the lake that's perfect for dogs of all ages. Hamilton East's leafy streets and proximity to the river make it another favourite for pet-sitting families.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&h=450&fit=crop" alt="Two dogs walking together on a scenic pathway" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Nawton & Dinsdale</h3>
+      <p class="mb-6">
+        These western suburbs offer affordable living with good-sized sections, making them popular with pet sitters who host animals at their own homes. The nearby Waiwhakareke Natural Heritage Park is a beautiful spot for nature walks.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Tamahere & Matangi (Rural Fringe)</h3>
+      <p class="mb-6">
+        For larger breeds or pets used to rural lifestyles, sitters in the semi-rural outskirts of Hamilton offer spacious properties with paddocks and room to run. Ideal for working dogs, multiple pets, or animals that need extra space.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Dog-Friendly Spots in Hamilton</h2>
+      <p class="mb-6">
+        Good pet sitters know the best local spots. Here are Hamilton's top dog-friendly locations that your sitter might enjoy with your pooch:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Hamilton Lake Domain:</strong> The 3.8 km lakeside loop is flat, paved, and dog-friendly</li>
+        <li><strong>Waikato River Paths:</strong> Multiple trail sections along the river, from Swarbrick Landing to Parana Park</li>
+        <li><strong>Minogue Park:</strong> Popular off-leash area in Hamilton East</li>
+        <li><strong>Horsham Downs:</strong> Open rural walking north of the city</li>
+        <li><strong>Taitua Arboretum:</strong> A hidden gem with native bush walks (dogs on lead)</li>
+        <li><strong>Waiwhakareke Natural Heritage Park:</strong> Ecological restoration area with walking tracks</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">What to Look for in a Hamilton Pet Sitter</h2>
+      <p class="mb-6">
+        When choosing a pet sitter in Hamilton, consider these key factors:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Identity verification:</strong> Ensure the sitter has a verified profile with real ID checks</li>
+        <li><strong>Local knowledge:</strong> Sitters familiar with Hamilton's vet clinics, parks, and pet-friendly spots are a major plus</li>
+        <li><strong>Reviews from local owners:</strong> Read reviews from other Hamilton pet owners for relevant feedback</li>
+        <li><strong>Communication style:</strong> The best sitters send regular photo and video updates</li>
+        <li><strong>Emergency plan:</strong> Ask how they'd handle a vet emergency — do they know where the nearest after-hours clinic is?</li>
+        <li><strong>Meet and greet:</strong> Always arrange a face-to-face meeting before the first booking</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Hamilton Vet Clinics for Emergencies</h2>
+      <p class="mb-6">
+        Share these details with your pet sitter so they're prepared in case of emergencies:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Hamilton Veterinary Emergency Centre:</strong> Offers after-hours emergency care</li>
+        <li><strong>Waikato Veterinary Hospital:</strong> Comprehensive care including specialists</li>
+        <li><strong>VetEnt Hamilton:</strong> Multiple locations throughout the city</li>
+      </ul>
+      <p class="mb-6">
+        Always leave your regular vet's details, your pet's medical history, and authorisation for emergency treatment with your sitter before you leave.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=800&h=450&fit=crop" alt="Cat relaxing comfortably at home on a couch" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Seasonal Pet Sitting Tips for Hamilton</h2>
+      <p class="mb-6">
+        The Waikato's climate brings specific considerations for pet care:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Summer (Dec–Feb):</strong> Hamilton summers can be humid. Ensure your sitter knows to provide plenty of fresh water, avoid midday walks, and watch for signs of heat stress</li>
+        <li><strong>Winter (Jun–Aug):</strong> Waikato winters are cold and damp. Indoor pets may need extra blankets, and outdoor dogs need dry, warm shelter</li>
+        <li><strong>Spring (Sep–Nov):</strong> Allergy season — inform your sitter about any seasonal allergies your pet suffers from</li>
+        <li><strong>Autumn (Mar–May):</strong> Shorter days mean earlier darkness — reflective gear for evening walks is a good idea</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">How to Book a Hamilton Pet Sitter on ZiggySitters</h2>
+      <ol class="list-decimal pl-6 mb-6 space-y-2">
+        <li><strong>Search by location:</strong> Enter your Hamilton suburb or postcode to find nearby sitters</li>
+        <li><strong>Filter by service:</strong> Choose overnight sitting, drop-in visits, dog walking, or day care</li>
+        <li><strong>Compare profiles:</strong> Review experience, photos, ratings, and pricing</li>
+        <li><strong>Message and meet:</strong> Chat with potential sitters and arrange an in-person meet-and-greet</li>
+        <li><strong>Book securely:</strong> Confirm your dates and pay through ZiggySitters' secure platform</li>
+        <li><strong>Relax and enjoy:</strong> Receive photo updates and know your pet is in great hands</li>
+      </ol>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Become a Pet Sitter in Hamilton</h2>
+      <p class="mb-6">
+        Love animals? Hamilton's growing demand for quality pet sitting means there are opportunities for reliable, caring people to earn extra income. Whether you're a student at Waikato Uni, a work-from-home professional, or a retiree with time and love to spare, pet sitting is a flexible and rewarding way to supplement your income.
+      </p>
+      <p class="mb-6">
+        ZiggySitters makes it easy to set up your profile, set your own rates, and connect with local pet owners looking for exactly the kind of care you provide.
+      </p>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Hamilton pet sitting made simple</h3>
+        <p class="mb-4">
+          Whether you need overnight care in Rototuna, daily dog walks along the Waikato River, or cat check-ins in Hillcrest, ZiggySitters connects you with verified local sitters who genuinely love animals.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find Hamilton pet sitters →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter in Hamilton →</a>
+        </p>
+      </div>
+    `
+  },
+
+  {
+    slug: 'how-to-become-pet-sitter-new-zealand',
+    title: 'How to Become a Pet Sitter in New Zealand: The Complete Guide',
+    excerpt: 'Everything you need to know about starting a pet sitting business in NZ. From setting up your profile to getting your first clients, this step-by-step guide has you covered.',
+    date: '2026-01-31',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1450778869180-e76aa4909d07?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'For Sitters',
+    metaDescription: 'Step-by-step guide to becoming a pet sitter in New Zealand. Learn about qualifications, pricing, insurance, building clients, and earning income from pet care in NZ.',
+    keywords: ['become pet sitter nz', 'pet sitting business new zealand', 'how to pet sit', 'start pet sitting nz', 'pet sitter income nz', 'pet sitting jobs new zealand'],
+    content: `
+      <p class="text-lg text-muted-foreground mb-8">
+        Love animals? Want to earn money doing something genuinely enjoyable? Pet sitting in New Zealand is a growing industry with real demand — and you don't need a university degree or expensive certification to get started. Whether you're looking for a flexible side hustle, a gap between jobs, or a full-time career working with animals, this guide walks you through everything you need to know about becoming a pet sitter in Aotearoa.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Why Pet Sitting is a Great Opportunity in NZ</h2>
+      <p class="mb-6">
+        New Zealand is a nation of animal lovers. Around 64% of Kiwi households own at least one pet, and the country's pet care market continues to grow year on year. More pet owners are choosing home-based pet sitting over traditional boarding kennels, creating strong demand for trustworthy, caring sitters across the country.
+      </p>
+      <p class="mb-6">
+        The lifestyle benefits are significant too. As a pet sitter, you set your own hours, choose which bookings to accept, work from home (or someone else's home), and spend your days surrounded by animals instead of sitting in an office. For many Kiwis, it's the perfect fit.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1494947665470-20322015e3a8?w=800&h=450&fit=crop" alt="Person walking a happy golden retriever in a park" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Do You Need Qualifications?</h2>
+      <p class="mb-6">
+        The short answer: no formal qualifications are required to become a pet sitter in New Zealand. There's no government licence or mandatory certification. However, having relevant experience and knowledge will help you stand out and build trust with clients.
+      </p>
+      <p class="mb-6">
+        Here are some things that give you a genuine advantage:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Personal pet ownership:</strong> Having your own pets shows you understand the daily realities of animal care</li>
+        <li><strong>Volunteer experience:</strong> Time spent at an SPCA, rescue shelter, or animal charity demonstrates commitment</li>
+        <li><strong>Pet first aid course:</strong> Several NZ providers offer pet-specific first aid training — this is a genuine differentiator on your profile</li>
+        <li><strong>Animal behaviour knowledge:</strong> Understanding basic dog and cat body language helps you provide better care and stay safe</li>
+        <li><strong>References:</strong> If you've cared for friends' or family members' pets, ask them for a written reference</li>
+      </ul>
+      <p class="mb-6">
+        While not mandatory, completing a pet first aid course (typically $80–$150 and done in a single day) is one of the best investments you can make. It gives pet owners extra confidence in your abilities and could genuinely save an animal's life in an emergency.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Step 1: Prepare Your Space</h2>
+      <p class="mb-6">
+        If you plan to host pets at your home, you'll need to ensure your property is safe and suitable. Here's a checklist:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Secure fencing:</strong> For dogs, a fully fenced section is essential. Check for gaps, low spots, and gate latches</li>
+        <li><strong>Hazard removal:</strong> Remove toxic plants (lilies for cats, sago palms, etc.), secure chemicals, and check for small objects pets could swallow</li>
+        <li><strong>Separate spaces:</strong> If you have your own pets, plan how you'll introduce new animals and keep them separated if needed</li>
+        <li><strong>Comfort items:</strong> Have spare bedding, bowls, toys, and leads available</li>
+        <li><strong>Cleaning supplies:</strong> Stock up on pet-safe cleaning products for inevitable accidents</li>
+      </ul>
+      <p class="mb-6">
+        If you plan to offer in-home sitting (going to the client's house), your own property setup matters less — but you'll need reliable transport to get there.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Step 2: Set Up Your ZiggySitters Profile</h2>
+      <p class="mb-6">
+        Your profile is your storefront. It's the first thing pet owners see, and it needs to inspire confidence. Here's how to make it stand out:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Profile Photo</h3>
+      <p class="mb-6">
+        Use a clear, friendly photo of yourself — ideally with a pet. Avoid blurry selfies, group photos, or pictures without your face visible. Pet owners want to see the person who'll be caring for their fur baby.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Bio / About Section</h3>
+      <p class="mb-6">
+        Write a genuine, warm description of who you are and why you love animals. Mention your experience, your own pets (if any), your home setup, and what makes you a great sitter. Be specific — "I have a fully fenced 800sqm garden in Tauranga with a dog door and covered outdoor area" is far more compelling than "I have a nice house."
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Services Offered</h3>
+      <p class="mb-6">
+        Be clear about exactly what you offer: overnight hosting, in-home sitting, drop-in visits, dog walking, day care, or a combination. Specify which types of pets you're comfortable with — dogs, cats, rabbits, birds, fish, reptiles. Being specific helps you attract the right clients.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&h=450&fit=crop" alt="Friendly dog looking up at camera with trusting eyes" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Photos of Your Space</h3>
+      <p class="mb-6">
+        Upload multiple photos showing your garden, indoor living areas, and any pet-friendly features. Pet owners want to visualise where their pet will be staying. Clean, well-lit photos make a huge difference.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Step 3: Set Your Pricing</h2>
+      <p class="mb-6">
+        Pricing can feel awkward, but getting it right is important. Here are typical New Zealand pet sitting rates to guide you:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Overnight hosting:</strong> $45–$80 per night</li>
+        <li><strong>In-home sitting:</strong> $50–$85 per night</li>
+        <li><strong>Drop-in visits:</strong> $18–$35 per visit</li>
+        <li><strong>Dog walking:</strong> $18–$40 per walk</li>
+        <li><strong>Day care:</strong> $35–$60 per day</li>
+      </ul>
+      <p class="mb-6">
+        If you're brand new with no reviews, consider starting at the lower end to attract your first clients. Once you have 5–10 positive reviews, you can gradually increase your rates. Location matters too — sitters in Auckland and Wellington typically charge more than those in smaller towns.
+      </p>
+      <p class="mb-6">
+        <strong>Pro tip:</strong> Offer a small discount for bookings of 7+ nights, or for repeat clients. Loyalty pricing builds long-term relationships and steady income.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Step 4: Understand the Business Side</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Tax Obligations</h3>
+      <p class="mb-6">
+        Pet sitting income is taxable in New Zealand. If you earn more than $200 per year from pet sitting, you'll need to declare it on your tax return. If your total self-employment income exceeds certain thresholds, you may need to register for GST. Keep records of your income and expenses (pet supplies, cleaning products, transport costs) as many can be claimed as deductions. Consider speaking with an accountant if your pet sitting becomes a significant income source.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Insurance</h3>
+      <p class="mb-6">
+        While not legally required, having liability insurance is strongly recommended. It protects you if a pet is injured in your care, if a pet damages someone else's property, or if you're injured by a pet. Several NZ insurers offer policies for pet care professionals, typically costing $200–$500 per year depending on coverage.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Council Rules</h3>
+      <p class="mb-6">
+        Most NZ councils have bylaws about the number of animals you can have on a property. If you're hosting multiple dogs at once, check your local council's rules. Some areas require a permit if you regularly have more than two or three dogs on your property.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Step 5: Nail the Meet-and-Greet</h2>
+      <p class="mb-6">
+        The meet-and-greet is where bookings are won or lost. This is your chance to build trust with the pet owner and bond with their pet. Here's how to make it count:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Be punctual:</strong> Arriving on time shows professionalism</li>
+        <li><strong>Get on the pet's level:</strong> Literally — crouch down and let the animal come to you</li>
+        <li><strong>Ask detailed questions:</strong> Diet, medication, favourite toys, behavioural quirks, fears, routines</li>
+        <li><strong>Share your plan:</strong> Explain what a typical day looks like with you — walks, meal times, play, sleep</li>
+        <li><strong>Exchange contact details:</strong> Ensure you can reach the owner (and vice versa) at any time</li>
+        <li><strong>Discuss emergencies:</strong> Know the owner's preferred vet and have authorisation for emergency treatment</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Step 6: Build Your Reputation</h2>
+      <p class="mb-6">
+        In the pet sitting world, reviews are everything. Here's how to earn glowing feedback from your first clients onwards:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Send daily updates:</strong> Photos and short messages about what their pet has been up to. This is the single most appreciated thing you can do</li>
+        <li><strong>Go the extra mile:</strong> Small touches like a welcome note for the pet, a goodbye photo on departure day, or remembering the pet's name weeks later</li>
+        <li><strong>Be responsive:</strong> Reply to enquiries quickly — pet owners often message multiple sitters, and the first to respond often gets the booking</li>
+        <li><strong>Handle problems gracefully:</strong> If something goes wrong (and eventually it will — a minor accident, a pet being unsettled), communicate honestly and proactively</li>
+        <li><strong>Ask for reviews:</strong> After a successful booking, politely ask the owner to leave a review on your ZiggySitters profile</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?w=800&h=450&fit=crop" alt="Person cuddling a happy cat at home" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">How Much Can You Earn?</h2>
+      <p class="mb-6">
+        Your earning potential depends on your location, services offered, and how many bookings you take. Here are some realistic scenarios:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Casual side income:</strong> 2–3 bookings per month = $400–$800/month</li>
+        <li><strong>Regular part-time:</strong> 2–3 pets per week = $1,500–$2,500/month</li>
+        <li><strong>Full-time sitter:</strong> Multiple daily/overnight bookings = $3,000–$5,000+/month</li>
+      </ul>
+      <p class="mb-6">
+        Peak periods (Christmas, school holidays, long weekends) are when demand spikes — experienced sitters often book out weeks in advance. Building a base of repeat clients is the key to consistent income.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Common Mistakes New Pet Sitters Make</h2>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Taking on too much too soon:</strong> Start with one or two pets at a time until you're confident managing multiple animals</li>
+        <li><strong>Underpricing:</strong> Charging too little undervalues your service and can attract less committed clients</li>
+        <li><strong>Skipping the meet-and-greet:</strong> Never accept a booking without meeting the pet first — some pets aren't a good match for your setup</li>
+        <li><strong>Poor communication:</strong> Owners worry. Regular updates (even quick "all good!" texts) make a massive difference</li>
+        <li><strong>Not having a backup plan:</strong> What happens if you get sick? Have a trusted friend or fellow sitter who can step in</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Ready to Start?</h2>
+      <p class="mb-6">
+        Pet sitting is one of those rare opportunities where you genuinely get paid to do something you love. New Zealand's pet-owning population is growing, demand for quality sitters is high, and platforms like ZiggySitters make it easy to connect with clients in your area.
+      </p>
+      <p class="mb-6">
+        Whether you're in Auckland, Wellington, Hamilton, Christchurch, or anywhere in between — there are pet owners near you looking for exactly the kind of care you can provide.
+      </p>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Start your pet sitting journey today</h3>
+        <p class="mb-4">
+          Join hundreds of Kiwi pet sitters already earning income doing what they love. Create your free ZiggySitters profile, set your own rates, and start connecting with local pet owners.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/become-sitter" class="text-primary underline">Create your sitter profile →</a> · <a href="/find-sitters" class="text-primary underline">See how other sitters present themselves →</a>
+        </p>
+      </div>
+    `
+  },
+
+  {
+    slug: 'separation-anxiety-dogs-pet-sitters-help',
+    title: 'Separation Anxiety in Dogs: How Pet Sitters Can Help',
+    excerpt: 'Does your dog struggle when you leave? Learn how professional pet sitters provide relief for dogs with separation anxiety and what techniques actually work.',
+    date: '2026-01-31',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=1200&h=630&fit=crop',
+    readTime: '9 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'How pet sitters help dogs with separation anxiety. Understand the signs, causes, and practical solutions for anxious dogs in New Zealand.',
+    keywords: ['separation anxiety dogs', 'dog anxiety nz', 'pet sitter anxious dog', 'dog separation anxiety help', 'dog behaviour nz', 'anxious dog pet sitting'],
+    content: `
+      <p class="text-lg text-muted-foreground mb-8">
+        You've seen the signs — the frantic barking when you pick up your keys, the destroyed cushions when you get home, the neighbours' complaints about howling. Separation anxiety in dogs is one of the most common behavioural issues pet owners face, and it can be genuinely distressing for both you and your dog. The good news? A skilled pet sitter can make an enormous difference.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">What is Separation Anxiety?</h2>
+      <p class="mb-6">
+        Separation anxiety is a stress response that occurs when a dog is separated from their owner or primary attachment figure. It's not naughty behaviour or your dog "punishing" you for leaving — it's genuine distress, similar to a panic attack in humans. Dogs are inherently social animals, and some develop an extremely strong attachment to their human family that makes being alone feel unbearable.
+      </p>
+      <p class="mb-6">
+        It's important to distinguish between true separation anxiety and normal boredom or under-stimulation. A bored dog might chew a shoe; an anxious dog will destroy a door frame trying to follow you. The intensity, consistency, and timing of the behaviours are key indicators.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=450&fit=crop" alt="Dog looking out a window waiting for their owner" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Signs Your Dog Has Separation Anxiety</h2>
+      <p class="mb-6">
+        Dogs with separation anxiety typically show one or more of these symptoms — critically, these behaviours occur <strong>when you're away or about to leave</strong>, not at random times:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Excessive barking or howling:</strong> Persistent, distressed vocalisations that start soon after you leave</li>
+        <li><strong>Destructive behaviour:</strong> Chewing, scratching, or digging — often focused on exit points like doors and windows</li>
+        <li><strong>House soiling:</strong> Urinating or defecating indoors despite being fully house-trained</li>
+        <li><strong>Pacing and restlessness:</strong> Repetitive walking in patterns or circles</li>
+        <li><strong>Escape attempts:</strong> Trying to break out of crates, rooms, or the house — sometimes causing self-injury</li>
+        <li><strong>Excessive drooling or panting:</strong> Physical stress responses even in cool conditions</li>
+        <li><strong>Refusal to eat:</strong> Ignoring food or treats when alone, even if they're usually food-motivated</li>
+        <li><strong>Hyper-attachment:</strong> Following you from room to room, becoming visibly anxious if you close a door between you</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">What Causes Separation Anxiety?</h2>
+      <p class="mb-6">
+        There's rarely a single cause. Separation anxiety often develops from a combination of factors:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Change in Routine</h3>
+      <p class="mb-6">
+        The most common trigger in New Zealand right now is the shift back to office work after COVID. Many dogs adopted during lockdown spent their first years with their owner home 24/7 — then suddenly that changed. The same applies to any major routine change: a new job, a partner moving out, children starting school.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Rehoming or Adoption</h3>
+      <p class="mb-6">
+        Dogs from shelters or rescue organisations are more prone to separation anxiety, especially if they've experienced abandonment or multiple rehomings. They've learned that when people leave, they might not come back.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Traumatic Event</h3>
+      <p class="mb-6">
+        A scary experience while home alone — a thunderstorm, fireworks (a big issue on Guy Fawkes Night in NZ), a break-in, or even loud construction — can create a lasting association between being alone and feeling unsafe.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Breed and Temperament</h3>
+      <p class="mb-6">
+        Some breeds are more susceptible due to their breeding for close human companionship. Working breeds (Border Collies, German Shepherds), companion breeds (Cavalier King Charles Spaniels, French Bulldogs), and high-intelligence breeds can be more prone. However, any dog of any breed or mix can develop separation anxiety.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">How Pet Sitters Help Dogs with Separation Anxiety</h2>
+      <p class="mb-6">
+        This is where professional pet sitting becomes transformative. Here's how a pet sitter directly addresses the core issues:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">1. Eliminating the "Alone" Problem</h3>
+      <p class="mb-6">
+        The most direct solution to separation anxiety is ensuring the dog isn't alone. An in-home pet sitter or host-family arrangement means your dog has human companionship throughout the day. No isolation means no anxiety trigger. This is particularly important when you're away for extended periods like holidays or work trips.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">2. Maintaining Routine</h3>
+      <p class="mb-6">
+        Dogs with anxiety thrive on predictability. A good pet sitter will follow your dog's exact routine — same feeding times, same walk schedule, same bedtime. This consistency reduces the stress of your absence and helps your dog feel secure, even in an unfamiliar situation.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=800&h=450&fit=crop" alt="Person sitting calmly with a relaxed dog on a park bench" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">3. Gradual Desensitisation</h3>
+      <p class="mb-6">
+        Regular pet sitting — even when you're not away — can help your dog learn that being with someone other than you is safe and enjoyable. Starting with short visits and gradually increasing duration helps build your dog's confidence. Over time, your dog learns that your departure doesn't mean distress; it means a fun friend is coming.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">4. Physical and Mental Stimulation</h3>
+      <p class="mb-6">
+        A tired dog is a calmer dog. Pet sitters provide walks, play, and mental enrichment that help burn off the anxious energy that fuels destructive behaviours. Many sitters use puzzle toys, training games, and interactive play to keep dogs mentally engaged and content.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">5. Calm, Confident Energy</h3>
+      <p class="mb-6">
+        Experienced pet sitters understand that anxious dogs need calm, reassuring energy — not excessive fussing or high-pitched cooing. They know how to be present without reinforcing the anxiety, creating an environment where the dog can self-soothe and relax naturally.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Practical Tips for Owners of Anxious Dogs</h2>
+      <p class="mb-6">
+        Whether or not you use a pet sitter, these evidence-based strategies can help manage your dog's separation anxiety:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Practice departures:</strong> Pick up your keys, put on shoes, then sit back down. Repeat until the triggers no longer cause a reaction</li>
+        <li><strong>Keep arrivals and departures low-key:</strong> No emotional goodbyes or excited hellos. Calm and matter-of-fact is the goal</li>
+        <li><strong>Leave comfort items:</strong> A worn T-shirt with your scent, a favourite toy, or a food puzzle</li>
+        <li><strong>Create a safe space:</strong> A specific area (not a closed crate) where your dog feels secure, with their bed, water, and toys</li>
+        <li><strong>Consider calming aids:</strong> Adaptil diffusers (synthetic pheromones), calming supplements, or anxiety wraps can help some dogs</li>
+        <li><strong>Exercise before leaving:</strong> A good walk or play session before departure helps reduce restless energy</li>
+        <li><strong>Background noise:</strong> Leaving a radio or TV on can mask outside sounds and provide a sense of company</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">When to Seek Professional Help</h2>
+      <p class="mb-6">
+        If your dog's separation anxiety is severe — causing self-injury, extreme destructive behaviour, or significant distress — consult a qualified animal behaviourist or your veterinarian. They may recommend:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Behavioural modification programmes:</strong> Structured desensitisation and counter-conditioning plans</li>
+        <li><strong>Anti-anxiety medication:</strong> In severe cases, short-term or ongoing medication can help while behavioural work takes effect</li>
+        <li><strong>Veterinary assessment:</strong> Rule out medical causes for behaviour changes (pain, cognitive decline in older dogs)</li>
+      </ul>
+      <p class="mb-6">
+        A pet sitter can work alongside professional treatment, providing the daily support and consistency that behavioural programmes require to succeed.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=800&h=450&fit=crop" alt="Calm and relaxed dog resting peacefully on a comfortable bed" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Choosing the Right Pet Sitter for an Anxious Dog</h2>
+      <p class="mb-6">
+        Not every pet sitter is the right fit for a dog with separation anxiety. Here's what to look for:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Experience with anxious dogs:</strong> Ask specifically — have they cared for dogs with separation anxiety before?</li>
+        <li><strong>Calm demeanour:</strong> During the meet-and-greet, observe how the sitter interacts with your dog. Are they patient and gentle?</li>
+        <li><strong>Flexibility:</strong> Anxious dogs sometimes need extra time and attention. Choose a sitter who isn't rushing between multiple bookings</li>
+        <li><strong>Communication:</strong> You'll worry more than usual. A sitter who sends frequent updates with photos will ease your mind enormously</li>
+        <li><strong>In-home option:</strong> For severely anxious dogs, in-home sitting (in your own home) is usually the best option — familiar smells and surroundings reduce stress</li>
+        <li><strong>Willingness to follow instructions:</strong> Your anxious dog has specific needs. Make sure the sitter is happy to follow your routines and protocols precisely</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">A Note on Kennels vs Pet Sitting for Anxious Dogs</h2>
+      <p class="mb-6">
+        Traditional boarding kennels are generally not recommended for dogs with separation anxiety. The combination of unfamiliar environment, confinement, other barking dogs, and unpredictable routines can worsen anxiety significantly. Home-based pet sitting provides the personal attention, routine, and calm environment that anxious dogs need to cope.
+      </p>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Your anxious dog deserves patient, understanding care</h3>
+        <p class="mb-4">
+          ZiggySitters connects you with experienced, caring pet sitters who understand separation anxiety and know how to help. Browse profiles, read reviews, and find a sitter who'll give your dog the calm, consistent companionship they need.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find a sitter experienced with anxious dogs →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
+        </p>
+      </div>
+    `
+  },
+
+  {
+    slug: 'pet-sitting-tauranga-bay-of-plenty-guide',
+    title: 'Pet Sitting in Tauranga & Bay of Plenty: Your Complete Guide (2026)',
+    excerpt: 'Find trusted pet sitters in Tauranga and the wider Bay of Plenty region. From Mount Maunganui to Papamoa, discover local pet care options for every need.',
+    date: '2026-01-31',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1477884213360-7e9d7dcc8f9b?w=1200&h=630&fit=crop',
+    readTime: '9 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Find trusted pet sitters in Tauranga and Bay of Plenty NZ. Complete 2026 guide to pet sitting services, costs, dog-friendly beaches, and local sitter tips.',
+    keywords: ['pet sitting tauranga', 'pet sitter bay of plenty', 'dog sitting tauranga nz', 'cat sitting bay of plenty', 'mount maunganui pet care', 'tauranga pet sitter'],
+    content: `
+      <p class="text-lg text-muted-foreground mb-8">
+        Tauranga and the wider Bay of Plenty region are some of New Zealand's most desirable places to live — and pets agree. With stunning beaches, warm weather, and a relaxed coastal lifestyle, it's no wonder the region has a thriving pet-owning community. Whether you're heading away for a weekend surf trip, a business conference, or a long holiday, this guide has everything you need to find the perfect pet care in the Bay.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Why Pet Sitting is Booming in Tauranga</h2>
+      <p class="mb-6">
+        The Bay of Plenty is one of New Zealand's fastest-growing regions, and Tauranga itself is now the country's fifth-largest city. The influx of new residents — many bringing beloved pets — has created strong demand for quality pet care services. Combine this with the region's popularity as a holiday destination (meaning locals travel frequently), and you have a recipe for a thriving pet sitting community.
+      </p>
+      <p class="mb-6">
+        The coastal lifestyle also means many pets here are outdoor-loving, active animals accustomed to beach walks, bush hikes, and garden play. They deserve care that matches that lifestyle — not a cage in a kennel. That's why more and more Bay of Plenty pet owners are choosing home-based pet sitting through platforms like ZiggySitters.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=800&h=450&fit=crop" alt="Happy dog running on a beach with waves in the background" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Services Available in the Bay of Plenty</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Overnight Home Sitting</h3>
+      <p class="mb-6">
+        A sitter stays at your home with your pet, maintaining their routine in familiar surroundings. Particularly popular in Tauranga for pets who love their garden, know their neighbourhood, and feel most comfortable in their own space. Your sitter handles feeding, walks, playtime, and can also bring in mail, water plants, and keep an eye on your property.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Host Family Sitting</h3>
+      <p class="mb-6">
+        Your pet stays at the sitter's home. Many Bay of Plenty sitters have spacious, fenced properties in suburbs like Papamoa, Bethlehem, and Omokoroa — perfect for dogs who enjoy a change of scene and new sniffing territory. Some host families live near the beach, meaning your dog gets coastal walks as part of their stay.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Drop-In Visits</h3>
+      <p class="mb-6">
+        Ideal for cats, independent dogs, or shorter absences. A sitter visits your home once or twice daily to feed, clean litter trays, play, and check that everything's in order. Tauranga's manageable size means sitters can cover most of the city and surrounds efficiently.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Dog Walking</h3>
+      <p class="mb-6">
+        The Bay of Plenty's beaches, reserves, and walkways make it one of the best places in New Zealand for dog walking. Regular walks during your workday keep your dog exercised, socialised, and happy. Many sitters offer both solo and group walks.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Costs in Tauranga & Bay of Plenty</h2>
+      <p class="mb-6">
+        The Bay of Plenty's pet sitting rates are comparable to other mid-sized New Zealand cities:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Overnight home sitting:</strong> $45–$75 per night</li>
+        <li><strong>Host family sitting:</strong> $40–$65 per night</li>
+        <li><strong>Drop-in visits:</strong> $18–$30 per visit</li>
+        <li><strong>Dog walking:</strong> $20–$35 per walk</li>
+        <li><strong>Day care:</strong> $35–$55 per day</li>
+      </ul>
+      <p class="mb-6">
+        Rates tend to increase during peak holiday periods — Tauranga is a major summer destination, so Christmas and January are particularly busy. If you're planning summer travel, book your sitter as early as possible (4–8 weeks ahead is ideal).
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Dog-Friendly Spots in Tauranga & Bay of Plenty</h2>
+      <p class="mb-6">
+        One of the great things about finding a local sitter through ZiggySitters is that they'll know the best spots. Here are some highlights:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Beaches</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Papamoa Beach:</strong> Long stretches of open beach, perfect for off-leash running (check council signage for dog exercise areas and seasonal restrictions)</li>
+        <li><strong>Mount Maunganui Main Beach:</strong> Dogs allowed in designated areas — the ocean end is often more relaxed for pets</li>
+        <li><strong>Omanu Beach:</strong> Quieter than the Mount, with good off-leash sections</li>
+        <li><strong>Waihi Beach:</strong> A beautiful stretch further east, popular with dog owners for its wide, uncrowded sand</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Parks and Reserves</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>McLaren Falls Park:</strong> A stunning spot with waterfalls, bush walks, and picnic areas (dogs on lead)</li>
+        <li><strong>Papamoa Hills Regional Park:</strong> Scenic reserve with panoramic views — a great workout for active dogs</li>
+        <li><strong>Memorial Park, Tauranga:</strong> Central park with open grassy areas for play</li>
+        <li><strong>Gordon Spratt Reserve:</strong> Papamoa's large off-leash exercise area, hugely popular with local dog owners</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1534361960057-19889db9621e?w=800&h=450&fit=crop" alt="Golden retriever enjoying a sunny day outdoors in nature" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Best Suburbs for Pet Sitting in the Bay of Plenty</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Papamoa</h3>
+      <p class="mb-6">
+        The fastest-growing suburb in the Bay of Plenty, Papamoa is packed with young families and pets. New subdivisions mean modern, well-fenced properties, and the beach is a short walk from most streets. Strong demand for sitters here.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Mount Maunganui</h3>
+      <p class="mb-6">
+        The Mount is a lifestyle hub with a mix of apartments and houses. Beach-loving dogs thrive here. Due to higher property density, drop-in visits and dog walking are especially popular services in this area.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Bethlehem & Otumoetai</h3>
+      <p class="mb-6">
+        Established suburbs with larger sections, mature gardens, and a community feel. Many experienced pet sitters operate from these areas, offering spacious host-family environments for visiting pets.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Welcome Bay</h3>
+      <p class="mb-6">
+        A semi-rural suburb offering larger properties and a quieter lifestyle. Ideal for sitters hosting bigger dogs or multiple pets who need room to roam.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Te Puke & Katikati</h3>
+      <p class="mb-6">
+        The smaller towns on either side of Tauranga are growing, and pet sitting demand is following. Rural-fringe properties here are excellent for dogs who need space, and rates tend to be slightly lower than central Tauranga.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Rotorua & Whakatāne</h3>
+      <p class="mb-6">
+        While outside the immediate Tauranga area, these Bay of Plenty towns also have active pet communities. ZiggySitters has sitters across the wider region, so whether you're in Rotorua, Whakatāne, or anywhere in between, you can find local care.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Bay of Plenty Climate Considerations</h2>
+      <p class="mb-6">
+        The Bay of Plenty's subtropical climate brings specific pet care considerations your sitter should be aware of:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Hot summers:</strong> Tauranga summers regularly reach 28°C+. Dogs need shade, constant fresh water, and should avoid hot pavement during midday. Morning and evening walks are essential</li>
+        <li><strong>Beach safety:</strong> Rip currents, bluebottles, and hot sand can all affect dogs. Good sitters know beach safety basics</li>
+        <li><strong>Ticks and fleas:</strong> The warm, humid climate means year-round vigilance for parasites. Ensure your pet's flea and tick treatment is up to date before any sitting arrangement</li>
+        <li><strong>Salt water:</strong> After beach swims, dogs should be rinsed with fresh water to prevent skin irritation</li>
+        <li><strong>Mild winters:</strong> While warmer than most of NZ, winter nights can still be cool. Ensure outdoor pets have warm, dry shelter</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Local Vet Resources</h2>
+      <p class="mb-6">
+        Always share your vet's details with your sitter. Key emergency resources in the Bay of Plenty include:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Tauranga Veterinary Centre:</strong> Full-service clinic with after-hours emergency options</li>
+        <li><strong>Mount Vets:</strong> Serving the Mount Maunganui and Papamoa area</li>
+        <li><strong>Greerton Vet Clinic:</strong> Well-established practice in south Tauranga</li>
+        <li><strong>Bay of Plenty Emergency Vets:</strong> After-hours emergency service for the wider region</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=450&fit=crop" alt="Content cat sitting in a sunlit window with a garden view" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">How to Find a Pet Sitter in Tauranga</h2>
+      <ol class="list-decimal pl-6 mb-6 space-y-2">
+        <li><strong>Search your area:</strong> Enter your suburb or postcode on ZiggySitters to find nearby sitters</li>
+        <li><strong>Read profiles carefully:</strong> Look for sitters who mention local knowledge — beach walking experience, knowledge of dog-friendly areas</li>
+        <li><strong>Check reviews:</strong> Reviews from other Bay of Plenty pet owners are the most relevant indicator of quality</li>
+        <li><strong>Arrange a meet-and-greet:</strong> Meet the sitter in person (or at their home if they'll be hosting) before committing</li>
+        <li><strong>Book ahead:</strong> Especially for summer and public holiday periods — Tauranga sitters book out fast</li>
+      </ol>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Become a Pet Sitter in the Bay of Plenty</h2>
+      <p class="mb-6">
+        The Bay of Plenty's growing population and active lifestyle creates constant demand for quality pet sitters. If you love animals, have a suitable home or transport, and want flexible income, pet sitting in Tauranga and the surrounding areas is a brilliant opportunity. Retirees, students, remote workers, and stay-at-home parents all make excellent sitters.
+      </p>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Bay of Plenty pet sitting made simple</h3>
+        <p class="mb-4">
+          Whether you need a beach-loving dog walker in Papamoa, overnight sitting in Bethlehem, or daily cat visits in the Mount, ZiggySitters connects you with verified local sitters who know and love the Bay.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find Bay of Plenty pet sitters →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter in Tauranga →</a>
+        </p>
+      </div>
+    `
+  },
+
+  {
+    slug: 'holiday-pet-care-nz-complete-checklist',
+    title: 'Holiday Pet Care NZ: Your Complete Checklist for Going Away',
+    excerpt: 'Planning a holiday? Use this comprehensive checklist to make sure your pet is safe, happy, and well cared for while you enjoy your trip. Covers everything Kiwi pet owners need.',
+    date: '2026-01-31',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1450778869180-e76aa4909d07?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Complete holiday pet care checklist for NZ pet owners. Everything you need to organise before going away — from finding a sitter to emergency prep.',
+    keywords: ['holiday pet care nz', 'pet care checklist holiday', 'going away pet care', 'pet sitter checklist nz', 'pet travel preparation', 'leave pet while on holiday nz'],
+    content: `
+      <p class="text-lg text-muted-foreground mb-8">
+        There's nothing quite like the anticipation of a holiday — unless you're a pet owner, in which case that excitement comes with a healthy dose of worry. Who's going to look after the dog? Will the cat be okay? Did I leave enough food? If this sounds familiar, take a deep breath. This comprehensive checklist covers absolutely everything you need to organise for your pet before you head off on your New Zealand holiday.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">8 Weeks Before Your Holiday</h2>
+      <p class="mb-6">
+        Yes, eight weeks. If you're travelling during peak periods (Christmas, school holidays, Easter, long weekends), this is when you should start planning your pet's care. Here's why: the best pet sitters book out early. By starting now, you get first pick of the most experienced, highest-reviewed sitters in your area.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Decide on Your Pet Care Option</h3>
+      <p class="mb-6">
+        Consider which type of care suits your pet best:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>In-home pet sitting:</strong> A sitter stays at your house. Best for anxious pets, senior pets, and cats</li>
+        <li><strong>Host family sitting:</strong> Your pet stays at the sitter's home. Great for social dogs who enjoy company</li>
+        <li><strong>Drop-in visits:</strong> A sitter visits your home once or twice daily. Suitable for independent cats and short absences</li>
+        <li><strong>Friends or family:</strong> Free but comes with social obligations — and your pet may not be their top priority</li>
+        <li><strong>Boarding kennel:</strong> Structured facility care. Less personalised but reliable for uncomplicated pets</li>
+      </ul>
+      <p class="mb-6">
+        For most pet owners, home-based pet sitting offers the best balance of quality care, personalised attention, and peace of mind. Your pet stays in a home environment with individual attention — something no kennel can replicate.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1583337130417-13571e47bea8?w=800&h=450&fit=crop" alt="Dog and cat together relaxing at home on a comfortable sofa" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Search and Shortlist Pet Sitters</h3>
+      <p class="mb-6">
+        Browse ZiggySitters to find sitters in your area. Shortlist 2–3 candidates based on:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Experience with your type of pet (breed, size, temperament)</li>
+        <li>Reviews from other local pet owners</li>
+        <li>Services offered (overnight, walking, medication administration)</li>
+        <li>Availability for your dates</li>
+        <li>Proximity to your home (important for in-home sitting)</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">6 Weeks Before Your Holiday</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Arrange Meet-and-Greets</h3>
+      <p class="mb-6">
+        This step is non-negotiable. Meet your potential sitter in person, ideally at your home or theirs (depending on where your pet will be staying). Watch how they interact with your pet. A good sitter will get down to the pet's level, be patient, and let the animal approach them in their own time. Trust your instincts — and trust your pet's reaction.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Book and Confirm</h3>
+      <p class="mb-6">
+        Once you've found the right sitter, lock in the dates. Confirm the booking through ZiggySitters so everything is documented — dates, services, pricing, and expectations. Don't rely on verbal agreements.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Vet Check-Up</h3>
+      <p class="mb-6">
+        Schedule a visit to your vet, especially if:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Your pet hasn't been seen in the last 6 months</li>
+        <li>Vaccinations are due or nearly due</li>
+        <li>Your pet is on medication that needs a refill</li>
+        <li>You've noticed any health concerns recently</li>
+        <li>Your pet's flea, tick, or worm treatment needs updating</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">2 Weeks Before Your Holiday</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Prepare the Information Pack</h3>
+      <p class="mb-6">
+        Create a clear, written document for your sitter covering everything they need to know. This is the single most useful thing you can do to ensure smooth care. Include:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Feeding</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Type and brand of food (dry, wet, raw — be specific)</li>
+        <li>Portion sizes and feeding times</li>
+        <li>Any food allergies or intolerances</li>
+        <li>Treat allowances and types</li>
+        <li>Where food is stored</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Health and Medication</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Current medications with exact dosages and timing</li>
+        <li>How to administer each medication (in food, direct, etc.)</li>
+        <li>Known health conditions</li>
+        <li>Allergy information</li>
+        <li>Last flea/worm treatment date and product used</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?w=800&h=450&fit=crop" alt="Small puppy looking up with big trusting eyes in a cosy home setting" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Routine</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Usual walk times and favourite routes</li>
+        <li>Bedtime routine (where they sleep, any settling habits)</li>
+        <li>Toilet routine (especially for puppies or older dogs)</li>
+        <li>Favourite toys and comfort items</li>
+        <li>Any behavioural quirks (afraid of thunder? Reactive to other dogs?)</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Emergency Contacts</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Your contact details (phone and email — even overseas)</li>
+        <li>A trusted local backup person (friend, family, neighbour)</li>
+        <li>Regular vet name, address, and phone number</li>
+        <li>Nearest emergency/after-hours vet clinic</li>
+        <li>Written authorisation for emergency veterinary treatment</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Stock Up on Supplies</h3>
+      <p class="mb-6">
+        Don't leave your sitter scrambling for essentials. Make sure you have more than enough of:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Pet food (at least 20% more than you expect to need)</li>
+        <li>Medications (enough for the full period plus a few days extra)</li>
+        <li>Poo bags, cat litter, and cleaning supplies</li>
+        <li>Spare leads, collars, and harnesses</li>
+        <li>Treats and chews</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">1 Week Before Your Holiday</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Final Sitter Briefing</h3>
+      <p class="mb-6">
+        Have a final conversation (in person, phone, or video call) with your sitter to run through the information pack, answer any questions, and confirm logistics. If the sitter is coming to your home, do a walkthrough: show them where everything is, how the locks work, any alarm codes, where the spare key is, and how to operate anything unusual (the hot water system, the cat flap, the automated feeder).
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Update Microchip and Tag Details</h3>
+      <p class="mb-6">
+        This is often overlooked but critically important. Make sure:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Your pet's microchip is registered with current contact details</li>
+        <li>Collar tags include your phone number AND the sitter's phone number</li>
+        <li>If your pet will be staying elsewhere, consider a temporary tag with the sitter's address</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Home Preparation (for In-Home Sitting)</h3>
+      <p class="mb-6">
+        If a sitter is staying in your home:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Clear clean towels and bedding for the sitter</li>
+        <li>Stock basic household essentials (toilet paper, dish soap, tea/coffee)</li>
+        <li>Leave instructions for appliances, WiFi password, and rubbish/recycling days</li>
+        <li>Secure or move any valuables or private items you'd prefer the sitter not access</li>
+        <li>Test all locks, alarms, and key arrangements</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">The Day Before Departure</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Final Checks</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Confirm the sitter knows what time to arrive or when to expect your pet</li>
+        <li>Place the information pack in an obvious spot (on the kitchen bench is ideal)</li>
+        <li>Set out the first day's food, medication, and treats separately for easy access</li>
+        <li>Do a full garden check for escape routes (gaps, open gates, low fences)</li>
+        <li>Ensure your pet is wearing their collar and ID tags</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Keep Your Departure Low-Key</h3>
+      <p class="mb-6">
+        As hard as it is, try not to make a big emotional farewell. Pets pick up on your energy, and a prolonged, tearful goodbye can actually increase their anxiety. A calm, matter-of-fact departure is kinder — even if it doesn't feel like it.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1526526536428-0af18ee73225?w=800&h=450&fit=crop" alt="Cat sitting contentedly near packed suitcases by the front door" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">While You're Away</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Agree on Communication</h3>
+      <p class="mb-6">
+        Before you leave, agree with your sitter on how often they'll update you and through which channel (text, WhatsApp, ZiggySitters messaging). Daily photo updates are standard with most good sitters. Resist the urge to message every hour — trust the professional you've carefully chosen, and enjoy your holiday!
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Be Reachable</h3>
+      <p class="mb-6">
+        Even if you're overseas, make sure your sitter can reach you in an emergency. Share your overseas phone number, email, and hotel contact details. If you'll be in areas with no signal (hiking, cruising), designate a local emergency contact who can make decisions on your behalf.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">When You Return</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Debrief with Your Sitter</h3>
+      <p class="mb-6">
+        When you get home, chat with your sitter about how things went. Were there any issues? Changes in behaviour? Did your pet eat well and sleep normally? This information helps you plan for future trips and gives you insight into how your pet copes with change.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Ease Back to Normal</h3>
+      <p class="mb-6">
+        Your pet might be overjoyed to see you — or slightly cool and aloof (cats, we're looking at you). Either reaction is normal. Some pets may be unsettled for a day or two after a change in routine. Stick to your normal schedule, offer extra comfort, and things will settle quickly.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">✅ Leave a Review</h3>
+      <p class="mb-6">
+        If your sitter did a great job, leave them a review on ZiggySitters. Reviews help other pet owners find great sitters, and they're hugely appreciated by sitters who put their heart into caring for your pet.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Quick-Reference Holiday Pet Care Checklist</h2>
+      <p class="mb-6">
+        Print this out or save it to your phone:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>☐ Pet sitter booked and confirmed</li>
+        <li>☐ Meet-and-greet completed</li>
+        <li>☐ Vet check-up done, vaccinations current</li>
+        <li>☐ Medications stocked (plus spares)</li>
+        <li>☐ Food stocked (plus 20% extra)</li>
+        <li>☐ Information pack written and printed</li>
+        <li>☐ Emergency contacts shared</li>
+        <li>☐ Vet authorisation signed</li>
+        <li>☐ Microchip details up to date</li>
+        <li>☐ Collar tags include sitter's number</li>
+        <li>☐ House keys/access arranged</li>
+        <li>☐ Home walkthrough completed</li>
+        <li>☐ Garden checked for escape routes</li>
+        <li>☐ Communication plan agreed</li>
+        <li>☐ Supplies set out and labelled</li>
+        <li>☐ Payment confirmed</li>
+      </ul>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Enjoy your holiday — your pet is in good hands</h3>
+        <p class="mb-4">
+          ZiggySitters makes finding trusted, verified pet sitters across New Zealand simple. Search your area, read reviews from real pet owners, and book with confidence — so you can relax and enjoy your break knowing your fur baby is happy.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find your holiday pet sitter →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter and help holiday-going pet owners →</a>
+        </p>
+      </div>
+    `
   }
 ];
 
