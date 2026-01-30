@@ -33,6 +33,7 @@ import GuestEnquiryDialog from '@/components/messaging/GuestEnquiryDialog';
 import FloatingEnquiryButton from '@/components/sitter/FloatingEnquiryButton';
 import FAQAccordion from '@/components/sitter/FAQAccordion';
 import PublicAvailabilityCalendar from '@/components/calendar/PublicAvailabilityCalendar';
+import ReviewsList from '@/components/reviews/ReviewsList';
 
 interface SitterData {
   id: string;
@@ -628,6 +629,12 @@ export default function SitterProfile() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Reviews Section */}
+            <ReviewsList 
+              sitterId={sitterData.id}
+              sitterName={sitterData.display_name}
+            />
 
             {/* FAQ Section */}
             <FAQAccordion 
