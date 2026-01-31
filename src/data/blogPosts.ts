@@ -2161,6 +2161,902 @@ export const blogPosts: BlogPostData[] = [
         </p>
       </div>
     `
+  },
+
+  // ===== NEW SEO POSTS - 1 February 2026 =====
+
+  {
+    slug: 'pet-sitting-dunedin-otago-guide',
+    title: 'Pet Sitting in Dunedin & Otago: Your Complete Local Guide (2026)',
+    excerpt: 'Find trusted pet sitters in Dunedin and the wider Otago region. From the Octagon to St Clair Beach, discover local pet care that understands your neighbourhood.',
+    date: '2026-02-01',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Find trusted pet sitters in Dunedin & Otago NZ. Complete 2026 guide covering costs, suburbs, dog-friendly spots, and how to book verified local sitters.',
+    keywords: ['pet sitting dunedin', 'pet sitter dunedin nz', 'dog sitting otago', 'cat sitting dunedin', 'dunedin pet care', 'pet sitter otago nz', 'dog boarding dunedin'],
+    content: \`
+      <p class="text-lg text-muted-foreground mb-8">
+        Dunedin — the Edinburgh of the South — is a city with a soul, and that soul extends to its passionate community of pet owners. Nestled at the head of Otago Harbour, Dunedin's unique mix of Victorian architecture, wild coastline, rugged hills, and vibrant student culture creates a distinctive environment for pets and their people. Whether you're a University of Otago academic heading to a conference, a local heading north for a family event, or a professional travelling for work, finding reliable pet care in Dunedin means finding someone who genuinely understands your neighbourhood, the local climate, and what your pet needs to thrive.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Why Dunedin is a Unique Market for Pet Sitting</h2>
+      <p class="mb-6">
+        Dunedin has one of the most engaged pet-owning communities in New Zealand. The city's compact size, strong sense of community, and relatively affordable housing (compared to Auckland or Wellington) mean many residents have spacious homes with gardens — ideal for pets. The large student population at the University of Otago also creates a ready pool of responsible, animal-loving sitters looking for flexible income.
+      </p>
+      <p class="mb-6">
+        However, Dunedin's distance from other major centres means locals often need pet care for longer trips. A quick weekend away to Queenstown might only need a day or two of sitting, but flights to Auckland or overseas trips can mean a week or more. This makes finding a reliable, trusted pet sitter even more important for Dunedin pet owners.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&h=450&fit=crop" alt="Dog walking along a scenic path with lush green hills in the background" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting by Dunedin Suburb</h2>
+      <p class="mb-6">
+        Each Dunedin suburb has its own character, and that extends to pet care. Here's what to consider when looking for a sitter in your part of the city:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Central Dunedin (The Octagon, South Dunedin, Caversham)</h3>
+      <p class="mb-6">
+        The city centre is compact and walkable, making drop-in visits particularly efficient. South Dunedin is flat — a bonus for older dogs or sitters who prefer easy walking terrain. Caversham has a lovely village feel, and the nearby Caversham Valley is a popular walking route. Be aware that parts of South Dunedin can be prone to surface flooding, so sitters should know how to manage pet safety during heavy rain events.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">North Dunedin & University Area (North East Valley, Opoho, Maori Hill)</h3>
+      <p class="mb-6">
+        The student-heavy areas around the university are home to many young, enthusiastic pet sitters. North East Valley has excellent access to Signal Hill walks, while Opoho and Maori Hill offer elevated positions with stunning harbour views and well-maintained walking tracks. The Botanic Gardens are a beautiful on-lead walking destination, and Woodhaugh Gardens provides a peaceful spot for gentle strolls with senior dogs.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">St Clair & St Kilda</h3>
+      <p class="mb-6">
+        Beach-loving dogs adore this area. St Clair Beach is one of Dunedin's most popular off-leash exercise areas, and the Ocean Beach esplanade provides a scenic, sheltered walking route even on wild weather days. Pet sitters in this area often specialise in active, outdoor-loving dogs. St Kilda offers a quieter beach alternative and access to the Forbury Park area.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Roslyn, Belleknowes & Mornington</h3>
+      <p class="mb-6">
+        These hillside suburbs offer larger character homes with established gardens — great for sitters who host pets at their homes. The Ross Creek Reservoir walking track is a local favourite for dog walkers, winding through native bush just minutes from the city centre. The hills do mean steeper walks, which suit active dogs but may be challenging for senior pets.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Mosgiel & Taieri</h3>
+      <p class="mb-6">
+        Just 15 minutes from central Dunedin, Mosgiel offers a more suburban, semi-rural feel with spacious properties and flat terrain. The Taieri Plains provide excellent walking and running opportunities for energetic dogs. Sitters here often have larger sections with secure fencing — ideal for bigger breeds or multiple-pet households.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Port Chalmers & the Peninsula</h3>
+      <p class="mb-6">
+        Port Chalmers has a quirky, artistic community with strong pet ownership. The Otago Peninsula is one of New Zealand's most spectacular wildlife areas — home to royal albatross, penguins, and sea lions. Dogs must be kept under control near wildlife habitats, so experienced local sitters who understand these restrictions are invaluable. Portobello and Broad Bay offer a peaceful, rural-coastal pet sitting environment unlike anywhere else.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Costs in Dunedin (2026)</h2>
+      <p class="mb-6">
+        Dunedin's pet sitting rates are among the most affordable in New Zealand's main centres, reflecting the city's lower cost of living:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Overnight dog sitting (sitter's home):</strong> $35–$60 per night</li>
+        <li><strong>Overnight dog sitting (your home):</strong> $45–$75 per night</li>
+        <li><strong>Cat drop-in visits:</strong> $15–$25 per visit</li>
+        <li><strong>Dog walking (60 min):</strong> $18–$30</li>
+        <li><strong>Doggy day care:</strong> $30–$50 per day</li>
+      </ul>
+      <p class="mb-6">
+        The university student population means there's often good availability of sitters, even during moderately busy periods. However, the weeks around graduation ceremonies and semester breaks can create unexpected demand spikes, so plan ahead for those dates.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Best Dog-Friendly Spots in Dunedin</h2>
+      <p class="mb-6">
+        A local pet sitter will know the best spots, but here are Dunedin's top dog-friendly destinations:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Off-Leash Exercise Areas</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>St Clair / St Kilda Beach:</strong> Dunedin's premier dog beach — wide, sandy, and perfect for ball-chasing and swimming</li>
+        <li><strong>Chingford Park:</strong> Large green space popular with local dog owners for off-leash play</li>
+        <li><strong>Ocean Grove:</strong> Off-leash area near the beach, well-used by the local dog community</li>
+        <li><strong>Marlow Park:</strong> Flat, open reserve great for fetch and socialising</li>
+        <li><strong>Tonga Park:</strong> A favourite in the South Dunedin area</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">On-Lead Walking Tracks</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Signal Hill:</strong> A moderate climb rewarded with panoramic city and harbour views</li>
+        <li><strong>Ross Creek Reservoir:</strong> A peaceful bush walk perfect for all fitness levels</li>
+        <li><strong>Pineapple Track:</strong> An iconic Dunedin walk connecting the city to the Town Belt</li>
+        <li><strong>Tunnel Beach:</strong> Dramatic coastal scenery (steep stairs, so not suitable for all dogs)</li>
+        <li><strong>Dunedin Botanic Gardens:</strong> Beautiful gardens open to dogs on lead</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1518882174711-1de40238921b?w=800&h=450&fit=crop" alt="Happy dog running on a sandy beach with ocean waves" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Dunedin-Specific Considerations for Pet Care</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">The Dunedin Climate</h3>
+      <p class="mb-6">
+        Dunedin has a reputation for being cold, and while it's not as extreme as the stereotype suggests, the climate does bring specific pet care considerations. Winters are genuinely cold, with temperatures regularly dropping below zero. Frost and occasional snow mean outdoor pets need insulated, dry shelter, and older dogs may need coats for walks. The nor'wester can bring sudden temperature swings — warm and dry one moment, cold and wet the next. Summer brings longer days but rarely gets uncomfortably hot, making it pleasant for outdoor activities year-round for most dogs.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Wildlife Interactions</h3>
+      <p class="mb-6">
+        Dunedin is unique in New Zealand for having rare wildlife living close to the urban area. The Otago Peninsula is home to yellow-eyed penguins (hoiho), blue penguins, royal albatross, and NZ sea lions. Dogs MUST be kept under strict control near wildlife areas — some beaches have seasonal dog restrictions to protect nesting birds. A responsible local sitter will know exactly which areas are restricted and when.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Steep Terrain</h3>
+      <p class="mb-6">
+        Dunedin is famously hilly — home to Baldwin Street, the world's steepest residential street. This means walking routes can be physically demanding. Good sitters know which routes are suitable for senior or less mobile dogs, and which ones are great workouts for young, energetic breeds. The hills also mean gardens may have varied terrain, so check that fencing is secure on sloped sections.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Emergency Vet Resources in Dunedin</h2>
+      <p class="mb-6">
+        Always provide your pet sitter with veterinary emergency contacts:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Dunedin After Hours Veterinary Clinic:</strong> Emergency and after-hours care for the city</li>
+        <li><strong>Otago SPCA Vet Clinic:</strong> Full-service clinic with community focus</li>
+        <li><strong>Local suburban clinics:</strong> Multiple day clinics across the city — your sitter should know the nearest one to their location</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">How to Find the Best Dunedin Pet Sitter</h2>
+      <ol class="list-decimal pl-6 mb-6 space-y-2">
+        <li><strong>Search by suburb:</strong> Use ZiggySitters to find sitters near you in Dunedin or the wider Otago region</li>
+        <li><strong>Prioritise local knowledge:</strong> Sitters who mention local walking spots, wildlife awareness, and climate experience are a good sign</li>
+        <li><strong>Read reviews:</strong> Look for reviews from other Dunedin pet owners specifically</li>
+        <li><strong>Meet in person:</strong> Dunedin is small enough that meeting up is easy — always do a meet-and-greet before committing</li>
+        <li><strong>Check peak availability:</strong> Book early for holiday weekends, graduation, and the Dunedin events calendar</li>
+      </ol>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Become a Pet Sitter in Dunedin</h2>
+      <p class="mb-6">
+        Dunedin's pet-owning community is growing, and demand for quality sitters is strong. University students, retirees, remote workers, and anyone with a love of animals and a suitable home can earn great supplementary income through pet sitting. The flexible schedule works perfectly alongside study, part-time work, or retirement activities.
+      </p>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Dunedin pet sitting made simple</h3>
+        <p class="mb-4">
+          Whether you need overnight care in Roslyn, beach walks from St Clair, or daily cat visits in North East Valley, ZiggySitters connects you with verified local sitters who know and love Dunedin.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find Dunedin pet sitters →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter in Dunedin →</a>
+        </p>
+      </div>
+    \`
+  },
+
+  {
+    slug: 'senior-pet-care-guide-older-dogs-cats',
+    title: 'Senior Pet Care: What Your Pet Sitter Needs to Know About Older Dogs and Cats',
+    excerpt: 'Older pets have unique needs. Learn how to brief your pet sitter on caring for senior dogs and cats — from medication routines to mobility considerations and comfort.',
+    date: '2026-02-01',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=1200&h=630&fit=crop',
+    readTime: '9 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'Senior pet care guide for NZ pet owners. Learn what your pet sitter needs to know about caring for older dogs and cats — medications, mobility, comfort and more.',
+    keywords: ['senior pet care', 'old dog care nz', 'senior cat care', 'elderly pet sitting', 'senior dog sitter', 'older pet care tips', 'pet sitter elderly dog'],
+    content: \`
+      <p class="text-lg text-muted-foreground mb-8">
+        Your senior pet has been by your side through thick and thin — through house moves, new babies, career changes, and countless adventures. Now that they're in their golden years, their needs have changed. They might be slower on walks, pickier with food, or need daily medication. When it comes time to leave them with a pet sitter, the stakes feel higher. This guide helps you prepare your sitter to give your senior pet the gentle, attentive care they deserve.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">When is a Pet Considered "Senior"?</h2>
+      <p class="mb-6">
+        Age milestones vary significantly by species and breed:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Small dogs (under 10kg):</strong> Senior from around 10–12 years</li>
+        <li><strong>Medium dogs (10–25kg):</strong> Senior from around 8–10 years</li>
+        <li><strong>Large dogs (25–40kg):</strong> Senior from around 7–8 years</li>
+        <li><strong>Giant breeds (40kg+):</strong> Senior from around 5–6 years</li>
+        <li><strong>Cats:</strong> Senior from around 10–12 years, with "super senior" from 15+</li>
+      </ul>
+      <p class="mb-6">
+        These are general guidelines — every pet ages differently. Some 12-year-old dogs still bounce around like puppies, while some 8-year-olds move like they're 15. The key is knowing <em>your</em> pet's individual needs and communicating them clearly to your sitter.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&h=450&fit=crop" alt="Senior dog resting peacefully with a gentle, wise expression" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Common Health Considerations for Senior Pets</h2>
+      <p class="mb-6">
+        Understanding what your senior pet may be dealing with helps your sitter provide appropriate care. Here are the most common age-related conditions:
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Arthritis and Joint Pain</h3>
+      <p class="mb-6">
+        By far the most common issue in older dogs and increasingly recognised in senior cats. Signs include reluctance to jump, stiffness after rest, limping, difficulty with stairs, and reduced interest in walks. Your sitter should know: which anti-inflammatory or pain medications your pet takes (and exact dosages), whether your pet needs help getting onto furniture or into the car, which surfaces are slippery and challenging for them (wooden floors, tiles), and that cold or damp weather often worsens symptoms.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Cognitive Decline (Dementia)</h3>
+      <p class="mb-6">
+        Canine Cognitive Dysfunction (CCD) affects a significant percentage of dogs over 11. Signs include confusion or disorientation, pacing at night, staring at walls, forgetting house training, not recognising familiar people, and changes in sleep patterns. If your dog has CCD, brief your sitter thoroughly. It can be alarming if they don't know what to expect — a dog standing confused in a corner at 3 AM isn't an emergency, but it can look like one.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Kidney Disease</h3>
+      <p class="mb-6">
+        Common in senior cats especially. Pets with kidney issues may drink more water, urinate more frequently, have a reduced appetite, or require a special prescription diet. Your sitter needs to know about any dietary restrictions and should monitor water intake and litter box habits closely.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Diabetes</h3>
+      <p class="mb-6">
+        Both dogs and cats can develop diabetes in their senior years. This often requires twice-daily insulin injections — something your sitter absolutely must be trained on before the booking starts. Never assume a sitter is comfortable with injections; discuss it during the meet-and-greet and demonstrate the process.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Vision and Hearing Loss</h3>
+      <p class="mb-6">
+        Many senior pets experience gradual vision or hearing decline. Dogs with poor eyesight may bump into furniture in unfamiliar environments, so in-home sitting is often preferable. Deaf dogs can't hear recall commands, so they should never be off-leash in unsecured areas. Cats with hearing loss may become more vocal or startle easily when touched unexpectedly.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Incontinence</h3>
+      <p class="mb-6">
+        Bladder weakness is common in senior dogs, particularly spayed females. This isn't a behavioural issue — it's medical. Your sitter should know about any incontinence, have access to pet-safe cleaning supplies, and understand that accidents aren't the dog's fault. Waterproof covers on bedding can help manage this comfortably.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">The Medication Briefing</h2>
+      <p class="mb-6">
+        Senior pets often take multiple medications, and getting this right is crucial. Create a medication chart for your sitter that includes:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Name of medication:</strong> Both brand name and generic name</li>
+        <li><strong>What it's for:</strong> Brief explanation (e.g., "for arthritis pain" or "thyroid regulation")</li>
+        <li><strong>Dosage:</strong> Exact amount — "half a tablet" or "0.5ml"</li>
+        <li><strong>Timing:</strong> Exact time and whether it should be given with food or on an empty stomach</li>
+        <li><strong>Administration method:</strong> Hidden in cheese? Wrapped in a pill pocket? Crushed in wet food? Direct into the mouth? Demonstrate this live</li>
+        <li><strong>What to do if a dose is missed:</strong> Give it late? Skip it? Double up? (Your vet can advise)</li>
+        <li><strong>Side effects to watch for:</strong> Vomiting, lethargy, loss of appetite</li>
+        <li><strong>Storage:</strong> Room temperature? Refrigerated? Away from light?</li>
+      </ul>
+      <p class="mb-6">
+        <strong>Pro tip:</strong> Pre-sort medications into a daily pill organiser labelled by day and time. This eliminates confusion and lets the sitter simply dispense what's in each slot. Leave two extra days' worth in case your return is delayed.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=450&fit=crop" alt="Senior cat relaxing in a warm sunny window spot at home" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Exercise for Senior Pets</h2>
+      <p class="mb-6">
+        Senior pets still need exercise — in fact, maintaining gentle movement is essential for joint health, weight management, and mental stimulation. But the type and duration of exercise changes significantly.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Senior Dogs</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Shorter, more frequent walks:</strong> Two 15-minute walks are better than one long 45-minute walk for most senior dogs</li>
+        <li><strong>Flat terrain:</strong> Avoid steep hills, rough ground, or long beach walks on soft sand — these put extra strain on joints</li>
+        <li><strong>Gentle pace:</strong> Let the dog set the speed. If they want to stop and sniff, let them. Mental stimulation from sniffing is just as valuable as distance</li>
+        <li><strong>Weather awareness:</strong> Senior dogs are more susceptible to heat and cold. Early morning or evening walks in summer; warm coats in winter</li>
+        <li><strong>Watch for fatigue:</strong> If your dog sits down during a walk, lies down, or slows dramatically — it's time to head home</li>
+        <li><strong>Swimming:</strong> If your dog enjoys water, swimming is excellent low-impact exercise. But only in safe, calm water, and only if they can get out easily</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Senior Cats</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Gentle play:</strong> Short sessions with feather toys, laser pointers, or crinkle balls keep them mentally sharp</li>
+        <li><strong>Easy access:</strong> Ensure litter trays, food, and water are on the same level as the cat's primary living area — don't make them climb stairs</li>
+        <li><strong>Ramps and steps:</strong> If your cat likes a window perch or a favourite chair, provide a ramp or step so they don't have to jump</li>
+        <li><strong>Warmth:</strong> Senior cats seek warmth more than younger cats. Heated beds, sunny spots, and warm blankets are appreciated</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Nutrition and Feeding for Senior Pets</h2>
+      <p class="mb-6">
+        Dietary needs change as pets age. Brief your sitter on:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Specific diet:</strong> Many senior pets are on prescription or specialised diets. Be clear about exactly what they eat — brand, variety, and amount</li>
+        <li><strong>Feeding schedule:</strong> Senior pets often do better with smaller, more frequent meals (2–3 times daily)</li>
+        <li><strong>Appetite monitoring:</strong> A senior pet refusing food for more than 24 hours should prompt a call to you or the vet</li>
+        <li><strong>Water intake:</strong> Increased or decreased water consumption can signal health issues — ask your sitter to monitor this</li>
+        <li><strong>Supplements:</strong> Joint supplements, probiotics, and other additions should be clearly documented</li>
+        <li><strong>Food temperature:</strong> Some senior cats prefer warm food (microwaved for 10 seconds) as it enhances the smell and encourages eating</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Comfort and Environment</h2>
+      <p class="mb-6">
+        Senior pets are less adaptable to change, so keeping their environment stable and comfortable is a priority:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Familiar surroundings:</strong> In-home sitting (in your own home) is almost always best for senior pets. They know where everything is, even if their eyesight is failing</li>
+        <li><strong>Orthopaedic bedding:</strong> A supportive bed makes a huge difference for arthritic joints. Show your sitter where the pet's bed is, and note if they need help getting on or off it</li>
+        <li><strong>Temperature control:</strong> Senior pets regulate their body temperature less effectively. In winter, ensure heating is available. In summer, provide cool spots and fresh water</li>
+        <li><strong>Non-slip surfaces:</strong> Rugs or mats on slippery floors help senior dogs maintain their footing</li>
+        <li><strong>Night lights:</strong> For dogs with vision issues, a dim night light can help them navigate to water or their toilet area</li>
+        <li><strong>Quiet environment:</strong> Senior pets generally need more rest. A calm, low-stimulation environment helps them sleep well</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Choosing the Right Sitter for Your Senior Pet</h2>
+      <p class="mb-6">
+        Not every pet sitter is the right fit for a senior animal. Here's what to look for:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Experience with older pets:</strong> Ask specifically about their experience with senior animals during the meet-and-greet</li>
+        <li><strong>Patience and gentleness:</strong> Watch how they interact with your pet — senior animals need calm, patient handling</li>
+        <li><strong>Medication competence:</strong> If your pet needs meds, ensure the sitter is comfortable and confident administering them. Do a practice run</li>
+        <li><strong>Observation skills:</strong> The best sitters for senior pets are those who notice subtle changes — slightly reduced appetite, a new limp, changes in drinking habits</li>
+        <li><strong>Flexibility:</strong> Senior pets don't always stick to predictable schedules. A sitter who can adapt to your pet's needs on any given day is ideal</li>
+        <li><strong>Emergency preparedness:</strong> Senior pets are more likely to have health emergencies. Confirm the sitter knows your vet, the nearest after-hours clinic, and has authorisation for emergency care</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1450778869180-e20e80dd9d28?w=800&h=450&fit=crop" alt="Close-up of a gentle senior cat with expressive eyes being petted" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">A Note on End-of-Life Considerations</h2>
+      <p class="mb-6">
+        It's a difficult topic, but if your senior pet is in their final months, it's worth having an honest conversation with your sitter about what to do if your pet's condition deteriorates while you're away. Discuss:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Under what circumstances should the sitter contact the vet urgently?</li>
+        <li>Do you authorise comfort care and pain relief?</li>
+        <li>If the worst happens, what are your wishes regarding euthanasia? Do you want to be contacted first, or do you authorise the sitter and vet to make humane decisions in your absence?</li>
+      </ul>
+      <p class="mb-6">
+        These conversations are heartbreaking but important. Having them in advance removes the burden of impossible decisions from your sitter during an already emotional time.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">The Senior Pet Care Checklist for Your Sitter</h2>
+      <p class="mb-6">
+        Leave this information clearly documented for your sitter:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>☐ Medication schedule with administration method demonstrated</li>
+        <li>☐ Feeding schedule with exact portions and diet details</li>
+        <li>☐ Exercise guidelines (duration, terrain, limitations)</li>
+        <li>☐ "Normal" baseline (appetite, energy, toilet habits)</li>
+        <li>☐ Warning signs that require a vet call</li>
+        <li>☐ Vet contact details and emergency authorisation</li>
+        <li>☐ Comfort needs (bed location, temperature preferences, night routine)</li>
+        <li>☐ Mobility assistance required (help on/off furniture, ramp use)</li>
+        <li>☐ End-of-life wishes (if applicable)</li>
+        <li>☐ Your contact details and timezone while away</li>
+      </ul>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Your senior pet deserves gentle, experienced care</h3>
+        <p class="mb-4">
+          ZiggySitters connects you with patient, attentive sitters who understand the special needs of older pets. Browse profiles, look for experience with senior animals, and find a sitter who'll cherish your golden oldie as much as you do.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find a sitter for your senior pet →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
+        </p>
+      </div>
+    \`
+  },
+
+  {
+    slug: 'drop-in-visits-vs-overnight-pet-sitting',
+    title: 'Drop-In Visits vs Overnight Pet Sitting: Which Does Your Pet Need?',
+    excerpt: 'Not sure whether your pet needs a full overnight sitter or just daily check-ins? This comparison breaks down costs, benefits, and the best option for dogs, cats, and more.',
+    date: '2026-02-01',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1200&h=630&fit=crop',
+    readTime: '9 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Drop-in visits vs overnight pet sitting: compare costs, benefits and find which service suits your dog, cat or pet best. NZ pet sitting guide 2026.',
+    keywords: ['drop-in pet visits', 'overnight pet sitting', 'pet sitting options nz', 'cat sitting visits', 'dog sitting overnight', 'pet care services nz', 'drop-in vs overnight sitter'],
+    content: \`
+      <p class="text-lg text-muted-foreground mb-8">
+        When you need pet care while you're away, one of the biggest decisions you'll make is how much care your pet actually needs. Should you book an overnight pet sitter who stays with your pet around the clock, or are daily drop-in visits enough? The answer depends on your pet's personality, species, health, and how long you'll be away. This guide breaks down both options so you can make the right call.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Understanding Drop-In Visits</h2>
+      <p class="mb-6">
+        Drop-in visits involve a pet sitter coming to your home for a set period — usually 30 to 60 minutes — once or twice per day. During each visit, the sitter handles feeding, fresh water, litter tray cleaning (for cats), a short walk or play session (for dogs), medication administration, and a general check that your pet is healthy and your home is secure.
+      </p>
+      <p class="mb-6">
+        Between visits, your pet is alone in your home. This means drop-in visits are best suited to pets that can comfortably spend time by themselves without becoming stressed or destructive.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">What's Included in a Typical Drop-In Visit</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Feeding and fresh water</li>
+        <li>Litter tray or toilet area cleaning</li>
+        <li>Short walk (15–20 min) or indoor play session</li>
+        <li>Medication administration if needed</li>
+        <li>Quick companionship and cuddles</li>
+        <li>Photo/video update sent to you</li>
+        <li>Security check (mail collected, lights adjusted, doors locked)</li>
+      </ul>
+
+      <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=800&h=450&fit=crop" alt="Playful cat engaging with a toy in a sunlit living room" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Understanding Overnight Pet Sitting</h2>
+      <p class="mb-6">
+        Overnight pet sitting means a sitter stays with your pet for an extended period — either in your home or theirs. In-home overnight sitting typically means the sitter arrives in the evening and stays through to the next morning, providing 12–18 hours of companionship. Host-family sitting means your pet stays at the sitter's home 24/7 for the duration of your absence.
+      </p>
+      <p class="mb-6">
+        This option provides continuous care and companionship. Your pet is never alone, which dramatically reduces stress and ensures any issues are caught immediately.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">What's Included in Overnight Sitting</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>All meals, fresh water, and treats throughout the day</li>
+        <li>Multiple walks and exercise sessions</li>
+        <li>Continuous companionship and play</li>
+        <li>Medication administration at all required times</li>
+        <li>Overnight supervision (toileting for puppies, comfort for anxious dogs)</li>
+        <li>Regular photo and video updates</li>
+        <li>Home security and mail collection (for in-home sitting)</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Cost Comparison (NZ 2026)</h2>
+      <p class="mb-6">
+        The cost difference between drop-in visits and overnight sitting is significant, which is why choosing the right level of care matters for both your pet and your budget:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Single drop-in visit (30 min):</strong> $18–$30</li>
+        <li><strong>Two daily drop-in visits:</strong> $35–$55 per day</li>
+        <li><strong>Overnight in-home sitting:</strong> $50–$85 per night</li>
+        <li><strong>Host-family sitting:</strong> $40–$75 per night</li>
+      </ul>
+      <p class="mb-6">
+        For a 7-day trip, the difference could be substantial: two daily drop-in visits might cost $245–$385 total, while overnight sitting might run $280–$595. The right choice isn't always the cheapest — it's the one that meets your pet's needs.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">When Drop-In Visits Are the Best Choice</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Cats</h3>
+      <p class="mb-6">
+        Cats are territorial creatures who are generally most comfortable in their own environment. Most healthy adult cats do brilliantly with once or twice-daily drop-in visits. They're independent enough to handle time alone, and many actively prefer solitude over having a stranger in their space all night. A sitter who visits, fills the food bowl, cleans the litter, and offers 20 minutes of affection is often the ideal arrangement.
+      </p>
+      <p class="mb-6">
+        <strong>One visit per day</strong> is usually sufficient for short trips (2–3 days) with healthy adult cats. For trips longer than 3 days, <strong>twice-daily visits</strong> are recommended — this gives the sitter better ability to monitor your cat's health and catch any issues early.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Independent Dogs</h3>
+      <p class="mb-6">
+        Some dogs genuinely don't mind being alone for periods during the day, especially if they're used to it from your normal work schedule. If your dog sleeps most of the day when you're at work and isn't destructive, two solid drop-in visits (morning and evening, with a good walk each time) may be sufficient for short absences of one or two nights.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Short Absences</h3>
+      <p class="mb-6">
+        If you're only away for one night or just a long day, drop-in visits are often plenty. Your pet can handle a few hours alone, and the cost saving is meaningful. Just ensure the sitter visits at the right times to cover feeding and exercise.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Budget-Conscious Pet Owners</h3>
+      <p class="mb-6">
+        If cost is a primary concern and your pet is genuinely comfortable alone, drop-in visits deliver essential care at a more accessible price point. Don't compromise your pet's wellbeing to save money, but don't overspend on care they don't need, either.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">When Overnight Sitting is the Best Choice</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Anxious Dogs</h3>
+      <p class="mb-6">
+        Dogs with separation anxiety should never be left alone overnight. The stress of being alone in a dark house can trigger destructive behaviour, self-harm, excessive barking (disturbing neighbours), and genuine psychological distress. Overnight sitting — whether in your home or the sitter's — provides the constant companionship anxious dogs need.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=450&fit=crop" alt="Golden retriever resting contentedly next to a person on a sofa" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Puppies</h3>
+      <p class="mb-6">
+        Puppies under 12 months should not be left alone for extended periods. They need frequent toilet breaks (especially overnight), supervision to prevent chewing hazards, regular feeding (3–4 times daily for young pups), and socialisation and training reinforcement. Overnight sitting is non-negotiable for puppies.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Senior or Medically Complex Pets</h3>
+      <p class="mb-6">
+        Older pets with health conditions may need medication at multiple times throughout the day and night, monitoring for emergencies (seizures, falls, disorientation), help with mobility, and comfort during uncomfortable periods. An overnight sitter can respond immediately to any health changes, rather than discovering an issue at the next day's visit.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Longer Trips</h3>
+      <p class="mb-6">
+        For any absence longer than two nights, overnight sitting is strongly recommended for dogs. Even dogs who cope well alone during a normal workday may become stressed when the overnight absence extends beyond what they're used to. Cats may manage longer with drop-in visits, but for trips over a week, consider overnight sitting for cats as well — they benefit from the extra monitoring.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">For Multi-Pet Households</h3>
+      <p class="mb-6">
+        If you have multiple pets, an overnight sitter provides comprehensive care for all of them simultaneously. They can manage different feeding schedules, separate pets that don't get along unsupervised, and ensure each animal gets individual attention.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">A Hybrid Approach: The Best of Both Worlds</h2>
+      <p class="mb-6">
+        Some pet owners combine both services. For example:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Overnight sitting + a midday drop-in:</strong> Sitter stays overnight but goes home during the day, with a colleague doing a lunchtime visit for a walk and check-in</li>
+        <li><strong>Drop-in visits for cats + overnight for dogs:</strong> In a multi-species household, the cat gets independent visit-based care while the dog gets full-time company</li>
+        <li><strong>Overnight sitting for the first and last night, drop-ins in between:</strong> For medium-length trips, this provides reassurance at the most stressful transition points while keeping costs manageable</li>
+      </ul>
+      <p class="mb-6">
+        Discuss flexible arrangements with your sitter — many are happy to customise a care plan that suits your pet's specific needs and your budget.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Decision Guide: Quick Reference</h2>
+      <p class="mb-6">
+        Still unsure? Here's a quick framework:
+      </p>
+      <p class="mb-4"><strong>Choose drop-in visits if:</strong></p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Your pet is a healthy adult cat</li>
+        <li>Your dog is independent and non-destructive when alone</li>
+        <li>You're away for 1–2 nights maximum</li>
+        <li>Your pet has no significant medical needs</li>
+        <li>Budget is a primary consideration</li>
+      </ul>
+      <p class="mb-4"><strong>Choose overnight sitting if:</strong></p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Your pet has separation anxiety</li>
+        <li>You have a puppy or senior pet</li>
+        <li>Your pet needs medication at multiple times daily</li>
+        <li>You're away for 3+ nights</li>
+        <li>You want maximum peace of mind</li>
+        <li>You have multiple pets with different needs</li>
+      </ul>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Find the right level of care for your pet</h3>
+        <p class="mb-4">
+          ZiggySitters offers sitters who provide drop-in visits, overnight care, and flexible combinations. Browse profiles, discuss your pet's needs, and book the service that gives both you and your pet peace of mind.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Browse pet sitters near you →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
+        </p>
+      </div>
+    \`
+  },
+
+  {
+    slug: 'questions-to-ask-before-hiring-pet-sitter',
+    title: '25 Questions to Ask Before Hiring a Pet Sitter in New Zealand',
+    excerpt: 'Don\'t book a pet sitter until you\'ve asked these essential questions. From experience and insurance to emergency protocols, this checklist ensures you find the right match.',
+    date: '2026-02-01',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'For Pet Owners',
+    metaDescription: '25 essential questions to ask before hiring a pet sitter in NZ. Cover experience, safety, insurance, emergencies, and more to find the perfect sitter for your pet.',
+    keywords: ['questions to ask pet sitter', 'hiring pet sitter nz', 'pet sitter interview questions', 'what to ask pet sitter', 'choosing pet sitter checklist', 'pet sitter trust nz'],
+    content: \`
+      <p class="text-lg text-muted-foreground mb-8">
+        You've found a few promising pet sitters on ZiggySitters. Their profiles look great, the reviews are positive, and the photos make them seem like genuine animal lovers. But before you hand over your keys and your precious fur baby, there's one crucial step: the conversation. Asking the right questions during your initial chat and meet-and-greet can reveal everything you need to know about whether a sitter is the right fit. Here are 25 essential questions every New Zealand pet owner should ask.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Experience and Background</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">1. How long have you been pet sitting?</h3>
+      <p class="mb-6">
+        Experience isn't everything — enthusiastic newer sitters can be wonderful — but knowing their background helps set expectations. A sitter with two years of regular bookings will likely have encountered more situations than someone just starting out. Both can be great; you're looking for honesty and self-awareness.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">2. What types of pets have you cared for?</h3>
+      <p class="mb-6">
+        A sitter who's brilliant with Labradors may have no experience with reactive dogs, cats, or small breeds. Ask specifically about your pet type — breed, size, and temperament. If you have a particular type of pet (e.g., a Persian cat that needs daily grooming, a French Bulldog with breathing issues), ask if they've handled that before.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">3. Do you have pets of your own?</h3>
+      <p class="mb-6">
+        This isn't a deal-breaker either way, but it tells you a lot. Sitters with their own pets understand the responsibility firsthand. If they do have pets, ask how introductions work — will your dog meet their dog before the booking? Is there a separate space if needed?
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&h=450&fit=crop" alt="Two happy dogs playing together in a park setting" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">4. Have you completed any pet care training or certifications?</h3>
+      <p class="mb-6">
+        While not required in NZ, pet first aid training, animal behaviour courses, or professional development shows commitment. Ask what the training covered and when they completed it.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">5. Can I see references or reviews from other pet owners?</h3>
+      <p class="mb-6">
+        On ZiggySitters, reviews are public, but you can ask for additional references — especially from owners of similar pets. A confident sitter will be happy to connect you with previous clients.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Your Home and Their Space</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">6. If my pet stays at your home, can I visit beforehand?</h3>
+      <p class="mb-6">
+        Absolutely essential if your pet will be hosted. You need to see the property, check fencing, assess safety, and see where your pet will sleep, eat, and play. Any sitter who refuses a home visit should be a red flag.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">7. Is your garden fully fenced and secure?</h3>
+      <p class="mb-6">
+        For dogs, this is non-negotiable. Check the height, condition, and gate latches. Ask about any gaps or weak points. If a sitter is honest about having a low fence in one section (and has already addressed it), that's a good sign of their attention to detail.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">8. How many other pets will be in your care at the same time?</h3>
+      <p class="mb-6">
+        Some sitters care for multiple pets simultaneously. This isn't necessarily bad — but you should know about it. Ask whether the other pets are compatible with yours, how much individual attention your pet will get, and what happens if animals don't get along.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">9. Where will my pet sleep?</h3>
+      <p class="mb-6">
+        Indoor or outdoor? On a bed, the couch, or a crate? You want to know that the sleeping arrangement matches what your pet is used to. A dog accustomed to sleeping on the bed shouldn't be put in a garage.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Daily Routine and Care</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">10. What does a typical day look like for pets in your care?</h3>
+      <p class="mb-6">
+        This open-ended question reveals a lot. A thoughtful sitter will describe walk times, feeding, play sessions, rest periods, and how they structure the day. Vague answers ("Oh, we just hang out") may indicate a lack of structure.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">11. How many walks will my dog get, and where do you walk?</h3>
+      <p class="mb-6">
+        Specifics matter. You want to know the frequency, duration, and location. Do they walk on-lead near roads, or off-lead in parks? Do they know the local off-leash areas and their rules? Will walks be solo or with other dogs?
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">12. Are you comfortable administering medication?</h3>
+      <p class="mb-6">
+        If your pet needs meds, this is critical. Ask what types of medication they've given before (pills, liquid, injections, eye drops, ear drops). Offer to demonstrate during the meet-and-greet, and watch their comfort level.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">13. How do you handle feeding and dietary requirements?</h3>
+      <p class="mb-6">
+        Confirm they'll follow your pet's diet exactly. Ask about their approach to treats (do they give their own, or only what you provide?), meal times, and how they handle pets that are picky eaters or on special diets.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?w=800&h=450&fit=crop" alt="Adorable puppy looking up with bright, curious eyes" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Safety and Emergencies</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">14. What's your emergency plan if my pet gets sick or injured?</h3>
+      <p class="mb-6">
+        The answer should include: contacting you immediately, taking the pet to the nearest vet clinic, knowing the location of the after-hours emergency vet, and having transport available. If a sitter can't articulate an emergency plan, that's a concern.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">15. Do you have pet care liability insurance?</h3>
+      <p class="mb-6">
+        While not legally required in NZ, insurance protects both you and the sitter. Professional sitters increasingly carry liability cover. If they don't have insurance, it doesn't disqualify them, but it's worth knowing.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">16. Have you had any incidents or emergencies during previous sits?</h3>
+      <p class="mb-6">
+        This might seem awkward to ask, but it's incredibly informative. A sitter who's never had any issues might simply have limited experience. One who describes calmly handling an emergency — a dog vomiting, a fence breach, a bee sting — shows real-world competence.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">17. Do you have a current pet first aid kit?</h3>
+      <p class="mb-6">
+        A basic pet first aid kit (bandages, antiseptic, tick removal tool, emergency vet numbers) shows preparedness. Bonus points if they've completed a pet first aid course.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">18. How do you transport pets if needed?</h3>
+      <p class="mb-6">
+        For vet emergencies or if you need pickup and drop-off, know whether the sitter has a car, whether pets ride in a secured area (crate, seatbelt harness, cargo barrier), and how close they are to veterinary clinics.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Communication and Updates</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">19. How often will you send updates, and through which channel?</h3>
+      <p class="mb-6">
+        Daily photo updates are standard with quality sitters. Agree on the platform (text, WhatsApp, ZiggySitters messaging) and frequency. Good sitters send updates proactively without being asked.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">20. What would prompt you to contact me outside of regular updates?</h3>
+      <p class="mb-6">
+        You want to know they'll reach out for health concerns, behavioural changes, refusal to eat, or any incident — not just for routine reports. Equally, you don't want to be called because the dog barked at a bird.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">21. How quickly do you respond to messages?</h3>
+      <p class="mb-6">
+        This one you can test yourself. How quickly did they respond to your initial enquiry on ZiggySitters? Fast, thoughtful responses before the booking usually predict good communication during the booking.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Logistics and Policies</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">22. What's your cancellation policy?</h3>
+      <p class="mb-6">
+        Life happens — flights get cancelled, plans change. Know what happens if you need to cancel or shorten a booking. Most sitters have reasonable policies, but it's better to know upfront than be surprised.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">23. Do you have a backup plan if you can't complete the booking?</h3>
+      <p class="mb-6">
+        What happens if the sitter gets sick, has a family emergency, or has an unexpected issue? Do they have a trusted colleague, friend, or fellow sitter who can step in? A sitter with a backup plan shows professionalism and foresight.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">24. Are there any pets you won't sit for?</h3>
+      <p class="mb-6">
+        Honest sitters know their limitations. Some won't take large aggressive breeds, some aren't comfortable with puppies, some don't do exotic pets. A sitter who says "I'll take anything" may not understand their own boundaries.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">25. Can we do a trial booking first?</h3>
+      <p class="mb-6">
+        Before committing to a week-long holiday booking, ask if you can do a one-night trial. This lets your pet experience the arrangement with lower stakes, gives the sitter a chance to understand your pet's needs, and gives you confidence before the bigger booking.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=800&h=450&fit=crop" alt="Happy dog with a friendly smile sitting outdoors" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Bonus: Questions Your Sitter Should Ask YOU</h2>
+      <p class="mb-6">
+        A great sitter will also ask you detailed questions. If they don't ask about any of the following, it might be a warning sign:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li>Your pet's daily routine and habits</li>
+        <li>Dietary requirements and any allergies</li>
+        <li>Health conditions and medications</li>
+        <li>Behavioural quirks (fears, triggers, preferences)</li>
+        <li>Emergency contacts and vet details</li>
+        <li>What your pet's "normal" looks like so they can spot changes</li>
+      </ul>
+      <p class="mb-6">
+        A sitter who asks thoughtful, detailed questions is a sitter who genuinely cares about providing excellent care.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">The Meet-and-Greet: Where Questions Come Alive</h2>
+      <p class="mb-6">
+        While you can ask many of these questions via message, the meet-and-greet is where you really learn the truth. Pay attention to:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Body language:</strong> Do they seem genuinely excited to meet your pet, or going through the motions?</li>
+        <li><strong>Pet's reaction:</strong> How does your pet respond to them? Tail wagging? Hiding? Cautious but curious?</li>
+        <li><strong>Their home (if hosting):</strong> Is it clean, safe, and genuinely pet-friendly?</li>
+        <li><strong>Attention to detail:</strong> Do they take notes? Ask follow-up questions? Remember your pet's name?</li>
+        <li><strong>Gut feeling:</strong> Trust your instincts. If something feels off, keep looking. There are plenty of great sitters out there.</li>
+      </ul>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Find sitters who welcome your questions</h3>
+        <p class="mb-4">
+          The best pet sitters are happy to be asked anything — because they're confident in the care they provide. Browse ZiggySitters, read reviews, and start conversations with sitters who feel right. The perfect match is out there.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find verified pet sitters →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
+        </p>
+      </div>
+    \`
+  },
+
+  {
+    slug: 'pet-sitting-exotic-pets-nz-birds-rabbits-reptiles',
+    title: 'Pet Sitting for Exotic Pets in NZ: Birds, Rabbits, Reptiles & More',
+    excerpt: 'Not just cats and dogs! Learn how to find the right pet sitter for your rabbit, bird, reptile, guinea pig, or fish in New Zealand. Species-specific care tips included.',
+    date: '2026-02-01',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'How to find pet sitters for exotic pets in NZ — rabbits, birds, reptiles, guinea pigs, fish. Species-specific care guides and tips for New Zealand pet owners.',
+    keywords: ['exotic pet sitting nz', 'rabbit sitter nz', 'bird sitting new zealand', 'reptile pet sitter', 'guinea pig sitter nz', 'small animal pet sitting', 'fish sitter nz'],
+    content: \`
+      <p class="text-lg text-muted-foreground mb-8">
+        When people think "pet sitting," they usually picture dogs and cats. But New Zealand is home to a wonderfully diverse community of pet owners — from rabbit enthusiasts and avid bird keepers to reptile lovers and dedicated aquarists. If you're one of the many Kiwis whose family member has feathers, scales, fur, or fins rather than four legs and a waggy tail, finding the right pet sitter can feel especially challenging. This guide covers everything you need to know about arranging care for your exotic or small pet while you're away.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">The Challenge of Exotic Pet Sitting</h2>
+      <p class="mb-6">
+        Let's be honest: exotic pet sitting is a different game from dog and cat care. Your average pet sitter might be brilliant with a Labrador but completely out of their depth with a bearded dragon's UV lighting schedule or a rabbit's complex dietary needs. The challenge is twofold: finding a sitter with genuine species-specific knowledge, and communicating the nuanced care requirements that exotic pets demand.
+      </p>
+      <p class="mb-6">
+        The good news? As New Zealand's exotic pet community grows, so does the pool of knowledgeable sitters. More people are listing experience with small animals, birds, and reptiles on platforms like ZiggySitters, and the quality of care available is improving year by year.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=800&h=450&fit=crop" alt="Cute rabbit sitting in a cosy indoor setting with soft bedding" class="w-full rounded-lg my-8" />
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Rabbits</h2>
+      <p class="mb-6">
+        Rabbits are New Zealand's third most popular pet after dogs and cats, and they're far more complex than many people realise. A rabbit sitter needs to understand that these are sensitive prey animals with specific environmental, dietary, and social needs.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Essential Rabbit Care for Sitters</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Diet is critical:</strong> Unlimited timothy hay (80% of diet), measured pellets, fresh leafy greens daily (cilantro, basil, romaine lettuce, herbs), and constant access to fresh water. Iceberg lettuce, potato, and many common plants are toxic</li>
+        <li><strong>Gut health:</strong> Rabbits must eat constantly. If a rabbit stops eating for more than 12 hours, it's a veterinary emergency (GI stasis can be fatal). Your sitter must know this</li>
+        <li><strong>Litter habits:</strong> Most house rabbits are litter trained. Clean the litter tray daily and use paper-based or hay litter — never clumping cat litter, which is dangerous if ingested</li>
+        <li><strong>Exercise:</strong> Rabbits need a minimum of 3–4 hours of supervised free-roaming time daily outside their enclosure</li>
+        <li><strong>Temperature sensitivity:</strong> Rabbits are vulnerable to heat stroke above 28°C. In summer, ensure cool environments, frozen water bottles, and good ventilation</li>
+        <li><strong>Handling:</strong> Many rabbits dislike being picked up. Sitters should know how to handle them safely (supporting hindquarters) and recognise when a rabbit is stressed (thumping, hiding, tooth grinding)</li>
+        <li><strong>Bonded pairs:</strong> If you have bonded rabbits, they should NEVER be separated. This causes severe stress</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Finding a Rabbit Sitter</h3>
+      <p class="mb-6">
+        Look for sitters who have owned rabbits themselves or have specific experience noted in their profile. During the meet-and-greet, quiz them on rabbit diet (if they suggest carrots as a main food, they lack knowledge), ask about GI stasis awareness, and demonstrate the daily care routine step by step.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Birds</h2>
+      <p class="mb-6">
+        New Zealand has a strong aviculture community, from budgie owners to cockatiel enthusiasts to parrot keepers with large macaws or cockatoos. Bird sitting requires understanding of species-specific needs, environmental sensitivity, and the unique emotional bonds birds form with their humans.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Essential Bird Care for Sitters</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Diet varies by species:</strong> Seed-only diets are inadequate for most parrots. Many birds need pellets, fresh fruits, vegetables, and sprouted seeds. Avocado, chocolate, caffeine, onion, and garlic are toxic to birds</li>
+        <li><strong>Water:</strong> Fresh water at least twice daily — birds often soil their water quickly</li>
+        <li><strong>Cage cleaning:</strong> Daily liner changes, regular perch cleaning, and weekly deep cleans of the cage</li>
+        <li><strong>Social interaction:</strong> Parrots and cockatiels are highly social and can become depressed without attention. Daily out-of-cage time and conversation are essential for larger species</li>
+        <li><strong>Environmental hazards:</strong> Teflon/non-stick cookware fumes are instantly fatal to birds. Scented candles, aerosols, air fresheners, and cigarette smoke are also dangerous. Your sitter must know this</li>
+        <li><strong>Light cycles:</strong> Birds need 10–12 hours of darkness for sleep. Cover the cage or move it to a quiet room at a consistent time each night</li>
+        <li><strong>Noise levels:</strong> Some parrots are loud. Very loud. Make sure your sitter (and their neighbours) are prepared</li>
+        <li><strong>Escape prevention:</strong> Birds can fly. All windows and doors must be secured before any out-of-cage time. Wing-clipped birds can still glide surprising distances</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">In-Home vs Host Sitting for Birds</h3>
+      <p class="mb-6">
+        In-home sitting is strongly recommended for birds. Moving a bird to a new environment is extremely stressful — new sounds, smells, and visual stimuli can cause feather plucking, screaming, or refusal to eat. A sitter visiting your home to provide care in the bird's familiar territory is almost always the better option.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Reptiles</h2>
+      <p class="mb-6">
+        Reptile keeping is growing in New Zealand, with geckos being particularly popular (native gecko species are protected, but several exotic species can be kept legally). Other commonly kept reptiles include bearded dragons, blue-tongue skinks, and various snake species. Reptile sitting is specialised — the wrong temperature or lighting can have serious consequences.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=450&fit=crop" alt="Close-up of a gecko on a branch in a warm terrarium environment" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Essential Reptile Care for Sitters</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Temperature is everything:</strong> Reptiles are ectotherms — they rely on external heat to regulate body temperature. Your sitter must monitor and maintain the correct temperature gradient in the enclosure (basking spot, cool side, and nighttime temperatures)</li>
+        <li><strong>UV lighting:</strong> Most diurnal reptiles need UVB lighting for vitamin D synthesis and calcium metabolism. Lights should be on a timer (12 hours on, 12 off for most species) — your sitter needs to know what to do if a bulb blows</li>
+        <li><strong>Humidity:</strong> Some species need high humidity (tropical geckos), others need dry environments (bearded dragons). Misting, water bowls, and humidity gauges must be maintained</li>
+        <li><strong>Feeding schedules:</strong> These vary enormously. Some reptiles eat daily, others weekly. Live food (crickets, mealworms) may need to be offered and gut-loaded. Prepare detailed feeding instructions with exact quantities and schedules</li>
+        <li><strong>Handling:</strong> Some reptiles tolerate handling; others become stressed. Brief your sitter on whether handling is appropriate and demonstrate safe technique if so</li>
+        <li><strong>Shedding:</strong> Reptiles shed their skin periodically. Provide guidance on humidity adjustments during shedding and what to do about stuck shed (usually warm soaks)</li>
+        <li><strong>Spare equipment:</strong> Leave spare bulbs, a backup thermometer, and extra substrate. If a heat lamp fails overnight, the consequences for a reptile can be serious</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Finding a Reptile Sitter</h3>
+      <p class="mb-6">
+        Reptile-savvy sitters are rarer, but they exist. NZ reptile keeping communities (Facebook groups, forums, herpetological societies) can sometimes recommend local sitters. On ZiggySitters, search for sitters who list reptile experience and don't be afraid to quiz them on species-specific care. A sitter who admits they'd need to learn but is willing to be thorough may be better than one who claims expertise they don't have.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Guinea Pigs</h2>
+      <p class="mb-6">
+        Guinea pigs are popular family pets in New Zealand and have more complex needs than many people realise.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Essential Guinea Pig Care for Sitters</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Vitamin C:</strong> Guinea pigs cannot synthesise their own vitamin C. They need daily supplementation through fresh vegetables (capsicum, kale, broccoli) or liquid supplements</li>
+        <li><strong>Diet:</strong> Unlimited timothy hay, measured pellets (vitamin C-fortified), and daily fresh vegetables. Avoid iceberg lettuce, potato, and high-sugar fruits</li>
+        <li><strong>Social needs:</strong> Guinea pigs are social animals and should ideally be kept in pairs or groups. Solo guinea pigs need extra human interaction</li>
+        <li><strong>Clean bedding:</strong> Spot-clean daily, full bedding change every few days. Ammonia buildup from urine can cause respiratory issues</li>
+        <li><strong>Temperature:</strong> Guinea pigs are sensitive to both heat (above 26°C is dangerous) and cold (below 15°C). Keep them in a stable, temperate environment</li>
+        <li><strong>Handling:</strong> Guinea pigs can be nervous. Show your sitter how to pick them up (supporting their bottom) and how your specific guinea pigs prefer to be held</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Fish and Aquariums</h2>
+      <p class="mb-6">
+        Fish sitting might sound simple, but anyone who's maintained an aquarium knows it's anything but. Whether you have a simple goldfish setup or a complex marine reef tank, preparation is key.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Essential Fish Care for Sitters</h3>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Feeding:</strong> The number one risk with fish sitters is overfeeding. Pre-portion food into daily containers so the sitter gives exactly the right amount. Overfeeding kills more fish than underfeeding</li>
+        <li><strong>Water changes:</strong> For longer trips, your sitter may need to do partial water changes. Demonstrate the process and provide pre-treated water if possible</li>
+        <li><strong>Equipment monitoring:</strong> Filters, heaters, lights, and protein skimmers (for marine tanks) need daily visual checks. Leave clear instructions for what each piece of equipment does and what "normal" looks like</li>
+        <li><strong>Emergency contacts:</strong> Leave the number of your local aquarium store — they can often diagnose problems over the phone</li>
+        <li><strong>Auto feeders:</strong> For short trips (3–5 days), an automatic feeder may be a better option than human feeding, reducing the risk of overfeeding or contamination</li>
+        <li><strong>Water testing:</strong> Leave a simple test kit and show the sitter how to check pH, ammonia, and nitrite levels. Provide clear guidance on what numbers are acceptable</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">General Tips for Exotic Pet Sitting</h2>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Write an Exhaustive Care Guide</h3>
+      <p class="mb-6">
+        For exotic pets, a detailed written care guide is even more important than for dogs and cats. Include photos of the correct setup, annotated diagrams of equipment, exact feeding amounts and schedules, and "normal" vs "concerning" behaviours. Laminate it and leave it next to the enclosure.
+      </p>
+
+      <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=450&fit=crop" alt="Peaceful pet resting comfortably in a warm home environment" class="w-full rounded-lg my-8" />
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Do a Practice Run</h3>
+      <p class="mb-6">
+        Have your sitter do a supervised care session while you're home. Walk them through every step — feeding, cleaning, temperature checks, handling (if applicable). Watch them do it independently before you leave. This is especially important for reptiles with complex environmental needs.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Find a Specialist Vet</h3>
+      <p class="mb-6">
+        Not all vets treat exotic animals. Before you travel, identify an exotic-animal vet in your area and leave their details with your sitter. In NZ, the New Zealand Veterinary Association can help locate appropriate specialists. Key cities like Auckland, Wellington, and Christchurch have dedicated exotic/avian vets.
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">Leave Spare Supplies</h3>
+      <p class="mb-6">
+        For exotic pets, running out of a specific food, supplement, or equipment item can be a real problem — specialist supplies may not be available at the local supermarket. Leave more than enough of everything, plus backup items for critical equipment (spare bulbs, thermometers, water treatment).
+      </p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-4">In-Home Sitting is Usually Best</h3>
+      <p class="mb-6">
+        For most exotic pets, in-home drop-in visits are preferable to moving the animal. Transporting aquariums is impractical, moving bird cages is stressful, and reptile enclosures need to maintain precise environments. A sitter who visits your home to care for your exotic pet in their established habitat is almost always the safest option.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-12 mb-6">Costs for Exotic Pet Sitting in NZ (2026)</h2>
+      <p class="mb-6">
+        Exotic pet sitting rates typically fall in the drop-in visit range:
+      </p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>Single daily visit (30–45 min):</strong> $20–$35</li>
+        <li><strong>Twice daily visits:</strong> $35–$55 per day</li>
+        <li><strong>Specialist exotic pet sitter (reptiles, complex setups):</strong> $25–$45 per visit</li>
+      </ul>
+      <p class="mb-6">
+        Prices may be slightly higher for sitters with genuine exotic pet expertise — and that premium is usually worth paying for peace of mind.
+      </p>
+
+      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+        <h3 class="font-semibold mb-3">Every pet deserves great care — not just dogs and cats</h3>
+        <p class="mb-4">
+          ZiggySitters welcomes sitters who care for all types of pets. Search for sitters with exotic pet experience, read their profiles carefully, and find someone who understands the unique needs of your feathered, scaled, or small furry family member.
+        </p>
+        <p class="mb-0 font-medium">
+          <a href="/find-sitters" class="text-primary underline">Find a sitter for your exotic pet →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
+        </p>
+      </div>
+    \`
   }
 ];
 
