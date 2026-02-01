@@ -2176,7 +2176,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'For Pet Owners',
     metaDescription: 'Find trusted pet sitters in Dunedin & Otago NZ. Complete 2026 guide covering costs, suburbs, dog-friendly spots, and how to book verified local sitters.',
     keywords: ['pet sitting dunedin', 'pet sitter dunedin nz', 'dog sitting otago', 'cat sitting dunedin', 'dunedin pet care', 'pet sitter otago nz', 'dog boarding dunedin'],
-    content: \`
+    content: `
       <p class="text-lg text-muted-foreground mb-8">
         Dunedin — the Edinburgh of the South — is a city with a soul, and that soul extends to its passionate community of pet owners. Nestled at the head of Otago Harbour, Dunedin's unique mix of Victorian architecture, wild coastline, rugged hills, and vibrant student culture creates a distinctive environment for pets and their people. Whether you're a University of Otago academic heading to a conference, a local heading north for a family event, or a professional travelling for work, finding reliable pet care in Dunedin means finding someone who genuinely understands your neighbourhood, the local climate, and what your pet needs to thrive.
       </p>
@@ -2316,7 +2316,7 @@ export const blogPosts: BlogPostData[] = [
           <a href="/find-sitters" class="text-primary underline">Find Dunedin pet sitters →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter in Dunedin →</a>
         </p>
       </div>
-    \`
+    `
   },
 
   {
@@ -2330,7 +2330,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'Pet Care Tips',
     metaDescription: 'Senior pet care guide for NZ pet owners. Learn what your pet sitter needs to know about caring for older dogs and cats — medications, mobility, comfort and more.',
     keywords: ['senior pet care', 'old dog care nz', 'senior cat care', 'elderly pet sitting', 'senior dog sitter', 'older pet care tips', 'pet sitter elderly dog'],
-    content: \`
+    content: `
       <p class="text-lg text-muted-foreground mb-8">
         Your senior pet has been by your side through thick and thin — through house moves, new babies, career changes, and countless adventures. Now that they're in their golden years, their needs have changed. They might be slower on walks, pickier with food, or need daily medication. When it comes time to leave them with a pet sitter, the stakes feel higher. This guide helps you prepare your sitter to give your senior pet the gentle, attentive care they deserve.
       </p>
@@ -2510,7 +2510,7 @@ export const blogPosts: BlogPostData[] = [
           <a href="/find-sitters" class="text-primary underline">Find a sitter for your senior pet →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
         </p>
       </div>
-    \`
+    `
   },
 
   {
@@ -2524,7 +2524,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'For Pet Owners',
     metaDescription: 'Drop-in visits vs overnight pet sitting: compare costs, benefits and find which service suits your dog, cat or pet best. NZ pet sitting guide 2026.',
     keywords: ['drop-in pet visits', 'overnight pet sitting', 'pet sitting options nz', 'cat sitting visits', 'dog sitting overnight', 'pet care services nz', 'drop-in vs overnight sitter'],
-    content: \`
+    content: `
       <p class="text-lg text-muted-foreground mb-8">
         When you need pet care while you're away, one of the biggest decisions you'll make is how much care your pet actually needs. Should you book an overnight pet sitter who stays with your pet around the clock, or are daily drop-in visits enough? The answer depends on your pet's personality, species, health, and how long you'll be away. This guide breaks down both options so you can make the right call.
       </p>
@@ -2681,7 +2681,7 @@ export const blogPosts: BlogPostData[] = [
           <a href="/find-sitters" class="text-primary underline">Browse pet sitters near you →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
         </p>
       </div>
-    \`
+    `
   },
 
   {
@@ -2695,7 +2695,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'For Pet Owners',
     metaDescription: '25 essential questions to ask before hiring a pet sitter in NZ. Cover experience, safety, insurance, emergencies, and more to find the perfect sitter for your pet.',
     keywords: ['questions to ask pet sitter', 'hiring pet sitter nz', 'pet sitter interview questions', 'what to ask pet sitter', 'choosing pet sitter checklist', 'pet sitter trust nz'],
-    content: \`
+    content: `
       <p class="text-lg text-muted-foreground mb-8">
         You've found a few promising pet sitters on ZiggySitters. Their profiles look great, the reviews are positive, and the photos make them seem like genuine animal lovers. But before you hand over your keys and your precious fur baby, there's one crucial step: the conversation. Asking the right questions during your initial chat and meet-and-greet can reveal everything you need to know about whether a sitter is the right fit. Here are 25 essential questions every New Zealand pet owner should ask.
       </p>
@@ -2880,7 +2880,7 @@ export const blogPosts: BlogPostData[] = [
           <a href="/find-sitters" class="text-primary underline">Find verified pet sitters →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
         </p>
       </div>
-    \`
+    `
   },
 
   {
@@ -2894,7 +2894,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'Pet Care Tips',
     metaDescription: 'How to find pet sitters for exotic pets in NZ — rabbits, birds, reptiles, guinea pigs, fish. Species-specific care guides and tips for New Zealand pet owners.',
     keywords: ['exotic pet sitting nz', 'rabbit sitter nz', 'bird sitting new zealand', 'reptile pet sitter', 'guinea pig sitter nz', 'small animal pet sitting', 'fish sitter nz'],
-    content: \`
+    content: `
       <p class="text-lg text-muted-foreground mb-8">
         When people think "pet sitting," they usually picture dogs and cats. But New Zealand is home to a wonderfully diverse community of pet owners — from rabbit enthusiasts and avid bird keepers to reptile lovers and dedicated aquarists. If you're one of the many Kiwis whose family member has feathers, scales, fur, or fins rather than four legs and a waggy tail, finding the right pet sitter can feel especially challenging. This guide covers everything you need to know about arranging care for your exotic or small pet while you're away.
       </p>
@@ -3056,7 +3056,7 @@ export const blogPosts: BlogPostData[] = [
           <a href="/find-sitters" class="text-primary underline">Find a sitter for your exotic pet →</a> · <a href="/become-sitter" class="text-primary underline">Become a sitter →</a>
         </p>
       </div>
-    \`
+    `
   }
 ];
 
