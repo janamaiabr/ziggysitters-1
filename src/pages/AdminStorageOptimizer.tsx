@@ -328,6 +328,14 @@ export default function AdminStorageOptimizer() {
     setOrphans(prev => prev.map(f => ({ ...f, selected })));
   };
 
+  // Check if file format is supported for compression
+  const isCompressibleFormat = (filename: string): boolean => {
+    const ext = filename.toLowerCase().split('.').pop();
+    // HEIC/HEIF files cannot be compressed in browser
+    const unsupportedFormats = ['heic', 'heif', 'webp', 'svg', 'gif', 'bmp', 'tiff', 'tif'];
+    return !unsupportedFormats.includes(ext || '');
+  };
+
   const compressSelectedFiles = async () => {
     const selected = largeFiles.filter(f => f.selected && f.status === 'pending');
     if (selected.length === 0) return;
@@ -335,44 +343,99 @@ export default function AdminStorageOptimizer() {
     setCompressing(true);
     setProgress(0);
     let saved = 0;
+    let skipped = 0;
+    let failed = 0;
 
+    // Process files in batches to avoid memory issues
+    const BATCH_SIZE = 3;
+    
     for (let i = 0; i < selected.length; i++) {
       const file = selected[i];
+      
+      // Check if format is supported
+      if (!isCompressibleFormat(file.name)) {
+        console.log(`[StorageOptimizer] Skipping unsupported format: ${file.name}`);
+        setLargeFiles(prev => prev.map(f => 
+          f.id === file.id ? { ...f, status: 'error' } : f
+        ));
+        skipped++;
+        setProgress(((i + 1) / selected.length) * 100);
+        continue;
+      }
       
       setLargeFiles(prev => prev.map(f => 
         f.id === file.id ? { ...f, status: 'compressing' } : f
       ));
 
       try {
-        // Download the file
-        const { data: blob, error: downloadError } = await supabase.storage
+        // Download the file with timeout
+        const downloadPromise = supabase.storage
           .from(file.bucket)
           .download(file.name);
+        
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Download timeout')), 60000)
+        );
+        
+        const { data: blob, error: downloadError } = await Promise.race([
+          downloadPromise,
+          timeoutPromise
+        ]) as any;
 
         if (downloadError) throw downloadError;
+        if (!blob) throw new Error('No data received');
+
+        // Check file type from blob
+        const blobType = blob.type || 'image/jpeg';
+        
+        // Skip if not an image
+        if (!blobType.startsWith('image/')) {
+          console.log(`[StorageOptimizer] Not an image: ${file.name} (${blobType})`);
+          setLargeFiles(prev => prev.map(f => 
+            f.id === file.id ? { ...f, status: 'error' } : f
+          ));
+          skipped++;
+          setProgress(((i + 1) / selected.length) * 100);
+          continue;
+        }
 
         // Convert to File object
-        const originalFile = new File([blob], file.name, { type: blob.type });
+        const originalFile = new File([blob], file.name, { type: blobType });
         
-        // Use aggressive presets
+        // Use aggressive presets based on file type
         const isAvatar = file.name.includes('avatar');
         const preset = isAvatar ? aggressivePresets.avatar : aggressivePresets.portfolio;
 
-        // Compress
-        const compressedFile = await compressImage(originalFile, preset);
+        // Compress with timeout
+        const compressPromise = compressImage(originalFile, preset);
+        const compressTimeout = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Compression timeout')), 120000)
+        );
+        
+        const compressedFile = await Promise.race([
+          compressPromise,
+          compressTimeout
+        ]) as File;
 
         // Only re-upload if actually smaller
         if (compressedFile.size < originalFile.size * 0.9) { // At least 10% savings
           // Delete old file
-          await supabase.storage
+          const { error: deleteError } = await supabase.storage
             .from(file.bucket)
             .remove([file.name]);
+          
+          if (deleteError) {
+            console.warn(`[StorageOptimizer] Delete warning for ${file.name}:`, deleteError);
+          }
 
-          // Upload compressed version
+          // Upload compressed version with .jpg extension
           const newName = file.name.replace(/\.[^/.]+$/, '.jpg');
           const { error: uploadError } = await supabase.storage
             .from(file.bucket)
-            .upload(newName, compressedFile, { upsert: true });
+            .upload(newName, compressedFile, { 
+              upsert: true,
+              contentType: 'image/jpeg'
+            });
 
           if (uploadError) throw uploadError;
 
@@ -386,27 +449,41 @@ export default function AdminStorageOptimizer() {
               newSize: compressedFile.size 
             } : f
           ));
+          
+          console.log(`[StorageOptimizer] Compressed ${file.name}: ${file.sizeMB}MB → ${(compressedFile.size/1024/1024).toFixed(2)}MB`);
         } else {
+          // File already optimized or compression didn't help
           setLargeFiles(prev => prev.map(f => 
             f.id === file.id ? { ...f, status: 'done', newSize: file.size } : f
           ));
+          console.log(`[StorageOptimizer] Already optimized: ${file.name}`);
         }
-      } catch (err) {
-        console.error(`Error compressing ${file.name}:`, err);
+      } catch (err: any) {
+        console.error(`[StorageOptimizer] Error compressing ${file.name}:`, err?.message || err);
         setLargeFiles(prev => prev.map(f => 
           f.id === file.id ? { ...f, status: 'error' } : f
         ));
+        failed++;
       }
 
       setProgress(((i + 1) / selected.length) * 100);
+      
+      // Small delay between files to prevent memory buildup
+      if (i % BATCH_SIZE === 0 && i > 0) {
+        await new Promise(r => setTimeout(r, 500));
+      }
     }
 
     setTotalSaved(prev => prev + saved);
     setCompressing(false);
     
+    const message = failed > 0 || skipped > 0
+      ? `Saved ${(saved / 1024 / 1024).toFixed(1)}MB. ${skipped > 0 ? `${skipped} unsupported formats skipped. ` : ''}${failed > 0 ? `${failed} failed.` : ''}`
+      : `Saved ${(saved / 1024 / 1024).toFixed(1)}MB of storage space.`;
+    
     toast({
       title: "Compression complete! 🎉",
-      description: `Saved ${(saved / 1024 / 1024).toFixed(1)}MB of storage space.`
+      description: message
     });
   };
 
@@ -638,42 +715,58 @@ export default function AdminStorageOptimizer() {
                     )}
 
                     <div className="max-h-96 overflow-y-auto space-y-2">
-                      {largeFiles.map(file => (
-                        <div 
-                          key={file.id}
-                          className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted/50"
-                        >
-                          <Checkbox 
-                            checked={file.selected}
-                            onCheckedChange={() => toggleFile(file.id)}
-                            disabled={compressing || file.status !== 'pending'}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{file.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {file.sizeMB}MB • {file.bucket}
-                              {file.newSize && (
-                                <span className="text-primary ml-2">
-                                  → {(file.newSize / 1024 / 1024).toFixed(2)}MB
-                                  ({Math.round((1 - file.newSize / file.size) * 100)}% saved)
-                                </span>
-                              )}
-                            </p>
+                      {largeFiles.map(file => {
+                        const ext = file.name.toLowerCase().split('.').pop();
+                        const isUnsupported = ['heic', 'heif', 'webp', 'svg', 'gif', 'bmp', 'tiff', 'tif'].includes(ext || '');
+                        
+                        return (
+                          <div 
+                            key={file.id}
+                            className={`flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted/50 ${isUnsupported ? 'opacity-60' : ''}`}
+                          >
+                            <Checkbox 
+                              checked={file.selected && !isUnsupported}
+                              onCheckedChange={() => toggleFile(file.id)}
+                              disabled={compressing || file.status !== 'pending' || isUnsupported}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {file.sizeMB}MB • {file.bucket}
+                                {isUnsupported && (
+                                  <span className="text-destructive ml-2 font-medium">
+                                    ⚠️ {ext?.toUpperCase()} not supported - delete manually
+                                  </span>
+                                )}
+                                {file.newSize && !isUnsupported && (
+                                  <span className="text-primary ml-2">
+                                    → {(file.newSize / 1024 / 1024).toFixed(2)}MB
+                                    ({Math.round((1 - file.newSize / file.size) * 100)}% saved)
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                            {file.status === 'compressing' && (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            )}
+                            {file.status === 'done' && (
+                              <Check className="h-4 w-4 text-primary" />
+                            )}
+                            {file.status === 'error' && (
+                              <AlertCircle className="h-4 w-4 text-destructive" />
+                            )}
+                            {isUnsupported ? (
+                              <Badge variant="secondary">
+                                {ext?.toUpperCase()}
+                              </Badge>
+                            ) : (
+                              <Badge variant={file.sizeMB > 2 ? "destructive" : "outline"}>
+                                {file.sizeMB}MB
+                              </Badge>
+                            )}
                           </div>
-                          {file.status === 'compressing' && (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          )}
-                          {file.status === 'done' && (
-                            <Check className="h-4 w-4 text-primary" />
-                          )}
-                          {file.status === 'error' && (
-                            <AlertCircle className="h-4 w-4 text-destructive" />
-                          )}
-                          <Badge variant={file.sizeMB > 2 ? "destructive" : "outline"}>
-                            {file.sizeMB}MB
-                          </Badge>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t">
