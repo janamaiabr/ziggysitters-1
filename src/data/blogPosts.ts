@@ -1,6 +1,8 @@
 // Blog posts data - centralized for easier management
 // Add new posts here and they'll appear on the blog
 
+import { getPetCareTipsBlogPosts } from './petCareTips';
+
 export interface BlogPostData {
   slug: string;
   title: string;
@@ -28,21 +30,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'For Sitters',
     metaDescription: 'Comprehensive guide to becoming a top-rated pet sitter in New Zealand. Learn skills, build your profile, earn trust, and start your pet sitting career today.',
     keywords: ['become pet sitter', 'pet sitting career nz', 'how to start pet sitting', 'top pet sitter tips', 'pet sitter training nz'],
-    content: `
-      <p class="text-lg text-muted-foreground mb-8">
-        Pet sitting isn't just a job — it's a calling for animal lovers who want to make a difference in pets' lives while earning a flexible income. If you're passionate about animals and want to build a successful pet sitting career in New Zealand, this comprehensive guide will walk you through every step.
-      </p>
-
-      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
-        <h3 class="font-semibold mb-3">Ready to start your pet sitting journey?</h3>
-        <p class="mb-4">
-          Join ZiggySitters and connect with pet owners across New Zealand. Start building your profile and turning your passion into a rewarding career.
-        </p>
-        <p class="mb-0 font-medium">
-          <a href="/become-sitter" class="text-primary underline">Become a Sitter →</a>
-        </p>
-      </div>
-    `
+    content: '<p class="text-lg text-muted-foreground mb-8">Pet sitting is not just a job \u2014 it is a calling for animal lovers who want to make a difference in pets\u2019 lives while earning a flexible income. If you are passionate about animals and want to build a successful pet sitting career in New Zealand, this comprehensive guide will walk you through every step.</p><div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r"><h3 class="font-semibold mb-3">Ready to start your pet sitting journey?</h3><p class="mb-4">Join ZiggySitters and connect with pet owners across New Zealand. Start building your profile and turning your passion into a rewarding career.</p><p class="mb-0 font-medium"><a href="/become-sitter" class="text-primary underline">Become a Sitter \u2192</a></p></div>'
   },
   {
     slug: 'how-to-choose-pet-sitter-nz-buyer-guide',
@@ -55,21 +43,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'For Pet Owners',
     metaDescription: 'Comprehensive guide to choosing the perfect pet sitter in New Zealand. Discover what to look for, questions to ask, and how to find a trusted sitter.',
     keywords: ['choose pet sitter', 'pet sitter guide', 'how to find pet sitter', 'trusted pet sitter nz', 'pet sitting tips'],
-    content: `
-      <p class="text-lg text-muted-foreground mb-8">
-        Choosing a pet sitter is one of the most important decisions you'll make as a pet owner. Your furry friend isn't just an animal — they're family. And finding someone who understands that can make all the difference between a stressful experience and a peaceful time away.
-      </p>
-
-      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
-        <h3 class="font-semibold mb-3">Find your perfect pet sitter today</h3>
-        <p class="mb-4">
-          Browse verified sitters on ZiggySitters. Every profile is checked, every sitter is reviewed by real pet owners.
-        </p>
-        <p class="mb-0 font-medium">
-          <a href="/find-sitters" class="text-primary underline">Find a Sitter Near You →</a>
-        </p>
-      </div>
-    `
+    content: '<p class="text-lg text-muted-foreground mb-8">Choosing a pet sitter is one of the most important decisions you will make as a pet owner. Your furry friend is not just an animal \u2014 they are family. And finding someone who understands that can make all the difference between a stressful experience and a peaceful time away.</p><div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r"><h3 class="font-semibold mb-3">Find your perfect pet sitter today</h3><p class="mb-4">Browse verified sitters on ZiggySitters. Every profile is checked, every sitter is reviewed by real pet owners.</p><p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Find a Sitter Near You \u2192</a></p></div>'
   },
   {
     slug: 'ultimate-guide-pet-sitting-auckland',
@@ -82,24 +56,7 @@ export const blogPosts: BlogPostData[] = [
     tag: 'Auckland Guide',
     metaDescription: 'Complete guide to pet sitting in Auckland. Find trusted pet sitters, understand pricing, and learn what to expect from professional pet sitting services in NZ.',
     keywords: ['pet sitting auckland', 'auckland pet sitter', 'pet care auckland', 'dog sitting auckland', 'cat sitting nz'],
-    content: `
-      <p class="text-lg text-muted-foreground mb-8">
-        Auckland pet owners have more options than ever for quality pet care. Whether you need overnight stays, daily visits, or extended care while you're away, this guide covers everything you need to know.
-      </p>
-      
-      <h2 class="text-2xl font-bold mt-12 mb-6">Why Choose Professional Pet Sitting?</h2>
-      <p class="mb-6">
-        Professional pet sitters offer personalized care in your home or theirs, reducing stress for your pets compared to traditional kennels.
-      </p>
-
-      <div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
-        <h3 class="font-semibold mb-3">Find Auckland Pet Sitters</h3>
-        <p class="mb-4">Browse verified pet sitters across all Auckland suburbs.</p>
-        <p class="mb-0 font-medium">
-          <a href="/find-sitters" class="text-primary underline">Search Now →</a>
-        </p>
-      </div>
-    `
+    content: '<p class="text-lg text-muted-foreground mb-8">Auckland pet owners have more options than ever for quality pet care. Whether you need overnight stays, daily visits, or extended care while you are away, this guide covers everything you need to know.</p><h2 class="text-2xl font-bold mt-12 mb-6">Why Choose Professional Pet Sitting?</h2><p class="mb-6">Professional pet sitters offer personalized care in your home or theirs, reducing stress for your pets compared to traditional kennels.</p><div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r"><h3 class="font-semibold mb-3">Find Auckland Pet Sitters</h3><p class="mb-4">Browse verified pet sitters across all Auckland suburbs.</p><p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Search Now \u2192</a></p></div>'
   },
   {
     slug: 'profile-tips-stand-out',
@@ -129,11 +86,17 @@ export const blogPosts: BlogPostData[] = [
   }
 ];
 
-// Helper functions
+// Get all posts including pet care tips
 export function getAllPosts(): BlogPostData[] {
-  return blogPosts;
+  const tipPosts = getPetCareTipsBlogPosts();
+  const allPosts = [...blogPosts, ...tipPosts];
+  // Sort by date descending
+  allPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return allPosts;
 }
 
+// Get a single post by slug
 export function getPostBySlug(slug: string): BlogPostData | undefined {
-  return blogPosts.find(post => post.slug === slug);
+  const allPosts = getAllPosts();
+  return allPosts.find((p) => p.slug === slug);
 }

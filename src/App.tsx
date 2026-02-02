@@ -94,6 +94,14 @@ import Areas from "./pages/Areas";
 import Messages from "./pages/Messages";
 import AucklandPetSitters from "./pages/AucklandPetSitters";
 import AdminStorageOptimizer from "./pages/AdminStorageOptimizer";
+import PetSittingAuckland from "./pages/PetSittingAuckland";
+import PetSittingWellington from "./pages/PetSittingWellington";
+import PetSittingChristchurch from "./pages/PetSittingChristchurch";
+import PetSittingHamilton from "./pages/PetSittingHamilton";
+import PetSittingTauranga from "./pages/PetSittingTauranga";
+import PetSittingDunedin from "./pages/PetSittingDunedin";
+import OurSitters from "./pages/OurSitters";
+import PetCareTips from "./pages/PetCareTips";
 
 const queryClient = new QueryClient();
 
@@ -289,6 +297,14 @@ function AppContent() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/pet-sitting-auckland" element={<PetSittingAuckland />} />
+            <Route path="/pet-sitting-wellington" element={<PetSittingWellington />} />
+            <Route path="/pet-sitting-christchurch" element={<PetSittingChristchurch />} />
+            <Route path="/pet-sitting-hamilton" element={<PetSittingHamilton />} />
+            <Route path="/pet-sitting-tauranga" element={<PetSittingTauranga />} />
+            <Route path="/pet-sitting-dunedin" element={<PetSittingDunedin />} />
+            <Route path="/our-sitters" element={<OurSitters />} />
+            <Route path="/pet-care-tips" element={<PetCareTips />} />
             <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
             <Route path="/500" element={<Error500 />} />
             <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />

@@ -14,6 +14,7 @@ import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 // Import hero versions - swap these to switch between versions
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
+import NZTrustBadge from '@/components/home/NZTrustBadge';
 // import HeroSectionV2 from '@/components/home/HeroSectionV2';
 // import HeroSectionOriginal from '@/components/home/HeroSectionOriginal';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
@@ -267,6 +268,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* 100% NZ-Based Sitters Trust Badge */}
+      <NZTrustBadge />
 
       {/* Named Trust Guarantees - Above How It Works */}
       <section className="py-12 md:py-16 bg-background">
