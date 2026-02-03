@@ -142,18 +142,18 @@ const Index = () => {
   const trustFeatures = [
     {
       icon: Camera,
-      title: 'Optional Daily Updates',
-      description: 'Choose daily photo reports when booking - sitters must deliver or face 15% deduction'
+      title: 'Reassurance',
+      description: 'Morning and evening photo updates so you never wonder how your pet is doing'
     },
     {
       icon: Shield,
-      title: 'Your Choice, Your Control',
-      description: 'Decide if you want daily updates - accountability guaranteed when you do'
+      title: 'Insight',
+      description: 'Behavioral tracking — appetite, mood, energy, and settling patterns'
     },
     {
       icon: CheckCircle,
-      title: 'Transparent Care',
-      description: 'Request detailed daily reports on exercise, food, sleep, and mood'
+      title: 'Connection',
+      description: 'Watch the bond grow day by day with detailed care updates'
     }
   ];
 
@@ -222,13 +222,13 @@ const Index = () => {
           <div className="text-center mb-6 md:mb-16">
             <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-3 py-1.5 md:px-4 md:py-2 mb-3 md:mb-4">
               <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary animate-pulse" />
-              <span className="text-xs md:text-sm font-medium text-primary">Handpicked for Excellence</span>
+              <span className="text-xs md:text-sm font-medium text-primary">Personality Matched</span>
             </div>
             <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Meet Your Pet{"'"}s New Best Friend
+              Meet your pet{"'"}s perfect match
             </h2>
             <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Police-vetted, experienced sitters who treat your pets like family
+              Sitters matched to your pet{"'"}s personality
             </p>
           </div>
           
@@ -314,9 +314,9 @@ const Index = () => {
       <section className="hidden md:block py-12 md:py-20 bg-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Daily Updates - When You Want Them</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Updates that matter, every single day</h2>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choose to receive daily photo reports when booking - complete transparency is just one click away
+              Morning and evening updates guaranteed — watch the bond grow, update by update
             </p>
           </div>
           
@@ -354,11 +354,11 @@ const Index = () => {
                 </div>
                 
                 <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
-                  Daily Reports - Your Choice, Guaranteed Delivery
+                  Watch the bond grow, update by update
                 </h2>
                 
                 <p className="text-sm md:text-lg text-gray-600 leading-relaxed">
-                  Want daily updates? Just check the box when booking. Sitters must deliver or face a 15% payment reduction.
+                  Two updates per day minimum — morning and evening. Behavioral tracking covers appetite, mood, energy, and settling patterns. Payment tied to compliance, with a 96% compliance rate.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -367,8 +367,8 @@ const Index = () => {
                       <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Daily Photos</h4>
-                      <p className="text-xs md:text-sm text-gray-600">See your pet{"'"}s day</p>
+                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Reassurance</h4>
+                      <p className="text-xs md:text-sm text-gray-600">Photos morning & evening</p>
                     </div>
                   </div>
                   
@@ -377,8 +377,8 @@ const Index = () => {
                       <Clock className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Care Notes</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Food, mood & health</p>
+                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Insight</h4>
+                      <p className="text-xs md:text-sm text-gray-600">Appetite, mood & energy</p>
                     </div>
                   </div>
                   
@@ -387,8 +387,8 @@ const Index = () => {
                       <DollarSign className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Pay Guarantee</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Tied to report quality</p>
+                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Connection</h4>
+                      <p className="text-xs md:text-sm text-gray-600">Settling patterns tracked</p>
                     </div>
                   </div>
                   
@@ -397,8 +397,8 @@ const Index = () => {
                       <Shield className="w-4 h-4 md:w-5 md:h-5 text-orange-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Peace of Mind</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Never worry again</p>
+                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Early Alerts</h4>
+                      <p className="text-xs md:text-sm text-gray-600">Issues flagged instantly</p>
                     </div>
                   </div>
                 </div>
@@ -472,12 +472,12 @@ const Index = () => {
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                   <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-gray-200">
-                    <div className="text-xl md:text-2xl font-bold text-blue-600">100%</div>
-                    <div className="text-xs md:text-sm text-gray-600">Report Compliance</div>
+                    <div className="text-xl md:text-2xl font-bold text-blue-600">96%</div>
+                    <div className="text-xs md:text-sm text-gray-600">Compliance Rate</div>
                   </div>
                   <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-gray-200">
-                    <div className="text-xl md:text-2xl font-bold text-green-600">5+</div>
-                    <div className="text-xs md:text-sm text-gray-600">Photos Per Day</div>
+                    <div className="text-xl md:text-2xl font-bold text-green-600">2x</div>
+                    <div className="text-xs md:text-sm text-gray-600">Updates Per Day</div>
                   </div>
                 </div>
               </div>
@@ -598,10 +598,10 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-              Ready for Guaranteed Peace of Mind?
+              Ready to find your pet{"'"}s person?
             </h2>
             <p className="text-sm md:text-xl mb-4 md:mb-8 text-muted-foreground">
-              Join pet owners across Auckland who trust our verified sitters
+              Every pet has a personality. We match them with sitters who truly get them.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <Button size="lg" className="px-6 md:px-8 shadow-lg hover:shadow-xl transition-all min-h-[44px]" onClick={() => navigate('/find-sitters')}>

@@ -1,4 +1,4 @@
-import { Camera, Shield, CreditCard, Clock, CheckCircle } from 'lucide-react';
+import { Brain, Users, Camera, RefreshCw, Clock } from 'lucide-react';
 
 interface TrustGuarantee {
   icon: React.ElementType;
@@ -9,22 +9,28 @@ interface TrustGuarantee {
 
 const guarantees: TrustGuarantee[] = [
   {
+    icon: Brain,
+    name: 'Personality-matched sitters',
+    description: 'Not just who\'s available — we show you sitters who specialise in pets exactly like yours.',
+    color: 'from-purple-500 to-indigo-500'
+  },
+  {
+    icon: Users,
+    name: 'Meet before you commit',
+    description: 'See the chemistry firsthand. Free meet & greet so your pet can decide before you book.',
+    color: 'from-blue-500 to-cyan-500'
+  },
+  {
     icon: Camera,
-    name: 'Daily Update Promise',
-    description: 'Request daily photos & videos — if your sitter doesn\'t deliver, they receive a 15% pay reduction. Your peace of mind, guaranteed.',
-    color: 'from-blue-500 to-indigo-500'
-  },
-  {
-    icon: Shield,
-    name: 'ZiggyCare Guarantee',
-    description: 'Every sitter is ID verified. Issues? Our support team steps in immediately to help resolve any concerns.',
-    color: 'from-purple-500 to-pink-500'
-  },
-  {
-    icon: CreditCard,
-    name: 'Secure Payment Protection',
-    description: 'Pay only when your sitter accepts. Funds held securely until booking completes. Stripe-powered security.',
+    name: 'Daily updates guaranteed',
+    description: 'Morning and evening updates with photos — watch them settle, day by day. Payment tied to compliance.',
     color: 'from-green-500 to-emerald-500'
+  },
+  {
+    icon: RefreshCw,
+    name: 'Book them again anytime',
+    description: 'Keep their person, forever. Once you find the right match, they\'re always just a booking away.',
+    color: 'from-orange-500 to-pink-500'
   }
 ];
 
@@ -32,11 +38,11 @@ export default function TrustGuarantees() {
   return (
     <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5 rounded-xl md:rounded-2xl p-4 md:p-8 border border-primary/10">
       <div className="text-center mb-4 md:mb-6">
-        <h3 className="text-lg md:text-2xl font-bold mb-1 md:mb-2">Your Peace of Mind, Guaranteed</h3>
-        <p className="text-xs md:text-sm text-muted-foreground">Binding promises that protect you</p>
+        <h3 className="text-lg md:text-2xl font-bold mb-1 md:mb-2">Matched on personality, not just proximity</h3>
+        <p className="text-xs md:text-sm text-muted-foreground">Every pet has a personality. We match them with sitters who truly get them.</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
         {guarantees.map((guarantee, index) => (
           <div 
             key={index}
