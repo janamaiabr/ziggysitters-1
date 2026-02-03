@@ -112,9 +112,9 @@ export default function FeaturedSittersCarousel() {
           {sitters.map((sitter) => (
             <div key={sitter.id} className="min-w-full px-1">
               <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg">
-                <Avatar className="h-16 w-16 ring-2 ring-primary/20">
-                  <AvatarImage src={sitter.avatar} className="object-cover" />
-                  <AvatarFallback>{sitter.name.charAt(0)}</AvatarFallback>
+                <Avatar className="h-20 w-20 ring-2 ring-primary/20">
+                  <AvatarImage src={sitter.avatar} className="object-cover object-[center_20%]" />
+                  <AvatarFallback className="text-lg">{sitter.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 
                 <div className="flex-1 min-w-0">
