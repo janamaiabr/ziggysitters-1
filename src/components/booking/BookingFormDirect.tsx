@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, differenceInHours, differenceInDays } from 'date-fns';
-import { CalendarIcon, Clock, Shield, CheckCircle } from 'lucide-react';
+import { Shield, CheckCircle, Zap, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
-import InlinePetAdder from './InlinePetAdder';
 interface BookingFormDirectProps {
   sitter: {
     id: string;
@@ -48,19 +45,24 @@ export default function BookingFormDirect({
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   
+  // Format date for input[type=date]
+  const formatDateForInput = (d: Date) => d.toISOString().split('T')[0];
+  
   const [startDate, setStartDate] = useState<Date | undefined>(
     initialCheckIn ? new Date(initialCheckIn) : today
   );
   const [endDate, setEndDate] = useState<Date | undefined>(
     initialCheckOut ? new Date(initialCheckOut) : tomorrow
   );
-  const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('10:00');
+  // Hidden defaults for simplified form
+  const [startTime] = useState('09:00');
+  const [endTime] = useState('17:00');
   const [serviceType, setServiceType] = useState(initialServiceType || '');
-  const [specialInstructions, setSpecialInstructions] = useState('');
-  const [requiresDailyReports, setRequiresDailyReports] = useState(true);
+  const [messageToSitter, setMessageToSitter] = useState('');
+  // Auto-defaults (hidden from user)
+  const requiresDailyReports = true;
   const [loading, setLoading] = useState(false);
-  const [repeatAcrossDays, setRepeatAcrossDays] = useState(false);
+  const repeatAcrossDays = false;
   const [ownerPets, setOwnerPets] = useState<any[]>([]);
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   const { user } = useAuth();
@@ -124,7 +126,8 @@ export default function BookingFormDirect({
     fetchOwnerPets();
   }, [user]);
 
-  const handleDateSelect = (date: Date | undefined, type: 'start' | 'end') => {
+  const handleDateChange = (value: string, type: 'start' | 'end') => {
+    const date = value ? new Date(value + 'T00:00:00') : undefined;
     if (type === 'start') {
       setStartDate(date);
       if (date && endDate && endDate < date) {
@@ -240,7 +243,7 @@ export default function BookingFormDirect({
         startTime: (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') ? startTime : undefined,
         endTime: (serviceType === 'dog_walking' || serviceType === 'drop_in_visits') ? endTime : undefined,
         petIds: selectedPetIds,
-        specialInstructions,
+        specialInstructions: messageToSitter,
         totalAmount: total,
         requiresDailyReports: allowsDailyReports ? requiresDailyReports : false
       };
@@ -297,7 +300,6 @@ export default function BookingFormDirect({
   };
 
   const total = calculateTotal();
-  const isHourlyService = serviceType === 'dog_walking' || serviceType === 'drop_in_visits';
 
   return (
     <Card className="border-2 border-primary/20 shadow-xl bg-card overflow-hidden relative">
@@ -309,23 +311,29 @@ export default function BookingFormDirect({
             className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/30"
           />
           <div>
-            <div className="text-xl font-bold">📅 Check {sitter.name.split(' ')[0]}'s Availability</div>
-            <div className="text-sm text-green-600 dark:text-green-400 font-semibold flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              Free to enquire • No payment until confirmed
-            </div>
+            <div className="text-xl font-bold">📩 Enquire with {sitter.name.split(' ')[0]}</div>
+            {total > 0 && (
+              <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                From NZ${total.toFixed(2)} estimated
+              </div>
+            )}
           </div>
         </CardTitle>
-        
-        {/* Prominent reassurance banner */}
-        <div className="mt-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-center">
-          <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-            🛡️ This is just an enquiry — you won't be charged anything
-          </p>
-        </div>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-4">
+        {/* Trust signals - right at the top */}
+        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-3 space-y-1.5">
+          <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
+            <Zap className="w-4 h-4 flex-shrink-0" /> Average response time: 2 hours
+          </p>
+          <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 flex-shrink-0" /> Free to enquire — no payment until sitter accepts
+          </p>
+          <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
+            <Shield className="w-4 h-4 flex-shrink-0" /> 100% refund if sitter cancels
+          </p>
+        </div>
 
         {/* Service Selection - Compact chips */}
         <div className="space-y-2">
@@ -379,180 +387,61 @@ export default function BookingFormDirect({
           </div>
         </div>
 
-        {/* Date Selection */}
+        {/* Simplified Date Selection - native date inputs (mobile-friendly) */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
-            <label className="text-sm font-semibold">Start Date <span className="text-red-500">*</span></label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full h-12 justify-start text-left font-normal border-2",
-                    !startDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {startDate ? format(startDate, 'MMM d, yyyy') : 'Pick date'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={startDate}
-                  onSelect={(date) => handleDateSelect(date, 'start')}
-                  disabled={(date) => date < new Date()}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <label className="text-sm font-semibold">Check-in <span className="text-red-500">*</span></label>
+            <input
+              type="date"
+              className="w-full h-12 px-3 rounded-md border-2 border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              value={startDate ? formatDateForInput(startDate) : ''}
+              min={formatDateForInput(today)}
+              onChange={(e) => handleDateChange(e.target.value, 'start')}
+            />
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-semibold">End Date <span className="text-red-500">*</span></label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full h-12 justify-start text-left font-normal border-2",
-                    !endDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {endDate ? format(endDate, 'MMM d, yyyy') : 'Pick date'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={endDate}
-                  onSelect={(date) => handleDateSelect(date, 'end')}
-                  disabled={(date) => date < (startDate || new Date())}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <label className="text-sm font-semibold">Check-out <span className="text-red-500">*</span></label>
+            <input
+              type="date"
+              className="w-full h-12 px-3 rounded-md border-2 border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              value={endDate ? formatDateForInput(endDate) : ''}
+              min={startDate ? formatDateForInput(startDate) : formatDateForInput(today)}
+              onChange={(e) => handleDateChange(e.target.value, 'end')}
+            />
           </div>
         </div>
 
-        {/* Time Selection for hourly services */}
-        {isHourlyService && (
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                Start Time
-              </label>
-              <Select value={startTime} onValueChange={setStartTime}>
-                <SelectTrigger className="h-12 border-2">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 24 }, (_, i) => {
-                    const hour = i.toString().padStart(2, '0');
-                    return (
-                      <SelectItem key={`${hour}:00`} value={`${hour}:00`}>
-                        {`${hour}:00`}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                End Time
-              </label>
-              <Select value={endTime} onValueChange={setEndTime}>
-                <SelectTrigger className="h-12 border-2">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 24 }, (_, i) => {
-                    const hour = i.toString().padStart(2, '0');
-                    return (
-                      <SelectItem key={`${hour}:00`} value={`${hour}:00`}>
-                        {`${hour}:00`}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-
-        {/* Pet Selection */}
-        {ownerPets.length > 0 && (
-          <div className="space-y-2">
-            <label className="text-sm font-semibold">Which pets? <span className="text-muted-foreground font-normal">(optional)</span></label>
-            <div className="flex flex-wrap gap-2">
-              {ownerPets.map((pet) => (
-                <Badge
-                  key={pet.id}
-                  variant={selectedPetIds.includes(pet.id) ? "default" : "outline"}
-                  className={cn(
-                    "cursor-pointer py-2 px-3 text-sm transition-all",
-                    selectedPetIds.includes(pet.id) 
-                      ? "bg-primary text-primary-foreground" 
-                      : "hover:bg-primary/10"
-                  )}
-                  onClick={() => {
-                    setSelectedPetIds(prev => 
-                      prev.includes(pet.id)
-                        ? prev.filter(id => id !== pet.id)
-                        : [...prev, pet.id]
-                    );
-                  }}
-                >
-                  {pet.name} ({pet.species})
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Inline pet adder for users without pets - OPTIONAL for conversion */}
-        {ownerPets.length === 0 && profile?.id && !isGuestPreview && (
-          <div className="space-y-1">
-            <InlinePetAdder 
-              profileId={profile.id}
-              onPetAdded={(newPet) => {
-                setOwnerPets(prev => [...prev, newPet]);
-                setSelectedPetIds(prev => [...prev, newPet.id]);
-              }}
-            />
-            <p className="text-xs text-center text-muted-foreground">
-              💡 No pet profile yet? No worries — you can still send this enquiry!
-            </p>
-          </div>
-        )}
-        
-        {/* For guests, show simple message */}
-        {isGuestPreview && (
-          <p className="text-sm text-muted-foreground">
-            💡 You'll add your pet's details after signing up (optional)
-          </p>
-        )}
+        {/* Optional message to sitter - simple, 3 lines max */}
+        <div className="space-y-2">
+          <label className="text-sm font-semibold">
+            Message to {sitter.name.split(' ')[0]} <span className="text-muted-foreground font-normal">(optional)</span>
+          </label>
+          <Textarea
+            placeholder={`Hi ${sitter.name.split(' ')[0]}! I have a [dog/cat] and would love to know if you're available...`}
+            value={messageToSitter}
+            onChange={(e) => setMessageToSitter(e.target.value)}
+            rows={3}
+            className="resize-none border-2"
+          />
+        </div>
 
         {/* Price Summary - Compact */}
         {total > 0 && (
           <div className="flex justify-between items-center bg-muted/50 rounded-lg p-3">
-            <span className="font-medium">Estimated</span>
+            <span className="font-medium">Estimated total</span>
             <span className="text-xl font-bold text-primary">NZ${total.toFixed(2)}</span>
           </div>
         )}
 
-        {/* Primary CTA - BIG and prominent */}
+        {/* Primary CTA - BIG green "Send Free Enquiry" */}
         {isGuestPreview ? (
           <Button 
             onClick={onGuestSignup}
             size="lg"
             className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
           >
-            💬 Send Free Enquiry →
+            📩 Request Free Quote →
           </Button>
         ) : (
           <Button 
@@ -567,26 +456,25 @@ export default function BookingFormDirect({
                 Sending...
               </>
             ) : (
-              '💬 Send Free Enquiry'
+              '📩 Send Free Enquiry'
             )}
           </Button>
         )}
         
-        {/* Triple reassurance - directly adjacent to CTA */}
-        <div className="space-y-2">
-          <p className="text-sm text-center text-green-700 dark:text-green-400 font-semibold">
-            ✓ Not a booking — just a question to {sitter.name.split(' ')[0]}
-          </p>
-          <div className="flex justify-center gap-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Shield className="w-3 h-3" />
-              No payment info needed
-            </span>
-            <span className="flex items-center gap-1">
-              <CheckCircle className="w-3 h-3" />
-              Cancel anytime
-            </span>
-          </div>
+        {/* Reassurance below CTA */}
+        <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            No payment needed
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            Reply within hours
+          </span>
+          <span className="flex items-center gap-1">
+            <CheckCircle className="w-3 h-3" />
+            Cancel anytime
+          </span>
         </div>
       </CardContent>
     </Card>

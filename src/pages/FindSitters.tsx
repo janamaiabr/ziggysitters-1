@@ -21,6 +21,8 @@ import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import AddPetsPrompt from '@/components/search/AddPetsPrompt';
 import { format } from 'date-fns';
+import { useProfile } from '@/contexts/ProfileContext';
+import { useAuth } from '@/hooks/useAuth';
 
 // No more mock data - using real database profiles
 
@@ -30,6 +32,8 @@ export default function FindSitters() {
   const isMobile = useIsMobile();
   const { trackSearch, trackSitterClick, saveSearchContext } = useSearchTracking();
   const { trackEvent, trackPageView } = useEventTracking();
+  const { user } = useAuth();
+  const { profile } = useProfile();
 
   // Track page view on mount
   useEffect(() => {
@@ -582,6 +586,15 @@ export default function FindSitters() {
           📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
         </p>
       </div>
+      
+      {/* Profile completion banner for new pet owners */}
+      {user && profile?.role === 'pet_owner' && (!profile?.phone || !profile?.address) && (
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-b border-purple-200 dark:border-purple-800 py-3 px-4 text-center">
+          <p className="text-sm text-purple-700 dark:text-purple-300">
+            💡 <button onClick={() => navigate('/profile')} className="underline font-medium hover:text-purple-900 dark:hover:text-purple-100">Complete your profile</button> later for a better experience — browse sitters now!
+          </p>
+        </div>
+      )}
       
       {/* Hero Section with Search - Hide on mobile when results shown */}
       <section className={`relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>

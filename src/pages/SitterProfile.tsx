@@ -350,11 +350,26 @@ export default function SitterProfile() {
                 />
               </div>
               
-              <div className="flex items-center text-muted-foreground mb-4">
+              <div className="flex items-center text-muted-foreground mb-2">
                 <MapPin className="w-4 h-4 mr-1" />
                 {sitterData.location}
               </div>
               
+              {/* Prominent price display */}
+              {sitterData.baseRate && sitterData.baseRate !== Infinity && (
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    From NZ${sitterData.baseRate}/day
+                  </span>
+                  <span className="text-sm text-muted-foreground">• Free to enquire</span>
+                </div>
+              )}
+              
+              {/* Response time indicator */}
+              <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+                <Clock className="w-4 h-4" />
+                <span>Usually responds within 2-4 hours</span>
+              </div>
               
               <div className="flex flex-wrap gap-3">
                 {profile?.role === 'pet_owner' && (

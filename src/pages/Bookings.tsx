@@ -895,6 +895,37 @@ export default function Bookings() {
                           </div>
                         )}
                         
+                        {/* Booking Status Timeline for pet owners */}
+                        {booking.owner_id === profile.id && ['pending', 'awaiting_payment', 'confirmed', 'in_progress'].includes(booking.status) && (
+                          <div className="mt-3 pt-3 border-t border-border">
+                            <div className="flex items-center gap-1 text-xs sm:text-sm flex-wrap">
+                              <span className={`flex items-center gap-1 ${['pending', 'awaiting_payment', 'confirmed', 'in_progress', 'completed'].includes(booking.status) ? 'text-green-600 font-semibold' : 'text-muted-foreground'}`}>
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Request sent
+                              </span>
+                              <span className="text-muted-foreground">→</span>
+                              <span className={`flex items-center gap-1 ${booking.status === 'pending' ? 'text-amber-600 font-semibold' : ['awaiting_payment', 'confirmed', 'in_progress', 'completed'].includes(booking.status) ? 'text-green-600 font-semibold' : 'text-muted-foreground'}`}>
+                                {booking.status === 'pending' ? <Circle className="w-3.5 h-3.5 animate-pulse" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                {booking.status === 'pending' ? '⏳ Awaiting sitter' : 'Sitter accepted'}
+                              </span>
+                              <span className="text-muted-foreground">→</span>
+                              <span className={`flex items-center gap-1 ${booking.status === 'awaiting_payment' ? 'text-amber-600 font-semibold' : ['confirmed', 'in_progress', 'completed'].includes(booking.status) ? 'text-green-600 font-semibold' : 'text-muted-foreground'}`}>
+                                {['confirmed', 'in_progress', 'completed'].includes(booking.status) ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                                Payment
+                              </span>
+                              <span className="text-muted-foreground">→</span>
+                              <span className={`flex items-center gap-1 ${['confirmed', 'in_progress', 'completed'].includes(booking.status) ? 'text-green-600 font-semibold' : 'text-muted-foreground'}`}>
+                                {['confirmed', 'in_progress', 'completed'].includes(booking.status) ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                                Confirmed ✓
+                              </span>
+                            </div>
+                            {booking.status === 'pending' && (
+                              <p className="text-xs text-amber-600 mt-2">
+                                💡 Your sitter typically responds within 2-4 hours. We'll notify you when they respond.
+                              </p>
+                            )}
+                          </div>
+                        )}
+
                         {(booking.owner_notes || booking.sitter_notes) && (
                           <div className="mt-3 p-3 bg-muted rounded-lg">
                             <p className="text-sm">
