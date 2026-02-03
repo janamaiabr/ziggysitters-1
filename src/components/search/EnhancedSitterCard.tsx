@@ -262,7 +262,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
               handleClick();
             }}
           >
-            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : '🐾 Meet This Sitter'}
+            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : '📅 Check Availability'}
             <span className="ml-2">→</span>
           </Button>
           <p className="text-xs text-center text-muted-foreground font-medium">

@@ -6,7 +6,7 @@ const testimonials = [
     location: "Ponsonby, Auckland",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
     rating: 5,
-    text: "My anxious rescue cat Milo was matched with a sitter who specialises in nervous pets. The morning and evening updates showed him settling more each day — by day three he was purring on her lap. We've rebooked three times now!",
+    text: "The daily photo updates were amazing! I was so worried leaving my cat for the first time, but seeing her happy every day made my holiday stress-free. Will definitely use ZiggySitters again!",
     petType: "🐱 Cat owner"
   },
   {
@@ -14,7 +14,7 @@ const testimonials = [
     location: "Grey Lynn, Auckland", 
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
     rating: 5,
-    text: "ZiggySitters matched my two energetic dogs with someone who truly gets high-energy breeds. The meet-and-greet sealed it — the bond was instant. Daily updates tracking their mood and energy gave us total peace of mind.",
+    text: "Found a wonderful sitter for my two dogs. The booking process was so easy, and the sitter sent photos and videos every single day. My dogs were clearly having a blast!",
     petType: "🐕 Dog owner"
   },
   {
@@ -22,7 +22,7 @@ const testimonials = [
     location: "Hamilton",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
     rating: 5,
-    text: "The personality matching is what sets ZiggySitters apart. Our senior rabbit needed gentle, patient care and that's exactly what we got. Watching the bond grow through daily updates was so reassuring. Found our person!",
+    text: "Best pet sitting service in NZ! The accountability guarantee gave me confidence - knowing the sitter's payment depends on sending updates. My bunny was so well cared for.",
     petType: "🐰 Rabbit owner"
   }
 ];
@@ -37,11 +37,11 @@ export default function TestimonialsSection() {
           </span>
           <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Where pets find their person
+              Loved by Pet Parents
             </span>
           </h2>
           <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Real stories of personality matches that just clicked
+            What pet owners are saying about ZiggySitters
           </p>
         </div>
 

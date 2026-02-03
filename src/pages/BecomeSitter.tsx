@@ -9,24 +9,24 @@ import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
 
 const benefits = [
   {
-    icon: Heart,
-    title: 'Matched to your specialty',
-    description: 'We send you pets that match your strengths — anxious rescues, energetic pups, senior cats'
+    icon: DollarSign,
+    title: 'Earn Extra Income',
+    description: 'Set your own rates and earn money doing what you love'
   },
   {
     icon: Calendar,
-    title: 'Build real relationships',
-    description: '78% of owners rebook the same sitter — your clients become your regulars'
+    title: 'Flexible Schedule',
+    description: 'Work when you want, control your availability'
+  },
+  {
+    icon: Heart,
+    title: 'Love for Animals',
+    description: 'Spend time with adorable pets every day'
   },
   {
     icon: Shield,
-    title: 'Daily updates showcase your care',
-    description: 'Morning and evening updates let owners see your expertise in action'
-  },
-  {
-    icon: DollarSign,
-    title: 'Earn what you\'re worth',
-    description: 'Set your own rates and build a reputation that attracts the right clients'
+    title: 'Platform Security',
+    description: 'Safe and secure platform with verified user profiles'
   }
 ];
 
@@ -92,13 +92,13 @@ export default function BecomeSitter() {
               Join Our Community
             </Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-              <span className="block">Work with the pets</span>
+              <span className="block">Turn Your Love</span>
               <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-                you{"'"}re meant for
+                for Pets Into Income
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              You{"'"}re brilliant with specific personalities. We match you only with those pets so you can do your best work.
+              Join thousands of pet sitters earning money while caring for adorable pets in their community
             </p>
             <Button 
               size="lg" 
