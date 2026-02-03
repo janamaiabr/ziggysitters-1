@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon, MessageCircle } from 'lucide-react';
+import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon, MessageCircle, MapPin, ChevronDown } from 'lucide-react';
 import logoSvg from '@/assets/logo.svg';
 import { useState, useEffect } from 'react';
 import NotificationBell from '@/components/notifications/NotificationBell';
@@ -132,6 +132,35 @@ export default function Header() {
           <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Blog
           </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5" />
+                Cities
+                <ChevronDown className="h-3 w-3" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="w-48">
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-auckland')}>
+                🏙️ Auckland
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-wellington')}>
+                🏛️ Wellington
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-christchurch')}>
+                🌿 Christchurch
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hamilton')}>
+                🌊 Hamilton
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-tauranga')}>
+                ☀️ Tauranga
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-dunedin')}>
+                🏔️ Dunedin
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link to="/young-walkers" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
             🐕 Young Walkers
           </Link>
@@ -264,6 +293,16 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
                       </Button>
+                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cities</div>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-auckland')}>
+                        🏙️ Auckland
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-wellington')}>
+                        🏛️ Wellington
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-christchurch')}>
+                        🌿 Christchurch
+                      </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
                         🐕 Young Walkers
                       </Button>
@@ -326,6 +365,16 @@ export default function Header() {
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
+                      </Button>
+                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cities</div>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-auckland')}>
+                        🏙️ Auckland
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-wellington')}>
+                        🏛️ Wellington
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-christchurch')}>
+                        🌿 Christchurch
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
                         🐕 Young Walkers

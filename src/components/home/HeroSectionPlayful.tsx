@@ -105,6 +105,12 @@ const HeroSectionPlayful = ({
                   ID-verified sitters who send you <span className="font-bold text-foreground">daily photos & videos</span> so you never wonder how your pet is doing. <span className="font-semibold text-green-600">Free to browse, no obligation.</span>
                 </p>
 
+                {/* NZ-only positioning badge */}
+                <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5">
+                  <span className="text-base">🇳🇿</span>
+                  <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">New Zealand{"'"}s only dedicated pet sitting platform</span>
+                </div>
+
                 {/* Single Primary CTA - No competing sitter CTA */}
                 <div className="pt-3 space-y-3">
                   <Button 
@@ -114,6 +120,18 @@ const HeroSectionPlayful = ({
                   >
                     🐾 Find a Trusted Sitter Near Me
                   </Button>
+                  {/* Pricing indicator */}
+                  <p className="text-center lg:text-left text-sm font-medium text-foreground/70">
+                    From <span className="text-lg font-bold text-green-600 dark:text-green-400">$35/visit</span> · Overnight from <span className="text-lg font-bold text-green-600 dark:text-green-400">$55/night</span>
+                  </p>
+                  {/* Onboarding flow explanation */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-2 text-sm text-muted-foreground">
+                    <span className="bg-white dark:bg-gray-800 border border-border rounded-full px-3 py-1">Browse verified sitters</span>
+                    <span className="hidden sm:inline self-center">→</span>
+                    <span className="bg-white dark:bg-gray-800 border border-border rounded-full px-3 py-1">Read reviews</span>
+                    <span className="hidden sm:inline self-center">→</span>
+                    <span className="bg-white dark:bg-gray-800 border border-border rounded-full px-3 py-1">Book directly</span>
+                  </div>
                   {/* Trust reassurance right next to CTA */}
                   <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-sm">
                     <span className="text-muted-foreground">✓ Free to browse</span>
