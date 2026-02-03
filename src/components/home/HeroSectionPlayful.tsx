@@ -83,71 +83,63 @@ const HeroSectionPlayful = ({
   };
 
   return (
-    <section className="relative min-h-[85svh] md:min-h-[80vh] flex items-center overflow-hidden bg-background">
+    <section className="relative min-h-[70svh] md:min-h-[80vh] flex items-center overflow-hidden bg-background">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-50/40 via-background to-blue-50/40 dark:from-green-950/10 dark:via-background dark:to-blue-950/10" />
 
-      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-6 md:py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center mb-6 md:mb-12">
+          <div className="grid lg:grid-cols-2 gap-6 md:gap-16 items-center mb-4 md:mb-12">
             {/* Left side - Content */}
-            <div className="space-y-6 md:space-y-8 animate-fade-in text-center lg:text-left">
+            <div className="space-y-4 md:space-y-8 animate-fade-in text-center lg:text-left">
 
               {/* Main Headline - Emotional + Practical */}
-              <div className="space-y-4 md:space-y-5">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
+              <div className="space-y-3 md:space-y-5">
+                <h1 className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
                   <span className="block text-foreground">Find a Verified</span>
                   <span className="block text-gradient-playful py-1">Local Pet Sitter</span>
-                  <span className="block text-foreground text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-2">+ Get Daily Photo Updates</span>
+                  <span className="block text-foreground text-xl sm:text-3xl md:text-4xl lg:text-5xl mt-1 md:mt-2">+ Get Daily Photo Updates</span>
                 </h1>
                 
-                <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  ID-verified sitters who send you <span className="font-bold text-foreground">daily photos & videos</span> so you never wonder how your pet is doing. <span className="font-semibold text-green-600">Free to browse, no obligation.</span>
+                <p className="text-sm md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
+                  ID-verified sitters who send you <span className="font-bold text-foreground">daily photos & videos</span> so you never wonder how your pet is doing.
                 </p>
 
                 {/* NZ-only positioning badge */}
-                <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5">
+                <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-full px-3 py-1.5">
                   <span className="text-base">🇳🇿</span>
-                  <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">New Zealand{"'"}s only dedicated pet sitting platform</span>
+                  <span className="text-xs md:text-sm font-semibold text-emerald-700 dark:text-emerald-300">NZ{"'"}s only dedicated pet sitting platform</span>
                 </div>
 
-                {/* Single Primary CTA - No competing sitter CTA */}
-                <div className="pt-3 space-y-3">
+                {/* Single Primary CTA */}
+                <div className="pt-2 md:pt-3 space-y-2 md:space-y-3">
                   <Button 
                     size="lg" 
-                    className="w-full lg:w-auto text-lg md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-6 md:py-7 px-8 md:px-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl"
+                    className="w-full lg:w-auto text-base md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-5 md:py-7 px-6 md:px-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl min-h-[48px]"
                     onClick={handleCtaClick}
                   >
                     🐾 Find a Trusted Sitter Near Me
                   </Button>
                   {/* Pricing indicator */}
                   <p className="text-center lg:text-left text-sm font-medium text-foreground/70">
-                    From <span className="text-lg font-bold text-green-600 dark:text-green-400">$35/visit</span> · Overnight from <span className="text-lg font-bold text-green-600 dark:text-green-400">$55/night</span>
+                    From <span className="text-base md:text-lg font-bold text-green-600 dark:text-green-400">$35/visit</span> · Overnight from <span className="text-base md:text-lg font-bold text-green-600 dark:text-green-400">$55/night</span>
                   </p>
-                  {/* Onboarding flow explanation */}
-                  <div className="flex flex-wrap justify-center lg:justify-start gap-2 text-sm text-muted-foreground">
-                    <span className="bg-white dark:bg-gray-800 border border-border rounded-full px-3 py-1">Browse verified sitters</span>
-                    <span className="hidden sm:inline self-center">→</span>
-                    <span className="bg-white dark:bg-gray-800 border border-border rounded-full px-3 py-1">Read reviews</span>
-                    <span className="hidden sm:inline self-center">→</span>
-                    <span className="bg-white dark:bg-gray-800 border border-border rounded-full px-3 py-1">Book directly</span>
-                  </div>
-                  {/* Trust reassurance right next to CTA */}
-                  <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-sm">
+                  {/* Trust reassurance - simplified on mobile */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm">
                     <span className="text-muted-foreground">✓ Free to browse</span>
-                    <span className="text-muted-foreground">✓ No payment until sitter accepts</span>
-                    <span className="text-muted-foreground">✓ Meet first, book later</span>
+                    <span className="text-muted-foreground">✓ No payment until confirmed</span>
+                    <span className="text-muted-foreground hidden sm:inline">✓ Meet first, book later</span>
                   </div>
                 </div>
               </div>
 
-              {/* Compact 4-step visual - booking clarity */}
-              <div className="pt-2">
+              {/* Compact 4-step visual - hidden on mobile, shown on tablet+ */}
+              <div className="hidden md:block pt-2">
                 <CompactSteps />
               </div>
 
-              {/* Feature pills */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
+              {/* Feature pills - hidden on mobile */}
+              <div className="hidden md:flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
                   <span>📷</span> Daily Update Promise
                 </div>
@@ -159,8 +151,8 @@ const HeroSectionPlayful = ({
                 </div>
               </div>
 
-              {/* Mobile image - shown only on mobile */}
-              <div className="lg:hidden relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border-4 border-purple-200 dark:border-purple-700">
+              {/* Mobile image - compact on mobile */}
+              <div className="lg:hidden relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-lg border-2 border-purple-200 dark:border-purple-700">
                 <img 
                   src={petServicesImg} 
                   alt="Happy pet with sitter" 
@@ -168,14 +160,14 @@ const HeroSectionPlayful = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-500/30 to-transparent" />
                 {/* Mobile trust badge */}
-                <div className="absolute bottom-3 right-3 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-purple-200 dark:border-purple-700">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
-                      <Shield className="w-4 h-4 text-white" />
+                <div className="absolute bottom-2 right-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-lg px-2.5 py-1.5 shadow-lg border border-purple-200 dark:border-purple-700">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                      <Shield className="w-3 h-3 text-white" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-foreground">Verified ✅</p>
-                      <p className="text-[10px] text-muted-foreground">Background Checked</p>
+                      <p className="text-[10px] font-bold text-foreground">Verified ✅</p>
+                      <p className="text-[9px] text-muted-foreground">Background Checked</p>
                     </div>
                   </div>
                 </div>
@@ -227,23 +219,23 @@ const HeroSectionPlayful = ({
 
           {/* Search Card - Playful Design */}
           <div className="w-full flex justify-center items-center">
-            <div id="search-form" className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-2xl border-2 border-purple-200 dark:border-purple-700 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.3)] transition-all duration-500 w-full max-w-4xl">
-              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-4 md:mb-5 text-center">
+            <div id="search-form" className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl md:rounded-3xl p-3 md:p-6 lg:p-8 shadow-2xl border-2 border-purple-200 dark:border-purple-700 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.3)] transition-all duration-500 w-full max-w-4xl">
+              <h3 className="text-base md:text-xl lg:text-2xl font-bold mb-3 md:mb-5 text-center">
                 <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Find Your Perfect Sitter</span>
                 <span className="ml-2">🔍</span>
               </h3>
               
-              {/* All fields in one row on desktop, stacked on mobile */}
-              <div className="flex flex-col lg:flex-row gap-3">
+              {/* Mobile: simplified 2-field layout. Desktop: full row */}
+              <div className="flex flex-col lg:flex-row gap-2.5 md:gap-3">
                 <SuburbAutocomplete
                   value={location}
                   onChange={setLocation}
                   placeholder="Enter suburb 📍"
-                  className="h-12 border-2 border-purple-200 dark:border-purple-700 focus:border-purple-500 lg:flex-1"
+                  className="h-11 md:h-12 border-2 border-purple-200 dark:border-purple-700 focus:border-purple-500 lg:flex-1"
                 />
                 
                 <Select value={serviceType} onValueChange={setServiceType}>
-                  <SelectTrigger className="h-12 w-full lg:w-[180px] text-base border-2 border-purple-200 dark:border-purple-700">
+                  <SelectTrigger className="h-11 md:h-12 w-full lg:w-[180px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700">
                     <SelectValue placeholder="Service type 🏠" />
                   </SelectTrigger>
                   <SelectContent>
@@ -253,37 +245,40 @@ const HeroSectionPlayful = ({
                   </SelectContent>
                 </Select>
                 
-                <Input 
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="h-12 w-full lg:w-[150px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
-                  min={new Date().toISOString().split('T')[0]}
-                  aria-label="Check-in date"
-                />
-                
-                <Input 
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="h-12 w-full lg:w-[150px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
-                  min={checkIn || new Date().toISOString().split('T')[0]}
-                  aria-label="Check-out date"
-                />
+                {/* Date fields hidden on mobile — shown on tablet+ */}
+                <div className="hidden md:flex gap-3">
+                  <Input 
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    className="h-12 w-full lg:w-[150px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
+                    min={new Date().toISOString().split('T')[0]}
+                    aria-label="Check-in date"
+                  />
+                  
+                  <Input 
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="h-12 w-full lg:w-[150px] text-sm md:text-base border-2 border-purple-200 dark:border-purple-700"
+                    min={checkIn || new Date().toISOString().split('T')[0]}
+                    aria-label="Check-out date"
+                  />
+                </div>
                 
                 <Button 
                   size="lg" 
-                  className="h-12 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-6 whitespace-nowrap bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600"
+                  className="h-11 md:h-12 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-6 whitespace-nowrap bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 min-h-[44px]"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                  View Available Sitters
+                  View Sitters
                   <Sparkles className="ml-2 h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               </div>
               
-              {/* Browse All link - quick access without search */}
-              <p className="text-center mt-4 text-sm text-muted-foreground">
+              {/* Browse All link */}
+              <p className="text-center mt-3 md:mt-4 text-xs md:text-sm text-muted-foreground">
                 or <button onClick={() => {
                   trackSearch({
                     suburb: 'browse_all',
@@ -297,18 +292,17 @@ const HeroSectionPlayful = ({
             </div>
           </div>
 
-          {/* Urgency Indicators */}
-          <div className="mt-6 md:mt-8">
+          {/* Urgency & Social Proof - hidden on mobile to save space */}
+          <div className="hidden md:block mt-6 md:mt-8">
             <UrgencyIndicator location={location} />
           </div>
 
-          {/* Local Social Proof - suburb names, recent bookings */}
-          <div className="mt-6 md:mt-8">
+          <div className="hidden md:block mt-6 md:mt-8">
             <LocalSocialProof />
           </div>
 
-          {/* Urgency nudge */}
-          <div className="text-center mt-4">
+          {/* Urgency nudge - hidden on mobile */}
+          <div className="hidden md:block text-center mt-4">
             <p className="text-sm text-muted-foreground bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-full px-4 py-2 inline-flex items-center gap-2">
               ⏰ <span className="font-medium text-amber-700 dark:text-amber-300">Most owners book within 24 hours</span> of finding their sitter
             </p>

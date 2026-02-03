@@ -29,50 +29,51 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/20 dark:to-gray-900">
+    <section className="py-10 md:py-24 bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/20 dark:to-gray-900">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 md:mb-16">
-          <span className="inline-block px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full text-sm font-medium mb-4">
+        <div className="text-center mb-6 md:mb-16">
+          <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4">
             ⭐ 4.9/5 Average Rating
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               Loved by Pet Parents
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            See what other pet owners are saying about ZiggySitters
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            What pet owners are saying about ZiggySitters
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+        {/* Horizontal scroll on mobile, grid on desktop */}
+        <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto overflow-x-auto pb-4 md:pb-0 -mx-4 px-4 md:mx-auto snap-x snap-mandatory scrollbar-hide">
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-100 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 group"
+              className="relative bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl p-4 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-100 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 group min-w-[280px] md:min-w-0 flex-shrink-0 md:flex-shrink snap-center"
             >
               {/* Quote icon */}
-              <div className="absolute -top-4 -left-2 w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center">
-                <Quote className="w-5 h-5 text-white" />
+              <div className="absolute -top-3 -left-1 md:-top-4 md:-left-2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center">
+                <Quote className="w-4 h-4 md:w-5 md:h-5 text-white" />
               </div>
               
               {/* Stars */}
-              <div className="flex gap-1 mb-4 pt-2">
+              <div className="flex gap-0.5 md:gap-1 mb-3 md:mb-4 pt-2">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="w-4 h-4 md:w-5 md:h-5 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
               
-              {/* Testimonial text */}
-              <p className="text-muted-foreground mb-6 leading-relaxed">
-                "{testimonial.text}"
+              {/* Testimonial text - truncated on mobile */}
+              <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6 leading-relaxed line-clamp-3 md:line-clamp-none">
+                &ldquo;{testimonial.text}&rdquo;
               </p>
               
               {/* Author */}
               <div className="flex items-start gap-3">
                 <div>
-                  <p className="font-semibold text-foreground">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                  <p className="font-semibold text-foreground text-sm md:text-base">{testimonial.name}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">{testimonial.location}</p>
                   <p className="text-xs text-purple-600 dark:text-purple-400">{testimonial.petType}</p>
                 </div>
               </div>
