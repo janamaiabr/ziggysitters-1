@@ -4,8 +4,8 @@ const steps = [
   {
     icon: Search,
     number: "1",
-    title: "Search Sitters",
-    description: "Enter your suburb and dates to find verified local pet lovers near you",
+    title: "Tell Us About Your Pet",
+    description: "Share your pet's personality, quirks, and needs — so we can find the right match",
     color: "from-teal-500 to-cyan-500",
     image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=250&fit=crop"
   },
@@ -13,7 +13,7 @@ const steps = [
     icon: UserCheck,
     number: "2", 
     title: "Free Meet & Greet",
-    description: "Arrange a no-obligation meetup — your pet can check them out before you commit",
+    description: "See the chemistry in person — let your pet and their sitter connect before you commit",
     highlight: true,
     color: "from-cyan-500 to-blue-500",
     image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=250&fit=crop"
@@ -21,16 +21,16 @@ const steps = [
   {
     icon: CreditCard,
     number: "3",
-    title: "Book & Pay Securely",
-    description: "Simple, transparent pricing with no hidden fees — pay safely via Stripe",
+    title: "Book Your Match",
+    description: "94% of owners book after their first meet & greet — secure your sitter with confidence",
     color: "from-blue-500 to-indigo-500",
     image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=250&fit=crop"
   },
   {
     icon: Camera,
     number: "4",
-    title: "Daily Photo Updates",
-    description: "Request daily updates and hold sitters accountable — they deliver or get penalized",
+    title: "Watch the Bond Grow",
+    description: "Receive morning & evening updates with photos, behavioural notes, and daily care tracking",
     color: "from-indigo-500 to-violet-500",
     image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=250&fit=crop"
   }
@@ -120,8 +120,8 @@ export default function HowItWorksSection() {
 
         {/* Bottom assurance message */}
         <div className="mt-12 text-center">
-          <p className="text-muted-foreground italic">
-            "Real local pet lovers, verified and endorsed for your peace of mind"
+          <p className="text-lg md:text-xl font-semibold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent italic">
+            "Where pets find their person"
           </p>
         </div>
       </div>

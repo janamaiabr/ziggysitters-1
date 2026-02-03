@@ -9,24 +9,24 @@ import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
 
 const benefits = [
   {
-    icon: DollarSign,
-    title: 'Earn Extra Income',
-    description: 'Set your own rates and earn money doing what you love'
+    icon: Heart,
+    title: 'Matched to Your Specialty',
+    description: 'Get paired with pets that fit your experience — anxious rescues, energetic pups, senior cats, and more'
   },
   {
     icon: Calendar,
-    title: 'Flexible Schedule',
-    description: 'Work when you want, control your availability'
-  },
-  {
-    icon: Heart,
-    title: 'Love for Animals',
-    description: 'Spend time with adorable pets every day'
+    title: '78% Rebook Rate',
+    description: 'When you\'re matched well, owners come back. Build lasting relationships with your favourite pets'
   },
   {
     icon: Shield,
-    title: 'Platform Security',
-    description: 'Safe and secure platform with verified user profiles'
+    title: 'Daily Updates Showcase Your Care',
+    description: 'Morning and evening reports let owners see the bond you\'re building — earning trust and 5-star reviews'
+  },
+  {
+    icon: DollarSign,
+    title: 'Earn What You\'re Worth',
+    description: 'Set your own rates, grow your reputation, and build a career doing what you love'
   }
 ];
 
@@ -92,13 +92,13 @@ export default function BecomeSitter() {
               Join Our Community
             </Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-              <span className="block">Turn Your Love</span>
+              <span className="block">Work With the Pets</span>
               <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-                for Pets Into Income
+                You{"'"}re Meant For
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Join thousands of pet sitters earning money while caring for adorable pets in their community
+              Get matched to pets that fit your experience and style — build real bonds, not just bookings
             </p>
             <Button 
               size="lg" 

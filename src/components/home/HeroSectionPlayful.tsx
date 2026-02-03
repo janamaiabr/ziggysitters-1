@@ -96,13 +96,12 @@ const HeroSectionPlayful = ({
               {/* Main Headline - Emotional + Practical */}
               <div className="space-y-3 md:space-y-5">
                 <h1 className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                  <span className="block text-foreground">Find a Verified</span>
-                  <span className="block text-gradient-playful py-1">Local Pet Sitter</span>
-                  <span className="block text-foreground text-xl sm:text-3xl md:text-4xl lg:text-5xl mt-1 md:mt-2">+ Get Daily Photo Updates</span>
+                  <span className="block text-foreground">Find a Sitter Who</span>
+                  <span className="block text-gradient-playful py-1">Truly Gets Your Pet</span>
                 </h1>
                 
                 <p className="text-sm md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  ID-verified sitters who send you <span className="font-bold text-foreground">daily photos & videos</span> so you never wonder how your pet is doing.
+                  Whether it's an <span className="font-bold text-foreground">anxious rescue, an energetic pup, or a senior cat</span> — we match your pet with a sitter who understands their unique personality.
                 </p>
 
                 {/* NZ-only positioning badge */}
@@ -120,15 +119,11 @@ const HeroSectionPlayful = ({
                   >
                     🐾 Find a Trusted Sitter Near Me
                   </Button>
-                  {/* Pricing indicator */}
-                  <p className="text-center lg:text-left text-sm font-medium text-foreground/70">
-                    From <span className="text-base md:text-lg font-bold text-green-600 dark:text-green-400">$35/visit</span> · Overnight from <span className="text-base md:text-lg font-bold text-green-600 dark:text-green-400">$55/night</span>
-                  </p>
-                  {/* Trust reassurance - simplified on mobile */}
+                  {/* Trust reassurance */}
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm">
-                    <span className="text-muted-foreground">✓ Free to browse</span>
-                    <span className="text-muted-foreground">✓ No payment until confirmed</span>
-                    <span className="text-muted-foreground hidden sm:inline">✓ Meet first, book later</span>
+                    <span className="text-muted-foreground">✓ Personality-matched</span>
+                    <span className="text-muted-foreground">✓ Meet first, book later</span>
+                    <span className="text-muted-foreground hidden sm:inline">✓ Daily updates guaranteed</span>
                   </div>
                 </div>
               </div>
@@ -141,10 +136,10 @@ const HeroSectionPlayful = ({
               {/* Feature pills - hidden on mobile */}
               <div className="hidden md:flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
-                  <span>📷</span> Daily Update Promise
+                  <span>🌅</span> Morning & Evening Updates
                 </div>
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
-                  <span>🛡️</span> ZiggyCare Guarantee
+                  <span>🐾</span> Personality Matched
                 </div>
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
                   <Heart className="w-4 h-4 text-pink-500 fill-pink-500" /> 5% to SPCA NZ
@@ -221,7 +216,7 @@ const HeroSectionPlayful = ({
           <div className="w-full flex justify-center items-center">
             <div id="search-form" className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl md:rounded-3xl p-3 md:p-6 lg:p-8 shadow-2xl border-2 border-purple-200 dark:border-purple-700 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.3)] transition-all duration-500 w-full max-w-4xl">
               <h3 className="text-base md:text-xl lg:text-2xl font-bold mb-3 md:mb-5 text-center">
-                <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Find Your Perfect Sitter</span>
+                <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Find Your Pet{"'"}s Perfect Match</span>
                 <span className="ml-2">🔍</span>
               </h3>
               
