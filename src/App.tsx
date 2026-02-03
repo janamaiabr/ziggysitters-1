@@ -141,7 +141,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
   
   if (user) {
-    return <Navigate to="/welcome" replace />;
+    // Respect redirect param so users return to where they came from (e.g. sitter profile)
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    return <Navigate to={redirect || "/welcome"} replace />;
   }
   
   return <>{children}</>;

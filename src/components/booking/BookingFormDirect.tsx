@@ -12,6 +12,7 @@ import { format, differenceInHours, differenceInDays } from 'date-fns';
 import { Shield, CheckCircle, Zap, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
+import { ga4 } from '@/lib/ga4';
 interface BookingFormDirectProps {
   sitter: {
     id: string;
@@ -80,6 +81,8 @@ export default function BookingFormDirect({
   
   // Track when form is viewed (for both guests and logged-in users)
   useEffect(() => {
+    // GA4 conversion event: start_booking
+    ga4.startBooking(sitter.id, sitter.name, initialServiceType || serviceType);
     trackAction('booking_form_viewed', {
       sitter_id: sitter.id,
       sitter_name: sitter.name,
@@ -261,6 +264,9 @@ export default function BookingFormDirect({
         throw new Error((data as any).error);
       }
 
+      // GA4 conversion event: complete_booking
+      ga4.completeBooking(sitter.id, sitter.name, serviceType, calculateTotal());
+      
       trackAction('booking_request_sent', {
         sitter_id: sitter.id,
         sitter_name: sitter.name,

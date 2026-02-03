@@ -28,9 +28,10 @@ interface EnhancedSitterCardProps {
   onViewProfile: () => void;
   onSitterClick?: (sitterId: string, sitterName?: string) => void;
   showBookingDates?: boolean;
+  isTopSitter?: boolean;
 }
 
-export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClick, showBookingDates }: EnhancedSitterCardProps) {
+export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClick, showBookingDates, isTopSitter }: EnhancedSitterCardProps) {
   // Calculate trust signals
   const hasProfilePhoto = !!sitter.image;
   const hasMultipleServices = sitter.services.length > 1;
@@ -81,6 +82,11 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         {/* Top badges */}
         <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
           <div className="flex gap-1 flex-wrap">
+            {isTopSitter && !sitter.isYoungWalker && (
+              <Badge className="text-xs shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 animate-pulse">
+                ⭐ Most Popular
+              </Badge>
+            )}
             {sitter.isYoungWalker && (
               <Badge className="text-xs shadow-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0">
                 <Dog className="w-3 h-3 mr-1" />

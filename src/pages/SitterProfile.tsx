@@ -34,6 +34,7 @@ import FloatingEnquiryButton from '@/components/sitter/FloatingEnquiryButton';
 import FAQAccordion from '@/components/sitter/FAQAccordion';
 import PublicAvailabilityCalendar from '@/components/calendar/PublicAvailabilityCalendar';
 import ReviewsList from '@/components/reviews/ReviewsList';
+import { ga4 } from '@/lib/ga4';
 
 interface SitterData {
   id: string;
@@ -147,21 +148,43 @@ export default function SitterProfile() {
         console.log('Fetching sitter with ID:', id);
         
         // Use RPC function for public access (works for anonymous users)
+        let data = null;
+        let goldenBadgeData = null;
+
         const { data: rpcData, error } = await supabase
           .rpc('get_public_sitter_info', { sitter_id: id });
         
-        const data = rpcData?.[0] || null;
+        data = rpcData?.[0] || null;
+
+        // Fallback: if RPC returns no data, try public_sitters view directly
+        // This fixes "Sitter Not Found" when RPC has different filters than search
+        if (!data) {
+          console.log('RPC returned no data, trying public_sitters view fallback');
+          const { data: viewData, error: viewError } = await supabase
+            .from('public_sitters')
+            .select('*')
+            .eq('id', id)
+            .eq('onboarding_completed', true)
+            .maybeSingle();
+          
+          if (viewData && !viewError) {
+            data = viewData;
+            console.log('Found sitter via public_sitters view fallback');
+          }
+        }
         
-        // Try to get golden badge status from public_sitters view
-        const { data: goldenBadgeData } = await supabase
+        // Get golden badge status
+        const { data: goldenBadgeResult } = await supabase
           .from('public_sitters')
           .select('golden_badge_approved')
           .eq('id', id)
           .maybeSingle();
+        
+        goldenBadgeData = goldenBadgeResult;
 
         console.log('Profile fetch result:', { data, error });
 
-        if (error) {
+        if (error && !data) {
           console.error('Error fetching sitter:', error);
           setSitterData(null);
           setLoading(false);
@@ -169,7 +192,7 @@ export default function SitterProfile() {
         }
         
         if (!data) {
-          console.error('Sitter not found - no data returned');
+          console.error('Sitter not found - no data returned from any source');
           setSitterData(null);
           setLoading(false);
           return;
@@ -258,7 +281,10 @@ export default function SitterProfile() {
         console.log('Setting sitter data:', transformedData);
         setSitterData(transformedData);
         
-        // Track profile view event
+        // GA4 conversion event: view_sitter_profile
+        ga4.viewSitterProfile(id, transformedData.display_name, transformedData.location);
+
+        // Track profile view event (Supabase)
         trackEvent({
           eventType: 'page_view',
           eventName: 'sitter_profile_view',
@@ -273,7 +299,7 @@ export default function SitterProfile() {
           }
         });
         
-        // Track view content event
+        // Track view content event (Meta)
         metaPixel.trackViewContent(
           transformedData.display_name,
           'Sitter Profile'
@@ -377,7 +403,10 @@ export default function SitterProfile() {
                     <Button 
                       size="lg"
                       variant="outline"
-                      onClick={() => setIsMessageDialogOpen(true)}
+                      onClick={() => {
+                        ga4.clickMessage(sitterData.id, sitterData.display_name, false);
+                        setIsMessageDialogOpen(true);
+                      }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       💬 Quick Question
@@ -386,6 +415,9 @@ export default function SitterProfile() {
                       size="lg"
                       className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
                       onClick={() => {
+                        // GA4 conversion events
+                        ga4.clickBook(sitterData.id, sitterData.display_name, 'profile_header');
+                        ga4.startBooking(sitterData.id, sitterData.display_name, serviceTypeParam || undefined);
                         // Track booking dialog open
                         trackEvent({
                           eventType: 'booking',
@@ -416,7 +448,10 @@ export default function SitterProfile() {
                     <Button 
                       size="lg"
                       variant="outline"
-                      onClick={() => setIsMessageDialogOpen(true)}
+                      onClick={() => {
+                        ga4.clickMessage(sitterData.id, sitterData.display_name, true);
+                        setIsMessageDialogOpen(true);
+                      }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       💬 Quick Question
@@ -425,6 +460,8 @@ export default function SitterProfile() {
                       size="lg"
                       className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
                       onClick={() => {
+                        // GA4 conversion events
+                        ga4.clickBook(sitterData.id, sitterData.display_name, 'guest_profile_header');
                         // Scroll to availability calendar first (no login required to see it)
                         const calendarSection = document.querySelector('[data-availability-calendar]');
                         if (calendarSection) {

@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Send, MessageCircle, Calendar, HelpCircle, Clock, Home, CheckCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { ga4 } from '@/lib/ga4';
 
 interface GuestEnquiryDialogProps {
   isOpen: boolean;
@@ -136,6 +137,9 @@ export default function GuestEnquiryDialog({
       }
 
       setSuccess(true);
+      
+      // GA4 conversion event
+      ga4.guestEnquiry(recipientId, recipientName);
       
       toast({
         title: 'Enquiry sent! ✨',

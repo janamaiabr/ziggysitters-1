@@ -23,6 +23,7 @@ import AddPetsPrompt from '@/components/search/AddPetsPrompt';
 import { format } from 'date-fns';
 import { useProfile } from '@/contexts/ProfileContext';
 import { useAuth } from '@/hooks/useAuth';
+import { ga4 } from '@/lib/ga4';
 
 // No more mock data - using real database profiles
 
@@ -59,6 +60,8 @@ export default function FindSitters() {
   const [currentFilters, setCurrentFilters] = useState<any>(null);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [nearbySitters, setNearbySitters] = useState<any[]>([]);
+  const SITTERS_PER_PAGE = 20;
+  const [displayLimit, setDisplayLimit] = useState(SITTERS_PER_PAGE);
 
   // Show email capture modal after search with delay
   useEffect(() => {
@@ -186,22 +189,37 @@ export default function FindSitters() {
           };
         });
 
-        // Filter to only show bookable sitters
+        // Filter to only show quality, bookable sitters
+        // Must have: completed onboarding, profile photo, and at least one service
+        // This prevents "Sitter Not Found" errors on profile pages
         const bookableSitters = transformedSitters.filter(sitter => {
-          return sitter.services && sitter.services.length > 0;
+          const hasServices = sitter.services && sitter.services.length > 0;
+          const hasAvatar = !!sitter.image;
+          // onboarding_completed comes from the RPC data
+          const rawSitter = (profilesData || []).find(p => p.id === sitter.id);
+          const hasCompletedOnboarding = rawSitter?.onboarding_completed === true;
+          return hasServices && hasAvatar && hasCompletedOnboarding;
         });
 
         // Combine sitters and young walkers
         const allListings = [...bookableSitters, ...transformedYoungWalkers];
         
-        // Sort sitters: Auckland first, then golden badge
+        // Sort sitters: verified first, golden badge, then Auckland, then by presence of avatar
         const sortedSitters = allListings.sort((a, b) => {
+          // Golden badge (police vet) first
+          if (a.golden_badge && !b.golden_badge) return -1;
+          if (!a.golden_badge && b.golden_badge) return 1;
+          // Verified next
+          if (a.verified && !b.verified) return -1;
+          if (!a.verified && b.verified) return 1;
+          // Auckland sitters prioritized
           const aIsAuckland = (a.city || '').toLowerCase().includes('auckland');
           const bIsAuckland = (b.city || '').toLowerCase().includes('auckland');
           if (aIsAuckland && !bIsAuckland) return -1;
           if (!aIsAuckland && bIsAuckland) return 1;
-          if (a.golden_badge && !b.golden_badge) return -1;
-          if (!a.golden_badge && b.golden_badge) return 1;
+          // Has profile photo
+          if (a.image && !b.image) return -1;
+          if (!a.image && b.image) return 1;
           return 0;
         });
         
@@ -441,6 +459,10 @@ export default function FindSitters() {
     
     setFilteredSitters(filtered);
     setSearchPerformed(true);
+    setDisplayLimit(SITTERS_PER_PAGE); // Reset pagination on new search
+
+    // GA4 conversion event
+    ga4.searchSitters(location, serviceType, filtered.length);
 
     // Track search event with comprehensive data
     trackEvent({
@@ -832,16 +854,31 @@ export default function FindSitters() {
             </div>
           )}
 
-          {/* Sitter Cards Grid - Enhanced */}
+          {/* Sitter Cards Grid - Enhanced with Pagination */}
           {!isLoading && searchPerformed && filteredSitters.length > 0 && (
             <>
+              {/* Urgency banner */}
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-0 text-sm py-1.5 px-3">
+                  📍 {filteredSitters.length} sitter{filteredSitters.length !== 1 ? 's' : ''} available{location ? ` near ${location}` : ''}
+                </Badge>
+                {filteredSitters.length <= 5 && filteredSitters.length > 0 && (
+                  <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-0 text-sm py-1.5 px-3 animate-pulse">
+                    🔥 Only {filteredSitters.length} available — book early!
+                  </Badge>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {filteredSitters.map((sitter) => (
+                {filteredSitters.slice(0, displayLimit).map((sitter, index) => (
                   <EnhancedSitterCard
                     key={sitter.id}
                     sitter={sitter}
                     onSitterClick={trackSitterClick}
+                    isTopSitter={index === 0}
                     onViewProfile={() => {
+                      // GA4 conversion event
+                      ga4.clickSitterCard(sitter.id, sitter.name, index);
                       if (sitter.isYoungWalker) {
                         navigate(`/book-young-walker/${sitter.id}`);
                       } else {
@@ -856,6 +893,20 @@ export default function FindSitters() {
                 ))}
               </div>
               
+              {/* Load More button */}
+              {filteredSitters.length > displayLimit && (
+                <div className="text-center mt-8">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => setDisplayLimit(prev => prev + SITTERS_PER_PAGE)}
+                    className="px-8"
+                  >
+                    Load More Sitters ({filteredSitters.length - displayLimit} remaining)
+                  </Button>
+                </div>
+              )}
+              
               {/* Show nearby sitters as additional options */}
               {nearbySitters.length > 0 && (
                 <div className="mt-10">
@@ -863,12 +914,13 @@ export default function FindSitters() {
                     More sitters you might like
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {nearbySitters.slice(0, 3).map((sitter) => (
+                    {nearbySitters.slice(0, 3).map((sitter, index) => (
                       <EnhancedSitterCard
                         key={sitter.id}
                         sitter={sitter}
                         onSitterClick={trackSitterClick}
                         onViewProfile={() => {
+                          ga4.clickSitterCard(sitter.id, sitter.name, index + displayLimit);
                           if (sitter.isYoungWalker) {
                             navigate(`/book-young-walker/${sitter.id}`);
                           } else {
@@ -920,25 +972,32 @@ export default function FindSitters() {
             />
           )}
 
-          {/* Default State - Show All Sitters */}
+          {/* Default State - Show Top Sitters */}
           {!isLoading && !searchPerformed && allSitters.length > 0 && (
             <div>
               <div className="mb-6 md:mb-8">
-                <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
-                  All Available Pet Sitters
-                </h2>
+                <div className="flex flex-wrap items-center gap-3 mb-2">
+                  <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+                    Available Pet Sitters
+                  </h2>
+                  <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-0">
+                    {allSitters.length} sitters
+                  </Badge>
+                </div>
                 <p className="text-gray-600">
                   Browse our verified pet sitters or use the search above to find specific services
                 </p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {allSitters.slice(0, 6).map((sitter) => (
+                {allSitters.slice(0, displayLimit).map((sitter, index) => (
                   <EnhancedSitterCard
                     key={sitter.id}
                     sitter={sitter}
                     onSitterClick={trackSitterClick}
+                    isTopSitter={index === 0}
                     onViewProfile={() => {
+                      ga4.clickSitterCard(sitter.id, sitter.name, index);
                       if (sitter.isYoungWalker) {
                         navigate(`/book-young-walker/${sitter.id}`);
                       } else {
@@ -953,16 +1012,15 @@ export default function FindSitters() {
                 ))}
               </div>
               
-              {allSitters.length > 6 && (
+              {allSitters.length > displayLimit && (
                 <div className="text-center mt-8">
                   <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setFilteredSitters(allSitters);
-                      setSearchPerformed(true);
-                    }}
+                    variant="outline"
+                    size="lg"
+                    onClick={() => setDisplayLimit(prev => prev + SITTERS_PER_PAGE)}
+                    className="px-8"
                   >
-                    View All {allSitters.length} Sitters
+                    Load More Sitters ({allSitters.length - displayLimit} remaining)
                   </Button>
                 </div>
               )}
