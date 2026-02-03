@@ -53,14 +53,14 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
       className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-border/50 hover:border-primary/30 cursor-pointer"
       onClick={handleClick}
     >
-      {/* Image Section with Overlays */}
+      {/* Image Section with Overlays - Uses aspect ratio that shows faces better */}
       <div className="relative">
-        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+        <div className="aspect-[3/4] sm:aspect-[4/5] bg-muted relative overflow-hidden">
           {sitter.image ? (
             <img 
               src={sitter.image} 
               alt={`${sitter.name}'s profile`}
-              className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
