@@ -894,6 +894,151 @@ export const blogPosts: BlogPostData[] = [
 <p class="mb-0 font-medium"><a href="/become-sitter" class="text-primary underline">Become an In-Home Sitter →</a></p>
 </div>`
   }
+,
+  // --- Batch 6: 6 February 2026 ---
+  {
+    slug: 'christchurch-pet-sitting-guide-2026',
+    title: 'Pet Sitting in Christchurch: Complete Guide for Canterbury Pet Owners (2026)',
+    excerpt: 'Everything you need to know about pet sitting in Christchurch. Find trusted local sitters, understand costs, and discover the best pet care in the Garden City.',
+    date: '2026-02-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=630&fit=crop',
+    readTime: '11 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'Complete guide to pet sitting in Christchurch 2026. Find trusted local sitters, understand costs, and get the best pet care in Canterbury.',
+    keywords: ['pet sitting christchurch', 'christchurch pet sitter', 'dog sitting christchurch', 'cat sitting christchurch nz', 'pet care canterbury'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Christchurch, New Zealand\'s largest South Island city, is home to a thriving pet-loving community. Known as the Garden City, Christchurch offers an exceptional environment for pets with its flat terrain, abundant parks, and pet-friendly culture. This comprehensive guide covers everything Christchurch pet owners need to know about professional pet sitting services in 2026.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Why Christchurch Is Perfect for Pets</h2>
+<p class="mb-6">Christchurch\'s flat geography makes it ideal for dog walking and outdoor pet activities. Unlike Wellington\'s hills or Auckland\'s sprawl, Christchurch offers easy access to parks, beaches, and walking trails from virtually every suburb. Hagley Park alone offers 165 hectares of green space perfect for dogs of all sizes and energy levels.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Costs in Christchurch (2026)</h2>
+<p class="mb-6">Christchurch pet sitting rates are generally more affordable than Auckland or Wellington. Overnight pet sitting typically ranges from $50 to $70 per night, while drop-in visits cost between $25 and $40 depending on duration and services required.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Best Christchurch Suburbs for Pet Services</h2>
+<p class="mb-6">Inner suburbs like Merivale, Fendalton, and St Albans offer the highest concentration of professional pet sitters. Growing suburbs like Halswell, Lincoln, and Rolleston are seeing increasing demand for pet sitting services as young families move into new housing developments.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Find Christchurch Pet Sitters</h3>
+<p class="mb-4">ZiggySitters connects Christchurch pet owners with verified, local sitters who understand Canterbury\'s unique environment.</p>
+<p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Browse Christchurch Sitters</a></p>
+</div>`
+  },
+  {
+    slug: 'puppy-sitting-young-dog-care-nz',
+    title: 'Puppy Sitting in New Zealand: Essential Guide to Young Dog Care',
+    excerpt: 'Everything you need to know about finding the right sitter for your puppy. Special requirements, training consistency, and what to look for.',
+    date: '2026-02-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'Complete guide to puppy sitting in NZ. Find sitters experienced with young dogs, maintain training consistency.',
+    keywords: ['puppy sitting nz', 'puppy sitter new zealand', 'young dog care', 'puppy care while away'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Puppies require specialised care that differs significantly from adult dog sitting. Their boundless energy, training needs, and developmental requirements mean not every pet sitter is equipped to provide appropriate care for young dogs.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Why Puppies Need Specialised Sitters</h2>
+<p class="mb-6">Puppies under 12 months have fundamentally different needs than adult dogs. They require more frequent meals and cannot hold their bladders for extended periods. A puppy under four months may need toilet breaks every two to three hours, including during the night.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Finding Puppy-Experienced Sitters</h2>
+<p class="mb-6">When searching for a puppy sitter, experience is paramount. Look for sitters who specifically mention puppy experience in their profiles and can describe their approach to young dog care.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Maintaining Training Consistency</h2>
+<p class="mb-6">Training consistency is perhaps the most critical aspect of puppy sitting. Before leaving your puppy, provide detailed written instructions covering all commands, hand signals, and training protocols you use.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Find Puppy-Experienced Sitters</h3>
+<p class="mb-4">ZiggySitters helps you find sitters who specialise in young dog care and understand the unique needs of puppies.</p>
+<p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Browse Puppy Sitters</a></p>
+</div>`
+  },
+  {
+    slug: 'pet-sitting-anxious-nervous-dogs-nz',
+    title: 'Pet Sitting for Anxious Dogs: How to Find the Right Sitter in NZ',
+    excerpt: 'Nervous dogs need special care when their owners travel. Learn how to find sitters experienced with anxious dogs.',
+    date: '2026-02-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?w=1200&h=630&fit=crop',
+    readTime: '12 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'Guide to pet sitting for anxious and nervous dogs in NZ. Find experienced sitters and prepare your dog.',
+    keywords: ['anxious dog sitting nz', 'nervous dog pet sitter', 'dog anxiety pet care', 'separation anxiety dog sitting'],
+    content: `<p class="text-lg text-muted-foreground mb-8">For owners of anxious dogs, leaving their pet in someone else\'s care can feel overwhelming. Will the sitter understand their dog\'s triggers? Can they manage anxiety-related behaviours?</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Understanding Canine Anxiety</h2>
+<p class="mb-6">Dog anxiety manifests in various ways, from obvious signs like trembling and whining to subtle behaviours like lip licking, yawning, and avoiding eye contact. Common anxiety types include separation anxiety, noise phobia, social anxiety around strangers or other dogs, and generalised anxiety.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Finding Anxiety-Experienced Sitters</h2>
+<p class="mb-6">Not every pet sitter has the patience, understanding, or skills to work with anxious dogs. Look for sitters who specifically mention experience with nervous or reactive dogs in their profiles.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">In-Home Sitting vs Other Options</h2>
+<p class="mb-6">For most anxious dogs, in-home pet sitting in their own environment is far less stressful than boarding or staying at a sitter\'s house. Familiar surroundings, smells, and routines provide crucial comfort for nervous dogs.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Find Sitters for Anxious Dogs</h3>
+<p class="mb-4">ZiggySitters helps you find patient, experienced sitters who understand anxious dogs.</p>
+<p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Browse Experienced Sitters</a></p>
+</div>`
+  },
+  {
+    slug: 'hamilton-pet-sitting-guide-2026',
+    title: 'Pet Sitting in Hamilton: Complete Guide for Waikato Pet Owners (2026)',
+    excerpt: 'Your complete guide to pet sitting in Hamilton and the Waikato region. Find trusted local sitters and understand costs.',
+    date: '2026-02-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'Pet Care Tips',
+    metaDescription: 'Complete guide to pet sitting in Hamilton and Waikato 2026. Find trusted local sitters and costs.',
+    keywords: ['pet sitting hamilton', 'hamilton pet sitter', 'dog sitting hamilton nz', 'cat sitting waikato', 'pet care hamilton'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Hamilton, the heart of the Waikato, combines urban convenience with easy access to stunning natural environments. New Zealand\'s fourth-largest city has a thriving pet community.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Hamilton\'s Pet-Friendly Environment</h2>
+<p class="mb-6">Hamilton offers exceptional conditions for pet ownership. The mighty Waikato River provides kilometres of scenic walking trails through the heart of the city, while numerous parks and reserves offer off-leash areas.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Costs in Hamilton (2026)</h2>
+<p class="mb-6">Hamilton pet sitting rates reflect the region\'s moderate cost of living. Overnight pet sitting typically ranges from $45 to $65 per night, making it more affordable than Auckland while maintaining high service standards.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Hamilton\'s Best Dog Walking Spots</h2>
+<p class="mb-6">The Waikato River trails are Hamilton\'s crown jewel for dog walking. Hamilton Lake Domain offers a popular 3.8-kilometre walking circuit with designated off-leash areas.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Find Hamilton Pet Sitters</h3>
+<p class="mb-4">ZiggySitters connects Waikato pet owners with trusted, local sitters who understand the region.</p>
+<p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Browse Hamilton Sitters</a></p>
+</div>`
+  },
+  {
+    slug: 'north-shore-auckland-pet-sitting-guide',
+    title: 'Pet Sitting on Auckland\'s North Shore: Local Guide for Pet Owners',
+    excerpt: 'Complete guide to finding pet sitters on Auckland\'s North Shore. From Takapuna to Albany, discover local options.',
+    date: '2026-02-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=1200&h=630&fit=crop',
+    readTime: '11 min read',
+    tag: 'Auckland Guide',
+    metaDescription: 'Find trusted pet sitters on Auckland North Shore. Local guide covering Takapuna, Devonport, Albany, Browns Bay.',
+    keywords: ['pet sitting north shore auckland', 'north shore dog sitter', 'takapuna pet sitting', 'devonport pet sitter', 'albany pet care'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Auckland\'s North Shore offers an exceptional environment for pets, with beautiful beaches, extensive reserves, and a community that truly values animal welfare.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Why the North Shore Is Great for Pets</h2>
+<p class="mb-6">The North Shore combines urban convenience with natural beauty in ways that benefit both pets and their sitters. Beaches like Takapuna, Milford, and Long Bay provide exceptional exercise and swimming opportunities for dogs.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting by North Shore Suburb</h2>
+<p class="mb-6"><strong>Devonport and Bayswater:</strong> These character suburbs offer experienced sitters who often have smaller properties but excellent local knowledge.</p>
+<p class="mb-6"><strong>Takapuna and Milford:</strong> The commercial heart of the North Shore, these suburbs offer good availability of pet sitters and excellent beach access.</p>
+<p class="mb-6"><strong>Browns Bay to Long Bay:</strong> The East Coast Bays suburbs combine beach lifestyle with suburban space.</p>
+<p class="mb-6"><strong>Albany and Rosedale:</strong> Auckland\'s fastest-growing area has created strong demand for pet sitting services.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">North Shore Pet Sitting Costs (2026)</h2>
+<p class="mb-6">North Shore pet sitting rates tend to be slightly higher than Auckland\'s average. Overnight stays typically range from $60 to $85 per night.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Find North Shore Pet Sitters</h3>
+<p class="mb-4">ZiggySitters connects North Shore pet owners with verified local sitters who know and love the area.</p>
+<p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Browse North Shore Sitters</a></p>
+</div>`
+  }
 ];
 
 // Get all posts including pet care tips
