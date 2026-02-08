@@ -3,7 +3,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight } from 'lucide-react';
-import { getAllPosts } from '@/data/blogPosts';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 // Fallback images for posts without uploaded images
 const fallbackImages: Record<string, string> = {
@@ -12,7 +12,15 @@ const fallbackImages: Record<string, string> = {
 };
 
 export default function Blog() {
-  const blogPosts = getAllPosts();
+  const { posts: blogPosts, loading } = useBlogPosts();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Loading articles...</p>
+      </div>
+    );
+  }
   
   const structuredData = {
     "@context": "https://schema.org",

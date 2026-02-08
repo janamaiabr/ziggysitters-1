@@ -3,7 +3,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Calendar, User, ArrowRight } from 'lucide-react';
-import { getPostBySlug, getAllPosts } from '@/data/blogPosts';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 // Legacy content for original posts (keeping JSX format)
 const legacyContent: Record<string, JSX.Element> = {
@@ -104,13 +104,21 @@ const fallbackImages: Record<string, string> = {
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
+  const { posts: allPosts, loading, getPostBySlug } = useBlogPosts();
   const post = slug ? getPostBySlug(slug) : null;
-  const allPosts = getAllPosts();
   
   // Get related posts (same tag, excluding current)
   const relatedPosts = post 
     ? allPosts.filter(p => p.tag === post.tag && p.slug !== post.slug).slice(0, 2)
     : [];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
