@@ -146,7 +146,7 @@ export default function SitterPortfolio({
                   {uploading ? 'Uploading...' : 'Upload photos'}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Show pet owners examples of your care
+                  📸 Photos showing your face convert 5x better — smile!
                 </p>
               </div>
               <input
@@ -214,9 +214,9 @@ export default function SitterPortfolio({
                 : 'No portfolio photos yet'
               }
             </p>
-            {isOwnProfile && (
+             {isOwnProfile && (
               <p className="text-xs mt-1">
-                Profiles with 3+ photos get 5x more enquiries
+                Profiles with 3+ face photos get 5x more enquiries
               </p>
             )}
           </div>
