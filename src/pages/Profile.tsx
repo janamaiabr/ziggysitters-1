@@ -26,6 +26,7 @@ import { SitterStatusBadge } from '@/components/onboarding/SitterStatusBadge';
 import SitterPayouts from '@/components/SitterPayouts';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import SitterDashboard from '@/components/sitter/SitterDashboard';
+import SitterOnboardingTour from '@/components/onboarding/SitterOnboardingTour';
 import CompleteProfileBanner from '@/components/sitter/CompleteProfileBanner';
 import ProfileCompletionCard from '@/components/sitter/ProfileCompletionCard';
 import { useConfetti } from '@/hooks/useConfetti';
@@ -1096,11 +1097,11 @@ export default function Profile() {
           )}
           
           {/* Profile Header Card */}
-          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
+          <Card data-tour="sitter-profile" className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
             <CardContent className="p-6 md:p-8">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                 {/* Avatar with upload */}
-                <div className="relative group">
+                <div className="relative group" data-tour="sitter-photo">
                   <Avatar className="h-24 w-24 md:h-28 md:w-28 ring-4 ring-background shadow-xl">
                     <AvatarImage 
                       src={userProfile.avatar} 
@@ -1222,7 +1223,7 @@ export default function Profile() {
             )}
             {profile.role === 'pet_sitter' && (
               <>
-                <TabsTrigger value="services" className="text-xs sm:text-sm">Services</TabsTrigger>
+                <TabsTrigger value="services" data-tour="sitter-availability" className="text-xs sm:text-sm">Services</TabsTrigger>
                 <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar</TabsTrigger>
                 <TabsTrigger value="sitter-reports" className="text-xs sm:text-sm">Reports</TabsTrigger>
               </>
@@ -2215,6 +2216,9 @@ export default function Profile() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Sitter onboarding tour */}
+      {profile?.role === 'sitter' && <SitterOnboardingTour />}
     </div>
   );
 }

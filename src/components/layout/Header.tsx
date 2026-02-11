@@ -123,7 +123,7 @@ export default function Header() {
           <Link to="/find-sitters" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Find Sitters
           </Link>
-          <Link to="/become-sitter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
+          <Link to="/become-sitter" data-tour="become-sitter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
             Become a Sitter
           </Link>
           <Link to="/how-it-works" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">

@@ -25,6 +25,7 @@ import TrustSignalsSection from '@/components/home/TrustSignalsSection';
 import ExitIntentPopup from '@/components/home/ExitIntentPopup';
 import GeoLocationBanner from '@/components/home/GeoLocationBanner';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
+import OnboardingTour from '@/components/onboarding/OnboardingTour';
 import { useProfile } from '@/contexts/ProfileContext';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 
@@ -635,6 +636,17 @@ const Index = () => {
 
       {/* Exit Intent Popup */}
       <ExitIntentPopup />
+
+      {/* Onboarding Tour for new visitors */}
+      {!user && (
+        <OnboardingTour
+          steps={[
+            { target: '[data-tour="find-sitter"]', title: 'Find a Trusted Sitter', description: 'Browse verified sitters in your area with reviews and daily photo updates.', placement: 'bottom' },
+            { target: '[data-tour="become-sitter"]', title: 'Become a Sitter', description: 'Love animals? Earn money as a pet sitter — set your own hours and rates!', placement: 'bottom' },
+          ]}
+          storageKey="ziggy_visitor_tour_complete"
+        />
+      )}
     </>
   );
 };

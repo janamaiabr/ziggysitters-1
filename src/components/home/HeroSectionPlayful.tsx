@@ -114,6 +114,7 @@ const HeroSectionPlayful = ({
                 <div className="pt-2 md:pt-3 space-y-2 md:space-y-3">
                   <Button 
                     size="lg" 
+                    data-tour="find-sitter"
                     className="w-full lg:w-auto text-base md:text-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 py-5 md:py-7 px-6 md:px-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl min-h-[48px]"
                     onClick={handleCtaClick}
                   >
