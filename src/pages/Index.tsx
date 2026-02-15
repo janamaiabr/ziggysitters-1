@@ -26,6 +26,7 @@ import ExitIntentPopup from '@/components/home/ExitIntentPopup';
 import GeoLocationBanner from '@/components/home/GeoLocationBanner';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import OnboardingTour from '@/components/onboarding/OnboardingTour';
+import EasterBanner from '@/components/home/EasterBanner';
 import { useProfile } from '@/contexts/ProfileContext';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 
@@ -188,6 +189,9 @@ const Index = () => {
         canonical="/"
         structuredData={structuredData}
       />
+      {/* Easter Campaign Banner */}
+      <EasterBanner />
+
       <div className="bg-gradient-to-b from-background to-accent/20">
       {/* Geo-aware location banner for international visitors */}
       <GeoLocationBanner />

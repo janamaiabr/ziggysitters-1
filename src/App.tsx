@@ -100,6 +100,8 @@ import PetSittingChristchurch from "./pages/PetSittingChristchurch";
 import PetSittingHamilton from "./pages/PetSittingHamilton";
 import PetSittingTauranga from "./pages/PetSittingTauranga";
 import PetSittingDunedin from "./pages/PetSittingDunedin";
+import Referral from "./pages/Referral";
+import Guarantee from "./pages/Guarantee";
 import OurSitters from "./pages/OurSitters";
 import PetCareTips from "./pages/PetCareTips";
 
@@ -306,6 +308,8 @@ function AppContent() {
             <Route path="/pet-sitting-hamilton" element={<PetSittingHamilton />} />
             <Route path="/pet-sitting-tauranga" element={<PetSittingTauranga />} />
             <Route path="/pet-sitting-dunedin" element={<PetSittingDunedin />} />
+            <Route path="/referral" element={<Referral />} />
+            <Route path="/guarantee" element={<Guarantee />} />
             <Route path="/our-sitters" element={<OurSitters />} />
             <Route path="/pet-care-tips" element={<PetCareTips />} />
             <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
