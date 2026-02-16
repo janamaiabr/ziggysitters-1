@@ -43,15 +43,12 @@ function gen(post) {
   <style>body{font-family:system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}h1{font-size:2rem;margin-bottom:1rem}p{margin-bottom:1rem;color:#444}</style>
 </head>
 <body>
-  <script>window.location.replace('/blog/' + '${post.slug}');</script>
-  <noscript>
-    <article>
-      <h1>${post.title}</h1>
-      <p><em>${post.date || ''} · ${post.readTime || ''} · ${post.author || SITE.name}</em></p>
-      <p>${stripHtml(post.content || '')}...</p>
-      <p><a href="${url}">Read full article at ${SITE.name}</a></p>
-    </article>
-  </noscript>
+  <article>
+    <h1>${post.title}</h1>
+    <p><em>${post.date || ''} · ${post.readTime || ''} · ${post.author || SITE.name}</em></p>
+    <div>${post.content || ''}</div>
+    <p style="margin-top:2rem;text-align:center"><a href="${url}" style="display:inline-block;padding:0.75rem 1.5rem;background:#2563eb;color:#fff;text-decoration:none;border-radius:0.5rem">Read on our site →</a></p>
+  </article>
 </body>
 </html>`;
 }
