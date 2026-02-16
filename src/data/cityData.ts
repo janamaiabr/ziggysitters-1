@@ -104,6 +104,110 @@ export const cities: CityData[] = [
     metaDescription: "Find trusted pet sitters on the Sunshine Coast, QLD. Local, vetted sitters for dogs, cats and all pets. Daily photo updates. Book your Sunshine Coast pet sitter today!",
     metaKeywords: "pet sitting sunshine coast, dog sitter sunshine coast, cat sitter sunshine coast, pet care sunshine coast qld, pet sitter near me sunshine coast"
   }
+  {
+    slug: "napier",
+    name: "Napier",
+    maoriName: "Ahuriri",
+    heroDescription: "The Art Deco Capital of the world is also a wonderful place for pets. With warm Hawke's Bay sunshine, coastal walks, and a relaxed seaside lifestyle, Napier pet owners enjoy a vibrant community of trusted local sitters.",
+    neighborhoods: ["Ahuriri", "Bluff Hill", "Marewa", "Taradale", "Greenmeadows", "Westshore", "Hospital Hill", "Napier South", "Maraenui", "Bay View"],
+    parks: ["Marine Parade", "Bluff Hill Domain", "Park Island", "Anderson Park", "Centennial Gardens", "Ahuriri Estuary Walk"],
+    vetInfo: "Napier has reliable veterinary services including Napier Veterinary Centre and Hawke's Bay Veterinary Emergency services for after-hours urgent care.",
+    localContext: "Napier pets thrive in the warm, dry Hawke's Bay climate with stunning coastal walks along Marine Parade and the Ahuriri estuary. Our local sitters know the best dog-friendly beaches, understand the summer heat precautions, and are familiar with the relaxed Art Deco city lifestyle that makes Napier special for pet families.",
+    metaTitle: "Pet Sitting in Napier — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Napier, NZ. Local, vetted, 100% NZ-based sitters in Hawke's Bay. Daily photo updates. Book your Napier pet sitter today!",
+    metaKeywords: "pet sitting napier, dog sitter napier, cat sitter napier, pet care napier, house sitting napier, pet sitter near me napier"
+  },
+  {
+    slug: "nelson",
+    name: "Nelson",
+    maoriName: "Whakatū",
+    heroDescription: "New Zealand's sunniest city is a pet lover's dream. Nestled between golden beaches and lush national parks, Nelson offers an outdoor lifestyle that pets and their owners adore.",
+    neighborhoods: ["The Wood", "Stoke", "Tahunanui", "Atawhai", "Richmond", "Enner Glynn", "Maitai", "Tōtaranui", "Britannia Heights", "Monaco"],
+    parks: ["Tahunanui Beach Reserve", "Miyazu Gardens", "Maitai Valley Walk", "Grampians Reserve", "Isel Park", "Queens Gardens"],
+    vetInfo: "Nelson is well served by veterinary clinics including Nelson Veterinary Centre and after-hours emergency services available through the Tasman region.",
+    localContext: "Nelson pets enjoy the most sunshine hours in NZ with beautiful beaches at Tahunanui and bush walks in the Maitai Valley. Our local sitters understand the region's mild climate, know the best off-leash areas, and appreciate the creative, outdoorsy community that defines Nelson living.",
+    metaTitle: "Pet Sitting in Nelson — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Nelson, NZ. Local, vetted, 100% NZ-based sitters in NZ's sunniest city. Daily photo updates. Book your Nelson pet sitter today!",
+    metaKeywords: "pet sitting nelson, dog sitter nelson, cat sitter nelson nz, pet care nelson, house sitting nelson nz, pet sitter near me nelson"
+  },
+  {
+    slug: "new-plymouth",
+    name: "New Plymouth",
+    maoriName: "Ngāmotu",
+    heroDescription: "Taranaki's coastal gem offers pets an incredible lifestyle with stunning mountain views and beautiful walkways. From the Coastal Walkway to the slopes of Mount Taranaki, New Plymouth is a paradise for active pets and their families.",
+    neighborhoods: ["Fitzroy", "Merrilands", "Vogeltown", "Westown", "Brooklands", "Bell Block", "Strandon", "Welbourn", "Moturoa", "Highlands Park"],
+    parks: ["Coastal Walkway", "Pukekura Park", "Brooklands Park", "East End Reserve", "Kawaroa Park", "Fitzroy Beach"],
+    vetInfo: "New Plymouth has excellent veterinary care including Taranaki Veterinary Centre and emergency after-hours services available for urgent pet care needs.",
+    localContext: "New Plymouth pets love the iconic Coastal Walkway — one of NZ's best urban walks. Our local sitters know the Taranaki weather patterns, from mountain mist to sunny coast days, understand the best dog-friendly beaches, and are part of the tight-knit Taranaki pet community.",
+    metaTitle: "Pet Sitting in New Plymouth — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in New Plymouth, NZ. Local, vetted, 100% NZ-based sitters in Taranaki. Daily photo updates. Book your New Plymouth pet sitter today!",
+    metaKeywords: "pet sitting new plymouth, dog sitter new plymouth, cat sitter new plymouth, pet care new plymouth, house sitting new plymouth, pet sitter near me new plymouth"
+  },
+  {
+    slug: "palmerston-north",
+    name: "Palmerston North",
+    maoriName: "Te Papa-i-oea",
+    heroDescription: "The student city with a big heart for pets. Home to Massey University's renowned veterinary school, Palmerston North has one of NZ's most pet-savvy communities and plenty of green spaces for furry friends.",
+    neighborhoods: ["Hokowhitu", "Terrace End", "Kelvin Grove", "Awapuni", "Milson", "Highbury", "Roslyn", "Fitzherbert", "Takaro", "Cloverlea"],
+    parks: ["Victoria Esplanade", "Lido Aquatic Centre Gardens", "Bledisloe Park", "Ahimate Park", "Memorial Park", "Manawatū River Walkway"],
+    vetInfo: "Palmerston North is home to Massey University Veterinary Teaching Hospital — one of the best in the Southern Hemisphere — plus numerous local clinics and 24/7 emergency care.",
+    localContext: "Palmerston North is uniquely pet-friendly thanks to Massey University's vet school creating a community that truly understands animal care. Our local sitters benefit from this expertise, know the beautiful Manawatū River trails, and understand the region's variable weather from windy days to calm riverside walks.",
+    metaTitle: "Pet Sitting in Palmerston North — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Palmerston North, NZ. Local, vetted, 100% NZ-based sitters in the Manawatū. Daily photo updates. Book your Palmy pet sitter today!",
+    metaKeywords: "pet sitting palmerston north, dog sitter palmerston north, cat sitter palmerston north, pet care palmerston north, house sitting palmerston north, pet sitter near me palmerston north"
+  },
+  {
+    slug: "queenstown",
+    name: "Queenstown",
+    maoriName: "Tāhuna",
+    heroDescription: "The adventure capital of the world is also home to pet owners who love the great outdoors. Surrounded by mountains, lakes, and trails, Queenstown pets live an extraordinary alpine lifestyle.",
+    neighborhoods: ["Frankton", "Kelvin Heights", "Arthurs Point", "Sunshine Bay", "Fernhill", "Queenstown Hill", "Lake Hayes Estate", "Jacks Point", "Shotover Country", "Arrowtown"],
+    parks: ["Queenstown Gardens", "Frankton Arm Walk", "Ben Lomond Track", "Lake Hayes Walk", "Queenstown Trail", "Arrowtown Bush Creek"],
+    vetInfo: "Queenstown has reliable veterinary services including Queenstown Vet Centre and Remarkables Vet Centre, with emergency services available in the wider Otago region.",
+    localContext: "Queenstown pets enjoy an unparalleled mountain and lakeside lifestyle. Our local sitters understand the alpine climate with cold winters and warm summers, know the best walking trails around Lake Wakatipu, and are experienced with both resident pets and those visiting with travelling families.",
+    metaTitle: "Pet Sitting in Queenstown — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Queenstown, NZ. Local, vetted, 100% NZ-based sitters in the adventure capital. Daily photo updates. Book your Queenstown pet sitter today!",
+    metaKeywords: "pet sitting queenstown, dog sitter queenstown, cat sitter queenstown, pet care queenstown, house sitting queenstown, pet sitter near me queenstown"
+  },
+  {
+    slug: "rotorua",
+    name: "Rotorua",
+    maoriName: "Te Rotorua-nui-a-Kahumatamomoe",
+    heroDescription: "The geothermal heart of New Zealand offers pets a unique living experience. With beautiful lakes, ancient forests, and a strong Māori cultural heritage, Rotorua is a special place for pet-loving families.",
+    neighborhoods: ["Ōhinemutu", "Kuirau", "Glenholme", "Fenton Park", "Lynmore", "Ngongotahā", "Holdens Bay", "Kawaha Point", "Western Heights", "Fairy Springs"],
+    parks: ["Kuirau Park", "Government Gardens", "Redwoods Whakarewarewa Forest", "Lake Rotorua Walkway", "Sulphur Point", "Tikitapu (Blue Lake)"],
+    vetInfo: "Rotorua is served by several veterinary clinics including Rotorua Veterinary Centre and Lakes Veterinary Services, with emergency care available for urgent needs.",
+    localContext: "Rotorua pets enjoy unique surroundings — from forest walks in the famous Redwoods to lakeside strolls. Our local sitters understand the geothermal hazards to keep pets safe, know the best trails in Whakarewarewa Forest, and appreciate the warm, community-oriented lifestyle that Rotorua is known for.",
+    metaTitle: "Pet Sitting in Rotorua — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Rotorua, NZ. Local, vetted, 100% NZ-based sitters in the Bay of Plenty. Daily photo updates. Book your Rotorua pet sitter today!",
+    metaKeywords: "pet sitting rotorua, dog sitter rotorua, cat sitter rotorua, pet care rotorua, house sitting rotorua, pet sitter near me rotorua"
+  },
+  {
+    slug: "whangarei",
+    name: "Whangarei",
+    maoriName: "Whangārei",
+    heroDescription: "Northland's largest city is a subtropical paradise for pets. With beautiful harbour walks, bush-clad hills, and a warm climate year-round, Whangarei pet owners enjoy an enviable outdoor lifestyle.",
+    neighborhoods: ["Tikipunga", "Kamo", "Onerahi", "Morningside", "Regent", "Woodhill", "Raumanga", "Maunu", "Whau Valley", "Riverside"],
+    parks: ["Whangarei Falls", "Hatea River Walk", "AH Reed Memorial Kauri Park", "Mair Park", "Parihaka Reserve", "Town Basin Marina Walk"],
+    vetInfo: "Whangarei has reliable veterinary services including Whangarei Veterinary Centre and Northland emergency vet services available for after-hours urgent pet care.",
+    localContext: "Whangarei pets enjoy a subtropical climate with lush surroundings. Our local sitters know the best walking spots from Whangarei Falls to the Hatea Loop, understand the warm Northland weather and its effects on pets, and are part of the friendly, relaxed Northland community.",
+    metaTitle: "Pet Sitting in Whangarei — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Whangarei, NZ. Local, vetted, 100% NZ-based sitters in Northland. Daily photo updates. Book your Whangarei pet sitter today!",
+    metaKeywords: "pet sitting whangarei, dog sitter whangarei, cat sitter whangarei, pet care whangarei, house sitting whangarei, pet sitter near me whangarei"
+  },
+  {
+    slug: "hastings",
+    name: "Hastings",
+    maoriName: "Heretaunga",
+    heroDescription: "The fruit bowl of New Zealand is also a wonderful place for pets. With warm Hawke's Bay weather, rural charm meets urban convenience, and a growing community of pet lovers who care deeply about their animals.",
+    neighborhoods: ["Havelock North", "Flaxmere", "St Leonards", "Mahora", "Parkvale", "Raureka", "Akina", "Camberley", "Tomoana", "Karamu"],
+    parks: ["Cornwall Park", "Windsor Park", "Frimley Park", "Havelock North Village Green", "Te Mata Peak", "Tuki Tuki River Trail"],
+    vetInfo: "Hastings has excellent veterinary care including Hastings Veterinary Centre and Hawke's Bay emergency veterinary services for urgent after-hours pet care.",
+    localContext: "Hastings pets enjoy the best of both worlds — rural Hawke's Bay charm with all the amenities of a thriving town. Our local sitters know the walking trails around Te Mata Peak, understand the hot Hawke's Bay summers, and are familiar with the orchard-lined streets and community parks that make Hastings a great place for pet families.",
+    metaTitle: "Pet Sitting in Hastings — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Hastings, NZ. Local, vetted, 100% NZ-based sitters in Hawke's Bay. Daily photo updates. Book your Hastings pet sitter today!",
+    metaKeywords: "pet sitting hastings, dog sitter hastings nz, cat sitter hastings, pet care hastings, house sitting hastings nz, pet sitter near me hastings"
+  }
 ];
 
 export function getCityBySlug(slug: string): CityData | undefined {

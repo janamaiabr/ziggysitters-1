@@ -347,6 +347,55 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
+  <!-- New City Pages -->
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-napier</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-nelson</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-new-plymouth</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-palmerston-north</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-queenstown</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-rotorua</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-whangarei</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/pet-sitting-hastings</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <!-- Blog Posts -->
   <url>
     <loc>https://ziggysitters.com/blog/wellington-pet-sitting-guide-2026/index.html</loc>

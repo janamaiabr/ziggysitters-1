@@ -159,6 +159,30 @@ export default function Header() {
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-dunedin')}>
                 🏔️ Dunedin
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-napier')}>
+                🎨 Napier
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-nelson')}>
+                ☀️ Nelson
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-new-plymouth')}>
+                🌋 New Plymouth
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-palmerston-north')}>
+                🎓 Palmerston North
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-queenstown')}>
+                ⛰️ Queenstown
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-rotorua')}>
+                ♨️ Rotorua
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-whangarei')}>
+                🌴 Whangarei
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hastings')}>
+                🍇 Hastings
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to="/young-walkers" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
@@ -303,6 +327,15 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-christchurch')}>
                         🌿 Christchurch
                       </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-napier')}>
+                        🎨 Napier
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-nelson')}>
+                        ☀️ Nelson
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-queenstown')}>
+                        ⛰️ Queenstown
+                      </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
                         🐕 Young Walkers
                       </Button>
@@ -375,6 +408,15 @@ export default function Header() {
                       </Button>
                       <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-christchurch')}>
                         🌿 Christchurch
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-napier')}>
+                        🎨 Napier
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-nelson')}>
+                        ☀️ Nelson
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-queenstown')}>
+                        ⛰️ Queenstown
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
                         🐕 Young Walkers

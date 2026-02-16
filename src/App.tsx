@@ -101,6 +101,14 @@ import PetSittingHamilton from "./pages/PetSittingHamilton";
 import PetSittingTauranga from "./pages/PetSittingTauranga";
 import PetSittingDunedin from "./pages/PetSittingDunedin";
 import PetSittingSunshineCoast from "./pages/PetSittingSunshineCoast";
+import PetSittingNapier from "./pages/PetSittingNapier";
+import PetSittingNelson from "./pages/PetSittingNelson";
+import PetSittingNewPlymouth from "./pages/PetSittingNewPlymouth";
+import PetSittingPalmerstonNorth from "./pages/PetSittingPalmerstonNorth";
+import PetSittingQueenstown from "./pages/PetSittingQueenstown";
+import PetSittingRotorua from "./pages/PetSittingRotorua";
+import PetSittingWhangarei from "./pages/PetSittingWhangarei";
+import PetSittingHastings from "./pages/PetSittingHastings";
 import Referral from "./pages/Referral";
 import Guarantee from "./pages/Guarantee";
 import OurSitters from "./pages/OurSitters";
@@ -325,6 +333,14 @@ function AppContent() {
             <Route path="/pet-sitting-tauranga" element={<PetSittingTauranga />} />
             <Route path="/pet-sitting-dunedin" element={<PetSittingDunedin />} />
             <Route path="/pet-sitting-sunshine-coast" element={<PetSittingSunshineCoast />} />
+            <Route path="/pet-sitting-napier" element={<PetSittingNapier />} />
+            <Route path="/pet-sitting-nelson" element={<PetSittingNelson />} />
+            <Route path="/pet-sitting-new-plymouth" element={<PetSittingNewPlymouth />} />
+            <Route path="/pet-sitting-palmerston-north" element={<PetSittingPalmerstonNorth />} />
+            <Route path="/pet-sitting-queenstown" element={<PetSittingQueenstown />} />
+            <Route path="/pet-sitting-rotorua" element={<PetSittingRotorua />} />
+            <Route path="/pet-sitting-whangarei" element={<PetSittingWhangarei />} />
+            <Route path="/pet-sitting-hastings" element={<PetSittingHastings />} />
             <Route path="/referral" element={<Referral />} />
             <Route path="/guarantee" element={<Guarantee />} />
             <Route path="/our-sitters" element={<OurSitters />} />
