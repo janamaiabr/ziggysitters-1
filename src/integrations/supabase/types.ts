@@ -1528,6 +1528,80 @@ export type Database = {
           },
         ]
       }
+      sitter_testimonials: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          client_name: string
+          client_relationship: string | null
+          created_at: string
+          id: string
+          is_approved: boolean | null
+          rating: number | null
+          sitter_id: string
+          submitted_at: string
+          testimonial_text: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          client_name: string
+          client_relationship?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean | null
+          rating?: number | null
+          sitter_id: string
+          submitted_at?: string
+          testimonial_text: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          client_name?: string
+          client_relationship?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean | null
+          rating?: number | null
+          sitter_id?: string
+          submitted_at?: string
+          testimonial_text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sitter_testimonials_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_funnel"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sitter_testimonials_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sitter_testimonials_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitter_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sitter_testimonials_sitter_id_fkey"
+            columns: ["sitter_id"]
+            isOneToOne: false
+            referencedRelation: "public_sitters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stripe_migration_tracking: {
         Row: {
           completed_at: string | null
