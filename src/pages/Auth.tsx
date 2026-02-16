@@ -12,7 +12,7 @@ import TermsAcceptance from '@/components/TermsAcceptance';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
 import { useBehaviorTracking, linkSessionEventsToUser, getSessionId } from '@/hooks/useBehaviorTracking';
-import petServicesImg from '@/assets/pet-services.jpg';
+import petServicesImg from '@/assets/pet-services-ai-backup.jpg';
 
 export default function Auth() {
   const { trackAction, trackFormInteraction, trackDropoff } = useBehaviorTracking();

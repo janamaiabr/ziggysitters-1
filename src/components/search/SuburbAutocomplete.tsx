@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Mock Auckland suburbs data
+// Auckland suburbs
 const aucklandSuburbs = [
   'Ponsonby', 'Newmarket', 'Mount Eden', 'Parnell', 'Remuera', 'Epsom',
   'Grey Lynn', 'Freemans Bay', 'Herne Bay', 'Saint Marys Bay', 'Grafton',
@@ -24,6 +24,24 @@ const aucklandSuburbs = [
   'Bucklands Beach', 'Half Moon Bay', 'Beachlands', 'Maraetai'
 ];
 
+// Sunshine Coast suburbs
+const sunshineCoastSuburbs = [
+  'Noosa Heads', 'Noosa Junction', 'Noosaville', 'Sunshine Beach', 'Peregian Beach',
+  'Coolum Beach', 'Marcoola', 'Mudjimba', 'Twin Waters', 'Pacific Paradise',
+  'Maroochydore', 'Alexandra Headland', 'Mooloolaba', 'Buderim', 'Sippy Downs',
+  'Mountain Creek', 'Kawana Waters', 'Birtinya', 'Currimundi', 'Caloundra',
+  'Kings Beach', 'Pelican Waters', 'Golden Beach', 'Landsborough', 'Beerwah',
+  'Glass House Mountains', 'Maleny', 'Montville', 'Mapleton', 'Nambour',
+  'Yandina', 'Eumundi', 'Palmwoods', 'Woombye', 'Bli Bli', 'Coolum'
+];
+
+type SuburbEntry = { name: string; region: string };
+
+const allSuburbs: SuburbEntry[] = [
+  ...aucklandSuburbs.map(s => ({ name: s, region: 'Auckland' })),
+  ...sunshineCoastSuburbs.map(s => ({ name: s, region: 'Sunshine Coast' })),
+];
+
 interface SuburbAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
@@ -33,24 +51,24 @@ interface SuburbAutocompleteProps {
 
 export default function SuburbAutocomplete({ value, onChange, placeholder = "Enter suburb or city", className }: SuburbAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredSuburbs, setFilteredSuburbs] = useState<string[]>([]);
+  const [filteredSuburbs, setFilteredSuburbs] = useState<SuburbEntry[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (value) {
-      // Normalize search term: convert "St" to "Saint" for matching
       const normalizedSearch = value.toLowerCase()
-        .replace(/\bst\b/gi, 'saint')  // "St Heliers" -> "Saint Heliers"
-        .replace(/\bst\./gi, 'saint'); // "St. Heliers" -> "Saint Heliers"
+        .replace(/\bst\b/gi, 'saint')
+        .replace(/\bst\./gi, 'saint');
       
-      const filtered = aucklandSuburbs.filter(suburb => {
-        const normalizedSuburb = suburb.toLowerCase();
-        // Match against both the original value and normalized version
+      const filtered = allSuburbs.filter(entry => {
+        const normalizedSuburb = entry.name.toLowerCase();
+        const normalizedRegion = entry.region.toLowerCase();
         return normalizedSuburb.includes(value.toLowerCase()) || 
-               normalizedSuburb.includes(normalizedSearch);
-      }).slice(0, 8); // Limit to 8 results
+               normalizedSuburb.includes(normalizedSearch) ||
+               normalizedRegion.includes(value.toLowerCase());
+      }).slice(0, 8);
       setFilteredSuburbs(filtered);
       setIsOpen(filtered.length > 0);
     } else {
@@ -75,8 +93,8 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
     onChange(e.target.value);
   };
 
-  const handleSuburbSelect = (suburb: string) => {
-    onChange(suburb);
+  const handleSuburbSelect = (entry: SuburbEntry) => {
+    onChange(entry.name);
     setIsOpen(false);
     inputRef.current?.blur();
   };
@@ -128,19 +146,19 @@ export default function SuburbAutocomplete({ value, onChange, placeholder = "Ent
       </div>
       
       {isOpen && filteredSuburbs.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
-          {filteredSuburbs.map((suburb, index) => (
+        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-900 border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+          {filteredSuburbs.map((entry, index) => (
             <div
-              key={suburb}
+              key={`${entry.region}-${entry.name}`}
               className={cn(
-                "px-3 py-2 cursor-pointer text-sm hover:bg-gray-50 flex items-center gap-2",
-                index === highlightedIndex && "bg-gray-50"
+                "px-3 py-2 cursor-pointer text-sm hover:bg-muted flex items-center gap-2",
+                index === highlightedIndex && "bg-muted"
               )}
-              onClick={() => handleSuburbSelect(suburb)}
+              onClick={() => handleSuburbSelect(entry)}
               onMouseEnter={() => setHighlightedIndex(index)}
             >
-              <MapPin className="h-3 w-3 text-gray-400" />
-              <span>{suburb}, Auckland</span>
+              <MapPin className="h-3 w-3 text-muted-foreground" />
+              <span>{entry.name}, {entry.region}</span>
             </div>
           ))}
         </div>

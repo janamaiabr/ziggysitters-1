@@ -90,6 +90,19 @@ export const cities: CityData[] = [
     metaTitle: "Pet Sitting in Dunedin \u2014 Trusted Local Sitters | ZiggySitters",
     metaDescription: "Find trusted pet sitters in Dunedin, NZ. Local, vetted, 100% NZ-based sitters in Otago. Daily photo updates. Book your Dunedin pet sitter today!",
     metaKeywords: "pet sitting dunedin, dog sitter dunedin, cat sitter dunedin, pet care dunedin, house sitting dunedin, pet sitter near me dunedin"
+  },
+  {
+    slug: "sunshine-coast",
+    name: "Sunshine Coast",
+    maoriName: "",
+    heroDescription: "The Sunshine Coast is one of Queensland's most pet-friendly regions. From the beaches of Noosa to the hinterland of Maleny, finding a trusted local pet sitter for your furry family is easy.",
+    neighborhoods: ["Noosa Heads", "Maroochydore", "Caloundra", "Mooloolaba", "Buderim", "Nambour", "Coolum Beach", "Peregian Beach", "Maleny", "Montville"],
+    parks: ["Noosa National Park", "Maroochy Bushland Botanic Garden", "Mooloolah River National Park", "Kondalilla National Park", "Mary Cairncross Scenic Reserve", "Cotton Tree Park"],
+    vetInfo: "The Sunshine Coast has excellent veterinary care including Sunshine Coast Animal Emergency Service and numerous local clinics across the region.",
+    localContext: "Sunshine Coast pets enjoy a subtropical lifestyle with stunning beaches, hinterland trails, and year-round warm weather. Our local sitters know the best off-leash beaches, understand tick and snake safety, and are familiar with the relaxed coastal lifestyle your pets love.",
+    metaTitle: "Pet Sitting on Sunshine Coast — Trusted Local Sitters | ZiggySitters",
+    metaDescription: "Find trusted pet sitters on the Sunshine Coast, QLD. Local, vetted sitters for dogs, cats and all pets. Daily photo updates. Book your Sunshine Coast pet sitter today!",
+    metaKeywords: "pet sitting sunshine coast, dog sitter sunshine coast, cat sitter sunshine coast, pet care sunshine coast qld, pet sitter near me sunshine coast"
   }
 ];
 
