@@ -4,7 +4,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Camera, Heart, Star, Search, Shield, Sparkles } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
-import petServicesImg from '@/assets/pet-services.jpg';
+import heroSitterReal from '@/assets/hero-sitter-real.jpg';
+import heroPetsReal from '@/assets/hero-pets-real.jpg';
+// AI-generated backup: import petServicesImg from '@/assets/pet-services-ai-backup.jpg';
 import UrgencyIndicator from './UrgencyIndicator';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 import CompactSteps from './CompactSteps';
@@ -150,7 +152,7 @@ const HeroSectionPlayful = ({
               {/* Mobile image - compact on mobile */}
               <div className="lg:hidden relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-lg border-2 border-purple-200 dark:border-purple-700">
                 <img 
-                  src={petServicesImg} 
+                  src={heroSitterReal} 
                   alt="Happy pet with sitter" 
                   className="w-full h-full object-cover object-top"
                 />
@@ -177,7 +179,7 @@ const HeroSectionPlayful = ({
                 <div className="absolute top-0 right-0 w-[380px] h-[320px] rounded-3xl overflow-hidden shadow-2xl border-4 border-purple-200 dark:border-purple-700 animate-float">
                   <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 to-transparent z-10" />
                   <img 
-                    src={petServicesImg} 
+                    src={heroSitterReal} 
                     alt="Happy pet with sitter" 
                     className="w-full h-full object-cover"
                   />
@@ -187,7 +189,7 @@ const HeroSectionPlayful = ({
                 <div className="absolute top-48 left-0 w-[320px] h-[260px] rounded-3xl overflow-hidden shadow-2xl border-4 border-blue-200 dark:border-blue-700" style={{ animationDelay: '2s' }}>
                   <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent z-10" />
                   <img 
-                    src={petServicesImg} 
+                    src={heroPetsReal} 
                     alt="Pet sitting service" 
                     className="w-full h-full object-cover"
                   />
@@ -206,9 +208,6 @@ const HeroSectionPlayful = ({
                   </div>
                 </div>
 
-                {/* Floating emoji decorations */}
-                <div className="absolute -top-4 left-20 text-4xl animate-bounce" style={{ animationDuration: '2s' }}>🐕</div>
-                <div className="absolute bottom-20 -left-4 text-3xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}>🐱</div>
               </div>
             </div>
           </div>

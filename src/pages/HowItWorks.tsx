@@ -4,7 +4,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Badge } from '@/components/ui/badge';
 import { Search, UserCheck, CreditCard, Shield, Heart, Star, Clock, Camera, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import petServices from '@/assets/pet-services.jpg';
+import petServices from '@/assets/pet-services-ai-backup.jpg';
 
 const forOwners = [
   {

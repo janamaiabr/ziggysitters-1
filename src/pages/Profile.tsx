@@ -2218,7 +2218,7 @@ export default function Profile() {
       </div>
 
       {/* Sitter onboarding tour */}
-      {profile?.role === 'sitter' && <SitterOnboardingTour />}
+      {profile?.role === 'pet_sitter' && <SitterOnboardingTour />}
     </div>
   );
 }

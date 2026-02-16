@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, CheckCircle, Camera, Shield, Clock, DollarSign, Search, Heart } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import heroImage from '@/assets/hero-image.jpg';
-import petServices from '@/assets/pet-services.jpg';
+import petServices from '@/assets/pet-services-ai-backup.jpg';
 import { supabase } from '@/integrations/supabase/client';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
