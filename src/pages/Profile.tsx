@@ -29,6 +29,7 @@ import SitterDashboard from '@/components/sitter/SitterDashboard';
 import SitterOnboardingTour from '@/components/onboarding/SitterOnboardingTour';
 import CompleteProfileBanner from '@/components/sitter/CompleteProfileBanner';
 import ProfileCompletionCard from '@/components/sitter/ProfileCompletionCard';
+import SitterTestimonials from '@/components/sitter/SitterTestimonials';
 import { useConfetti } from '@/hooks/useConfetti';
 
 export default function Profile() {
@@ -1255,6 +1256,11 @@ export default function Profile() {
                 city={profile.city}
                 onboardingCompleted={profile.onboarding_completed || false}
               />
+            )}
+
+            {/* Sitter Testimonials */}
+            {profile.role === 'pet_sitter' && (
+              <SitterTestimonials />
             )}
             
             {/* Profile Completion Card for Sitters */}
