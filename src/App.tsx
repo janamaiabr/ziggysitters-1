@@ -287,6 +287,21 @@ function AppContent() {
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
               <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
               <Route path="/admin/storage-optimizer" element={<AdminStorageOptimizer />} />
+              {/* Test pages - admin only */}
+              <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
+              <Route path="/test-payment" element={<PaymentTests />} />
+              <Route path="/test-payment-flow" element={<PaymentFlowTestsPage />} />
+              <Route path="/test-payment-comprehensive" element={<PaymentFlowComprehensiveTestPage />} />
+              <Route path="/test-terms-acceptance" element={<TermsAcceptanceTestPage />} />
+              <Route path="/test-emails" element={<TestEmails />} />
+              <Route path="/send-test-email" element={<SendTestEmail />} />
+              <Route path="/test-daily-report-email" element={<TestDailyReportEmail />} />
+              <Route path="/stripe-onboarding-tests" element={<StripeOnboardingTests />} />
+              <Route path="/sitter-service-tests" element={<SitterServiceTests />} />
+              <Route path="/manual-service-creator" element={<ManualServiceCreator />} />
+              <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
+              <Route path="/test-golden-badge" element={<GoldenBadgeTests />} />
+              <Route path="/test-calendar" element={<CalendarTests />} />
             </Route>
             <Route path="/admin" element={<Navigate to="/admin-dashboard" replace />} />
             
@@ -316,20 +331,8 @@ function AppContent() {
             <Route path="/pet-care-tips" element={<PetCareTips />} />
             <Route path="/become-sitter/:suburb" element={<BecomeSitterSuburb />} />
             <Route path="/500" element={<Error500 />} />
-            <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
-            <Route path="/test-payment" element={<PaymentTests />} />
-            <Route path="/test-payment-flow" element={<PaymentFlowTestsPage />} />
-            <Route path="/test-payment-comprehensive" element={<PaymentFlowComprehensiveTestPage />} />
-            <Route path="/test-terms-acceptance" element={<TermsAcceptanceTestPage />} />
-            <Route path="/test-emails" element={<TestEmails />} />
-            <Route path="/send-test-email" element={<SendTestEmail />} />
-            <Route path="/test-daily-report-email" element={<TestDailyReportEmail />} />
-            <Route path="/stripe-onboarding-tests" element={<StripeOnboardingTests />} />
-            <Route path="/sitter-service-tests" element={<SitterServiceTests />} />
-            <Route path="/manual-service-creator" element={<ManualServiceCreator />} />
-            <Route path="/test-payout-automation" element={<PayoutAutomationTests />} />
-            <Route path="/test-golden-badge" element={<GoldenBadgeTests />} />
-            <Route path="/test-calendar" element={<CalendarTests />} />
+            {/* Test routes moved inside AdminLayout below */}
+            {/* test-calendar moved inside AdminLayout */}
             <Route path="/booking-success" element={<BookingSuccess />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

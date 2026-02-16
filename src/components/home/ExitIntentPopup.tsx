@@ -85,7 +85,7 @@ export default function ExitIntentPopup() {
               Find your perfect pet sitter today!
             </p>
             <p className="text-muted-foreground text-sm">
-              500+ verified sitters • Daily photo updates • 100% satisfaction guarantee
+              Verified sitters across NZ • Daily photo updates • 100% satisfaction guarantee
             </p>
           </div>
           

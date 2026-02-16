@@ -165,7 +165,7 @@ const Index = () => {
     "name": "ZiggySitters",
     "description": "Professional pet sitting services in Auckland and Hamilton with optional daily photo updates and detailed reports - choose your level of communication.",
     "url": "https://ziggysitters.com",
-    "telephone": "+64-9-XXX-XXXX",
+    "email": "hello@ziggysitters.com",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Auckland",
@@ -176,7 +176,7 @@ const Index = () => {
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.9",
-      "reviewCount": "500"
+      "reviewCount": "277"
     }
   };
 

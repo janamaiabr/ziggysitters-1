@@ -1,15 +1,28 @@
 User-agent: *
 Allow: /
 
+# Block test and admin pages
+Disallow: /test-*
+Disallow: /admin*
+Disallow: /send-test-email
+Disallow: /stripe-onboarding-tests
+Disallow: /sitter-service-tests
+Disallow: /manual-service-creator
+Disallow: /christmas
+
 # Sitemap
 Sitemap: https://ziggysitters.com/sitemap.xml
 
 # Specific bot rules
 User-agent: Googlebot
 Allow: /
+Disallow: /test-*
+Disallow: /admin*
 
 User-agent: Bingbot
 Allow: /
+Disallow: /test-*
+Disallow: /admin*
 
 User-agent: Twitterbot
 Allow: /
