@@ -111,32 +111,6 @@ export default function BecomeSitter() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <div className="py-10 bg-accent/10">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Why Become a ZiggySitter?</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join our community of trusted pet sitters and enjoy the benefits of flexible, rewarding work
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="text-center border-0 shadow-lg">
-                <CardContent className="p-8">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-                    <benefit.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">{benefit.title}</h3>
-                  <p className="text-muted-foreground">{benefit.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* How It Works */}
       <div className="py-10">
         <div className="container mx-auto px-4">
@@ -162,6 +136,32 @@ export default function BecomeSitter() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Benefits Section */}
+      <div className="py-10 bg-accent/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Why Become a ZiggySitter?</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Join our community of trusted pet sitters and enjoy the benefits of flexible, rewarding work
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {benefits.map((benefit, index) => (
+              <Card key={index} className="text-center border-0 shadow-lg">
+                <CardContent className="p-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+                    <benefit.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
