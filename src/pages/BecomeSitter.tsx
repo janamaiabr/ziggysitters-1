@@ -137,6 +137,35 @@ export default function BecomeSitter() {
         </div>
       </div>
 
+      {/* How It Works */}
+      <div className="py-10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold mb-4">How It Works</h2>
+            <p className="text-lg text-muted-foreground">
+              Getting started is simple and straightforward
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {steps.map((step, index) => (
+                <div key={index} className="text-center relative">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-primary text-primary-foreground rounded-full mb-6 font-bold text-lg">
+                    {step.step}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">{step.title}</h3>
+                  <p className="text-muted-foreground text-sm">{step.description}</p>
+                  {index < steps.length - 1 && (
+                    <ArrowRight className="hidden lg:block absolute top-6 -right-4 w-6 h-6 text-muted-foreground" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Daily Reports Accountability Section */}
       <div className="py-10 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="container mx-auto px-4">
@@ -202,35 +231,6 @@ export default function BecomeSitter() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </div>
-
-      {/* How It Works */}
-      <div className="py-10">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold mb-4">How It Works</h2>
-            <p className="text-lg text-muted-foreground">
-              Getting started is simple and straightforward
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {steps.map((step, index) => (
-                <div key={index} className="text-center relative">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-primary text-primary-foreground rounded-full mb-6 font-bold text-lg">
-                    {step.step}
-                  </div>
-                  <h3 className="text-lg font-semibold mb-3">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.description}</p>
-                  {index < steps.length - 1 && (
-                    <ArrowRight className="hidden lg:block absolute top-6 -right-4 w-6 h-6 text-muted-foreground" />
-                  )}
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
