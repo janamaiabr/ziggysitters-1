@@ -103,7 +103,7 @@ export const cities: CityData[] = [
     metaTitle: "Pet Sitting on Sunshine Coast — Trusted Local Sitters | ZiggySitters",
     metaDescription: "Find trusted pet sitters on the Sunshine Coast, QLD. Local, vetted sitters for dogs, cats and all pets. Daily photo updates. Book your Sunshine Coast pet sitter today!",
     metaKeywords: "pet sitting sunshine coast, dog sitter sunshine coast, cat sitter sunshine coast, pet care sunshine coast qld, pet sitter near me sunshine coast"
-  }
+  },
   {
     slug: "napier",
     name: "Napier",
