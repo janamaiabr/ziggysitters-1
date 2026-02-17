@@ -78,7 +78,7 @@ export default function BecomeSitter() {
       />
       <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
@@ -112,7 +112,7 @@ export default function BecomeSitter() {
       </section>
 
       {/* Benefits Section */}
-      <div className="py-20 bg-accent/10">
+      <div className="py-10 bg-accent/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Why Become a ZiggySitter?</h2>
