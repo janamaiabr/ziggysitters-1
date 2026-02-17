@@ -138,10 +138,10 @@ export default function BecomeSitter() {
       </div>
 
       {/* Daily Reports Accountability Section */}
-      <div className="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+      <div className="py-10 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-6">
               <Badge variant="secondary" className="mb-4">Our Commitment to Quality</Badge>
               <h2 className="text-3xl font-bold mb-4">Daily Reports: Optional, But Guaranteed When Requested</h2>
               <p className="text-lg text-muted-foreground">
@@ -207,9 +207,9 @@ export default function BecomeSitter() {
       </div>
 
       {/* How It Works */}
-      <div className="py-20">
+      <div className="py-10">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
             <p className="text-lg text-muted-foreground">
               Getting started is simple and straightforward
@@ -236,9 +236,9 @@ export default function BecomeSitter() {
       </div>
 
       {/* Earnings Calculator + Lead Form Section */}
-      <div className="py-20 bg-accent/5" id="get-started">
+      <div className="py-10 bg-accent/5" id="get-started">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-4">See What You Could Earn</h2>
             <p className="text-lg text-muted-foreground">
               Calculate your potential earnings and get started in minutes
@@ -259,7 +259,7 @@ export default function BecomeSitter() {
       </div>
 
       {/* High Demand Suburbs */}
-      <div className="py-16">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-2xl font-bold mb-3">Pet Sitters Needed in These Areas</h2>
@@ -288,9 +288,9 @@ export default function BecomeSitter() {
       </div>
 
       {/* Success Stories */}
-      <div className="py-20">
+      <div className="py-10">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-4">Success Stories</h2>
             <p className="text-lg text-muted-foreground">
               Hear from our amazing pet sitters
