@@ -114,7 +114,7 @@ export default function BecomeSitter() {
       {/* Benefits Section */}
       <div className="py-10 bg-accent/10">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Why Become a ZiggySitter?</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Join our community of trusted pet sitters and enjoy the benefits of flexible, rewarding work
