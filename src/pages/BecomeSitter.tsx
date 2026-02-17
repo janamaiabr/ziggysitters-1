@@ -3,9 +3,10 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight, MapPin } from 'lucide-react';
+import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight, MapPin, Users } from 'lucide-react';
 import EarningsCalculator from '@/components/sitter-recruitment/EarningsCalculator';
 import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
+import { ga4 } from '@/lib/ga4';
 
 const benefits = [
   {
@@ -78,7 +79,7 @@ export default function BecomeSitter() {
       />
       <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
@@ -88,25 +89,59 @@ export default function BecomeSitter() {
         <div className="container mx-auto px-4 py-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <Badge variant="secondary" className="mb-6">
-              <Heart className="w-4 h-4 mr-2 inline" />
-              Join Our Community
+              <Heart className="w-4 h-4 mr-2 inline fill-red-400 text-red-400" />
+              For people who truly love animals
             </Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-              <span className="block">Work With the Pets</span>
+              <span className="block">Every Pet Deserves Someone</span>
               <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-                You{"'"}re Meant For
+                Who Cares as Much as Their Owner
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Get matched to pets that fit your experience and style — build real bonds, not just bookings
+            <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-3xl mx-auto">
+              You already love animals. Why not turn that into something meaningful? Join pet owners across New Zealand who trust ZiggySitters to find caring, reliable people like you.
             </p>
-            <Button 
-              size="lg" 
-              className="px-12 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              onClick={() => navigate('/auth')}
-            >
-              Join Now
-            </Button>
+
+            {/* Social proof */}
+            <div className="flex items-center justify-center gap-2 mb-8 text-sm text-muted-foreground">
+              <Users className="w-4 h-4 text-primary" />
+              <span>Join 50+ sitters across NZ</span>
+              <span className="mx-2">•</span>
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span>4.9 average rating</span>
+              <span className="mx-2">•</span>
+              <Shield className="w-4 h-4 text-primary" />
+              <span>Verified &amp; trusted</span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg" 
+                className="px-12 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                onClick={() => {
+                  ga4.clickSignup('become_sitter_hero');
+                  navigate('/auth');
+                }}
+              >
+                Start Your Pet Sitting Journey
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="px-8 py-6 text-lg"
+                onClick={() => {
+                  ga4.ctaClick('see_earnings', 'become_sitter');
+                  document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                See What You Could Earn
+              </Button>
+            </div>
+
+            <p className="mt-4 text-sm text-muted-foreground">
+              Free to join • No commitments • Set your own hours &amp; rates
+            </p>
           </div>
         </div>
       </section>

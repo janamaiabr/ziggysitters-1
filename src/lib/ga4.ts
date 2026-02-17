@@ -97,4 +97,39 @@ export const ga4 = {
       position,
     });
   },
+
+  /** User clicks signup/auth button (conversion event) */
+  clickSignup: (source: string) => {
+    trackGA4Event('sign_up_click', {
+      source,
+      event_category: 'conversion',
+    });
+  },
+
+  /** User completes signup/auth (conversion event) */
+  completeSignup: (method: string) => {
+    trackGA4Event('sign_up', {
+      method,
+      event_category: 'conversion',
+    });
+  },
+
+  /** Sitter lead form submitted */
+  sitterLeadSubmit: (source: string) => {
+    trackGA4Event('generate_lead', {
+      source,
+      event_category: 'conversion',
+      currency: 'NZD',
+      value: 1,
+    });
+  },
+
+  /** CTA button clicked */
+  ctaClick: (ctaText: string, page: string) => {
+    trackGA4Event('cta_click', {
+      cta_text: ctaText,
+      page,
+      event_category: 'engagement',
+    });
+  },
 };

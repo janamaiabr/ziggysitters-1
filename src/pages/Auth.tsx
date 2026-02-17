@@ -11,6 +11,7 @@ import { Eye, EyeOff, PawPrint, Sparkles, Heart, Shield } from 'lucide-react';
 import TermsAcceptance from '@/components/TermsAcceptance';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
+import { ga4 } from '@/lib/ga4';
 import { useBehaviorTracking, linkSessionEventsToUser, getSessionId } from '@/hooks/useBehaviorTracking';
 import petServicesImg from '@/assets/pet-services-ai-backup.jpg';
 
@@ -219,6 +220,7 @@ export default function Auth() {
             ? Math.round((Date.now() - formStartTime.current) / 1000) 
             : null,
         });
+        ga4.completeSignup('email');
         // Get the newly created user session
         const { data: { session } } = await supabase.auth.getSession();
         

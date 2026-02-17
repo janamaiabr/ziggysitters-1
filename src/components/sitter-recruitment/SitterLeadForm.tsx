@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Sparkles, CheckCircle, Star, TrendingUp } from 'lucide-react';
+import { ga4 } from '@/lib/ga4';
 import { metaPixel } from '@/lib/metaPixel';
 
 // GA4 helper
@@ -118,6 +119,7 @@ export default function SitterLeadForm({ source = 'become_sitter_page', prefille
       metaPixel.trackLead({ content_category: 'Sitter Lead', content_name: source });
       trackGA4('form_submit', { form_name: 'sitter_lead', form_source: source });
       trackGA4('generate_lead', { currency: 'NZD', value: 0, form_source: source });
+      ga4.sitterLeadSubmit(source);
 
       setIsSubmitted(true);
       toast({
