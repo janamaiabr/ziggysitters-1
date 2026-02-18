@@ -7,6 +7,8 @@ import { CheckCircle, Heart, DollarSign, Calendar, Shield, Star, ArrowRight, Map
 import EarningsCalculator from '@/components/sitter-recruitment/EarningsCalculator';
 import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
 import { ga4 } from '@/lib/ga4';
+import heroImage from '@/assets/become-sitter-hero.jpg';
+import dailyReportImage from '@/assets/sitter-daily-report.jpg';
 
 const benefits = [
   {
@@ -67,15 +69,11 @@ export default function BecomeSitter() {
       <div className="min-h-screen bg-background">
         {/* Hero Section — Bold gradient with asymmetric layout */}
         <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-          {/* Rich gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-secondary to-primary" />
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: 'radial-gradient(circle at 20% 80%, hsl(330 80% 60%) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(221 83% 53%) 0%, transparent 50%)',
-          }} />
-          {/* Decorative shapes */}
-          <div className="absolute top-10 right-10 w-64 h-64 border border-white/10 rounded-full" />
-          <div className="absolute bottom-20 left-20 w-40 h-40 border border-white/10 rounded-full" />
-          <div className="absolute top-1/2 right-1/4 w-20 h-20 bg-white/5 rounded-full blur-xl" />
+          {/* Hero background image with overlay */}
+          <div className="absolute inset-0">
+            <img src={heroImage} alt="" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+          </div>
 
           <div className="container mx-auto px-4 py-20 relative z-10">
             <div className="max-w-4xl mx-auto text-center animate-fade-in">
@@ -110,7 +108,7 @@ export default function BecomeSitter() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="px-12 py-6 text-lg font-semibold bg-white text-primary hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+                  className="px-12 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
                   onClick={() => {
                     ga4.clickSignup('become_sitter_hero');
                     navigate('/auth');
@@ -122,7 +120,7 @@ export default function BecomeSitter() {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="px-8 py-6 text-lg border-white/30 text-white hover:bg-white/10"
+                  className="px-8 py-6 text-lg border-2 border-white text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm"
                   onClick={() => {
                     ga4.ctaClick('see_earnings', 'become_sitter');
                     document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
@@ -245,8 +243,10 @@ export default function BecomeSitter() {
                 </div>
               </div>
 
-              {/* Right — Visual card */}
-              <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-secondary/5 shadow-xl">
+              {/* Right — Visual image + card overlay */}
+              <div className="relative">
+                <img src={dailyReportImage} alt="Pet sitter writing daily report with pets nearby" className="w-full h-80 object-cover rounded-2xl shadow-xl" />
+                <Card className="border-2 border-primary/20 bg-background/95 backdrop-blur-sm shadow-xl -mt-16 mx-4 relative z-10">
                 <CardContent className="p-8">
                   <div className="text-center mb-6">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-secondary text-white rounded-3xl mb-4 shadow-lg">
@@ -278,6 +278,7 @@ export default function BecomeSitter() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             </div>
           </div>
         </section>
