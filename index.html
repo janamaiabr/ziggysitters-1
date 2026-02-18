@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href="https://www.ziggysitters.com/" />
+    
+    <!-- Dynamic canonical for SPA routes - updated by router -->
+    <script>
+      // Set canonical URL based on current path (SPA)
+      document.addEventListener('DOMContentLoaded', function() {
+        var link = document.querySelector('link[rel="canonical"]');
+        if (link) link.href = 'https://www.ziggysitters.com' + window.location.pathname;
+      });
+    </script>
     
     <!-- Google tag (gtag.js) - MUST be first for proper detection -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9K8JN5BB9"></script>
