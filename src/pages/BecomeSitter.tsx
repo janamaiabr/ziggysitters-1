@@ -67,72 +67,100 @@ export default function BecomeSitter() {
         canonical="/become-sitter"
       />
       <div className="min-h-screen bg-background">
-        {/* Hero Section — Bold gradient with asymmetric layout */}
-        <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-          {/* Hero background image with overlay */}
-          <div className="absolute inset-0">
-            <img src={heroImage} alt="" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
-          </div>
+        {/* Hero Section — Split layout with photo */}
+        <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+          <div className="container mx-auto px-4 py-16">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left — Copy */}
+              <div className="animate-fade-in">
+                <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-sm px-4 py-1.5">
+                  <Heart className="w-4 h-4 mr-2 inline fill-primary" />
+                  Now accepting sitters in Auckland
+                </Badge>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+                  <span className="block">Work With the Pets</span>
+                  <span className="block text-primary">You're Meant For</span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-xl leading-relaxed">
+                  Get matched to pets that fit your experience and style — build real bonds, not just bookings
+                </p>
 
-          <div className="container mx-auto px-4 py-20 relative z-10">
-            <div className="max-w-4xl mx-auto text-center animate-fade-in">
-              <Badge className="mb-6 bg-white/20 text-white border-white/30 hover:bg-white/30 text-sm px-4 py-1.5">
-                <Heart className="w-4 h-4 mr-2 inline fill-white" />
-                For people who truly love animals
-              </Badge>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 text-white">
-                <span className="block">Every Pet Deserves</span>
-                <span className="block text-white/90">Someone Like You</span>
-              </h1>
-              <p className="text-lg md:text-xl text-white/80 mb-6 max-w-3xl mx-auto leading-relaxed">
-                You already love animals. Turn that into something meaningful — join pet owners across New Zealand who trust ZiggySitters to find caring, reliable people like you.
-              </p>
+                {/* Social proof row */}
+                <div className="flex flex-wrap items-center gap-3 mb-8">
+                  <div className="flex items-center gap-2 bg-muted rounded-full px-4 py-2 text-sm">
+                    <Users className="w-4 h-4 text-primary" />
+                    <span>50+ sitters across NZ</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-muted rounded-full px-4 py-2 text-sm">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span>4.9 average rating</span>
+                  </div>
+                </div>
 
-              {/* Social proof row */}
-              <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm">
-                  <Users className="w-4 h-4" />
-                  <span>50+ sitters across NZ</span>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    size="lg" 
+                    className="px-10 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+                    onClick={() => {
+                      ga4.clickSignup('become_sitter_hero');
+                      navigate('/auth');
+                    }}
+                  >
+                    Join Now
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="px-8 py-6 text-lg"
+                    onClick={() => {
+                      ga4.ctaClick('see_earnings', 'become_sitter');
+                      document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    See What You Could Earn
+                  </Button>
                 </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span>4.9 average rating</span>
+
+                <p className="mt-6 text-sm text-muted-foreground">
+                  Free to join • No commitments • Set your own hours &amp; rates
+                </p>
+              </div>
+
+              {/* Right — Photos grid */}
+              <div className="relative hidden lg:block">
+                <div className="grid grid-cols-2 gap-4">
+                  <img 
+                    src={heroImage} 
+                    alt="Pet sitter caring for a golden retriever" 
+                    className="w-full h-72 object-cover rounded-2xl shadow-xl" 
+                  />
+                  <img 
+                    src={dailyReportImage} 
+                    alt="Sitter writing daily report with pets" 
+                    className="w-full h-72 object-cover rounded-2xl shadow-xl mt-8" 
+                  />
                 </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm">
-                  <Shield className="w-4 h-4" />
-                  <span>Verified &amp; trusted</span>
+                {/* Floating earnings badge */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-background border-2 border-primary/20 rounded-2xl shadow-xl px-6 py-3 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg">$800–$1,200</p>
+                    <p className="text-xs text-muted-foreground">avg. monthly earnings</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  className="px-12 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
-                  onClick={() => {
-                    ga4.clickSignup('become_sitter_hero');
-                    navigate('/auth');
-                  }}
-                >
-                  Start Your Journey
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="px-8 py-6 text-lg border-2 border-white text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm"
-                  onClick={() => {
-                    ga4.ctaClick('see_earnings', 'become_sitter');
-                    document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  See What You Could Earn
-                </Button>
+              {/* Mobile — Single hero image */}
+              <div className="relative lg:hidden">
+                <img 
+                  src={heroImage} 
+                  alt="Pet sitter caring for a golden retriever" 
+                  className="w-full h-64 object-cover rounded-2xl shadow-xl" 
+                />
               </div>
-
-              <p className="mt-6 text-sm text-white/60">
-                Free to join • No commitments • Set your own hours &amp; rates
-              </p>
             </div>
           </div>
         </section>
