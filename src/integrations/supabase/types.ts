@@ -2399,6 +2399,8 @@ export type Database = {
           id: string
           is_verified: boolean
           last_name: string
+          latitude: number
+          longitude: number
           onboarding_completed: boolean
           rating: number
           response_rate: number

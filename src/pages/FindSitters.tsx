@@ -149,7 +149,9 @@ export default function FindSitters() {
             golden_badge: sitter.golden_badge_approved || false,
             instant_booking: false,
             pet_types: ['dogs'],
-            isYoungWalker: false
+            isYoungWalker: false,
+            latitude: sitter.latitude || null,
+            longitude: sitter.longitude || null,
           };
         });
 
@@ -898,21 +900,18 @@ export default function FindSitters() {
               {viewMode === 'map' && (
                 <div className="mb-8">
                   <SitterMap
-                    sitters={filteredSitters.filter(s => !s.isYoungWalker).map(s => {
-                      const rawSitter = (allSitters as any[]).find(a => a.id === s.id);
-                      return {
-                        id: s.id,
-                        name: s.name,
-                        latitude: rawSitter?.latitude || 0,
-                        longitude: rawSitter?.longitude || 0,
-                        avatar_url: s.image,
-                        baseRate: s.baseRate,
-                        verified: s.verified,
-                        golden_badge: s.golden_badge,
-                        suburb: s.suburb,
-                        services: s.services,
-                      };
-                    })}
+                    sitters={filteredSitters.filter(s => !s.isYoungWalker && s.latitude && s.longitude).map(s => ({
+                      id: s.id,
+                      name: s.name,
+                      latitude: s.latitude,
+                      longitude: s.longitude,
+                      avatar_url: s.image,
+                      baseRate: s.baseRate,
+                      verified: s.verified,
+                      golden_badge: s.golden_badge,
+                      suburb: s.suburb,
+                      services: s.services,
+                    }))}
                     onSitterClick={(id) => navigate(`/sitter/${id}?booking=true`)}
                   />
                 </div>
