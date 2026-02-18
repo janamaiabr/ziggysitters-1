@@ -35,6 +35,7 @@ import FAQAccordion from '@/components/sitter/FAQAccordion';
 import PublicAvailabilityCalendar from '@/components/calendar/PublicAvailabilityCalendar';
 import ReviewsList from '@/components/reviews/ReviewsList';
 import { ga4 } from '@/lib/ga4';
+import BookingExitSurvey from '@/components/booking/BookingExitSurvey';
 
 interface SitterData {
   id: string;
@@ -787,6 +788,15 @@ export default function SitterProfile() {
           }}
           sitterName={sitterData.display_name}
           isGuest={!user}
+        />
+      )}
+
+      {/* Exit-intent survey for booking form abandonment */}
+      {sitterData && (
+        <BookingExitSurvey
+          sitterId={sitterData.id}
+          sitterName={sitterData.display_name}
+          isFormVisible={true}
         />
       )}
     </div>
