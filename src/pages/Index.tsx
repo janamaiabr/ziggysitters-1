@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, CheckCircle, Camera, Shield, Clock, DollarSign, Search, Heart } from 'lucide-react';
+import { MapPin, CheckCircle, Camera, Shield, Clock, DollarSign, Search, Heart, Mail } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { useIsMobile } from '@/hooks/use-mobile';
 import heroImage from '@/assets/hero-image.jpg';
 import petServices from '@/assets/pet-services-ai-backup.jpg';
@@ -598,24 +599,52 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section — Quick Email Capture */}
       <section className="relative py-8 md:py-20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-xl mx-auto">
             <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
               Ready to Find Your Pet{"'"}s Person?
             </h2>
-            <p className="text-sm md:text-xl mb-4 md:mb-8 text-muted-foreground">
-              Join pet owners across Auckland who found their perfect match
+            <p className="text-sm md:text-xl mb-4 md:mb-6 text-muted-foreground">
+              Enter your email and we{"'"}ll match you with trusted sitters in your area
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-              <Button size="lg" className="px-6 md:px-8 shadow-lg hover:shadow-xl transition-all min-h-[44px]" onClick={() => navigate('/find-sitters')}>
-                Find a Trusted Sitter Now
+            <form
+              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
+                const email = emailInput?.value?.trim();
+                if (!email) return;
+                try {
+                  await fetch('https://formspree.io/f/xpwzgkby', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, source: 'ziggy-homepage-cta' }),
+                  });
+                } catch {}
+                navigate(`/auth?tab=signup&email=${encodeURIComponent(email)}`);
+              }}
+            >
+              <Input
+                type="email"
+                placeholder="your@email.com"
+                required
+                className="h-12 text-base"
+              />
+              <Button type="submit" size="lg" className="px-6 md:px-8 shadow-lg hover:shadow-xl transition-all min-h-[48px] whitespace-nowrap">
+                Get Started Free
+              </Button>
+            </form>
+            <p className="text-xs md:text-sm text-muted-foreground">
+              ✓ Free to join • ✓ No payment until you book • ✓ Cancel anytime
+            </p>
+            <div className="mt-4">
+              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => navigate('/find-sitters')}>
+                Or browse sitters first →
               </Button>
             </div>
-            <p className="text-xs md:text-sm text-muted-foreground mt-3 md:mt-4">
-              ✓ Free meet & greet • ✓ No payment until sitter accepts
-            </p>
           </div>
         </div>
       </section>
@@ -632,9 +661,9 @@ const Index = () => {
         <Button 
           size="lg" 
           className="w-full text-base font-bold py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl min-h-[48px] shadow-lg"
-          onClick={() => navigate('/find-sitters')}
+          onClick={() => navigate('/auth?tab=signup')}
         >
-          🐾 Find a Sitter Near Me
+          🐾 Sign Up Free — Find a Sitter
         </Button>
       </div>
 
