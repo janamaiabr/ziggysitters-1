@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format, eachDayOfInterval, parseISO } from 'date-fns';
 import MultiSuburbSelector from './MultiSuburbSelector';
+import LocationPicker from '@/components/map/LocationPicker';
 
 // Phone validation function for New Zealand numbers
 const validateNZPhone = (phone: string): boolean => {
@@ -105,6 +106,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
   const [portfolioPhotos, setPortfolioPhotos] = useState<string[]>(savedData.portfolioPhotos || []);
   const [serviceAreas, setServiceAreas] = useState<string[]>(savedData.serviceAreas || []);
   const [primarySuburb, setPrimarySuburb] = useState<string>(savedData.primarySuburb || '');
+  const [mapLatitude, setMapLatitude] = useState<number | null>(savedData.mapLatitude || null);
+  const [mapLongitude, setMapLongitude] = useState<number | null>(savedData.mapLongitude || null);
+  const [mapAddress, setMapAddress] = useState<string>(savedData.mapAddress || '');
   
   // Step 2: Services & Pricing
   const [services, setServices] = useState<Service[]>(savedData.services || []);
@@ -136,6 +140,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
       portfolioPhotos,
       serviceAreas,
       primarySuburb,
+      mapLatitude,
+      mapLongitude,
+      mapAddress,
       services,
       hasFencedYard,
       maxPets,
@@ -157,7 +164,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         daily: s.daily_rate 
       })));
     }
-  }, [bio, experienceYears, portfolioPhotos, serviceAreas, primarySuburb, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrls, blueCardUrl, paymentSetupCompleted]);
+  }, [bio, experienceYears, portfolioPhotos, serviceAreas, primarySuburb, mapLatitude, mapLongitude, mapAddress, services, hasFencedYard, maxPets, acceptedSpecies, acceptedSizes, allowsPuppies, allowsSeniorPets, unavailableDates, idDocumentUrls, blueCardUrl, paymentSetupCompleted]);
   
   // Load existing data from database on mount (only if not already in state)
   useEffect(() => {
@@ -170,7 +177,7 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
         // Load profile data - only set if current state is empty
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('bio, id_document_urls, blue_card_document_url, suburb')
+          .select('bio, id_document_urls, blue_card_document_url, suburb, latitude, longitude')
           .eq('id', profileId)
           .single();
         
@@ -182,8 +189,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
             setIdDocumentUrls(profileData.id_document_urls);
           }
           if (profileData.blue_card_document_url && !blueCardUrl) setBlueCardUrl(profileData.blue_card_document_url);
-          // Set primary suburb from profile if not already set
           if (profileData.suburb && !primarySuburb) setPrimarySuburb(profileData.suburb);
+          if (profileData.latitude && !mapLatitude) setMapLatitude(profileData.latitude);
+          if (profileData.longitude && !mapLongitude) setMapLongitude(profileData.longitude);
         }
         
         // Load service areas - only if current array is empty
@@ -454,7 +462,9 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           bio,
           id_document_urls: idDocumentUrls,
           blue_card_document_url: blueCardUrl,
-          verification_documents_uploaded_at: (idDocumentUrls.length > 0 || blueCardUrl) ? new Date().toISOString() : null
+          verification_documents_uploaded_at: (idDocumentUrls.length > 0 || blueCardUrl) ? new Date().toISOString() : null,
+          latitude: mapLatitude,
+          longitude: mapLongitude,
         })
         .eq('user_id', userId);
 
@@ -995,6 +1005,21 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
                 primarySuburb={primarySuburb}
                 onPrimaryChange={setPrimarySuburb}
                 maxSuburbs={15}
+              />
+            </div>
+
+            {/* Map Location Picker */}
+            <div className="pt-4 border-t">
+              <LocationPicker
+                latitude={mapLatitude}
+                longitude={mapLongitude}
+                address={mapAddress}
+                onLocationChange={(lat, lng, addr) => {
+                  setMapLatitude(lat);
+                  setMapLongitude(lng);
+                  if (addr) setMapAddress(addr);
+                }}
+                className="mt-2"
               />
             </div>
           </CardContent>

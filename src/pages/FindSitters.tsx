@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Filter, Search, X, Home } from 'lucide-react';
+import { MapPin, Filter, Search, X, Home, Map, List } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
@@ -20,6 +20,7 @@ import EmailCaptureModal from '@/components/home/EmailCaptureModal';
 import NoResultsSection from '@/components/search/NoResultsSection';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import AddPetsPrompt from '@/components/search/AddPetsPrompt';
+import SitterMap from '@/components/map/SitterMap';
 import { format } from 'date-fns';
 import { useProfile } from '@/contexts/ProfileContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -62,6 +63,7 @@ export default function FindSitters() {
   const [nearbySitters, setNearbySitters] = useState<any[]>([]);
   const SITTERS_PER_PAGE = 20;
   const [displayLimit, setDisplayLimit] = useState(SITTERS_PER_PAGE);
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   // Show email capture modal after search with delay
   useEffect(() => {
@@ -762,6 +764,29 @@ export default function FindSitters() {
       {/* Results */}
       <div id="search-results" className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
+          {/* View Toggle */}
+          {!isLoading && filteredSitters.length > 0 && (
+            <div className="flex justify-end mb-4">
+              <div className="flex rounded-lg border border-border overflow-hidden">
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="rounded-none"
+                  onClick={() => setViewMode('list')}
+                >
+                  <List className="w-4 h-4 mr-1" /> List
+                </Button>
+                <Button
+                  variant={viewMode === 'map' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="rounded-none"
+                  onClick={() => setViewMode('map')}
+                >
+                  <Map className="w-4 h-4 mr-1" /> Map
+                </Button>
+              </div>
+            </div>
+          )}
           {/* Loading State */}
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -869,6 +894,32 @@ export default function FindSitters() {
                 )}
               </div>
 
+              {/* Map View */}
+              {viewMode === 'map' && (
+                <div className="mb-8">
+                  <SitterMap
+                    sitters={filteredSitters.filter(s => !s.isYoungWalker).map(s => {
+                      const rawSitter = (allSitters as any[]).find(a => a.id === s.id);
+                      return {
+                        id: s.id,
+                        name: s.name,
+                        latitude: rawSitter?.latitude || 0,
+                        longitude: rawSitter?.longitude || 0,
+                        avatar_url: s.image,
+                        baseRate: s.baseRate,
+                        verified: s.verified,
+                        golden_badge: s.golden_badge,
+                        suburb: s.suburb,
+                        services: s.services,
+                      };
+                    })}
+                    onSitterClick={(id) => navigate(`/sitter/${id}?booking=true`)}
+                  />
+                </div>
+              )}
+
+              {/* List View */}
+              {viewMode === 'list' && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredSitters.slice(0, displayLimit).map((sitter, index) => (
                   <EnhancedSitterCard
@@ -877,7 +928,6 @@ export default function FindSitters() {
                     onSitterClick={trackSitterClick}
                     isTopSitter={index === 0}
                     onViewProfile={() => {
-                      // GA4 conversion event
                       ga4.clickSitterCard(sitter.id, sitter.name, index);
                       if (sitter.isYoungWalker) {
                         navigate(`/book-young-walker/${sitter.id}`);
@@ -892,7 +942,8 @@ export default function FindSitters() {
                   />
                 ))}
               </div>
-              
+              )}
+
               {/* Load More button */}
               {filteredSitters.length > displayLimit && (
                 <div className="text-center mt-8">
