@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, CheckCircle, Star, TrendingUp } from 'lucide-react';
+import { Sparkles, CheckCircle, Star, TrendingUp, ChevronDown } from 'lucide-react';
 import { ga4 } from '@/lib/ga4';
 import { metaPixel } from '@/lib/metaPixel';
 
@@ -214,70 +215,78 @@ export default function SitterLeadForm({ source = 'become_sitter_page', prefille
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone <span className="text-muted-foreground">(optional)</span></Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onFocus={trackFormStart}
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder="021 123 4567"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="suburb">Your suburb <span className="text-muted-foreground">(optional)</span></Label>
-              <Select 
-                value={formData.suburb} 
-                onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, suburb: v })); }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select suburb" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SUBURBS.map((s) => (
-                    <SelectItem key={s} value={s}>{s}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <Label>Services you'd like to offer <span className="text-muted-foreground">(optional)</span></Label>
-            <div className="grid grid-cols-1 gap-2">
-              {SERVICES.map((service) => (
-                <div key={service.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={service.id}
-                    checked={formData.services.includes(service.id)}
-                    onCheckedChange={() => { trackFormStart(); handleServiceToggle(service.id); }}
+          <Collapsible>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-full justify-center py-1">
+              <ChevronDown className="w-4 h-4" />
+              Tell us more (optional)
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 pt-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onFocus={trackFormStart}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="021 123 4567"
                   />
-                  <label htmlFor={service.id} className="text-sm cursor-pointer">
-                    {service.label}
-                  </label>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="space-y-2">
+                  <Label htmlFor="suburb">Your suburb</Label>
+                  <Select 
+                    value={formData.suburb} 
+                    onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, suburb: v })); }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select suburb" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SUBURBS.map((s) => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="experience">Pet experience <span className="text-muted-foreground">(optional)</span></Label>
-            <Select 
-              value={formData.experience} 
-              onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, experience: v })); }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="How much experience do you have?" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pet_owner">I own/have owned pets</SelectItem>
-                <SelectItem value="professional">Professional pet care experience</SelectItem>
-                <SelectItem value="volunteer">Volunteered with animals</SelectItem>
-                <SelectItem value="none">New to pet care</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+              <div className="space-y-3">
+                <Label>Services you'd like to offer</Label>
+                <div className="grid grid-cols-1 gap-2">
+                  {SERVICES.map((service) => (
+                    <div key={service.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={service.id}
+                        checked={formData.services.includes(service.id)}
+                        onCheckedChange={() => { trackFormStart(); handleServiceToggle(service.id); }}
+                      />
+                      <label htmlFor={service.id} className="text-sm cursor-pointer">
+                        {service.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="experience">Pet experience</Label>
+                <Select 
+                  value={formData.experience} 
+                  onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, experience: v })); }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="How much experience do you have?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pet_owner">I own/have owned pets</SelectItem>
+                    <SelectItem value="professional">Professional pet care experience</SelectItem>
+                    <SelectItem value="volunteer">Volunteered with animals</SelectItem>
+                    <SelectItem value="none">New to pet care</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Urgency */}
           <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
