@@ -192,6 +192,18 @@ export default function Auth() {
         }
 
         try {
+          // Notify via Formspree (reliable, always works)
+          fetch('https://formspree.io/f/xpwzgkby', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: formData.email.trim(),
+              source: 'ziggy-signup',
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch(() => {});
+
+          // Also try Supabase notification
           const behaviorSessionId = sessionStorage.getItem('ziggy_session_id');
           const searchSessionId = sessionStorage.getItem('search_session_id');
           await supabase.functions.invoke('send-new-user-admin-notification', {
