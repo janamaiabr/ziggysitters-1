@@ -91,37 +91,47 @@ export default function SitterLeadForm({ source = 'become_sitter_page', prefille
     setIsSubmitting(true);
 
     try {
-      // Primary: Formspree (always works, no RLS issues)
-      await fetch('https://formspree.io/f/xpwzgkby', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      // Try Supabase insert first
+      const { error } = await supabase
+        .from('sitter_leads')
+        .insert({
           name: formData.name,
           email: formData.email,
-          phone: formData.phone || '',
-          suburb: formData.suburb || '',
-          services: formData.services.join(', '),
-          experience: formData.experience || '',
-          source: 'ziggy-sitter-lead-' + source,
-        }),
-      });
+          phone: formData.phone || null,
+          suburb: formData.suburb || null,
+          services_interested: formData.services.length > 0 ? formData.services : null,
+          experience_level: formData.experience || null,
+          source,
+        });
 
-      // Secondary: try Supabase too (may fail due to RLS, that is ok)
-      try {
-        await supabase
-          .from('sitter_leads')
-          .insert({
+      if (error) {
+        if (error.code === '23505') {
+          trackGA4('form_submit', { form_name: 'sitter_lead', form_source: source, duplicate: true });
+          toast({
+            title: "Already registered",
+            description: "This email is already on our list. We'll be in touch soon!",
+          });
+          setIsSubmitted(true);
+          return;
+        }
+        // RLS or other error — use send-contact-email as fallback (edge function with service role)
+        console.warn('Direct insert failed, using email fallback:', error.message);
+        await supabase.functions.invoke('send-contact-email', {
+          body: {
             name: formData.name,
             email: formData.email,
-            phone: formData.phone || null,
-            suburb: formData.suburb || null,
-            services_interested: formData.services.length > 0 ? formData.services : null,
-            experience_level: formData.experience || null,
-            source,
-          });
-      } catch {
-        // Supabase insert failed (RLS), but Formspree already captured the lead
-        console.log('Supabase insert failed, lead captured via Formspree');
+            subject: 'NEW SITTER LEAD (form fallback)',
+            message: [
+              'Name: ' + formData.name,
+              'Email: ' + formData.email,
+              'Phone: ' + (formData.phone || 'not provided'),
+              'Suburb: ' + (formData.suburb || 'not specified'),
+              'Services: ' + (formData.services.length > 0 ? formData.services.join(', ') : 'not specified'),
+              'Experience: ' + (formData.experience || 'not specified'),
+              'Source: ' + source,
+            ].join('\n'),
+          },
+        });
       }
 
       // Track lead
