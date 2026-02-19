@@ -2,7 +2,9 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/blog", "destination": "/blog/index.html" },
     { "source": "/blog/:path*", "destination": "/blog/:path*" },
+    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/((?!blog/).*)", "destination": "/index.html" }
   ]
 }

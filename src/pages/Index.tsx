@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -649,6 +649,34 @@ const Index = () => {
         </div>
       </section>
       </div>
+
+      {/* Blog Section */}
+      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-primary/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Pet Care Tips & Guides</h2>
+            <p className="text-muted-foreground text-sm md:text-lg">Expert advice to help you provide the best care for your pets in New Zealand</p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+            {[
+              { slug: 'how-to-choose-pet-sitter-nz-buyer-guide', title: 'How to Choose a Pet Sitter in NZ', tag: 'For Pet Owners' },
+              { slug: 'pet-sitting-costs-nz-budget-guide', title: 'Pet Sitting Costs in NZ: Budget Guide', tag: 'For Pet Owners' },
+              { slug: 'ultimate-guide-pet-sitting-auckland', title: 'Ultimate Guide to Pet Sitting in Auckland', tag: 'Auckland Guide' },
+            ].map((post) => (
+              <Link key={post.slug} to={`/blog/${post.slug}`} className="group block p-6 bg-card rounded-xl border hover:shadow-lg transition-all">
+                <span className="text-xs font-medium text-primary">{post.tag}</span>
+                <h3 className="text-lg font-semibold mt-2 group-hover:text-primary transition-colors">{post.title}</h3>
+                <span className="text-sm text-muted-foreground mt-2 inline-block">Read more →</span>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/blog" className="inline-flex items-center text-primary font-medium hover:underline">
+              View all blog posts →
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Trust Signals */}
       <TrustSignalsSection />
