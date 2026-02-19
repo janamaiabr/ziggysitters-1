@@ -87,6 +87,23 @@ Deno.serve(async (req) => {
 
       if (error) throw error
 
+      // Auto-clear broken DB references when deleting from verification-docs
+      if (bucket === 'verification-docs') {
+        for (const file of filesToDelete) {
+          const fullUrl = `${supabaseUrl}/storage/v1/object/public/verification-docs/${file}`
+          // Clear id_document_url references
+          await supabase
+            .from('profiles')
+            .update({ id_document_url: null, verification_documents_uploaded_at: null, verification_status: 'pending' })
+            .eq('id_document_url', fullUrl)
+          // Clear blue_card_document_url references
+          await supabase
+            .from('profiles')
+            .update({ blue_card_document_url: null })
+            .eq('blue_card_document_url', fullUrl)
+        }
+      }
+
       return new Response(JSON.stringify({
         success: true,
         message: `Deleted ${filesToDelete.length} files from ${bucket}`,
