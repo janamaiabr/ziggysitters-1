@@ -10,8 +10,9 @@ Disallow: /sitter-service-tests
 Disallow: /manual-service-creator
 Disallow: /christmas
 
-# Sitemap
+# Sitemaps
 Sitemap: https://ziggysitters.com/sitemap.xml
+Sitemap: https://ziggysitters.com/sitemap.html
 
 # Specific bot rules
 User-agent: Googlebot
