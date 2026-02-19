@@ -194,20 +194,8 @@ export default function SitterLeadForm({ source = 'become_sitter_page', prefille
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Social proof */}
-        <div className="flex items-center gap-4 mb-4 p-3 bg-primary/5 rounded-lg text-sm">
-          <div className="flex items-center gap-1 text-amber-500">
-            <Star className="w-4 h-4 fill-current" />
-            <Star className="w-4 h-4 fill-current" />
-            <Star className="w-4 h-4 fill-current" />
-            <Star className="w-4 h-4 fill-current" />
-            <Star className="w-4 h-4 fill-current" />
-          </div>
-          <span className="text-muted-foreground">12 sitters joined this week</span>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="name">Your name *</Label>
               <Input
@@ -217,6 +205,7 @@ export default function SitterLeadForm({ source = 'become_sitter_page', prefille
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="Sarah Johnson"
                 required
+                className="h-12 text-base"
               />
             </div>
             <div className="space-y-2">
@@ -229,96 +218,36 @@ export default function SitterLeadForm({ source = 'become_sitter_page', prefille
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 placeholder="sarah@example.com"
                 required
+                className="h-12 text-base"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="suburb">Your suburb *</Label>
+              <Select 
+                value={formData.suburb} 
+                onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, suburb: v })); }}
+              >
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue placeholder="Select your suburb" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SUBURBS.map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <Collapsible>
-            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-full justify-center py-1">
-              <ChevronDown className="w-4 h-4" />
-              Tell us more (optional)
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-4 pt-3">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onFocus={trackFormStart}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="021 123 4567"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="suburb">Your suburb</Label>
-                  <Select 
-                    value={formData.suburb} 
-                    onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, suburb: v })); }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select suburb" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SUBURBS.map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label>Services you'd like to offer</Label>
-                <div className="grid grid-cols-1 gap-2">
-                  {SERVICES.map((service) => (
-                    <div key={service.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={service.id}
-                        checked={formData.services.includes(service.id)}
-                        onCheckedChange={() => { trackFormStart(); handleServiceToggle(service.id); }}
-                      />
-                      <label htmlFor={service.id} className="text-sm cursor-pointer">
-                        {service.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="experience">Pet experience</Label>
-                <Select 
-                  value={formData.experience} 
-                  onValueChange={(v) => { trackFormStart(); setFormData(prev => ({ ...prev, experience: v })); }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="How much experience do you have?" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pet_owner">I own/have owned pets</SelectItem>
-                    <SelectItem value="professional">Professional pet care experience</SelectItem>
-                    <SelectItem value="volunteer">Volunteered with animals</SelectItem>
-                    <SelectItem value="none">New to pet care</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Urgency */}
-          <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
-            <TrendingUp className="w-4 h-4" />
-            <span>High demand for sitters in Auckland — start earning this week!</span>
-          </div>
-
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : '🐾 Get Started — It\'s Free'}
+          <Button type="submit" className="w-full h-14 text-lg font-semibold" size="lg" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : '🐾 Join Now — It\'s Free'}
           </Button>
 
-          <p className="text-xs text-muted-foreground text-center">
-            No commitment required. Only name & email needed.
-          </p>
+          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Free to join</span>
+            <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> No commitment</span>
+            <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Set your rates</span>
+          </div>
         </form>
       </CardContent>
     </Card>

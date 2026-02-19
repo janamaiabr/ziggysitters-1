@@ -85,15 +85,15 @@ export default function BecomeSitter() {
                   Get matched to pets that fit your experience and style — build real bonds, not just bookings
                 </p>
 
-                {/* Social proof row */}
+                {/* Value props row */}
                 <div className="flex flex-wrap items-center gap-3 mb-8">
                   <div className="flex items-center gap-2 bg-muted rounded-full px-4 py-2 text-sm">
-                    <Users className="w-4 h-4 text-primary" />
-                    <span>50+ sitters across NZ</span>
+                    <Calendar className="w-4 h-4 text-primary" />
+                    <span>Set your own hours</span>
                   </div>
                   <div className="flex items-center gap-2 bg-muted rounded-full px-4 py-2 text-sm">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span>4.9 average rating</span>
+                    <MapPin className="w-4 h-4 text-primary" />
+                    <span>Auckland suburbs</span>
                   </div>
                 </div>
 
@@ -103,10 +103,10 @@ export default function BecomeSitter() {
                     className="px-10 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
                     onClick={() => {
                       ga4.clickSignup('become_sitter_hero');
-                      navigate('/auth');
+                      document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
-                    Join Now
+                    Join Now — It's Free
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                   <Button 
@@ -364,36 +364,25 @@ export default function BecomeSitter() {
           </div>
         </section>
 
-        {/* Success Stories — with colored accents */}
+        {/* FAQ Section */}
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
-              <Badge variant="outline" className="mb-4 text-primary border-primary/30">Real Stories</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Success Stories</h2>
-              <p className="text-lg text-muted-foreground">
-                Hear from our amazing pet sitters
-              </p>
+              <Badge variant="outline" className="mb-4 text-primary border-primary/30">Common Questions</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="max-w-3xl mx-auto space-y-4">
               {[
-                { name: 'Sarah M.', earnings: '$800/month', quote: "I love spending time with dogs and earning extra income. ZiggySitters has been amazing!", color: 'from-pink-500 to-rose-500' },
-                { name: 'Mike T.', earnings: '$1,200/month', quote: 'The flexible schedule works perfectly with my day job. Great platform and support.', color: 'from-violet-500 to-purple-500' },
-                { name: 'Emma L.', earnings: '$950/month', quote: "Being a ZiggySitter has been so rewarding. I get to help pet owners while doing what I love.", color: 'from-blue-500 to-cyan-500' },
-              ].map((story, index) => (
-                <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
-                  <div className={`h-1.5 bg-gradient-to-r ${story.color}`} />
-                  <CardContent className="p-8 text-center">
-                    <div className="flex justify-center mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground mb-6 italic leading-relaxed">"{story.quote}"</p>
-                    <div className="space-y-2">
-                      <p className="font-semibold">{story.name}</p>
-                      <Badge className={`bg-gradient-to-r ${story.color} text-white border-0`}>{story.earnings}</Badge>
-                    </div>
+                { q: 'How much can I earn?', a: 'Rates vary by service — most sitters charge $30-60/day for pet sitting and $15-25 per dog walk. You set your own prices.' },
+                { q: 'Do I need experience?', a: 'Pet ownership experience is great! Professional experience helps but isn\'t required. We match you with pets that suit your comfort level.' },
+                { q: 'Is there a fee to join?', a: 'No — it\'s completely free to create your profile and start receiving booking requests.' },
+                { q: 'What areas do you cover?', a: 'We\'re currently focused on Auckland suburbs — Ponsonby, Grey Lynn, Mt Eden, Remuera, Herne Bay, Takapuna, and more.' },
+              ].map((faq, i) => (
+                <Card key={i} className="border shadow-sm">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2">{faq.q}</h3>
+                    <p className="text-muted-foreground text-sm">{faq.a}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -413,7 +402,7 @@ export default function BecomeSitter() {
               className="px-12 py-6 text-lg font-semibold bg-white text-primary hover:bg-white/90 shadow-xl"
               onClick={() => {
                 ga4.clickSignup('become_sitter_bottom_cta');
-                navigate('/auth');
+                document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
               Apply Now — It's Free
