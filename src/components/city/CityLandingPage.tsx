@@ -10,26 +10,33 @@ interface CityLandingPageProps {
   city: CityData;
 }
 
+const AU_CITIES = ["sunshine-coast", "brisbane", "gold-coast"];
+
 export default function CityLandingPage({ city }: CityLandingPageProps) {
   const navigate = useNavigate();
+  const isAU = AU_CITIES.includes(city.slug);
+  const countryName = isAU ? "Australia" : "New Zealand";
+  const countryCode = isAU ? "AU" : "NZ";
+  const idLabel = isAU ? "AU ID Verified" : "NZ ID Verified";
+  const sittersLabel = isAU ? "Local AU Sitters" : "100% NZ-Based Sitters";
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "ZiggySitters - " + city.name + " Pet Sitters",
-    "description": "Trusted local pet sitting service in " + city.name + ", New Zealand. Find verified pet sitters for dogs, cats, and all pets.",
+    "description": "Trusted local pet sitting service in " + city.name + ", " + countryName + ". Find verified pet sitters for dogs, cats, and all pets.",
     "areaServed": {
       "@type": "City",
       "name": city.name,
       "containedInPlace": {
         "@type": "Country",
-        "name": "New Zealand"
+        "name": countryName
       }
     },
     "address": {
       "@type": "PostalAddress",
       "addressLocality": city.name,
-      "addressCountry": "NZ"
+      "addressCountry": countryCode
     },
     "priceRange": "$55-95/day",
     "serviceType": ["Pet Sitting", "House Sitting", "Drop-in Visits", "Pet Care"]
@@ -60,12 +67,14 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
             <div className="flex items-center gap-3 mb-6">
               <Badge className="bg-white/10 text-white border-white/20 backdrop-blur-sm px-4 py-2 text-sm">
                 <MapPin className="w-4 h-4 mr-2" />
-                100% NZ-Based Sitters
+                {sittersLabel}
               </Badge>
-              <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 backdrop-blur-sm px-4 py-2 text-sm">
-                <Leaf className="w-4 h-4 mr-2" />
-                {city.maoriName}
-              </Badge>
+              {city.maoriName && (
+                <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 backdrop-blur-sm px-4 py-2 text-sm">
+                  <Leaf className="w-4 h-4 mr-2" />
+                  {city.maoriName}
+                </Badge>
+              )}
             </div>
 
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
@@ -99,7 +108,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 <Camera className="w-5 h-5 text-emerald-300" /> Daily Photo Updates
               </span>
               <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Check className="w-5 h-5 text-emerald-400" /> NZ ID Verified
+                <Check className="w-5 h-5 text-emerald-400" /> {idLabel}
               </span>
               <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
                 <Star className="w-5 h-5 text-emerald-400" /> Trusted Reviews
