@@ -96,8 +96,10 @@ export default function LocationPicker({ latitude, longitude, address, onLocatio
     if (!searchQuery.trim()) return;
     setIsSearching(true);
     try {
-      const query = searchQuery.includes('New Zealand') ? searchQuery : `${searchQuery}, New Zealand`;
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+      // Don't append country if user already typed a country or region context
+      const alreadyHasCountry = /new zealand|australia|queensland|nz\b|qld\b/i.test(searchQuery);
+      const query = alreadyHasCountry ? searchQuery : searchQuery;
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=nz,au`);
       const results = await res.json();
       if (results.length > 0) {
         const { lat, lon, display_name } = results[0];
