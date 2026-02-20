@@ -74,6 +74,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/sitter-faq" className="text-gray-300 hover:text-white transition-colors min-h-[44px] inline-flex items-center">
+                  Sitter FAQ
+                </Link>
+              </li>
+              <li>
                 <Link to="/terms" className="text-gray-300 hover:text-white transition-colors min-h-[44px] inline-flex items-center">
                   Terms
                 </Link>
