@@ -113,6 +113,7 @@ import Referral from "./pages/Referral";
 import Guarantee from "./pages/Guarantee";
 import OurSitters from "./pages/OurSitters";
 import PetCareTips from "./pages/PetCareTips";
+import SitterFAQ from "./pages/SitterFAQ";
 
 const queryClient = new QueryClient();
 
@@ -180,6 +181,7 @@ function AppContent() {
             <Route path="/pet-sitters-auckland" element={<AucklandPetSitters />} />
             <Route path="/auckland" element={<AucklandPetSitters />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/sitter-faq" element={<SitterFAQ />} />
             
             {/* Young Walker Routes */}
             <Route path="/young-walkers" element={<YoungWalkers />} />
