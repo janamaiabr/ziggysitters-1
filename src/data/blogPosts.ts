@@ -18,6 +18,64 @@ export interface BlogPostData {
 }
 
 export const blogPosts: BlogPostData[] = [
+  // Sunshine Coast expansion - February 2026
+  {
+    slug: 'pet-sitting-sunshine-coast-guide-2026',
+    title: 'Pet Sitting on the Sunshine Coast: Complete Guide for QLD Pet Owners (2026)',
+    excerpt: 'Everything Sunshine Coast pet owners need to know about professional pet sitting — from Noosa to Caloundra, costs, trusted sitters, and tick safety.',
+    date: '2026-02-20',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=630&fit=crop',
+    readTime: '10 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Complete guide to pet sitting on the Sunshine Coast QLD 2026. Find trusted local sitters in Noosa, Maroochydore, Caloundra, Mooloolaba and surrounds.',
+    keywords: ['pet sitting sunshine coast', 'dog sitter sunshine coast', 'cat sitter sunshine coast qld', 'pet care noosa', 'pet sitter maroochydore', 'sunshine coast pet services 2026'],
+    content: `<p class="text-lg text-muted-foreground mb-8">The Sunshine Coast is one of Queensland\'s most pet-friendly regions — a paradise of beaches, hinterland trails, and a relaxed lifestyle perfectly suited for dogs, cats, and their families. Whether you\'re based in Noosa Heads, Maroochydore, or the lush hinterland villages of Maleny and Montville, finding a trusted, local pet sitter is now easier than ever. This guide covers everything Sunshine Coast pet owners need to know about professional pet sitting in 2026.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Why the Sunshine Coast is Perfect for Pet Owners</h2>
+<p class="mb-6">The Sunshine Coast\'s combination of pristine beaches, national parks, and a warm subtropical climate makes it one of Australia\'s premier destinations for pet-loving families. With over 300 days of sunshine per year, pets can enjoy year-round outdoor activities — from off-leash beach runs at Peregian to hinterland forest walks through Kondalilla National Park. The region\'s relaxed lifestyle and tight-knit communities mean pet sitters here genuinely care about the animals in their charge.</p>
+
+<p class="mb-6">The growing Sunshine Coast population — now over 360,000 residents — has created strong demand for professional pet care services. As more families adopt pets post-pandemic and travel resumes, the need for trustworthy local sitters who understand the region\'s unique environment has never been greater. Platforms like ZiggySitters connect pet owners with vetted, experienced local sitters who know the Sunshine Coast inside out.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting Costs on the Sunshine Coast (2026)</h2>
+<p class="mb-6">Professional pet sitting rates on the Sunshine Coast typically range from $55 to $85 AUD per night for overnight stays in your home. This compares favourably with kennel boarding, which can cost $45–$70 per night without the personalised care and home environment your pet is used to. Drop-in visits generally range from $30 to $50 AUD per visit, depending on duration and the number of pets involved.</p>
+
+<p class="mb-6">Sunshine Coast pet sitters commonly offer a suite of services including in-home overnight stays, daily drop-in visits, dog walking, cat care, medication administration, and detailed daily photo updates. Many experienced sitters also provide added value like plant watering, mail collection, and regular check-in messages — giving you complete peace of mind while you\'re away. The region\'s strong tourism economy means many professional sitters are highly experienced with diverse breeds and temporary care arrangements.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Tick and Snake Safety — Essential for Sunshine Coast Pet Care</h2>
+<p class="mb-6">One of the most critical differences between Sunshine Coast pet care and other regions is the prevalence of paralysis ticks. The subtropical environment, particularly in hinterland areas and near bush, creates ideal conditions for these dangerous parasites. Quality Sunshine Coast pet sitters will always ask about your pet\'s tick prevention treatment, know the warning signs of tick paralysis, and have a clear action plan for contacting your vet immediately if symptoms appear.</p>
+
+<p class="mb-6">Eastern brown snakes and other venomous species are also a consideration, particularly during warmer months and in semi-rural areas from Buderim to Maleny. Experienced local sitters keep dogs on leads in high-risk areas, avoid long grass, and know the locations of the nearest emergency veterinary clinics. When interviewing potential sitters, always ask specifically about their tick awareness protocols and emergency procedures — a quality sitter will have clear, confident answers.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Best Suburbs for Pet Sitting on the Sunshine Coast</h2>
+<p class="mb-6">Noosa Heads and Noosaville are among the most sought-after areas for pet care on the Sunshine Coast. The suburb\'s strict environmental protections mean abundant green space, with Noosa National Park offering stunning coastal walks for well-behaved dogs on leads. Local sitters in Noosa are typically experienced, professional, and in high demand — booking early is strongly recommended, especially during school holidays and peak tourist seasons.</p>
+
+<p class="mb-6">Maroochydore, Alexandra Headland, and Mooloolaba form the commercial heart of the Sunshine Coast and have a dense concentration of experienced pet sitters. These areas offer excellent access to off-leash dog beaches, particularly at Alexandra Headland and sections of Mooloolaba Beach, making them ideal locations for energetic dogs who love a run. Buderim, Sippy Downs, and Kawana Waters are popular residential areas with a growing community of dedicated pet sitters offering competitive rates.</p>
+
+<p class="mb-6">The hinterland villages of Maleny, Montville, and Mapleton suit pets who love cooler temperatures and forest walks. Sitters in these areas often have larger properties with secure yards and a deep understanding of rural pet care needs. Caloundra, at the southern end of the coast, has an established community of affordable pet sitters well-connected to the broader Sunshine Coast network of veterinary services and emergency care.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What to Look for in a Sunshine Coast Pet Sitter</h2>
+<p class="mb-6">The best Sunshine Coast pet sitters will have verifiable experience with local wildlife hazards, genuine reviews from other local pet owners, and clear communication about their procedures and emergency protocols. Look for sitters who mention tick awareness, snake safety, and knowledge of local veterinary services — particularly Sunshine Coast Animal Emergency Service and local clinics in your area.</p>
+
+<p class="mb-6">A quality sitter should be able to meet you and your pet before the booking to establish trust and learn your pet\'s specific routines, preferences, and medical needs. This meet-and-greet is particularly important on the Sunshine Coast where environmental factors like heat, humidity, and local wildlife require sitters to be genuinely prepared. Ask about their experience with your specific pet species and breed, their communication style during a booking, and how they would handle a veterinary emergency.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Finding Your Perfect Sunshine Coast Pet Sitter</h2>
+<p class="mb-6">ZiggySitters connects Sunshine Coast pet owners with a growing network of local, vetted sitters who understand the region\'s unique environment. Our platform allows you to browse detailed sitter profiles, read authentic reviews from other local families, and contact sitters directly to discuss your pet\'s specific needs. Whether you need overnight care while you\'re on holiday, regular drop-in visits during work trips, or daily dog walking, ZiggySitters has local sitters available across the Sunshine Coast region.</p>
+
+<p class="mb-6">To find your ideal sitter, search by your specific suburb — whether that\'s Noosa Heads, Maroochydore, Caloundra, Coolum Beach, or Peregian Beach — and filter by service type and pet species. Reading reviews from other Sunshine Coast pet owners gives you genuine insight into each sitter\'s reliability, communication, and care standards. Booking early for peak periods like school holidays, Christmas, and Easter is strongly recommended given the region\'s high demand for quality pet care.</p>
+
+<div class="bg-muted rounded-xl p-6 mt-8">
+  <h3 class="font-bold text-lg mb-3">🐾 Quick Sunshine Coast Pet Sitting Facts</h3>
+  <ul class="space-y-2 text-sm">
+    <li>✅ Overnight rates: $55–$85 AUD per night</li>
+    <li>✅ Drop-in visits: $30–$50 AUD per visit</li>
+    <li>✅ Always ask about tick prevention protocols</li>
+    <li>✅ Book early for school holidays and peak periods</li>
+    <li>✅ Meet-and-greet before every booking recommended</li>
+    <li>✅ Emergency vet: Sunshine Coast Animal Emergency Service</li>
+  </ul>
+</div>`
+  },
   // New SEO blog posts - February 2026
   // --- Batch 5: 5 February 2026 ---
   {

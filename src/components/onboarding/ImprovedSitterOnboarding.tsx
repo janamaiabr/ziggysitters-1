@@ -530,11 +530,20 @@ export default function ImprovedSitterOnboarding({ profileId, userId, onComplete
           .delete()
           .eq('sitter_id', profileId);
         
-        // Insert new service areas
+        // Insert new service areas - detect city based on suburb
+        const SUNSHINE_COAST_SUBURBS = [
+          'Noosa Heads', 'Maroochydore', 'Caloundra', 'Mooloolaba', 'Buderim',
+          'Nambour', 'Coolum Beach', 'Peregian Beach', 'Maleny', 'Montville',
+          'Sunshine Beach', 'Noosaville', 'Tewantin', 'Eumundi', 'Mapleton',
+          'Alexandra Headland', 'Kawana Waters', 'Sippy Downs', 'Bli Bli', 'Yandina'
+        ];
+        const detectCity = (suburb: string) =>
+          SUNSHINE_COAST_SUBURBS.includes(suburb) ? 'Sunshine Coast' : 'Auckland';
+
         const areasToInsert = serviceAreas.map(suburb => ({
           sitter_id: profileId,
           suburb,
-          city: 'Auckland',
+          city: detectCity(suburb),
           is_primary: suburb === primarySuburb
         }));
         
