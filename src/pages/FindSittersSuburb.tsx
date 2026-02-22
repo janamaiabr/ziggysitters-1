@@ -33,9 +33,9 @@ const SUBURB_DATA: Record<string, {
   },
   'remuera': {
     name: 'Remuera',
-    description: "Premium pet sitting services in Remuera from verified local sitters.",
-    seoDescription: "Remuera's trusted pet sitters. Verified professionals for house sitting, pet care and daily check-ins. Book your local sitter today.",
-    popularAreas: ['Epsom', 'Newmarket', 'Mission Bay'],
+    description: "Trusted cat feeding service & pet sitting in Remuera. Verified local animal minders for dogs, cats and all pets.",
+    seoDescription: "Looking for animal minding in Remuera? ZiggySitters connects you with verified local pet sitters offering cat feeding services, dog walking, house sitting and daily drop-in visits in Remuera, Auckland. Trusted by pet owners across the Eastern Suburbs.",
+    popularAreas: ['Epsom', 'Newmarket', 'Mission Bay', 'Meadowbank', 'Orakei'],
     avgRate: '$70-90',
   },
   'mt-eden': {
@@ -240,9 +240,9 @@ export default function FindSittersSuburb() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title={`Pet Sitters in ${suburbName} | Trusted Local Pet Care | Ziggy Sitters`}
-        description={suburbData?.seoDescription || `Find trusted, verified pet sitters in ${suburbName}, Auckland. Book reliable local sitters for dogs, cats and pets. House sitting, drop-in visits and more.`}
-        keywords={`pet sitter ${suburbName}, dog sitter ${suburbName}, cat sitter ${suburbName}, house sitter ${suburbName}, pet care Auckland, ${suburbName} pet sitting`}
+        title={`Pet Sitters & Cat Feeding Service in ${suburbName} | Animal Minding | ZiggySitters`}
+        description={suburbData?.seoDescription || `Find trusted pet sitters and cat feeding services in ${suburbName}, Auckland. Verified local animal minders for dogs, cats and all pets. House sitting, drop-in visits and more.`}
+        keywords={`pet sitter ${suburbName}, cat feeding service ${suburbName}, animal minding ${suburbName}, dog sitter ${suburbName}, cat sitter ${suburbName}, house sitter ${suburbName}, pet care Auckland, ${suburbName} pet sitting`}
         canonical={`/find-sitters/${suburb}`}
         structuredData={structuredData}
       />

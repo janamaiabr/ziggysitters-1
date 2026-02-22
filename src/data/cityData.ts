@@ -22,9 +22,9 @@ export const cities: CityData[] = [
     parks: ["Cornwall Park", "Western Springs", "Meola Reef Dog Park", "Barry Curtis Park", "Long Bay Regional Park", "Bastion Point"],
     vetInfo: "Auckland has excellent emergency vet care available 24/7, including Auckland Emergency Veterinary Clinic in Grey Lynn and After Hours Veterinary Clinic in Newmarket.",
     localContext: "Auckland pet owners love the outdoor lifestyle \u2014 from beach walks at Takapuna to forest trails in the Waitakere Ranges. Our local sitters know the best dog-friendly spots, understand the humid summer climate, and can navigate Auckland traffic to get your pet to their vet appointment on time.",
-    metaTitle: "Pet Sitting in Auckland \u2014 Trusted Local Sitters | ZiggySitters",
-    metaDescription: "Find trusted pet sitters in Auckland, NZ. Local, vetted, 100% NZ-based sitters for dogs, cats and all pets. Daily photo updates. Book your Auckland pet sitter today!",
-    metaKeywords: "pet sitting auckland, dog sitter auckland, cat sitter auckland, pet care auckland, house sitting auckland, pet sitter near me auckland"
+    metaTitle: "Pet Sitting & Cat Feeding Service Auckland | Animal Minding NZ | ZiggySitters",
+    metaDescription: "Find trusted pet sitters in Auckland, NZ. Cat feeding services, animal minding, dog sitting & house sitting across Remuera, Ponsonby, Mt Eden & all suburbs. Verified local sitters. Book today!",
+    metaKeywords: "pet sitting auckland, dog sitter auckland, cat sitter auckland, cat feeding service auckland, animal minding auckland, cat sitting auckland, pet care auckland, house sitting auckland, pet sitter near me auckland"
   },
   {
     slug: "wellington",
