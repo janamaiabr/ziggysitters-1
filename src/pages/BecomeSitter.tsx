@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -57,6 +58,14 @@ export default function BecomeSitter() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const referralCode = searchParams.get('ref');
+
+  // Track become-sitter page view with source info
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get('utm_source') || 'direct';
+    const utmMedium = params.get('utm_medium') || 'none';
+    ga4.ctaClick('become_sitter_page_view', `${utmSource}/${utmMedium}`);
+  }, []);
 
   return (
     <>
