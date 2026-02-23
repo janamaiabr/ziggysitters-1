@@ -1,10 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Clock, Shield, Camera, Heart, Zap, Dog, Star, Sparkles } from 'lucide-react';
+import { MapPin, Shield, Star, Sparkles, Dog } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
-import QuickEnquiryButton from '@/components/search/QuickEnquiryButton';
 import { YOUNG_WALKER_CONFIG } from '@/config/features';
 
 interface EnhancedSitterCardProps {
@@ -31,252 +30,117 @@ interface EnhancedSitterCardProps {
   isTopSitter?: boolean;
 }
 
-export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClick, showBookingDates, isTopSitter }: EnhancedSitterCardProps) {
-  // Calculate trust signals
-  const hasProfilePhoto = !!sitter.image;
-  const hasMultipleServices = sitter.services.length > 1;
-  const hasDetailedBio = sitter.bio && sitter.bio.length > 50;
+export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClick, isTopSitter }: EnhancedSitterCardProps) {
   const experienceYears = sitter.sitterServices?.[0]?.experience_years || 0;
-  const maxPets = sitter.sitterServices?.[0]?.max_pets || 1;
   const hasFencedYard = sitter.sitterServices?.some(s => s.has_fenced_yard);
 
   const handleClick = () => {
-    // Track the click for analytics - include sitter name for better context
-    if (onSitterClick) {
-      onSitterClick(sitter.id, sitter.name);
-    }
+    if (onSitterClick) onSitterClick(sitter.id, sitter.name);
     onViewProfile();
   };
 
   return (
     <Card 
-      className="overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full group border-border/50 hover:border-primary/30 cursor-pointer"
+      className="overflow-hidden hover:shadow-lg transition-all duration-200 border-border/50 hover:border-primary/30 cursor-pointer"
       onClick={handleClick}
     >
-      {/* Image Section with Overlays - Uses aspect ratio that shows faces better */}
-      <div className="relative">
-        <div className="aspect-[3/4] sm:aspect-[4/5] bg-muted relative overflow-hidden">
-          {sitter.image ? (
-            <img 
-              src={sitter.image} 
-              alt={`${sitter.name}'s profile`}
-              className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-300"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-              <div className="text-center">
-                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-3xl font-bold text-primary">
-                    {sitter.name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground font-medium">{sitter.name}</p>
-              </div>
-            </div>
-          )}
-          
-          {/* Gradient overlay at bottom */}
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
-        </div>
-        
-        {/* Top badges */}
-        <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
-          <div className="flex gap-1 flex-wrap">
-            {isTopSitter && !sitter.isYoungWalker && (
-              <Badge className="text-xs shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 animate-pulse">
-                ⭐ Most Popular
-              </Badge>
-            )}
-            {sitter.isYoungWalker && (
-              <Badge className="text-xs shadow-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0">
-                <Dog className="w-3 h-3 mr-1" />
-                Young Walker
-              </Badge>
-            )}
-            {sitter.isYoungWalker && sitter.youngWalkerAge && (
-              <Badge variant="secondary" className="text-xs shadow-lg">
-                Age {sitter.youngWalkerAge}
-              </Badge>
-            )}
-            {!sitter.isYoungWalker && experienceYears >= 2 && (
-              <Badge variant="secondary" className="text-xs shadow-lg">
-                {experienceYears}+ yrs exp
-              </Badge>
-            )}
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex gap-3">
+          {/* Avatar — left side */}
+          <div className="shrink-0">
+            <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-primary/10">
+              <AvatarImage src={sitter.image} alt={sitter.name} className="object-cover" />
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
+                {sitter.name.split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
+            </Avatar>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Quick enquiry button - allows messaging without leaving search (only for regular sitters) */}
-            {!sitter.isYoungWalker && (
-              <QuickEnquiryButton
-                sitterId={sitter.id}
-                sitterName={sitter.name}
-                sitterAvatar={sitter.image || undefined}
-                variant="icon"
-                className="shadow-lg"
-              />
-            )}
-            {sitter.isYoungWalker ? (
-              <Badge className="bg-green-500 text-white shadow-lg">
-                <Shield className="w-3 h-3 mr-1" />
-                Parent Supervised
-              </Badge>
-            ) : (
-              <SitterVerificationBadge 
-                isVerified={sitter.verified}
-                hasGoldenBadge={sitter.golden_badge}
-                size="sm"
-              />
-            )}
-          </div>
-        </div>
-        
-        {/* Bottom price tag with estimate */}
-        <div className="absolute bottom-2 left-2">
-          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
-            {sitter.isYoungWalker ? (
-              <div className="flex flex-col">
-                <span className="font-bold text-emerald-600">${sitter.baseRate}</span>
-                <span className="text-muted-foreground text-xs">/{YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}min walk</span>
-              </div>
-            ) : (
-              <div className="flex flex-col">
-                <div>
-                  <span className="font-bold text-foreground">${sitter.baseRate}</span>
-                  <span className="text-muted-foreground text-sm">/day</span>
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  ~${Math.round(sitter.baseRate * 7 * 1.1)} for 7 days
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Photo guarantee badge - only for regular sitters */}
-        {!sitter.isYoungWalker && (
-          <div className="absolute bottom-2 right-2">
-            <div className="bg-primary/90 text-primary-foreground px-2 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg">
-              <Camera className="w-3 h-3" />
-              Daily photos
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* Content Section */}
-      <CardHeader className="pb-2 pt-4">
-        <div className="flex items-start gap-3">
-          <Avatar className="h-12 w-12 border-2 border-primary/20 shadow-sm">
-            <AvatarImage src={sitter.image} alt={sitter.name} className="object-cover" />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-              {sitter.name.split(' ').map(n => n[0]).join('')}
-            </AvatarFallback>
-          </Avatar>
+
+          {/* Info — right side */}
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg truncate">{sitter.name}</CardTitle>
-            <div className="flex items-center text-sm text-muted-foreground">
-              <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+            {/* Name + verification */}
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <h3 className="font-semibold text-base truncate">{sitter.name}</h3>
+              {sitter.golden_badge && (
+                <span title="Police vetted" className="text-amber-500">⭐</span>
+              )}
+              {sitter.verified && !sitter.golden_badge && (
+                <Shield className="w-3.5 h-3.5 text-green-500 shrink-0" />
+              )}
+            </div>
+
+            {/* Location */}
+            <div className="flex items-center text-sm text-muted-foreground mb-1">
+              <MapPin className="w-3 h-3 mr-1 shrink-0" />
               <span className="truncate">{sitter.location}</span>
             </div>
-            {/* Rating or New Badge */}
-            <div className="flex items-center gap-1 mt-1">
+
+            {/* Rating or New */}
+            <div className="flex items-center gap-1.5 mb-1.5">
               {sitter.feedback_count && sitter.feedback_count > 0 ? (
-                <>
+                <div className="flex items-center gap-1">
                   <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
+                    {[1, 2, 3, 4, 5].map((s) => (
                       <Star
-                        key={star}
+                        key={s}
                         className={`h-3 w-3 ${
-                          star <= Math.round(sitter.rating || 0)
+                          s <= Math.round(sitter.rating || 0)
                             ? 'fill-yellow-400 text-yellow-400'
                             : 'text-muted-foreground/30'
                         }`}
                       />
                     ))}
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    ({sitter.feedback_count})
-                  </span>
-                </>
+                  <span className="text-xs text-muted-foreground">({sitter.feedback_count})</span>
+                </div>
               ) : (
-                <Badge variant="secondary" className="text-xs py-0 h-5 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-300 border-0">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  New to Ziggy
+                <span className="text-xs text-muted-foreground">New sitter</span>
+              )}
+              {experienceYears >= 2 && (
+                <span className="text-xs text-muted-foreground">· {experienceYears}+ yrs exp</span>
+              )}
+            </div>
+
+            {/* Bio — 2 lines max */}
+            <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{sitter.bio}</p>
+
+            {/* Tags row — compact */}
+            <div className="flex flex-wrap gap-1 mb-2">
+              {sitter.isYoungWalker && (
+                <Badge className="text-[10px] py-0 px-1.5 h-5 bg-emerald-100 text-emerald-700 border-0">
+                  <Dog className="w-2.5 h-2.5 mr-0.5" /> Young Walker
+                </Badge>
+              )}
+              {sitter.services.slice(0, 2).map((service) => (
+                <Badge key={service} variant="outline" className="text-[10px] py-0 px-1.5 h-5">
+                  {service.replace('Pet Sitting ', '').replace('(', '').replace(')', '')}
+                </Badge>
+              ))}
+              {hasFencedYard && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-5 text-blue-600 border-blue-200">
+                  Fenced yard
                 </Badge>
               )}
             </div>
+
+            {/* Price + CTA row */}
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                {sitter.isYoungWalker ? (
+                  <span className="font-bold text-emerald-600">${sitter.baseRate}<span className="text-xs font-normal text-muted-foreground">/walk</span></span>
+                ) : (
+                  <span className="font-bold">${sitter.baseRate}<span className="text-xs font-normal text-muted-foreground">/day</span></span>
+                )}
+              </div>
+              <Button 
+                size="sm"
+                className="text-xs font-semibold px-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white shadow-sm"
+                onClick={(e) => { e.stopPropagation(); handleClick(); }}
+              >
+                View Profile →
+              </Button>
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-3 flex flex-col flex-grow pt-0">
-        {/* Bio */}
-        <p className="text-sm text-muted-foreground line-clamp-2">{sitter.bio}</p>
-        
-        {/* Trust Signals */}
-        <div className="flex flex-wrap gap-2">
-          {sitter.verified && (
-            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              <Shield className="w-3 h-3" />
-              ID Verified
-            </div>
-          )}
-          {hasFencedYard && (
-            <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-              <Heart className="w-3 h-3" />
-              Fenced yard
-            </div>
-          )}
-          {maxPets > 1 && (
-            <div className="flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
-              <Zap className="w-3 h-3" />
-              Takes {maxPets} pets
-            </div>
-          )}
-        </div>
-        
-        {/* Services */}
-        <div className="flex flex-wrap gap-1">
-          {sitter.services.slice(0, 2).map((service) => (
-            <Badge key={service} variant="outline" className="text-xs">
-              {service}
-            </Badge>
-          ))}
-          {sitter.services.length > 2 && (
-            <Badge variant="outline" className="text-xs bg-muted">
-              +{sitter.services.length - 2}
-            </Badge>
-          )}
-        </div>
-        
-        {/* Response time indicator */}
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Clock className="w-3 h-3" />
-          Usually responds within a few hours
-        </div>
-        
-        {/* CTA Button - Action-oriented messaging */}
-        <div className="mt-auto pt-3 space-y-2">
-          <Button 
-            className={`w-full font-bold shadow-lg group-hover:shadow-xl transition-all text-base py-5 text-white ${
-              sitter.isYoungWalker 
-                ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-400'
-                : 'bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400'
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleClick();
-            }}
-          >
-            {sitter.isYoungWalker ? `Book Walk – $${sitter.baseRate}` : '🐾 Meet This Sitter'}
-            <span className="ml-2">→</span>
-          </Button>
-          <p className="text-xs text-center text-muted-foreground font-medium">
-            {sitter.isYoungWalker 
-              ? `🐕 ${YOUNG_WALKER_CONFIG.MAX_WALK_DURATION}-min walk • Parent supervised`
-              : '✓ Free to enquire • No payment until confirmed'
-            }
-          </p>
         </div>
       </CardContent>
     </Card>

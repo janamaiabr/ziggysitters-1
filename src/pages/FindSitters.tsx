@@ -884,16 +884,29 @@ export default function FindSitters() {
           {/* Sitter Cards Grid - Enhanced with Pagination */}
           {!isLoading && searchPerformed && filteredSitters.length > 0 && (
             <>
-              {/* Urgency banner */}
-              <div className="mb-4 flex flex-wrap items-center gap-3">
-                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-0 text-sm py-1.5 px-3">
-                  📍 {filteredSitters.length} sitter{filteredSitters.length !== 1 ? 's' : ''} available{location ? ` near ${location}` : ''}
-                </Badge>
-                {filteredSitters.length <= 5 && filteredSitters.length > 0 && (
-                  <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-0 text-sm py-1.5 px-3 animate-pulse">
-                    🔥 Only {filteredSitters.length} available — book early!
-                  </Badge>
-                )}
+              {/* Results header with count + sort */}
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-sm text-muted-foreground font-medium">
+                  {filteredSitters.length} sitter{filteredSitters.length !== 1 ? 's' : ''}{location ? ` near ${location}` : ''}
+                </span>
+                <select 
+                  className="text-sm border rounded-lg px-3 py-1.5 bg-background"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const sorted = [...filteredSitters];
+                    if (val === 'price-low') sorted.sort((a, b) => a.baseRate - b.baseRate);
+                    else if (val === 'price-high') sorted.sort((a, b) => b.baseRate - a.baseRate);
+                    else if (val === 'experience') sorted.sort((a, b) => (b.sitterServices?.[0]?.experience_years || 0) - (a.sitterServices?.[0]?.experience_years || 0));
+                    else if (val === 'verified') sorted.sort((a, b) => (b.golden_badge ? 2 : b.verified ? 1 : 0) - (a.golden_badge ? 2 : a.verified ? 1 : 0));
+                    setFilteredSitters(sorted);
+                  }}
+                >
+                  <option value="recommended">Sort: Recommended</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="experience">Most Experienced</option>
+                  <option value="verified">Most Verified</option>
+                </select>
               </div>
 
               {/* Map View */}
@@ -919,7 +932,7 @@ export default function FindSitters() {
 
               {/* List View */}
               {viewMode === 'list' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {filteredSitters.slice(0, displayLimit).map((sitter, index) => (
                   <EnhancedSitterCard
                     key={sitter.id}
