@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { MapPin } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 
 const AREAS = {
   'Auckland Central': [
@@ -109,8 +107,6 @@ export default function Areas() {
         </script>
       </Helmet>
 
-      <Header />
-      
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-12 md:py-16">
@@ -171,8 +167,6 @@ export default function Areas() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </>
   );
 }
