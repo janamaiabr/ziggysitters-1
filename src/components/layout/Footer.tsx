@@ -121,6 +121,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/pet-sitting-sunshine-coast" className="text-gray-300 hover:text-white transition-colors">
+                  Sunshine Coast
+                </Link>
+              </li>
+              <li>
                 <Link to="/areas" className="text-gray-300 hover:text-white transition-colors font-medium">
                   View All Areas →
                 </Link>
