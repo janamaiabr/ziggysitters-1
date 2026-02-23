@@ -62,14 +62,26 @@ const AREAS = {
     { name: 'Dinsdale', slug: 'dinsdale' },
     { name: 'Rototuna', slug: 'rototuna' },
   ],
+  'Sunshine Coast, QLD': [
+    { name: 'Noosa Heads', slug: 'noosa-heads' },
+    { name: 'Maroochydore', slug: 'maroochydore' },
+    { name: 'Caloundra', slug: 'caloundra' },
+    { name: 'Mooloolaba', slug: 'mooloolaba' },
+    { name: 'Buderim', slug: 'buderim' },
+    { name: 'Nambour', slug: 'nambour' },
+    { name: 'Coolum Beach', slug: 'coolum-beach' },
+    { name: 'Peregian Beach', slug: 'peregian-beach' },
+    { name: 'Maleny', slug: 'maleny' },
+    { name: 'Montville', slug: 'montville' },
+  ],
 };
 
 export default function Areas() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: 'Pet Sitting Areas We Service - Auckland & Hamilton',
-    description: 'Find trusted pet sitters across Auckland and Hamilton. Browse all suburbs we service including Ponsonby, Grey Lynn, Takapuna, and more.',
+    name: 'Pet Sitting Areas We Service - Auckland, Hamilton & Sunshine Coast',
+    description: 'Find trusted pet sitters across Auckland, Hamilton and Sunshine Coast. Browse all suburbs we service including Ponsonby, Grey Lynn, Takapuna, Noosa Heads and more.',
     url: 'https://ziggysitters.com/areas',
     mainEntity: {
       '@type': 'ItemList',
@@ -85,10 +97,10 @@ export default function Areas() {
   return (
     <>
       <Helmet>
-        <title>Pet Sitting Areas - Auckland & Hamilton | ZiggySitters</title>
+        <title>Pet Sitting Areas - Auckland, Hamilton & Sunshine Coast | ZiggySitters</title>
         <meta 
           name="description" 
-          content="Find trusted pet sitters across Auckland and Hamilton suburbs. Browse Ponsonby, Grey Lynn, Remuera, Takapuna, and 40+ more areas we service." 
+          content="Find trusted pet sitters across Auckland, Hamilton and Sunshine Coast suburbs. Browse Ponsonby, Grey Lynn, Remuera, Takapuna, Noosa Heads and 50+ more areas." 
         />
         <meta name="keywords" content="pet sitting auckland, pet sitter hamilton, dog sitting auckland suburbs, cat sitting near me" />
         <link rel="canonical" href="https://ziggysitters.com/areas" />
@@ -107,7 +119,7 @@ export default function Areas() {
               Areas We Service
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Find trusted, verified pet sitters across Auckland and Hamilton. 
+              Find trusted, verified pet sitters across Auckland, Hamilton and the Sunshine Coast. 
               Click on any suburb to see available sitters in your area.
             </p>
           </div>
