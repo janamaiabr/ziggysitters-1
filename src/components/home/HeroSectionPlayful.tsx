@@ -52,7 +52,7 @@ const HeroSectionPlayful = ({
     // Track the search from homepage
     trackSearch({
       suburb: location || 'homepage_search',
-      city: 'Auckland',
+      city: location || 'homepage',
       serviceType: serviceType || 'any',
       resultsCount: 0, // Will be updated when results load
     });
@@ -106,10 +106,10 @@ const HeroSectionPlayful = ({
                   Whether it's an <span className="font-bold text-foreground">anxious rescue, an energetic pup, or a senior cat</span> — we match your pet with a sitter who understands their unique personality.
                 </p>
 
-                {/* NZ-only positioning badge */}
+                {/* Positioning badge */}
                 <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-full px-3 py-1.5">
-                  <span className="text-base">🇳🇿</span>
-                  <span className="text-xs md:text-sm font-semibold text-emerald-700 dark:text-emerald-300">NZ{"'"}s only dedicated pet sitting platform</span>
+                  <span className="text-base">🐾</span>
+                  <span className="text-xs md:text-sm font-semibold text-emerald-700 dark:text-emerald-300">Local pet sitting — AU &amp; NZ</span>
                 </div>
 
                 {/* Single Primary CTA */}
@@ -145,7 +145,7 @@ const HeroSectionPlayful = ({
                   <span>🐾</span> Personality Matched
                 </div>
                 <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium">
-                  <Heart className="w-4 h-4 text-pink-500 fill-pink-500" /> 5% to SPCA NZ
+                  <Heart className="w-4 h-4 text-pink-500 fill-pink-500" /> 5% to Animal Welfare
                 </div>
               </div>
 
@@ -277,7 +277,7 @@ const HeroSectionPlayful = ({
                 or <button onClick={() => {
                   trackSearch({
                     suburb: 'browse_all',
-                    city: 'Auckland',
+                    city: 'all',
                     serviceType: 'any',
                     resultsCount: 0,
                   });

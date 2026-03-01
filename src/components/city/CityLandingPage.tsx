@@ -152,9 +152,9 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">NZ Verified</h3>
+                <h3 className="text-xl font-bold mb-3">{isAU ? "AU Verified" : "NZ Verified"}</h3>
                 <p className="text-muted-foreground">
-                  Every sitter is verified with NZ documents. Real locals you can trust with your home and pets.
+                  {"Every sitter is verified with " + (isAU ? "Australian" : "NZ") + " documents. Real locals you can trust with your home and pets."}
                 </p>
               </Card>
 
@@ -164,7 +164,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 </div>
                 <h3 className="text-xl font-bold mb-3">Family Values</h3>
                 <p className="text-muted-foreground">
-                  Your pets are treated like family, not just another booking. The Kiwi way of caring.
+                  {"Your pets are treated like family, not just another booking. The " + (isAU ? "Aussie" : "Kiwi") + " way of caring."}
                 </p>
               </Card>
             </div>
@@ -258,7 +258,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
               <p className="text-muted-foreground mb-4">
                 Your sitter stays overnight in your home. Pets stay comfortable in their own environment.
               </p>
-              <p className="text-2xl font-bold text-emerald-600">From $65<span className="text-sm font-normal text-muted-foreground">/night</span></p>
+              <p className="text-2xl font-bold text-emerald-600">From {isAU ? "A$" : "$"}65<span className="text-sm font-normal text-muted-foreground">/night</span></p>
             </Card>
 
             <Card className="p-6 hover:shadow-xl transition-all hover:-translate-y-1">
@@ -269,7 +269,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
               <p className="text-muted-foreground mb-4">
                 Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets.
               </p>
-              <p className="text-2xl font-bold text-teal-600">From $35<span className="text-sm font-normal text-muted-foreground">/visit</span></p>
+              <p className="text-2xl font-bold text-teal-600">From {isAU ? "A$" : "$"}35<span className="text-sm font-normal text-muted-foreground">/visit</span></p>
             </Card>
 
             <Card className="p-6 hover:shadow-xl transition-all hover:-translate-y-1">
@@ -280,7 +280,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
               <p className="text-muted-foreground mb-4">
                 {"Your pet stays at the sitter\u2019s home. Great for social pets who love company."}
               </p>
-              <p className="text-2xl font-bold text-cyan-600">From $55<span className="text-sm font-normal text-muted-foreground">/night</span></p>
+              <p className="text-2xl font-bold text-cyan-600">From {isAU ? "A$" : "$"}55<span className="text-sm font-normal text-muted-foreground">/night</span></p>
             </Card>
           </div>
         </div>

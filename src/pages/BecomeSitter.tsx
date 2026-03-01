@@ -71,8 +71,8 @@ export default function BecomeSitter() {
     <>
       <SEOHead 
         title="Become a Pet Sitter - Earn Money Caring for Pets | ZiggySitters"
-        description="Join ZiggySitters as a verified pet sitter. Earn money providing pet care - send daily reports when owners request them. Apply now to start your pet sitting career in Auckland."
-        keywords="become pet sitter, pet sitting jobs Auckland, earn money pet care, verified pet sitter application"
+        description="Join ZiggySitters as a verified pet sitter. Earn money providing pet care — send daily reports when owners request them. Apply now to start your pet sitting career in NZ or Australia."
+        keywords="become pet sitter, pet sitting jobs, earn money pet care, verified pet sitter application, pet sitter sunshine coast, pet sitter auckland"
         canonical="/become-sitter"
       />
       <div className="min-h-screen bg-background">
@@ -84,7 +84,7 @@ export default function BecomeSitter() {
               <div className="animate-fade-in">
                 <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-sm px-4 py-1.5">
                   <Heart className="w-4 h-4 mr-2 inline fill-primary" />
-                  Now accepting sitters in Auckland
+                  Now accepting sitters in NZ &amp; Sunshine Coast
                 </Badge>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
                   <span className="block">Work With the Pets</span>
@@ -102,7 +102,7 @@ export default function BecomeSitter() {
                   </div>
                   <div className="flex items-center gap-2 bg-muted rounded-full px-4 py-2 text-sm">
                     <MapPin className="w-4 h-4 text-primary" />
-                    <span>Auckland suburbs</span>
+                    <span>NZ &amp; QLD areas</span>
                   </div>
                 </div>
 
@@ -350,7 +350,7 @@ export default function BecomeSitter() {
             <div className="text-center mb-10">
               <h2 className="text-2xl md:text-3xl font-bold mb-3">🔥 Pet Sitters Needed in These Areas</h2>
               <p className="text-muted-foreground">
-                These Auckland suburbs have high demand and need more sitters
+                These areas have high demand and need more sitters
               </p>
             </div>
             
@@ -386,7 +386,7 @@ export default function BecomeSitter() {
                 { q: 'How much can I earn?', a: 'Rates vary by service — most sitters charge $30-60/day for pet sitting and $15-25 per dog walk. You set your own prices.' },
                 { q: 'Do I need experience?', a: 'Pet ownership experience is great! Professional experience helps but isn\'t required. We match you with pets that suit your comfort level.' },
                 { q: 'Is there a fee to join?', a: 'No — it\'s completely free to create your profile and start receiving booking requests.' },
-                { q: 'What areas do you cover?', a: 'We\'re currently focused on Auckland suburbs — Ponsonby, Grey Lynn, Mt Eden, Remuera, Herne Bay, Takapuna, and more.' },
+                { q: 'What areas do you cover?', a: 'We cover Auckland suburbs (Ponsonby, Grey Lynn, Mt Eden, Remuera, Herne Bay, Takapuna and more) plus the Sunshine Coast, QLD (Noosa, Maroochydore, Caloundra, Mooloolaba, Buderim and surrounding areas).' },
               ].map((faq, i) => (
                 <Card key={i} className="border shadow-sm">
                   <CardContent className="p-6">
@@ -404,7 +404,7 @@ export default function BecomeSitter() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Start Your Pet Sitting Journey?</h2>
             <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
-              Join hundreds of sitters across New Zealand who are earning while doing what they love.
+              Join sitters across New Zealand and Australia who are earning while doing what they love.
             </p>
             <Button 
               size="lg" 

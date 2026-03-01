@@ -183,6 +183,12 @@ export default function Header() {
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-hastings')}>
                 🍇 Hastings
               </DropdownMenuItem>
+              <DropdownMenuItem disabled className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                Australia
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-sunshine-coast')}>
+                ☀️ Sunshine Coast, QLD
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to="/young-walkers" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
@@ -336,6 +342,10 @@ export default function Header() {
                       <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-queenstown')}>
                         ⛰️ Queenstown
                       </Button>
+                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Australia</div>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-sunshine-coast')}>
+                        ☀️ Sunshine Coast, QLD
+                      </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
                         🐕 Young Walkers
                       </Button>
@@ -417,6 +427,10 @@ export default function Header() {
                       </Button>
                       <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-queenstown')}>
                         ⛰️ Queenstown
+                      </Button>
+                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Australia</div>
+                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-sunshine-coast')}>
+                        ☀️ Sunshine Coast, QLD
                       </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
                         🐕 Young Walkers
