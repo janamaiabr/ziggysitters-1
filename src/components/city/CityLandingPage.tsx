@@ -38,7 +38,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
       "addressLocality": city.name,
       "addressCountry": countryCode
     },
-    "priceRange": "$55-95/day",
+    "priceRange": isAU ? "A$55-95/day" : "NZ$55-95/day",
     "serviceType": ["Pet Sitting", "House Sitting", "Drop-in Visits", "Pet Care"]
   };
 
