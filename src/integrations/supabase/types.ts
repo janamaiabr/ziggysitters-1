@@ -732,28 +732,21 @@ export type Database = {
           age: number | null
           breed: string | null
           created_at: string
-          dietary_requirements: string | null
           emergency_contact_name: string | null
           emergency_contact_phone: string | null
-          emergency_vet_name: string | null
-          emergency_vet_phone: string | null
           exercise_needs: string | null
           feeding_instructions: string | null
           gender: string | null
-          health_conditions: string[] | null
           id: string
           is_neutered: boolean | null
-          is_senior: boolean | null
           medical_conditions: string[] | null
-          medications: Json | null
-          mobility_level: string | null
+          medications: string[] | null
           name: string
           owner_id: string
           personality_traits: string[] | null
           photo_urls: string[] | null
           size: Database["public"]["Enums"]["pet_size"] | null
           special_care_notes: string | null
-          special_needs: string | null
           species: Database["public"]["Enums"]["pet_species"]
           updated_at: string
           vaccination_status: boolean | null
@@ -763,28 +756,21 @@ export type Database = {
           age?: number | null
           breed?: string | null
           created_at?: string
-          dietary_requirements?: string | null
           emergency_contact_name?: string | null
           emergency_contact_phone?: string | null
-          emergency_vet_name?: string | null
-          emergency_vet_phone?: string | null
           exercise_needs?: string | null
           feeding_instructions?: string | null
           gender?: string | null
-          health_conditions?: string[] | null
           id?: string
           is_neutered?: boolean | null
-          is_senior?: boolean | null
           medical_conditions?: string[] | null
-          medications?: Json | null
-          mobility_level?: string | null
+          medications?: string[] | null
           name: string
           owner_id: string
           personality_traits?: string[] | null
           photo_urls?: string[] | null
           size?: Database["public"]["Enums"]["pet_size"] | null
           special_care_notes?: string | null
-          special_needs?: string | null
           species: Database["public"]["Enums"]["pet_species"]
           updated_at?: string
           vaccination_status?: boolean | null
@@ -794,28 +780,21 @@ export type Database = {
           age?: number | null
           breed?: string | null
           created_at?: string
-          dietary_requirements?: string | null
           emergency_contact_name?: string | null
           emergency_contact_phone?: string | null
-          emergency_vet_name?: string | null
-          emergency_vet_phone?: string | null
           exercise_needs?: string | null
           feeding_instructions?: string | null
           gender?: string | null
-          health_conditions?: string[] | null
           id?: string
           is_neutered?: boolean | null
-          is_senior?: boolean | null
           medical_conditions?: string[] | null
-          medications?: Json | null
-          mobility_level?: string | null
+          medications?: string[] | null
           name?: string
           owner_id?: string
           personality_traits?: string[] | null
           photo_urls?: string[] | null
           size?: Database["public"]["Enums"]["pet_size"] | null
           special_care_notes?: string | null
-          special_needs?: string | null
           species?: Database["public"]["Enums"]["pet_species"]
           updated_at?: string
           vaccination_status?: boolean | null
@@ -861,7 +840,6 @@ export type Database = {
           bio: string | null
           blue_card_document_url: string | null
           city: string | null
-          competency_tags: string[] | null
           created_at: string
           email: string
           email_verification_sent_at: string | null
@@ -871,15 +849,9 @@ export type Database = {
           golden_badge_approved: boolean | null
           golden_badge_approved_at: string | null
           golden_badge_approved_by: string | null
-          home_visit_completed: boolean | null
-          home_visit_date: string | null
-          home_visit_notes: string | null
           id: string
           id_document_url: string | null
           id_document_urls: string[] | null
-          interview_completed: boolean | null
-          interview_date: string | null
-          interview_notes: string | null
           is_test_account: boolean
           is_verified: boolean | null
           is_young_walker: boolean | null
@@ -889,12 +861,8 @@ export type Database = {
           longitude: number | null
           onboarding_completed: boolean | null
           phone: string | null
-          police_check_date: string | null
-          police_check_status: string | null
           postal_code: string | null
           rating: number | null
-          referral_source: string | null
-          references_count: number | null
           response_rate: number | null
           role: Database["public"]["Enums"]["user_role"]
           stripe_account_enabled: boolean | null
@@ -909,7 +877,6 @@ export type Database = {
           verification_status:
             | Database["public"]["Enums"]["verification_status"]
             | null
-          vetting_status: string | null
         }
         Insert: {
           address?: string | null
@@ -919,7 +886,6 @@ export type Database = {
           bio?: string | null
           blue_card_document_url?: string | null
           city?: string | null
-          competency_tags?: string[] | null
           created_at?: string
           email: string
           email_verification_sent_at?: string | null
@@ -929,15 +895,9 @@ export type Database = {
           golden_badge_approved?: boolean | null
           golden_badge_approved_at?: string | null
           golden_badge_approved_by?: string | null
-          home_visit_completed?: boolean | null
-          home_visit_date?: string | null
-          home_visit_notes?: string | null
           id?: string
           id_document_url?: string | null
           id_document_urls?: string[] | null
-          interview_completed?: boolean | null
-          interview_date?: string | null
-          interview_notes?: string | null
           is_test_account?: boolean
           is_verified?: boolean | null
           is_young_walker?: boolean | null
@@ -947,12 +907,8 @@ export type Database = {
           longitude?: number | null
           onboarding_completed?: boolean | null
           phone?: string | null
-          police_check_date?: string | null
-          police_check_status?: string | null
           postal_code?: string | null
           rating?: number | null
-          referral_source?: string | null
-          references_count?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"]
           stripe_account_enabled?: boolean | null
@@ -967,7 +923,6 @@ export type Database = {
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
             | null
-          vetting_status?: string | null
         }
         Update: {
           address?: string | null
@@ -977,7 +932,6 @@ export type Database = {
           bio?: string | null
           blue_card_document_url?: string | null
           city?: string | null
-          competency_tags?: string[] | null
           created_at?: string
           email?: string
           email_verification_sent_at?: string | null
@@ -987,15 +941,9 @@ export type Database = {
           golden_badge_approved?: boolean | null
           golden_badge_approved_at?: string | null
           golden_badge_approved_by?: string | null
-          home_visit_completed?: boolean | null
-          home_visit_date?: string | null
-          home_visit_notes?: string | null
           id?: string
           id_document_url?: string | null
           id_document_urls?: string[] | null
-          interview_completed?: boolean | null
-          interview_date?: string | null
-          interview_notes?: string | null
           is_test_account?: boolean
           is_verified?: boolean | null
           is_young_walker?: boolean | null
@@ -1005,12 +953,8 @@ export type Database = {
           longitude?: number | null
           onboarding_completed?: boolean | null
           phone?: string | null
-          police_check_date?: string | null
-          police_check_status?: string | null
           postal_code?: string | null
           rating?: number | null
-          referral_source?: string | null
-          references_count?: number | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"]
           stripe_account_enabled?: boolean | null
@@ -1025,7 +969,6 @@ export type Database = {
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
             | null
-          vetting_status?: string | null
         }
         Relationships: []
       }
