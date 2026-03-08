@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { usePetOwnerOnboarding } from '@/hooks/usePetOwnerOnboarding';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, X, Upload, Save } from 'lucide-react';
+import { PlusCircle, X, Upload, Save, Heart } from 'lucide-react';
 
 const personalityTraits = [
   'Friendly', 'Energetic', 'Calm', 'Playful', 'Shy', 'Aggressive', 'Social', 'Independent',
@@ -20,6 +21,18 @@ const medicalConditions = [
   'Allergies', 'Arthritis', 'Diabetes', 'Heart Disease', 'Kidney Disease', 'Hip Dysplasia',
   'Epilepsy', 'Cancer', 'Eye Problems', 'Skin Conditions', 'Dental Issues', 'None'
 ];
+
+const healthConditionOptions = [
+  'arthritis', 'diabetes', 'heart condition', 'anxiety',
+  'vision impaired', 'hearing impaired', 'post-surgical', 'other'
+];
+
+interface Medication {
+  name: string;
+  dosage: string;
+  frequency: string;
+  instructions: string;
+}
 
 interface PetsManagementProps {
   profileId: string;
@@ -93,6 +106,30 @@ export default function PetsManagement({ profileId, userId, onPetAdded, autoOpen
       ? currentConditions.filter(c => c !== condition)
       : [...currentConditions, condition];
     updatePet(petIndex, 'medical_conditions', newConditions);
+  };
+
+  const toggleHealthCondition = (petIndex: number, condition: string) => {
+    const current: string[] = (pets[petIndex] as any).health_conditions || [];
+    const updated = current.includes(condition)
+      ? current.filter(c => c !== condition)
+      : [...current, condition];
+    updatePet(petIndex, 'health_conditions' as any, updated);
+  };
+
+  const addMedication = (petIndex: number) => {
+    const current: Medication[] = (pets[petIndex] as any).medications || [];
+    updatePet(petIndex, 'medications' as any, [...current, { name: '', dosage: '', frequency: '', instructions: '' }]);
+  };
+
+  const updateMedication = (petIndex: number, medIndex: number, field: keyof Medication, value: string) => {
+    const current: Medication[] = (pets[petIndex] as any).medications || [];
+    const updated = current.map((m, i) => i === medIndex ? { ...m, [field]: value } : m);
+    updatePet(petIndex, 'medications' as any, updated);
+  };
+
+  const removeMedication = (petIndex: number, medIndex: number) => {
+    const current: Medication[] = (pets[petIndex] as any).medications || [];
+    updatePet(petIndex, 'medications' as any, current.filter((_, i) => i !== medIndex));
   };
 
   return (
@@ -308,6 +345,163 @@ export default function PetsManagement({ profileId, userId, onPetAdded, autoOpen
                       value={pet.emergency_contact_phone}
                       onChange={(e) => updatePet(index, 'emergency_contact_phone', e.target.value)}
                       placeholder="Emergency contact phone"
+                    />
+                  </div>
+                </div>
+
+                {/* Health & Special Needs Section */}
+                <div className="border-t pt-4 mt-2">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Heart className="w-4 h-4 text-rose-500" />
+                    <h4 className="font-semibold text-sm">Health &amp; Special Needs</h4>
+                  </div>
+
+                  {/* Senior pet toggle */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <Switch
+                      id={`is-senior-${index}`}
+                      checked={!!(pet as any).is_senior}
+                      onCheckedChange={(checked) => updatePet(index, 'is_senior' as any, checked)}
+                    />
+                    <Label htmlFor={`is-senior-${index}`}>Is this a senior pet? (7+ years)</Label>
+                  </div>
+
+                  {/* Health conditions multi-select chips */}
+                  <div className="mb-4">
+                    <Label className="mb-2 block">Health Conditions</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {healthConditionOptions.map((condition) => {
+                        const selected = ((pet as any).health_conditions || []).includes(condition);
+                        return (
+                          <Badge
+                            key={condition}
+                            variant={selected ? 'default' : 'outline'}
+                            className="cursor-pointer capitalize"
+                            onClick={() => toggleHealthCondition(index, condition)}
+                          >
+                            {condition}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Medications */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <Label>Medications</Label>
+                      <Button type="button" variant="outline" size="sm" onClick={() => addMedication(index)}>
+                        <PlusCircle className="w-3 h-3 mr-1" /> Add Medication
+                      </Button>
+                    </div>
+                    {((pet as any).medications || []).map((med: Medication, medIdx: number) => (
+                      <div key={medIdx} className="border rounded p-3 mb-2 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-muted-foreground">Medication {medIdx + 1}</span>
+                          <Button type="button" variant="ghost" size="sm" onClick={() => removeMedication(index, medIdx)}>
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <Label className="text-xs">Name *</Label>
+                            <Input
+                              value={med.name}
+                              onChange={(e) => updateMedication(index, medIdx, 'name', e.target.value)}
+                              placeholder="e.g. Rimadyl"
+                              className="h-8 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Dosage *</Label>
+                            <Input
+                              value={med.dosage}
+                              onChange={(e) => updateMedication(index, medIdx, 'dosage', e.target.value)}
+                              placeholder="e.g. 50mg"
+                              className="h-8 text-sm"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <Label className="text-xs">Frequency</Label>
+                            <Input
+                              value={med.frequency}
+                              onChange={(e) => updateMedication(index, medIdx, 'frequency', e.target.value)}
+                              placeholder="e.g. twice daily"
+                              className="h-8 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Instructions</Label>
+                            <Input
+                              value={med.instructions}
+                              onChange={(e) => updateMedication(index, medIdx, 'instructions', e.target.value)}
+                              placeholder="e.g. with food"
+                              className="h-8 text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Special needs notes */}
+                  <div className="mb-4">
+                    <Label>Special Needs Notes</Label>
+                    <Textarea
+                      value={(pet as any).special_needs || ''}
+                      onChange={(e) => updatePet(index, 'special_needs' as any, e.target.value)}
+                      placeholder="Any special care instructions or needs..."
+                    />
+                  </div>
+
+                  {/* Emergency vet */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <Label>Emergency Vet Name</Label>
+                      <Input
+                        value={(pet as any).emergency_vet_name || ''}
+                        onChange={(e) => updatePet(index, 'emergency_vet_name' as any, e.target.value)}
+                        placeholder="Vet clinic name"
+                      />
+                    </div>
+                    <div>
+                      <Label>Emergency Vet Phone</Label>
+                      <Input
+                        value={(pet as any).emergency_vet_phone || ''}
+                        onChange={(e) => updatePet(index, 'emergency_vet_phone' as any, e.target.value)}
+                        placeholder="+64 9 555 1234"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Mobility level */}
+                  <div className="mb-4">
+                    <Label>Mobility Level</Label>
+                    <Select
+                      value={(pet as any).mobility_level || ''}
+                      onValueChange={(value) => updatePet(index, 'mobility_level' as any, value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select mobility level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="full">Full – moves independently</SelectItem>
+                        <SelectItem value="limited">Limited – some assistance needed</SelectItem>
+                        <SelectItem value="assisted">Assisted – regular help required</SelectItem>
+                        <SelectItem value="minimal">Minimal – mostly immobile</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Dietary requirements */}
+                  <div>
+                    <Label>Dietary Requirements</Label>
+                    <Textarea
+                      value={(pet as any).dietary_requirements || ''}
+                      onChange={(e) => updatePet(index, 'dietary_requirements' as any, e.target.value)}
+                      placeholder="Special diet, allergies, food restrictions..."
                     />
                   </div>
                 </div>

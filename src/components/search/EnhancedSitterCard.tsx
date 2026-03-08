@@ -6,6 +6,16 @@ import { MapPin, Shield, Star, Sparkles, Dog } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import { YOUNG_WALKER_CONFIG } from '@/config/features';
 
+const COMPETENCY_TAG_LABELS: Record<string, string> = {
+  medication_admin: '💊 Meds',
+  first_aid_certified: '🩹 First Aid',
+  senior_pet_experience: '🐾 Senior Pets',
+  anxiety_specialist: '🧘 Anxiety',
+  post_surgical_care: '🏥 Post-Surgery',
+  diabetic_pet_care: '💉 Diabetic Care',
+  mobility_assistance: '♿ Mobility',
+};
+
 interface EnhancedSitterCardProps {
   sitter: {
     id: string;
@@ -23,6 +33,7 @@ interface EnhancedSitterCardProps {
     acceptedDogSizes?: string[];
     rating?: number | null;
     feedback_count?: number | null;
+    competency_tags?: string[] | null;
   };
   onViewProfile: () => void;
   onSitterClick?: (sitterId: string, sitterName?: string) => void;
@@ -122,6 +133,24 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
                 </Badge>
               )}
             </div>
+
+            {/* Competency badges */}
+            {sitter.competency_tags && sitter.competency_tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-2" data-testid="competency-badges">
+                {sitter.competency_tags.slice(0, 3).map((tag) => (
+                  COMPETENCY_TAG_LABELS[tag] ? (
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      className="text-[10px] py-0 px-1.5 h-5 text-violet-700 border-violet-200 bg-violet-50"
+                      data-testid={`competency-badge-${tag}`}
+                    >
+                      {COMPETENCY_TAG_LABELS[tag]}
+                    </Badge>
+                  ) : null
+                ))}
+              </div>
+            )}
 
             {/* Price + CTA row */}
             <div className="flex items-center justify-between gap-2">

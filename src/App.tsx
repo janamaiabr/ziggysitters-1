@@ -94,6 +94,10 @@ import Areas from "./pages/Areas";
 import Messages from "./pages/Messages";
 import AucklandPetSitters from "./pages/AucklandPetSitters";
 import AdminStorageOptimizer from "./pages/AdminStorageOptimizer";
+import AdminSitterVetting from "./pages/AdminSitterVetting";
+import AdminVetClinics from "./pages/AdminVetClinics";
+import AdminKPIDashboard from "./pages/AdminKPIDashboard";
+import SunshineCoastSeniorPets from "./pages/SunshineCoastSeniorPets";
 import PetSittingAuckland from "./pages/PetSittingAuckland";
 import PetSittingWellington from "./pages/PetSittingWellington";
 import PetSittingChristchurch from "./pages/PetSittingChristchurch";
@@ -297,6 +301,9 @@ function AppContent() {
               <Route path="/admin/payment-fix" element={<AdminPaymentFix />} />
               <Route path="/admin/fix-broken-bookings" element={<AdminFixBrokenBookings />} />
               <Route path="/admin/storage-optimizer" element={<AdminStorageOptimizer />} />
+              <Route path="/admin/sitter-vetting" element={<AdminSitterVetting />} />
+              <Route path="/admin/vet-clinics" element={<AdminVetClinics />} />
+              <Route path="/admin/kpis" element={<AdminKPIDashboard />} />
               {/* Test pages - admin only */}
               <Route path="/test-pricing" element={<ComprehensiveTestSuite />} />
               <Route path="/test-payment" element={<PaymentTests />} />
@@ -335,7 +342,7 @@ function AppContent() {
             <Route path="/pet-sitting-tauranga" element={<PetSittingTauranga />} />
             <Route path="/pet-sitting-dunedin" element={<PetSittingDunedin />} />
             <Route path="/pet-sitting-sunshine-coast" element={<PetSittingSunshineCoast />} />
-            <Route path="/sunshine-coast" element={<PetSittingSunshineCoast />} />
+            <Route path="/sunshine-coast" element={<SunshineCoastSeniorPets />} />
             <Route path="/pet-sitting-napier" element={<PetSittingNapier />} />
             <Route path="/pet-sitting-nelson" element={<PetSittingNelson />} />
             <Route path="/pet-sitting-new-plymouth" element={<PetSittingNewPlymouth />} />

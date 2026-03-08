@@ -17,7 +17,11 @@ import {
   Wrench,
   Activity,
   MapPinned,
-  HardDrive
+  HardDrive,
+  ClipboardCheck,
+  Stethoscope,
+  BarChart3,
+  MessageCircle,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -106,6 +110,32 @@ const navSections = [
         title: 'Invite Sitters',
         href: '/admin/invite-unverified-sitters',
         icon: Mail,
+      },
+      {
+        title: 'Sitter Vetting',
+        href: '/admin/sitter-vetting',
+        icon: ClipboardCheck,
+      },
+      {
+        title: 'Vet Clinics',
+        href: '/admin/vet-clinics',
+        icon: Stethoscope,
+      },
+    ],
+  },
+  {
+    label: 'Senior Pets & Quality',
+    items: [
+      {
+        title: 'KPI Dashboard',
+        href: '/admin/kpis',
+        icon: BarChart3,
+        highlight: true,
+      },
+      {
+        title: 'Follow-Ups',
+        href: '/admin/follow-ups',
+        icon: MessageCircle,
       },
     ],
   },

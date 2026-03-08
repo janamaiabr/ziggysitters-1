@@ -23,7 +23,7 @@ export const FEATURES = {
    * - Limited walk duration (max 30 mins)
    * - Distance restrictions from home
    */
-  YOUNG_DOG_WALKERS: true,
+  YOUNG_DOG_WALKERS: false,
 
   /**
    * Dog Walking Service (General)
