@@ -82,7 +82,7 @@ export default function AdminSitterVetting() {
     const { data, error } = await supabase
       .from('profiles')
       .select('id, first_name, last_name, email, referral_source, police_check_status, police_check_date, home_visit_completed, home_visit_date, home_visit_notes, references_count, interview_completed, interview_notes, interview_date, vetting_status')
-      .eq('role', 'sitter')
+      .eq('role', 'pet_sitter')
       .order('created_at', { ascending: false });
 
     if (error) {
