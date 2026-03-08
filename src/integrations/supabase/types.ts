@@ -74,6 +74,47 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_followups: {
+        Row: {
+          booking_id: string
+          created_at: string | null
+          feedback: string | null
+          id: string
+          pet_name: string | null
+          rating: number | null
+          sitter_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          pet_name?: string | null
+          rating?: number | null
+          sitter_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          pet_name?: string | null
+          rating?: number | null
+          sitter_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_followups_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           booking_reference: string | null
@@ -82,6 +123,9 @@ export type Database = {
           daily_reports_required: number | null
           end_date: string
           end_time: string | null
+          follow_up_response: string | null
+          follow_up_sent: boolean | null
+          follow_up_sent_at: string | null
           id: string
           owner_id: string
           owner_notes: string | null
@@ -114,6 +158,9 @@ export type Database = {
           daily_reports_required?: number | null
           end_date: string
           end_time?: string | null
+          follow_up_response?: string | null
+          follow_up_sent?: boolean | null
+          follow_up_sent_at?: string | null
           id?: string
           owner_id: string
           owner_notes?: string | null
@@ -146,6 +193,9 @@ export type Database = {
           daily_reports_required?: number | null
           end_date?: string
           end_time?: string | null
+          follow_up_response?: string | null
+          follow_up_sent?: boolean | null
+          follow_up_sent_at?: string | null
           id?: string
           owner_id?: string
           owner_notes?: string | null
@@ -745,7 +795,8 @@ export type Database = {
           is_neutered: boolean | null
           is_senior: boolean | null
           medical_conditions: string[] | null
-          medications: Json | null
+          medications: string[] | null
+          medications_detail: Json | null
           mobility_level: string | null
           name: string
           owner_id: string
@@ -776,7 +827,8 @@ export type Database = {
           is_neutered?: boolean | null
           is_senior?: boolean | null
           medical_conditions?: string[] | null
-          medications?: Json | null
+          medications?: string[] | null
+          medications_detail?: Json | null
           mobility_level?: string | null
           name: string
           owner_id: string
@@ -807,7 +859,8 @@ export type Database = {
           is_neutered?: boolean | null
           is_senior?: boolean | null
           medical_conditions?: string[] | null
-          medications?: Json | null
+          medications?: string[] | null
+          medications_detail?: Json | null
           mobility_level?: string | null
           name?: string
           owner_id?: string
@@ -893,8 +946,8 @@ export type Database = {
           police_check_status: string | null
           postal_code: string | null
           rating: number | null
-          referral_source: string | null
           references_count: number | null
+          referral_source: string | null
           response_rate: number | null
           role: Database["public"]["Enums"]["user_role"]
           stripe_account_enabled: boolean | null
@@ -951,8 +1004,8 @@ export type Database = {
           police_check_status?: string | null
           postal_code?: string | null
           rating?: number | null
-          referral_source?: string | null
           references_count?: number | null
+          referral_source?: string | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"]
           stripe_account_enabled?: boolean | null
@@ -1009,8 +1062,8 @@ export type Database = {
           police_check_status?: string | null
           postal_code?: string | null
           rating?: number | null
-          referral_source?: string | null
           references_count?: number | null
+          referral_source?: string | null
           response_rate?: number | null
           role?: Database["public"]["Enums"]["user_role"]
           stripe_account_enabled?: boolean | null
@@ -1860,6 +1913,60 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vet_clinic_contacts: {
+        Row: {
+          address: string | null
+          clinic_name: string
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          first_visit_date: string | null
+          id: string
+          last_contact_date: string | null
+          next_follow_up_date: string | null
+          notes: string | null
+          phone: string | null
+          referral_count: number | null
+          relationship_status: string | null
+          suburb: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          clinic_name: string
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_visit_date?: string | null
+          id?: string
+          last_contact_date?: string | null
+          next_follow_up_date?: string | null
+          notes?: string | null
+          phone?: string | null
+          referral_count?: number | null
+          relationship_status?: string | null
+          suburb?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          clinic_name?: string
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          first_visit_date?: string | null
+          id?: string
+          last_contact_date?: string | null
+          next_follow_up_date?: string | null
+          notes?: string | null
+          phone?: string | null
+          referral_count?: number | null
+          relationship_status?: string | null
+          suburb?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
