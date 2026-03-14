@@ -96,6 +96,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://ziggysitters.com/blog/cavoodle-care-nz-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://ziggysitters.com/blog/christchurch-pet-sitting-guide-2026</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -117,6 +122,11 @@
   </url>
   <url>
     <loc>https://ziggysitters.com/blog/emergency-pet-care-sitter-protocols-nz</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/fireworks-guy-fawkes-pet-anxiety-nz</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -166,12 +176,12 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://ziggysitters.com/blog/index.html</loc>
+    <loc>https://ziggysitters.com/blog/indoor-cat-care-nz-winter-guide</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://ziggysitters.com/blog/indoor-cat-care-nz-winter-guide</loc>
+    <loc>https://ziggysitters.com/blog/indoor-vs-outdoor-cat-nz</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -271,6 +281,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://ziggysitters.com/blog/pet-microchipping-nz-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://ziggysitters.com/blog/pet-nutrition-basics-nz-guide</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -291,7 +306,17 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://ziggysitters.com/blog/pet-travel-new-zealand-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://ziggysitters.com/blog/pet-travel-tips-new-zealand</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/pomeranian-care-nz-guide</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -351,6 +376,16 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://ziggysitters.com/blog/separation-anxiety-pets-nz-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/siberian-husky-care-nz-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://ziggysitters.com/blog/spring-pet-care-nz-guide</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -382,16 +417,6 @@
   </url>
   <url>
     <loc>https://ziggysitters.com/blog/whangarei-pet-sitting-guide-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://ziggysitters.com/blog/dog-boarding-auckland-complete-guide-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://ziggysitters.com/blog/pet-sitting-sunshine-coast-guide-2026</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
