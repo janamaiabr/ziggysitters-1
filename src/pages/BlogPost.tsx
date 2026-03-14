@@ -173,7 +173,7 @@ export default function BlogPost() {
         title={post.title}
         description={post.metaDescription || post.excerpt}
         keywords={post.keywords?.join(', ') || ''}
-        canonical={`/blog/${post.slug}`}
+        canonical={post.slug ? `/blog/${post.slug}` : "/blog"}
         structuredData={structuredData}
       />
 
