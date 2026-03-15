@@ -49,13 +49,17 @@ const steps = [
   { step: 4, title: 'Start Earning', description: 'Accept bookings, care for pets, send updates, and get paid', icon: iconHeart },
 ];
 
-const HIGH_DEMAND_SUBURBS = [
-  { slug: 'grey-lynn', name: 'Grey Lynn' },
-  { slug: 'ponsonby', name: 'Ponsonby' },
-  { slug: 'mt-eden', name: 'Mt Eden' },
-  { slug: 'remuera', name: 'Remuera' },
-  { slug: 'herne-bay', name: 'Herne Bay' },
-  { slug: 'takapuna', name: 'Takapuna' },
+const HIGH_DEMAND_AREAS = [
+  { slug: 'grey-lynn', name: 'Grey Lynn', region: 'Auckland' },
+  { slug: 'ponsonby', name: 'Ponsonby', region: 'Auckland' },
+  { slug: 'mt-eden', name: 'Mt Eden', region: 'Auckland' },
+  { slug: 'remuera', name: 'Remuera', region: 'Auckland' },
+  { slug: 'herne-bay', name: 'Herne Bay', region: 'Auckland' },
+  { slug: 'takapuna', name: 'Takapuna', region: 'Auckland' },
+  { slug: 'noosa-heads', name: 'Noosa Heads', region: 'Sunshine Coast' },
+  { slug: 'maroochydore', name: 'Maroochydore', region: 'Sunshine Coast' },
+  { slug: 'buderim', name: 'Buderim', region: 'Sunshine Coast' },
+  { slug: 'caloundra', name: 'Caloundra', region: 'Sunshine Coast' },
 ];
 
 export default function BecomeSitter() {
@@ -296,20 +300,47 @@ export default function BecomeSitter() {
               </p>
             </div>
             
-            <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
-              {HIGH_DEMAND_SUBURBS.map((suburb) => (
-                <Button
-                  key={suburb.slug}
-                  variant="outline"
-                  className="group border-border hover:border-primary/30 hover:bg-primary/5 transition-all font-body"
-                  onClick={() => navigate(`/become-sitter/${suburb.slug}`)}
-                >
-                  {suburb.name}
-                  <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
-                    High demand
-                  </Badge>
-                </Button>
-              ))}
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3 font-body">🇳🇿 New Zealand</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {HIGH_DEMAND_AREAS.filter(a => a.region === 'Auckland').map((area) => (
+                      <Button
+                        key={area.slug}
+                        variant="outline"
+                        size="sm"
+                        className="group border-border hover:border-primary/30 hover:bg-primary/5 transition-all font-body"
+                        onClick={() => navigate(`/become-sitter/${area.slug}`)}
+                      >
+                        {area.name}
+                        <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
+                          High demand
+                        </Badge>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3 font-body">🇦🇺 Sunshine Coast, QLD</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {HIGH_DEMAND_AREAS.filter(a => a.region === 'Sunshine Coast').map((area) => (
+                      <Button
+                        key={area.slug}
+                        variant="outline"
+                        size="sm"
+                        className="group border-border hover:border-primary/30 hover:bg-primary/5 transition-all font-body"
+                        onClick={() => navigate(`/become-sitter/${area.slug}`)}
+                      >
+                        {area.name}
+                        <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
+                          High demand
+                        </Badge>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -354,7 +385,7 @@ export default function BecomeSitter() {
               className="px-12 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg font-body"
               onClick={() => {
                 ga4.clickSignup('become_sitter_bottom_cta');
-                document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
+                navigate('/auth?tab=signup&role=pet_sitter');
               }}
             >
               Apply Now — It's Free

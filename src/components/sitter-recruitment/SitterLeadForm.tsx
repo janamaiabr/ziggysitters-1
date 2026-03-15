@@ -26,9 +26,14 @@ const SERVICES = [
 ];
 
 const SUBURBS = [
+  // NZ
   'Ponsonby', 'Grey Lynn', 'Mt Eden', 'Parnell', 'Remuera', 
   'Herne Bay', 'Devonport', 'Takapuna', 'Newmarket', 'Epsom',
-  'Mt Albert', 'Kingsland', 'Sandringham', 'Other'
+  'Mt Albert', 'Kingsland', 'Sandringham',
+  // AU - Sunshine Coast
+  'Noosa Heads', 'Noosaville', 'Maroochydore', 'Buderim', 'Mooloolaba',
+  'Caloundra', 'Coolum Beach', 'Nambour',
+  'Other'
 ];
 
 interface SitterLeadFormProps {
