@@ -2541,10 +2541,13 @@ export type Database = {
           avatar_url: string
           bio: string
           city: string
+          competency_tags: string[]
           first_name: string
           id: string
           is_verified: boolean
           last_name: string
+          latitude: number
+          longitude: number
           rating: number
           response_rate: number
           suburb: string
