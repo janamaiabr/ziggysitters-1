@@ -248,11 +248,11 @@ export default function BecomeSitter() {
                           <p className="text-xs text-muted-foreground font-body">Earn 100% payment</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 bg-muted rounded-xl p-3 border border-border">
+                      <div className="flex items-center gap-3 bg-primary/5 rounded-xl p-3 border border-primary/10">
                         <img src={iconPaw} alt="" className="w-6 h-6 flex-shrink-0" />
                         <div>
-                          <p className="font-medium text-sm text-foreground font-body">Miss a requested report</p>
-                          <p className="text-xs text-muted-foreground font-body">15% deduction applies</p>
+                          <p className="font-medium text-sm text-foreground font-body">Quick & easy</p>
+                          <p className="text-xs text-muted-foreground font-body">Most reports take under 5 minutes</p>
                         </div>
                       </div>
                     </div>
