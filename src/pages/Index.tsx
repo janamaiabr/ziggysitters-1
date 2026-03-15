@@ -595,10 +595,10 @@ const Index = () => {
       </section>
 
       {/* CTA Section — Quick Email Capture */}
-      <section className="relative py-8 md:py-20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <section className="relative py-8 md:py-20 overflow-hidden bg-white">
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-xl mx-auto">
-            <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-gray-900">
               Ready to Find Your Pet{"'"}s Person?
             </h2>
             <p className="text-sm md:text-xl mb-4 md:mb-6 text-muted-foreground">
