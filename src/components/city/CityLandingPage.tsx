@@ -201,9 +201,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                   />
                 </div>
                 <div className="flex justify-center mb-3">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md">
-                    <span className="text-primary-foreground font-display font-bold text-sm">{item.step}</span>
-                  </div>
+                  <img src={item.icon} alt="" className="w-12 h-12" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-foreground mt-1 mb-2">{item.title}</h3>
                 <p className="text-[15px] text-muted-foreground font-body leading-relaxed">{item.desc}</p>
