@@ -125,9 +125,9 @@ export default function BecomeSitter() {
               </div>
 
               <div className="flex flex-wrap gap-4 mt-8 text-sm text-white/70 font-body">
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> Free to join</span>
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> No commitments</span>
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> Set your own rates</span>
+                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Free to join</span>
+                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> No commitments</span>
+                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Set your own rates</span>
               </div>
             </div>
           </div>
