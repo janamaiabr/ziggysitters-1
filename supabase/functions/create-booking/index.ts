@@ -206,20 +206,20 @@ serve(async (req) => {
     }
 
     // Service type mapping from frontend to database enum
-    // ONLY 3 CORE SERVICES (dog walking removed)
     const serviceTypeMapping = {
       'pet_sitting_owners_home': 'pet_sitting_owners_home',
       'pet_sitting_sitters_home': 'pet_sitting_sitters_home',
-      'drop_in_visits': 'drop_in_visits'
+      'drop_in_visits': 'drop_in_visits',
+      'dog_walking': 'dog_walking'
     };
 
     // Map frontend service type to database enum
     const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping] || bookingData.serviceType;
     
-    // Validate that the service type exists - ONLY 3 CORE SERVICES
-    const validServiceTypes = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits'];
+    // Validate that the service type exists
+    const validServiceTypes = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits', 'dog_walking'];
     if (!validServiceTypes.includes(dbServiceType)) {
-      throw new Error(`Invalid service type: ${bookingData.serviceType}. Only pet sitting and drop-in visits are available.`);
+      throw new Error(`Invalid service type: ${bookingData.serviceType}. Please select a valid service.`);
     }
     
     // Get sitter's service pricing to validate amount
