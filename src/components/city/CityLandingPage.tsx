@@ -185,7 +185,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 <div className="flex items-center gap-2 mb-2">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <span className="text-xs text-muted-foreground font-body">4.9/5</span>
