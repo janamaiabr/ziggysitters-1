@@ -55,9 +55,9 @@ const FEATURES = [
   },
   {
     icon: <Activity className="h-6 w-6" />,
-    title: 'Matched to your pet's needs',
+    title: "Matched to your pet's needs",
     description:
-      'We pair senior pets with sitters who've handled their specific condition before — arthritis, diabetes, kidney disease, anxiety. No guesswork.',
+      "We pair senior pets with sitters who've handled their specific condition before — arthritis, diabetes, kidney disease, anxiety. No guesswork.",
   },
   {
     icon: <Shield className="h-6 w-6" />,
