@@ -16,6 +16,15 @@ import iconStar from "@/assets/icons/icon-star.png";
 import iconPaw from "@/assets/icons/icon-paw.png";
 import iconCheck from "@/assets/icons/icon-check.png";
 
+// Local genuine pet care photos
+import houseSittingImg from "@/assets/city/house-sitting.jpg";
+import dropInVisitImg from "@/assets/city/drop-in-visit.jpg";
+import petBoardingImg from "@/assets/city/pet-boarding.jpg";
+import stepBrowseImg from "@/assets/city/step-browse.jpg";
+import stepMeetGreetImg from "@/assets/city/step-meet-greet.jpg";
+import stepBookingImg from "@/assets/city/step-booking.jpg";
+import whyUsImg from "@/assets/city/why-us.jpg";
+
 interface CityLandingPageProps {
   city: CityData;
 }
@@ -32,15 +41,6 @@ const cityHeroImages: Record<string, string> = {
   "tauranga": "https://images.unsplash.com/photo-1504208434362-2b7e76ac4f4b?w=1600&h=900&fit=crop",
   "dunedin": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900&fit=crop",
 };
-
-// Step images - genuine local photos
-const stepImages = [stepBrowseImg, stepMeetGreetImg, stepBookingImg];
-
-// Why us image
-const whyUsImage = whyUsImg;
-
-// Service images - genuine local photos
-const serviceImages = [houseSittingImg, dropInVisitImg, petBoardingImg];
 
 const testimonials = [
   {
