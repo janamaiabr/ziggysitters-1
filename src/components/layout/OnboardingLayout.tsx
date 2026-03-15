@@ -14,7 +14,7 @@ export default function OnboardingLayout({ children, showNavigation = true }: On
         <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b border-border">
           <div className="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
             <Link to="/" className="flex items-center">
-              <img src={logoSvg} alt="ZiggySitters" className="h-6 md:h-8 w-auto" />
+              <img src={ziggyLogo} alt="ZiggySitters" className="h-8 md:h-10 w-auto" />
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
