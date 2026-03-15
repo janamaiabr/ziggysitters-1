@@ -235,6 +235,9 @@ export default function Header() {
               <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')} className="font-body font-medium text-foreground/70">
                 Sign In
               </Button>
+              <Button variant="outline" onClick={() => navigate('/auth?tab=signup')} className="font-body font-medium border-primary/30 text-primary hover:bg-primary/5">
+                Sign Up
+              </Button>
               <Button onClick={() => navigate('/find-sitters')} className="font-body font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-sm">
                 Find a Sitter
               </Button>
