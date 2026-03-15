@@ -988,7 +988,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Everything you need to know about finding the right sitter for your puppy. Special requirements, training consistency, and what to look for.',
     date: '2026-02-06',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1568572933382-74d440642117?w=1200&h=630&fit=crop',
     readTime: '10 min read',
     tag: 'Pet Care Tips',
     metaDescription: 'Complete guide to puppy sitting in NZ. Find sitters experienced with young dogs, maintain training consistency.',

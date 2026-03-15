@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Check, Star } from "lucide-react";
 import { CityData } from "@/data/cityData";
 
 // Custom pet illustrations
@@ -15,12 +14,58 @@ import iconBowl from "@/assets/icons/icon-bowl.png";
 import iconBoarding from "@/assets/icons/icon-boarding.png";
 import iconStar from "@/assets/icons/icon-star.png";
 import iconPaw from "@/assets/icons/icon-paw.png";
+import iconCheck from "@/assets/icons/icon-check.png";
 
 interface CityLandingPageProps {
   city: CityData;
 }
 
 const AU_CITIES = ["sunshine-coast", "brisbane", "gold-coast"];
+
+// City-specific hero images for genuine, location-appropriate feel
+const cityHeroImages: Record<string, string> = {
+  "sunshine-coast": "https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=1600&h=900&fit=crop",
+  "auckland": "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=1600&h=900&fit=crop",
+  "wellington": "https://images.unsplash.com/photo-1589871973318-9ca1258faa07?w=1600&h=900&fit=crop",
+  "christchurch": "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?w=1600&h=900&fit=crop",
+  "hamilton": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1600&h=900&fit=crop",
+  "tauranga": "https://images.unsplash.com/photo-1504208434362-2b7e76ac4f4b?w=1600&h=900&fit=crop",
+  "dunedin": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900&fit=crop",
+};
+
+// City-specific step images
+const cityStepImages: Record<string, string[]> = {
+  "sunshine-coast": [
+    "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1522276498395-f4f68f7f8571?w=600&h=400&fit=crop",
+  ],
+  "default": [
+    "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
+  ],
+};
+
+// City-specific "why us" images
+const cityWhyUsImages: Record<string, string> = {
+  "sunshine-coast": "https://images.unsplash.com/photo-1544568100-847a948585b9?w=800&h=1000&fit=crop",
+  "default": "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&h=1000&fit=crop",
+};
+
+// City-specific service images
+const cityServiceImages: Record<string, string[]> = {
+  "sunshine-coast": [
+    "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=600&h=400&fit=crop",
+  ],
+  "default": [
+    "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=600&h=400&fit=crop",
+  ],
+};
 
 const testimonials = [
   {
@@ -52,6 +97,11 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
   const countryName = isAU ? "Australia" : "New Zealand";
   const countryCode = isAU ? "AU" : "NZ";
 
+  const heroImage = cityHeroImages[city.slug] || cityHeroImages["hamilton"];
+  const stepImages = cityStepImages[city.slug] || cityStepImages["default"];
+  const whyUsImage = cityWhyUsImages[city.slug] || cityWhyUsImages["default"];
+  const serviceImages = cityServiceImages[city.slug] || cityServiceImages["default"];
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -76,7 +126,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
       <section className="relative min-h-[75vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1600&h=900&fit=crop&crop=center"
+            src={heroImage}
             alt={"Pet sitting in " + city.name}
             className="w-full h-full object-cover"
           />
@@ -105,7 +155,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 onClick={() => navigate("/find-sitters")}
               >
                 Find a Sitter
-                <ArrowRight className="h-4 w-4 ml-2" />
+                <span className="ml-2">→</span>
               </Button>
               <Button
                 size="lg"
@@ -119,9 +169,9 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
 
             {/* Inline trust markers */}
             <div className="flex flex-wrap gap-4 mt-8 text-sm text-white/70 font-body">
-              <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> ID Verified</span>
-              <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> Daily Photo Updates</span>
-              <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> Local Sitters Only</span>
+              <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> ID Verified</span>
+              <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Daily Photo Updates</span>
+              <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Local Sitters Only</span>
             </div>
           </div>
         </div>
@@ -143,21 +193,21 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 step: "01",
                 title: "Search your area",
                 desc: "Browse verified sitters in " + city.name + ". Read reviews, see photos, and find someone your pet will love.",
-                img: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
+                img: stepImages[0],
                 icon: iconLocation,
               },
               {
                 step: "02",
                 title: "Book with confidence",
                 desc: "Every sitter is ID verified. Message them before booking, agree on dates, and pay securely through the platform.",
-                img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=400&fit=crop",
+                img: stepImages[1],
                 icon: iconShield,
               },
               {
                 step: "03",
                 title: "Relax & enjoy updates",
                 desc: "Receive daily photo updates and notes about meals, mood, and activity. Your pet is in great hands.",
-                img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
+                img: stepImages[2],
                 icon: iconCamera,
               },
             ].map((item) => (
@@ -189,7 +239,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
             <div className="relative">
               <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-lg">
                 <img
-                  src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&h=1000&fit=crop"
+                  src={whyUsImage}
                   alt="Happy dog with local sitter"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -234,7 +284,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 onClick={() => navigate("/find-sitters")}
               >
                 Browse Sitters in {city.name}
-                <ArrowRight className="h-4 w-4 ml-2" />
+                <span className="ml-2">→</span>
               </Button>
             </div>
           </div>
@@ -256,7 +306,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
               <div key={i} className="bg-card rounded-2xl p-6 md:p-8 border border-border hover:shadow-md transition-shadow">
                 <div className="flex gap-0.5 mb-4">
                   {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <img key={j} src={iconStar} alt="" className="w-4 h-4" />
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground font-body italic leading-relaxed mb-6">"{t.text}"</p>
@@ -288,19 +338,19 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
               {
                 title: "House Sitting",
                 desc: "Your sitter stays overnight in your home. Pets stay comfortable in their own environment with their routine intact.",
-                img: "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=600&h=400&fit=crop",
+                img: serviceImages[0],
                 icon: iconHouse,
               },
               {
                 title: "Drop-in Visits",
                 desc: "Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets who prefer their own space.",
-                img: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600&h=400&fit=crop",
+                img: serviceImages[1],
                 icon: iconBowl,
               },
               {
                 title: "Pet Boarding",
                 desc: "Your pet stays at the sitter's home. Great for social pets who love company and new adventures.",
-                img: "https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=600&h=400&fit=crop",
+                img: serviceImages[2],
                 icon: iconBoarding,
               },
             ].map((s) => (
@@ -383,7 +433,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
               onClick={() => navigate("/find-sitters")}
             >
               Find Sitters Near Me
-              <ArrowRight className="h-4 w-4 ml-2" />
+              <span className="ml-2">→</span>
             </Button>
             <Button
               size="lg"
