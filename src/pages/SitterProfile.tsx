@@ -33,11 +33,18 @@ import iconShield from '@/assets/icons/icon-shield.png';
 import iconSearch from '@/assets/icons/icon-search.png';
 import iconCheck from '@/assets/icons/icon-check.png';
 import iconPaw from '@/assets/icons/icon-paw.png';
+import iconStar from '@/assets/icons/icon-star.png';
+import iconHeart from '@/assets/icons/icon-heart.png';
+import iconCamera from '@/assets/icons/icon-camera.png';
+import iconHouse from '@/assets/icons/icon-house.png';
+import iconBowl from '@/assets/icons/icon-bowl.png';
 
 interface SitterData {
   id: string;
   display_name: string;
   location: string;
+  suburb: string;
+  city: string;
   rating: number;
   feedback_count: number;
   baseRate: number;
@@ -47,12 +54,20 @@ interface SitterData {
   avatar: string;
   verified: boolean;
   hasPoliceVet?: boolean;
-  
   bio: string;
   experience: string;
   availability: string[];
   specialties: string[];
   gallery: string[];
+  competencyTags: string[];
+}
+
+interface Testimonial {
+  id: string;
+  client_name: string;
+  testimonial_text: string;
+  rating: number | null;
+  client_relationship: string | null;
 }
 
 export default function SitterProfile() {
@@ -67,6 +82,8 @@ export default function SitterProfile() {
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [sitterData, setSitterData] = useState<SitterData | null>(null);
   const [servicesData, setServicesData] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [serviceAreas, setServiceAreas] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   
   const buildSearchUrl = () => {
@@ -87,12 +104,6 @@ export default function SitterProfile() {
   const checkInDate = searchParams.get('checkIn');
   const checkOutDate = searchParams.get('checkOut');
   const serviceTypeParam = searchParams.get('serviceType');
-  
-  const initialDates = {
-    checkIn: checkInDate || undefined,
-    checkOut: checkOutDate || undefined,
-    serviceType: serviceTypeParam || undefined,
-  };
   
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
@@ -170,69 +181,73 @@ export default function SitterProfile() {
           return;
         }
 
-        const { data: servicesData } = await supabase
-          .from('sitter_services')
-          .select('*')
-          .eq('sitter_id', id)
-          .eq('is_offered', true);
+        // Fetch services, portfolio, testimonials, and service areas in parallel
+        const [servicesResult, portfolioResult, testimonialsResult, areasResult] = await Promise.all([
+          supabase.from('sitter_services').select('*').eq('sitter_id', id).eq('is_offered', true),
+          supabase.storage.from('profile-photos').list(`${id}/portfolio`, { limit: 10, sortBy: { column: 'created_at', order: 'desc' } }),
+          supabase.from('sitter_testimonials').select('id, client_name, testimonial_text, rating, client_relationship').eq('sitter_id', id).eq('is_approved', true).limit(3),
+          supabase.from('sitter_service_areas').select('suburb, city').eq('sitter_id', id),
+        ]);
 
-        setServicesData(servicesData || []);
+        setServicesData(servicesResult.data || []);
+        setTestimonials(testimonialsResult.data || []);
+        setServiceAreas(areasResult.data?.map(a => a.suburb) || []);
 
-        const { data: portfolioFiles } = await supabase.storage
-          .from('profile-photos')
-          .list(`${id}/portfolio`, { limit: 10, sortBy: { column: 'created_at', order: 'desc' } });
-
-        const portfolioUrls = portfolioFiles?.map(file => {
+        const portfolioUrls = portfolioResult.data?.map(file => {
           const { data: { publicUrl } } = supabase.storage
             .from('profile-photos')
             .getPublicUrl(`${id}/portfolio/${file.name}`);
           return publicUrl;
         }) || [];
 
-        const serviceNames = servicesData?.map(service => {
+        const sData = servicesResult.data || [];
+        const serviceNames = sData.map(service => {
           switch (service.service_type) {
             case 'drop_in_visits': return 'Drop-in Visits';
             case 'pet_sitting_owners_home': return 'Pet Sitting (Your Home)';
             case 'pet_sitting_sitters_home': return 'Pet Sitting (Sitter\'s Home)';
             default: return 'Pet Care';
           }
-        }) || ['Pet Sitting', 'Drop-in Visits'];
+        });
 
-        const rates = servicesData?.map(service => 
+        const rates = sData.map(service => 
           service.hourly_rate || service.daily_rate || service.overnight_rate
-        ).filter(Boolean) || [];
+        ).filter(Boolean);
         const baseRate = rates.length > 0 ? Math.min(...rates) : null;
 
-        const transformedData = {
+        const transformedData: SitterData = {
           id: data.id,
           display_name: `${data.first_name} ${data.last_name.charAt(0)}.`,
           location: `${data.suburb || 'Auckland'}, ${data.city || 'New Zealand'}`,
+          suburb: data.suburb || 'Auckland',
+          city: data.city || 'New Zealand',
           rating: data.rating || 4.8,
           feedback_count: data.total_reviews || 0,
-          baseRate: baseRate,
-          hourlyRate: baseRate,
-          services: serviceNames,
-          petTypes: servicesData?.length > 0 ? 
-            [...new Set(servicesData.flatMap(s => s.accepted_pet_species || []))].map(species => 
+          baseRate: baseRate!,
+          hourlyRate: baseRate!,
+          services: serviceNames.length > 0 ? serviceNames : ['Pet Sitting', 'Drop-in Visits'],
+          petTypes: sData.length > 0 ? 
+            [...new Set(sData.flatMap(s => s.accepted_pet_species || []))].map(species => 
               species.charAt(0).toUpperCase() + species.slice(1)
             ) : ['Dogs', 'Cats'],
           avatar: data.avatar_url,
           verified: data.is_verified,
           hasPoliceVet: !!(goldenBadgeData?.golden_badge_approved),
           bio: data.bio || 'Experienced pet care provider',
-          experience: servicesData?.length > 0 ? 
-            `${Math.max(...servicesData.map(s => s.experience_years || 0))} years experience` : 
+          experience: sData.length > 0 ? 
+            `${Math.max(...sData.map(s => s.experience_years || 0))} years experience` : 
             'Experienced pet care provider',
           availability: ['Available for bookings'],
-          specialties: servicesData?.length > 0 ? 
-            servicesData.flatMap(s => {
-              const specs = [];
+          specialties: sData.length > 0 ? 
+            sData.flatMap(s => {
+              const specs: string[] = [];
               if (s.has_fenced_yard) specs.push('Fenced yard');
               if (s.allows_puppies) specs.push('Puppy care');
               if (s.allows_senior_pets) specs.push('Senior pet care');
               return specs;
             }).slice(0, 3) : ['Pet care specialist'],
-          gallery: portfolioUrls.length > 0 ? portfolioUrls : []
+          gallery: portfolioUrls.length > 0 ? portfolioUrls : [],
+          competencyTags: data.competency_tags || [],
         };
 
         setSitterData(transformedData);
@@ -263,6 +278,66 @@ export default function SitterProfile() {
     fetchSitterData();
   }, [id]);
 
+  const handleCheckAvailability = () => {
+    if (!user) {
+      const calendarSection = document.querySelector('[data-availability-calendar]');
+      if (calendarSection) {
+        calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+    ga4.clickBook(sitterData!.id, sitterData!.display_name, 'profile_header');
+    ga4.startBooking(sitterData!.id, sitterData!.display_name, serviceTypeParam || undefined);
+    trackEvent({
+      eventType: 'booking',
+      eventName: 'booking_dialog_open',
+      eventData: { sitter_id: sitterData!.id, sitter_name: sitterData!.display_name, source: 'profile_page' }
+    });
+    setTimeout(() => {
+      const bookingSection = document.getElementById('booking-section');
+      if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
+
+  const handleQuickQuestion = () => {
+    ga4.clickMessage(sitterData!.id, sitterData!.display_name, !user);
+    setIsMessageDialogOpen(true);
+  };
+
+  const getServiceIcon = (type: string) => {
+    switch (type) {
+      case 'pet_sitting_owners_home': return iconHouse;
+      case 'pet_sitting_sitters_home': return iconHouse;
+      case 'drop_in_visits': return iconBowl;
+      default: return iconPaw;
+    }
+  };
+
+  const getServiceDisplayName = (type: string) => {
+    switch (type) {
+      case 'pet_sitting_owners_home': return 'Pet Sitting in Your Home';
+      case 'pet_sitting_sitters_home': return "Pet Sitting in Sitter's Home";
+      case 'drop_in_visits': return 'Drop-in Visits';
+      default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+  };
+
+  const getServiceDescription = (type: string) => {
+    switch (type) {
+      case 'pet_sitting_owners_home': return 'Your sitter comes to your home';
+      case 'pet_sitting_sitters_home': return "Your pet stays at the sitter's home";
+      case 'drop_in_visits': return 'Pop in for feeding, cuddles & playtime';
+      default: return 'Professional pet care service';
+    }
+  };
+
+  const getRate = (service: any) => {
+    if (service.hourly_rate) return `NZ$${Number(service.hourly_rate).toFixed(0)}/hr`;
+    if (service.daily_rate) return `NZ$${Number(service.daily_rate).toFixed(0)}/day`;
+    if (service.overnight_rate) return `NZ$${Number(service.overnight_rate).toFixed(0)}/night`;
+    return 'Contact for pricing';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -288,142 +363,103 @@ export default function SitterProfile() {
     );
   }
 
+  const firstName = sitterData.display_name.split(' ')[0];
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-muted py-8 border-b border-border">
-        <div className="container mx-auto px-4">
+      {/* Hero Header */}
+      <section className="bg-secondary">
+        <div className="container mx-auto px-4 py-6">
           <Button 
-            variant="outline" 
+            variant="ghost" 
             onClick={handleBackToSearch}
-            className="mb-6 font-body"
+            className="mb-4 font-body text-secondary-foreground/70 hover:text-secondary-foreground hover:bg-secondary-foreground/10"
           >
-            <img src={iconSearch} alt="" className="mr-2 h-4 w-4" />
+            <img src={iconSearch} alt="" className="mr-2 h-4 w-4 opacity-70" />
             Back to Search
           </Button>
           
-          <div className="flex flex-col md:flex-row gap-6 items-start">
-            <Avatar className="h-24 w-24 ring-2 ring-border">
-              <AvatarImage 
-                src={sitterData.avatar} 
-                className="object-cover"
-              />
-              <AvatarFallback className="bg-primary/10 text-primary font-body">
-                {sitterData.display_name.split(' ').map(n => n[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
-            
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h1 className="text-3xl font-bold font-display text-foreground">{sitterData.display_name}</h1>
+          <div className="flex flex-col md:flex-row gap-8 items-start">
+            {/* Large Avatar */}
+            <div className="relative flex-shrink-0">
+              <Avatar className="h-32 w-32 md:h-40 md:w-40 ring-4 ring-primary/30 shadow-xl">
+                <AvatarImage src={sitterData.avatar} className="object-cover" />
+                <AvatarFallback className="bg-primary/20 text-primary-foreground text-3xl font-display">
+                  {sitterData.display_name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
                 <SitterVerificationBadge 
                   isVerified={sitterData.verified || false}
                   hasGoldenBadge={sitterData.hasPoliceVet || false}
+                  size="md"
                 />
               </div>
+            </div>
+            
+            {/* Info */}
+            <div className="flex-1">
+              <h1 className="text-3xl md:text-4xl font-bold font-display text-secondary-foreground mb-2">
+                {sitterData.display_name}
+              </h1>
               
-              <div className="flex items-center text-muted-foreground mb-2 font-body">
-                <img src={iconMappin} alt="" className="w-4 h-4 mr-1" />
-                {sitterData.location}
+              <div className="flex flex-wrap items-center gap-4 mb-4">
+                <span className="flex items-center text-secondary-foreground/70 font-body">
+                  <img src={iconMappin} alt="" className="w-5 h-5 mr-1.5" />
+                  {sitterData.location}
+                </span>
+                <span className="flex items-center text-secondary-foreground/70 font-body">
+                  <img src={iconClock} alt="" className="w-5 h-5 mr-1.5" />
+                  Usually responds within 2-4 hours
+                </span>
               </div>
               
-              {/* Prominent price display */}
+              {/* Price highlight */}
               {sitterData.baseRate && sitterData.baseRate !== Infinity && (
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl font-bold text-primary font-display">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-2xl md:text-3xl font-bold text-primary font-display">
                     From NZ${sitterData.baseRate}/day
                   </span>
-                  <span className="text-sm text-muted-foreground font-body">· Free to enquire</span>
+                  <span className="text-sm text-secondary-foreground/50 font-body">· Free to enquire</span>
                 </div>
               )}
               
-              {/* Response time */}
-              <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground font-body">
-                <img src={iconClock} alt="" className="w-4 h-4" />
-                <span>Usually responds within 2-4 hours</span>
+              {/* Trust pills */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {sitterData.verified && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-sm font-medium text-primary-foreground font-body">
+                    <img src={iconCheck} alt="" className="w-4 h-4" /> ID Verified
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-sm font-medium text-primary-foreground font-body">
+                  <img src={iconCamera} alt="" className="w-4 h-4" /> Daily Photo Updates
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-sm font-medium text-primary-foreground font-body">
+                  <img src={iconHeart} alt="" className="w-4 h-4" /> Free Meet & Greet
+                </span>
               </div>
               
+              {/* CTAs */}
               <div className="flex flex-wrap gap-3">
-                {profile?.role === 'pet_owner' && (
+                {(profile?.role === 'pet_owner' || !user) && (
                   <>
                     <Button 
                       size="lg"
-                      variant="outline"
-                      className="font-body"
-                      onClick={() => {
-                        ga4.clickMessage(sitterData.id, sitterData.display_name, false);
-                        setIsMessageDialogOpen(true);
-                      }}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg font-bold font-body text-base px-8"
+                      onClick={handleCheckAvailability}
                     >
-                      <img src={iconChat} alt="" className="mr-2 h-4 w-4" />
-                      Quick Question
-                    </Button>
-                    <Button 
-                      size="lg"
-                      className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg font-bold font-body"
-                      onClick={() => {
-                        ga4.clickBook(sitterData.id, sitterData.display_name, 'profile_header');
-                        ga4.startBooking(sitterData.id, sitterData.display_name, serviceTypeParam || undefined);
-                        trackEvent({
-                          eventType: 'booking',
-                          eventName: 'booking_dialog_open',
-                          eventData: {
-                            sitter_id: sitterData.id,
-                            sitter_name: sitterData.display_name,
-                            source: 'profile_page'
-                          }
-                        });
-                        setTimeout(() => {
-                          const bookingSection = document.getElementById('booking-section');
-                          if (bookingSection) {
-                            bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                          }
-                        }, 100);
-                      }}
-                    >
-                      <img src={iconCalendar} alt="" className="mr-2 h-4 w-4" />
-                      Check Availability
+                      <img src={iconCalendar} alt="" className="mr-2 h-5 w-5" />
+                      {user ? 'Check Availability' : 'View Availability'}
                       <span className="ml-2">→</span>
                     </Button>
-                  </>
-                )}
-                {!user && (
-                  <>
                     <Button 
                       size="lg"
-                      variant="outline"
-                      className="font-body"
-                      onClick={() => {
-                        ga4.clickMessage(sitterData.id, sitterData.display_name, true);
-                        setIsMessageDialogOpen(true);
-                      }}
+                      variant="outline-white"
+                      className="font-body text-base px-6"
+                      onClick={handleQuickQuestion}
                     >
-                      <img src={iconChat} alt="" className="mr-2 h-4 w-4" />
+                      <img src={iconChat} alt="" className="mr-2 h-5 w-5" />
                       Quick Question
-                    </Button>
-                    <Button 
-                      size="lg"
-                      className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg font-bold font-body"
-                      onClick={() => {
-                        ga4.clickBook(sitterData.id, sitterData.display_name, 'guest_profile_header');
-                        const calendarSection = document.querySelector('[data-availability-calendar]');
-                        if (calendarSection) {
-                          calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                        trackEvent({
-                          eventType: 'booking',
-                          eventName: 'guest_check_availability_clicked',
-                          eventData: {
-                            sitter_id: sitterData.id,
-                            sitter_name: sitterData.display_name,
-                            source: 'profile_header'
-                          }
-                        });
-                      }}
-                    >
-                      <img src={iconCalendar} alt="" className="mr-2 h-4 w-4" />
-                      View Availability
-                      <span className="ml-2">→</span>
                     </Button>
                   </>
                 )}
@@ -431,13 +467,13 @@ export default function SitterProfile() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Sitter role alert */}
             {profile?.role === 'pet_sitter' && (
               <Alert variant="destructive">
@@ -446,6 +482,136 @@ export default function SitterProfile() {
                   Pet sitters cannot book other sitters. Only pet owners can make bookings.
                 </AlertDescription>
               </Alert>
+            )}
+
+            {/* About — prominent bio section */}
+            <Card className="border border-border overflow-hidden">
+              <CardHeader className="bg-muted/50 border-b border-border">
+                <CardTitle className="flex items-center gap-2 font-display text-foreground">
+                  <img src={iconPaw} alt="" className="w-6 h-6" />
+                  About {firstName}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <p className="text-foreground/80 font-body text-base leading-relaxed mb-4">{sitterData.bio}</p>
+                
+                {/* Experience & specialties inline */}
+                <div className="flex flex-wrap gap-4 pt-4 border-t border-border">
+                  <div className="flex items-center gap-2">
+                    <img src={iconStar} alt="" className="w-5 h-5" />
+                    <span className="text-sm font-medium text-foreground font-body">{sitterData.experience}</span>
+                  </div>
+                  {[...new Set(sitterData.specialties)].map((specialty, i) => (
+                    <Badge key={`${specialty}-${i}`} variant="secondary" className="font-body text-sm">
+                      {specialty}
+                    </Badge>
+                  ))}
+                  {sitterData.competencyTags?.map((tag, i) => (
+                    <Badge key={`tag-${i}`} variant="outline" className="font-body text-sm">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Photo Gallery — prominent if available */}
+            {sitterData.gallery.length > 0 && (
+              <Card className="border border-border overflow-hidden">
+                <CardHeader className="bg-muted/50 border-b border-border">
+                  <CardTitle className="flex items-center gap-2 font-display text-foreground">
+                    <img src={iconCamera} alt="" className="w-6 h-6" />
+                    {firstName}'s Pet Care Photos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {sitterData.gallery.map((photo, index) => (
+                      <img
+                        key={index}
+                        src={photo}
+                        alt={`${firstName} caring for pets - photo ${index + 1}`}
+                        className="w-full h-40 md:h-48 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                        loading="lazy"
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Services & Rates — visual cards */}
+            <Card className="border border-border overflow-hidden">
+              <CardHeader className="bg-muted/50 border-b border-border">
+                <CardTitle className="flex items-center gap-2 font-display text-foreground">
+                  <img src={iconDollar} alt="" className="w-6 h-6" />
+                  Services & Rates
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                {servicesData.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {servicesData.map((service) => (
+                      <div key={service.id} className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 border border-border">
+                        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <img src={getServiceIcon(service.service_type)} alt="" className="w-7 h-7" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold font-body text-foreground text-sm">{getServiceDisplayName(service.service_type)}</div>
+                          <div className="text-xs text-muted-foreground font-body mt-0.5">{getServiceDescription(service.service_type)}</div>
+                          <div className="text-base font-bold text-primary font-display mt-2">{getRate(service)}</div>
+                          {/* Pet info */}
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {service.accepted_pet_species?.map((species: string) => (
+                              <span key={species} className="text-xs bg-accent px-2 py-0.5 rounded-full text-accent-foreground font-body">
+                                {species.charAt(0).toUpperCase() + species.slice(1)}s
+                              </span>
+                            ))}
+                            {service.max_pets > 1 && (
+                              <span className="text-xs bg-accent px-2 py-0.5 rounded-full text-accent-foreground font-body">
+                                Up to {service.max_pets} pets
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground font-body p-4">No services configured yet. Send a message to ask about rates.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Testimonials */}
+            {testimonials.length > 0 && (
+              <Card className="border border-border overflow-hidden">
+                <CardHeader className="bg-muted/50 border-b border-border">
+                  <CardTitle className="flex items-center gap-2 font-display text-foreground">
+                    <img src={iconHeart} alt="" className="w-6 h-6" />
+                    What Pet Owners Say
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 space-y-5">
+                  {testimonials.map((t) => (
+                    <div key={t.id} className="border-l-4 border-primary/30 pl-4">
+                      <p className="text-foreground/80 font-body italic text-sm leading-relaxed mb-2">
+                        "{t.testimonial_text}"
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-foreground font-body">— {t.client_name}</span>
+                        {t.rating && (
+                          <div className="flex items-center gap-0.5">
+                            {Array.from({ length: t.rating }).map((_, i) => (
+                              <img key={i} src={iconStar} alt="" className="w-3.5 h-3.5" />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
             )}
             
             {/* Booking Form */}
@@ -483,144 +649,23 @@ export default function SitterProfile() {
               />
               
               {/* Quick Question */}
-              <Card className="border border-dashed border-border">
-                <CardContent className="p-4 text-center">
+              <Card className="border border-dashed border-primary/30 bg-primary/5">
+                <CardContent className="p-5 text-center">
                   <p className="text-sm text-muted-foreground mb-3 font-body">
                     Not ready to book? Just have a question?
                   </p>
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full font-body"
-                    onClick={() => setIsMessageDialogOpen(true)}
+                    className="w-full font-body border-primary/30 text-primary hover:bg-primary/10"
+                    onClick={handleQuickQuestion}
                   >
-                    <img src={iconChat} alt="" className="mr-2 h-4 w-4" />
-                    Ask {sitterData.display_name.split(' ')[0]} a Quick Question
+                    <img src={iconChat} alt="" className="mr-2 h-5 w-5" />
+                    Ask {firstName} a Quick Question
                   </Button>
                 </CardContent>
               </Card>
             </div>
-            
-            {/* About */}
-            <Card className="border border-border">
-              <CardHeader>
-                <CardTitle className="font-display text-foreground">About {sitterData.display_name.split(' ')[0]}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground font-body">{sitterData.bio}</p>
-              </CardContent>
-            </Card>
-
-            {/* Services & Rates */}
-            <Card className="border border-border">
-              <CardHeader>
-                <CardTitle className="font-display text-foreground">Services & Rates</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {servicesData.length > 0 ? (
-                  servicesData.map((service) => {
-                    const getServiceDisplayName = (type: string) => {
-                      switch (type) {
-                        case 'pet_sitting_owners_home': return 'Pet Sitting in Your Home';
-                        case 'pet_sitting_sitters_home': return 'Pet Sitting in Sitter\'s Home';
-                        case 'drop_in_visits': return 'Drop-in Visits';
-                        default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                      }
-                    };
-
-                    const getServiceDescription = (type: string) => {
-                      switch (type) {
-                        case 'pet_sitting_owners_home': return 'Pet care in your home';
-                        case 'pet_sitting_sitters_home': return 'Pet care in sitter\'s home';
-                        case 'drop_in_visits': return 'Pop in for feeding, cuddles & playtime';
-                        default: return 'Professional pet care service';
-                      }
-                    };
-
-                    const getRate = (service: any) => {
-                      if (service.hourly_rate) return `NZ$${Number(service.hourly_rate).toFixed(2)}/hour`;
-                      if (service.daily_rate) return `NZ$${Number(service.daily_rate).toFixed(2)}/day`;
-                      if (service.overnight_rate) return `NZ$${Number(service.overnight_rate).toFixed(2)}/night`;
-                      return 'Contact for pricing';
-                    };
-
-                    return (
-                      <div key={service.id} className="flex justify-between items-center">
-                        <div>
-                          <div className="font-medium font-body text-foreground">{getServiceDisplayName(service.service_type)}</div>
-                          <div className="text-xs text-muted-foreground font-body">
-                            {getServiceDescription(service.service_type)}
-                          </div>
-                        </div>
-                        <div className="text-right font-semibold font-body text-foreground">{getRate(service)}</div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-muted-foreground font-body">No services configured yet.</p>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Experience & Specialties */}
-            <Card className="border border-border">
-              <CardHeader>
-                <CardTitle className="font-display text-foreground">Experience & Specialties</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2 font-body text-foreground">Experience</h4>
-                  <p className="text-muted-foreground font-body">{sitterData.experience} of professional pet care</p>
-                </div>
-                
-                <Separator />
-                
-                <div>
-                  <h4 className="font-medium mb-2 font-body text-foreground">Specialities</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {[...new Set(sitterData.specialties)].map((specialty, index) => (
-                      <Badge key={`${specialty}-${index}`} variant="outline" className="font-body">
-                        {specialty}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div>
-                  <h4 className="font-medium mb-2 font-body text-foreground">Pet Types</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {sitterData.petTypes.map((type) => (
-                      <Badge key={type} variant="secondary" className="font-body">
-                        {type}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Photo Gallery */}
-            {sitterData.gallery.length > 0 && (
-              <Card className="border border-border">
-                <CardHeader>
-                  <CardTitle className="font-display text-foreground">Photos</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {sitterData.gallery.map((photo, index) => (
-                      <img
-                        key={index}
-                        src={photo}
-                        alt={`Portfolio photo ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Reviews */}
             <ReviewsList 
@@ -639,28 +684,32 @@ export default function SitterProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Starting Rate */}
-            <Card className="border border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center font-display text-foreground">
-                  <img src={iconDollar} alt="" className="mr-2 h-5 w-5" />
-                  Starting Rate
+            {/* Location & Areas */}
+            <Card className="border border-border overflow-hidden">
+              <CardHeader className="bg-muted/50 border-b border-border py-4">
+                <CardTitle className="flex items-center gap-2 text-base font-display text-foreground">
+                  <img src={iconMappin} alt="" className="h-5 w-5" />
+                  Location
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold font-display text-foreground">
-                    {sitterData.baseRate && sitterData.baseRate !== Infinity ? `From NZ$${sitterData.baseRate}` : 'Contact for pricing'}
+              <CardContent className="p-5">
+                <p className="font-semibold text-foreground font-body mb-1">{sitterData.suburb}</p>
+                <p className="text-sm text-muted-foreground font-body mb-4">{sitterData.city}</p>
+                {serviceAreas.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 font-body">Also covers</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {serviceAreas.filter(a => a !== sitterData.suburb).map((area, i) => (
+                        <span key={i} className="text-xs bg-muted px-2.5 py-1 rounded-full text-foreground font-body">{area}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground font-body">
-                    Per service (varies by type)
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
 
             {/* Availability Calendar */}
-            <Card data-availability-calendar className="border border-border">
+            <Card data-availability-calendar className="border border-border overflow-hidden">
               <CardContent className="pt-4">
                 <PublicAvailabilityCalendar 
                   sitterId={sitterData.id}
@@ -669,29 +718,56 @@ export default function SitterProfile() {
               </CardContent>
             </Card>
 
-            {/* Verification */}
-            <Card className="border border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center text-sm md:text-base font-display text-foreground">
-                  <img src={iconShield} alt="" className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                  <span className="truncate">Verification</span>
+            {/* Pets accepted */}
+            <Card className="border border-border overflow-hidden">
+              <CardHeader className="bg-muted/50 border-b border-border py-4">
+                <CardTitle className="flex items-center gap-2 text-base font-display text-foreground">
+                  <img src={iconPaw} alt="" className="h-5 w-5" />
+                  Pets Accepted
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between">
+              <CardContent className="p-5">
+                <div className="flex flex-wrap gap-2">
+                  {sitterData.petTypes.map((type) => (
+                    <Badge key={type} variant="secondary" className="font-body text-sm px-3 py-1">
+                      {type}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Verification */}
+            <Card className="border border-border overflow-hidden">
+              <CardHeader className="bg-muted/50 border-b border-border py-4">
+                <CardTitle className="flex items-center gap-2 text-base font-display text-foreground">
+                  <img src={iconShield} alt="" className="h-5 w-5" />
+                  Trust & Safety
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-5 space-y-3">
+                <div className="flex items-center gap-3">
+                  <img src={iconCheck} alt="" className="w-5 h-5" />
                   <span className="text-sm font-body text-foreground">Identity Verified</span>
-                  <Badge variant="secondary" className="font-body">
-                    <img src={iconCheck} alt="" className="w-3 h-3 mr-1" />
-                    Yes
-                  </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-body text-foreground">Profile Verified</span>
-                  <Badge variant="secondary" className="font-body">
-                    <img src={iconCheck} alt="" className="w-3 h-3 mr-1" />
-                    Yes
-                  </Badge>
+                <div className="flex items-center gap-3">
+                  <img src={iconCheck} alt="" className="w-5 h-5" />
+                  <span className="text-sm font-body text-foreground">Profile Complete</span>
                 </div>
+                <div className="flex items-center gap-3">
+                  <img src={iconCamera} alt="" className="w-5 h-5" />
+                  <span className="text-sm font-body text-foreground">Daily Photo Updates</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <img src={iconShield} alt="" className="w-5 h-5" />
+                  <span className="text-sm font-body text-foreground">Secure Payments via Stripe</span>
+                </div>
+                {sitterData.hasPoliceVet && (
+                  <div className="flex items-center gap-3">
+                    <img src={iconStar} alt="" className="w-5 h-5" />
+                    <span className="text-sm font-body text-foreground font-semibold">Police Vet Checked ⭐</span>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
