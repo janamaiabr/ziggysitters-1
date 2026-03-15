@@ -258,10 +258,10 @@ const Index = () => {
                 });
                 navigate('/find-sitters');
               }}
-              className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 px-6 md:px-10 py-5 md:py-7 text-base md:text-lg font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 animate-pulse-subtle min-h-[48px]"
+              className="bg-gray-900 hover:bg-gray-800 text-white px-6 md:px-10 py-5 md:py-7 text-base md:text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 min-h-[48px]"
             >
               <Search className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-              {isMobile ? 'See All Sitters' : 'Find Your Perfect Sitter Now'}
+              {isMobile ? 'See All Sitters' : 'Find a Sitter Near You'}
               <span className="ml-2">→</span>
             </Button>
             <p className="text-xs md:text-sm text-muted-foreground">
