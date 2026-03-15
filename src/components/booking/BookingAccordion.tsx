@@ -39,14 +39,12 @@ const serviceRates = {
   'pet_sitting_sitters_home': 66.00, // per day
   'pet_sitting_owners_home': 55.00,  // per day
   'drop_in_visits': 27.50,           // per hour
-  'dog_walking': 25.00,              // per hour
 };
 
 const serviceLabels = {
   'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)',
   'pet_sitting_owners_home': 'Pet Sitting (Your Home)', 
   'drop_in_visits': 'Drop-in Visits',
-  'dog_walking': 'Dog Walking',
 };
 
 const serviceUnits = {
