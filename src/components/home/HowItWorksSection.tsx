@@ -3,10 +3,6 @@ import iconHeart from '@/assets/icons/icon-heart.png';
 import iconPayment from '@/assets/icons/icon-payment.png';
 import iconCamera from '@/assets/icons/icon-camera.png';
 import iconShield from '@/assets/icons/icon-shield.png';
-import iconNum1 from '@/assets/icons/icon-num-1.png';
-import iconNum2 from '@/assets/icons/icon-num-2.png';
-import iconNum3 from '@/assets/icons/icon-num-3.png';
-import iconNum4 from '@/assets/icons/icon-num-4.png';
 
 import stepTellUs from '@/assets/home/step-tell-us.jpg';
 import stepMeetGreet from '@/assets/home/step-meet-greet.jpg';
@@ -19,7 +15,7 @@ const steps = [
     description: "Share your pet's personality, quirks, and needs — so we can find the right match",
     image: stepTellUs,
     icon: iconPaw,
-    numIcon: iconNum1,
+    num: 1,
   },
   {
     title: "Free Meet & Greet",
@@ -27,21 +23,21 @@ const steps = [
     highlight: true,
     image: stepMeetGreet,
     icon: iconHeart,
-    numIcon: iconNum2,
+    num: 2,
   },
   {
     title: "Book Your Match",
     description: "94% of owners book after their first meet & greet — secure your sitter with confidence",
     image: stepBook,
     icon: iconPayment,
-    numIcon: iconNum3,
+    num: 3,
   },
   {
     title: "Watch the Bond Grow",
     description: "Receive morning & evening updates with photos, behavioural notes, and daily care tracking",
     image: stepUpdates,
     icon: iconCamera,
-    numIcon: iconNum4,
+    num: 4,
   }
 ];
 
@@ -100,15 +96,15 @@ export default function HowItWorksSection() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   
-                  {/* Vintage number badge on image */}
-                  <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3">
-                    <img src={step.numIcon} alt="" className="w-10 h-10 md:w-14 md:h-14 drop-shadow-lg" />
+                  {/* Number badge */}
+                  <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3 w-8 h-8 md:w-11 md:h-11 rounded-full bg-primary flex items-center justify-center shadow-lg">
+                    <span className="text-primary-foreground font-display font-bold text-sm md:text-lg">{step.num}</span>
                   </div>
                 </div>
                 
                 {/* Content */}
                 <div className="p-3 md:p-5">
-                  <div className="hidden md:flex w-12 h-12 rounded-xl bg-vintage-cream items-center justify-center mb-3">
+                  <div className="hidden md:flex w-12 h-12 rounded-xl bg-primary/10 items-center justify-center mb-3">
                     <img src={step.icon} alt="" className="w-8 h-8" />
                   </div>
                   
