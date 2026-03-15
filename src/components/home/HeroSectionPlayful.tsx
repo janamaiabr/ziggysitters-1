@@ -136,13 +136,13 @@ const HeroSectionPlayful = ({
               {/* Feature pills - hidden on mobile */}
               <div className="hidden md:flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <img src={iconCamera} alt="" className="w-5 h-5" /> Daily Photo Updates
+                  <img src={iconCamera} alt="" className="w-7 h-7" /> Daily Photo Updates
                 </div>
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <img src={iconShield} alt="" className="w-5 h-5" /> ID Verified Sitters
+                  <img src={iconShield} alt="" className="w-7 h-7" /> ID Verified Sitters
                 </div>
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <img src={iconCheck} alt="" className="w-5 h-5" /> Trusted Reviews
+                  <img src={iconCheck} alt="" className="w-7 h-7" /> Trusted Reviews
                 </div>
               </div>
 
