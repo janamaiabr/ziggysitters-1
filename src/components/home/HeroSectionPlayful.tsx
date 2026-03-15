@@ -125,9 +125,9 @@ const HeroSectionPlayful = ({
                     </Button>
                   </div>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground font-body">
-                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> ID Verified</span>
-                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Daily Photo Updates</span>
-                    <span className="hidden sm:flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Free to browse</span>
+                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-5 h-5" /> ID Verified</span>
+                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-5 h-5" /> Daily Photo Updates</span>
+                    <span className="hidden sm:flex items-center gap-1"><img src={iconCheck} alt="" className="w-5 h-5" /> Free to browse</span>
                   </div>
                 </div>
               </div>
