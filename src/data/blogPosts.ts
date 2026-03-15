@@ -490,7 +490,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Managing care for multiple pets takes special skills. Learn how to find the right sitter and prepare your multi-pet household for a smooth sitting experience.',
     date: '2026-02-03',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=1200&h=630&fit=crop',
     readTime: '10 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Managing pet sitting for multi-pet households in NZ. Tips for dogs, cats, and mixed species homes. Keep all your pets happy while you are away.',
