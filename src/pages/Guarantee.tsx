@@ -1,7 +1,6 @@
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Check, ArrowRight, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import iconShield from '@/assets/icons/icon-shield.png';
@@ -9,6 +8,7 @@ import iconCamera from '@/assets/icons/icon-camera.png';
 import iconHeart from '@/assets/icons/icon-heart.png';
 import iconStar from '@/assets/icons/icon-star.png';
 import iconPaw from '@/assets/icons/icon-paw.png';
+import iconCheck from '@/assets/icons/icon-check.png';
 
 const testimonials = [
   { name: 'Sarah M.', location: 'Auckland', text: "I was so nervous leaving my two cats for the first time. My sitter sent photos every day and even called when Miso was being fussy with food.", rating: 5 },
@@ -44,7 +44,7 @@ export default function Guarantee() {
               We know leaving your pet with someone new is a big deal. That's why we've built multiple layers of trust into every booking.
             </p>
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-8 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-              Find a Trusted Sitter <ArrowRight className="ml-2 h-4 w-4" />
+              Find a Sitter <span className="ml-2">→</span>
             </Button>
           </div>
         </div>
@@ -87,7 +87,9 @@ export default function Guarantee() {
                 <p className="text-muted-foreground mb-4 font-body">Every booking is covered. If something unexpected happens, our coverage helps protect both you and your pet.</p>
                 <ul className="space-y-2">
                   {['Pet injury coverage during bookings', 'Property damage protection', 'Liability coverage for sitters'].map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm font-body text-foreground"><Check className="w-4 h-4 text-primary flex-shrink-0" />{item}</li>
+                    <li key={i} className="flex items-center gap-2 text-sm font-body text-foreground">
+                      <img src={iconCheck} alt="" className="w-4 h-4 flex-shrink-0" />{item}
+                    </li>
                   ))}
                 </ul>
               </CardContent>
@@ -99,7 +101,9 @@ export default function Guarantee() {
                 <p className="text-muted-foreground mb-4 font-body">Every sitter knows exactly what to do in an emergency.</p>
                 <ul className="space-y-2">
                   {['Vet contact details collected before every booking', 'Sitters trained on emergency procedures', '24/7 ZiggySitters support line', 'Immediate owner notification'].map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm font-body text-foreground"><Check className="w-4 h-4 text-primary flex-shrink-0" />{item}</li>
+                    <li key={i} className="flex items-center gap-2 text-sm font-body text-foreground">
+                      <img src={iconCheck} alt="" className="w-4 h-4 flex-shrink-0" />{item}
+                    </li>
                   ))}
                 </ul>
               </CardContent>
@@ -130,7 +134,11 @@ export default function Guarantee() {
             {testimonials.map((t, i) => (
               <Card key={i} className="border border-border bg-card">
                 <CardContent className="p-6">
-                  <div className="flex gap-0.5 mb-3">{Array.from({ length: t.rating }).map((_, j) => (<Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />))}</div>
+                  <div className="flex gap-0.5 mb-3">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <img key={j} src={iconStar} alt="" className="w-4 h-4" />
+                    ))}
+                  </div>
                   <p className="text-sm text-muted-foreground mb-4 italic font-body">"{t.text}"</p>
                   <p className="font-semibold text-sm text-foreground font-body">{t.name}</p>
                   <p className="text-xs text-muted-foreground font-body">{t.location}</p>
@@ -145,9 +153,9 @@ export default function Guarantee() {
       <section className="py-24 bg-secondary text-secondary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Your Pet Deserves the Best Care</h2>
-          <p className="text-lg text-secondary-foreground/60 mb-8 max-w-xl mx-auto font-body">Join thousands of NZ pet parents who trust ZiggySitters.</p>
+          <p className="text-lg text-secondary-foreground/60 mb-8 max-w-xl mx-auto font-body">Join pet parents across NZ who trust ZiggySitters.</p>
           <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-            Find a Sitter Now <ArrowRight className="ml-2 h-4 w-4" />
+            Find a Sitter Now <span className="ml-2">→</span>
           </Button>
         </div>
       </section>

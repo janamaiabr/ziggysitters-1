@@ -140,7 +140,7 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
             </p>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6 font-display">
-              Trusted Pet Sitters{" "}
+              Local Pet Sitters{" "}
               <span className="block">in {city.name}</span>
             </h1>
 

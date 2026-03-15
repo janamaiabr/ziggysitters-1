@@ -3,7 +3,13 @@ import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Shield, Heart, ArrowRight, CheckCircle, Star, Camera, Users } from "lucide-react";
+
+import iconLocation from "@/assets/icons/icon-location.png";
+import iconShield from "@/assets/icons/icon-shield.png";
+import iconHeart from "@/assets/icons/icon-heart.png";
+import iconCheck from "@/assets/icons/icon-check.png";
+import iconStar from "@/assets/icons/icon-star.png";
+import iconCamera from "@/assets/icons/icon-camera.png";
 
 const sitterProfiles = [
   {
@@ -90,53 +96,40 @@ export default function OurSitters() {
       />
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <Badge className="mb-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700 px-4 py-2">
-              <Shield className="w-4 h-4 mr-2" />
-              100% NZ-Based
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Trusted NZ Sitters</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Every ZiggySitters pet sitter lives in New Zealand, is verified with NZ documents, and has been personally vetted. Meet some of our amazing team.
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=1600&h=800&fit=crop" alt="Happy pets with sitters" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+        </div>
+        <div className="container mx-auto px-4 py-20 relative z-10">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-widest mb-4 font-body" style={{ color: 'hsl(152 45% 55%)' }}>100% NZ-Based</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-white leading-[1.1] mb-6 font-display">
+              Our Trusted NZ Sitters
+            </h1>
+            <p className="text-lg text-white/80 font-body max-w-xl">
+              Every ZiggySitters pet sitter lives in New Zealand, is verified with NZ documents, and has been personally vetted.
             </p>
           </div>
         </div>
       </section>
 
       {/* Trust Signals */}
-      <section className="py-12 bg-gradient-to-r from-emerald-600 to-teal-600">
+      <section className="py-12 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="flex flex-col items-center text-center p-4">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                <MapPin className="w-6 h-6 text-white" />
+            {[
+              { icon: iconLocation, label: "Local to NZ", desc: "Every sitter lives here" },
+              { icon: iconCheck, label: "ID Verified", desc: "NZ document checks" },
+              { icon: iconCamera, label: "Daily Updates", desc: "Photo reports included" },
+              { icon: iconHeart, label: "Pet Lovers", desc: "Genuine animal lovers" },
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center text-center p-4">
+                <img src={item.icon} alt="" className="w-10 h-10 mb-3 brightness-0 invert" />
+                <h4 className="font-bold text-secondary-foreground text-sm font-body">{item.label}</h4>
+                <p className="text-xs text-secondary-foreground/60 font-body">{item.desc}</p>
               </div>
-              <h4 className="font-bold text-white text-sm">Local to NZ</h4>
-              <p className="text-xs text-white/70">Every sitter lives here</p>
-            </div>
-            <div className="flex flex-col items-center text-center p-4">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                <CheckCircle className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="font-bold text-white text-sm">ID Verified</h4>
-              <p className="text-xs text-white/70">NZ document checks</p>
-            </div>
-            <div className="flex flex-col items-center text-center p-4">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                <Camera className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="font-bold text-white text-sm">Daily Updates</h4>
-              <p className="text-xs text-white/70">Photo reports included</p>
-            </div>
-            <div className="flex flex-col items-center text-center p-4">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-              <h4 className="font-bold text-white text-sm">Pet Lovers</h4>
-              <p className="text-xs text-white/70">Genuine animal lovers</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -145,15 +138,16 @@ export default function OurSitters() {
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Meet Our Sitters</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Our team</p>
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Meet Our Sitters</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-body">
               Real Kiwis who are passionate about caring for your pets
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {sitterProfiles.map((sitter) => (
-              <Card key={sitter.name} className="overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1">
+              <Card key={sitter.name} className="overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1 border border-border">
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden shadow-lg flex-shrink-0">
@@ -161,37 +155,37 @@ export default function OurSitters() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-bold">{sitter.name}</h3>
+                        <h3 className="text-lg font-bold font-display text-foreground">{sitter.name}</h3>
                         {sitter.verified && (
-                          <CheckCircle className="w-5 h-5 text-emerald-500" />
+                          <img src={iconCheck} alt="Verified" className="w-5 h-5" />
                         )}
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <MapPin className="w-3 h-3" />
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground font-body">
+                        <img src={iconLocation} alt="" className="w-3 h-3" />
                         {sitter.location}
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed font-body">
                     {sitter.bio}
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-4">
                     {sitter.specialties.map((spec) => (
-                      <Badge key={spec} variant="secondary" className="text-xs">
+                      <Badge key={spec} variant="secondary" className="text-xs font-body">
                         {spec}
                       </Badge>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t">
+                  <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span className="font-bold text-sm">{sitter.rating}</span>
+                      <img src={iconStar} alt="" className="w-4 h-4" />
+                      <span className="font-bold text-sm font-body text-foreground">{sitter.rating}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{sitter.experience} experience</span>
-                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs">
+                    <span className="text-xs text-muted-foreground font-body">{sitter.experience} experience</span>
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs font-body">
                       NZ Verified
                     </Badge>
                   </div>
@@ -203,32 +197,28 @@ export default function OurSitters() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-br from-emerald-800 to-teal-800 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-10 left-10 text-8xl animate-float">&#x1F33F;</div>
-          <div className="absolute bottom-10 right-10 text-7xl animate-float" style={{ animationDelay: "1s" }}>&#x1F43E;</div>
-        </div>
-
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+      <section className="py-24 bg-secondary text-secondary-foreground">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
             Find Your Perfect NZ Sitter
           </h2>
-          <p className="text-xl text-white/70 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-secondary-foreground/60 mb-8 max-w-2xl mx-auto font-body">
             Browse all our verified sitters and find the perfect match for your pet.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
               onClick={() => navigate("/find-sitters")}
-              className="gap-2 bg-white text-emerald-800 hover:bg-white/90 font-bold px-10 py-6 text-lg shadow-xl"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-body font-bold px-10 py-6 text-lg shadow-xl"
             >
               Browse All Sitters
-              <ArrowRight className="w-5 h-5" />
+              <span className="ml-2">→</span>
             </Button>
             <Button
               size="lg"
+              variant="outline-white"
               onClick={() => navigate("/become-sitter")}
-              className="bg-emerald-500 text-white hover:bg-emerald-400 font-semibold px-10 py-6 text-lg border-2 border-emerald-400"
+              className="font-body px-10 py-6 text-lg"
             >
               Join as a Sitter
             </Button>

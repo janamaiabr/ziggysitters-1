@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronRight, Star, MapPin, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
+import iconStar from '@/assets/icons/icon-star.png';
+import iconLocation from '@/assets/icons/icon-location.png';
 
 interface FeaturedSitter {
   id: string;
@@ -55,24 +57,16 @@ export default function FeaturedSittersCarousel() {
     fetchSitters();
   }, []);
 
-  // Auto-advance carousel
   useEffect(() => {
     if (sitters.length <= 1) return;
-    
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % sitters.length);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [sitters.length]);
 
-  const goToPrev = () => {
-    setCurrentIndex(prev => (prev - 1 + sitters.length) % sitters.length);
-  };
-
-  const goToNext = () => {
-    setCurrentIndex(prev => (prev + 1) % sitters.length);
-  };
+  const goToPrev = () => setCurrentIndex(prev => (prev - 1 + sitters.length) % sitters.length);
+  const goToNext = () => setCurrentIndex(prev => (prev + 1) % sitters.length);
 
   if (loading) {
     return (
@@ -100,7 +94,7 @@ export default function FeaturedSittersCarousel() {
     <Card className="overflow-hidden">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Star className="h-5 w-5 text-yellow-500 fill-current" />
+          <img src={iconStar} alt="" className="h-5 w-5" />
           Meet Our Top Sitters
         </CardTitle>
       </CardHeader>
@@ -129,7 +123,7 @@ export default function FeaturedSittersCarousel() {
                     />
                   </div>
                   <p className="text-sm text-muted-foreground flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />
+                    <img src={iconLocation} alt="" className="h-3 w-3" />
                     {sitter.location}
                   </p>
                   <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
@@ -143,41 +137,26 @@ export default function FeaturedSittersCarousel() {
                   onClick={() => navigate(`/sitter/${sitter.id}?booking=true`)}
                 >
                   View
-                  <ArrowRight className="h-4 w-4 ml-1" />
+                  <span className="ml-1">→</span>
                 </Button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Navigation */}
         {sitters.length > 1 && (
           <>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-0 top-1/2 -translate-y-1/2"
-              onClick={goToPrev}
-            >
+            <Button variant="ghost" size="icon" className="absolute left-0 top-1/2 -translate-y-1/2" onClick={goToPrev}>
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-0 top-1/2 -translate-y-1/2"
-              onClick={goToNext}
-            >
+            <Button variant="ghost" size="icon" className="absolute right-0 top-1/2 -translate-y-1/2" onClick={goToNext}>
               <ChevronRight className="h-5 w-5" />
             </Button>
-
-            {/* Dots */}
             <div className="flex justify-center gap-1 mt-4">
               {sitters.map((_, i) => (
                 <button
                   key={i}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    i === currentIndex ? 'bg-primary' : 'bg-muted'
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-colors ${i === currentIndex ? 'bg-primary' : 'bg-muted'}`}
                   onClick={() => setCurrentIndex(i)}
                 />
               ))}

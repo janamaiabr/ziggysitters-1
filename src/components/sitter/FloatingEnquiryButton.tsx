@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Calendar } from 'lucide-react';
+import iconChat from '@/assets/icons/icon-chat.png';
+import iconCalendar from '@/assets/icons/icon-calendar.png';
 
 interface FloatingEnquiryButtonProps {
   onEnquiryClick: () => void;
@@ -20,16 +21,12 @@ export default function FloatingEnquiryButton({
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show floating buttons after scrolling past the header (roughly 300px)
       const scrolledPast = window.scrollY > 300;
       setHasScrolledPastHeader(scrolledPast);
-      
-      // On mobile, always show. On desktop, only show after scrolling past header
       const isMobile = window.innerWidth < 1024;
       setIsVisible(isMobile || scrolledPast);
     };
 
-    // Initial check
     handleScroll();
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -43,7 +40,6 @@ export default function FloatingEnquiryButton({
 
   const handleAvailabilityClick = () => {
     if (isGuest) {
-      // For guests, scroll to calendar instead of requiring login
       const calendarSection = document.querySelector('[data-availability-calendar]');
       if (calendarSection) {
         calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -64,15 +60,15 @@ export default function FloatingEnquiryButton({
           variant="outline"
           className="rounded-full px-5 shadow-md hover:bg-primary/10 border-2"
         >
-          <MessageCircle className="h-5 w-5 mr-2" />
+          <img src={iconChat} alt="" className="h-5 w-5 mr-2" />
           Ask {sitterName.split(' ')[0]}
         </Button>
         <Button
           onClick={handleAvailabilityClick}
           size="lg"
-          className="rounded-full px-5 shadow-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white font-bold animate-pulse-glow"
+          className="rounded-full px-5 shadow-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold animate-pulse-glow"
         >
-          <Calendar className="h-5 w-5 mr-2" />
+          <img src={iconCalendar} alt="" className="h-5 w-5 mr-2" />
           {isGuest ? 'View Availability' : 'Check Availability'}
         </Button>
       </div>
