@@ -341,72 +341,48 @@ const Index = () => {
 
 
       {/* Daily Reports Section */}
-      <section className="py-8 md:py-20 bg-[#f0f4f8]">
+      <section className="py-8 md:py-20 bg-accent">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
-              {/* Left Content */}
               <div className="space-y-4 md:space-y-6">
-                <div className="inline-flex items-center bg-blue-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium">
+                <div className="inline-flex items-center bg-primary text-primary-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium font-body">
                   <Camera className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2" />
                   Industry First Feature
                 </div>
                 
-                <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
+                <h2 className="text-2xl md:text-4xl font-bold text-foreground font-display">
                   Watch the Bond Grow, Update by Update
                 </h2>
                 
-                <p className="text-sm md:text-lg text-gray-600 leading-relaxed">
+                <p className="text-sm md:text-lg text-muted-foreground leading-relaxed font-body">
                   96% report compliance rate, with updates sent 2x per day. Sitter payment is tied to delivery — the platform monitors every booking automatically.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+                  {[
+                    { Icon: CheckCircle, title: 'Daily Photos', desc: "See your pet's day" },
+                    { Icon: Clock, title: 'Care Notes', desc: 'Food, mood & health' },
+                    { Icon: DollarSign, title: 'Pay Guarantee', desc: 'Tied to report quality' },
+                    { Icon: Shield, title: 'Peace of Mind', desc: 'Never worry again' },
+                  ].map((item) => (
+                    <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
+                      <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <item.Icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground text-sm md:text-base font-body">{item.title}</h4>
+                        <p className="text-xs md:text-sm text-muted-foreground font-body">{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Daily Photos</h4>
-                      <p className="text-xs md:text-sm text-gray-600">See your pet{"'"}s day</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Care Notes</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Food, mood & health</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <DollarSign className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Pay Guarantee</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Tied to report quality</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Shield className="w-4 h-4 md:w-5 md:h-5 text-orange-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Peace of Mind</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Never worry again</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
                 
                 <div className="pt-2 md:pt-4">
                   <Button 
                     size="lg" 
                     onClick={() => navigate('/daily-reports-info')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 min-h-[44px]"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 md:px-8 min-h-[44px] font-body"
                   >
                     <Camera className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                     Learn More About Daily Reports
@@ -414,69 +390,47 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Right Content - Visual/Stats */}
               <div className="space-y-4 md:space-y-6">
-                <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-gray-200">
+                <div className="bg-card rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-border">
                   <div className="text-center mb-4 md:mb-6">
-                    <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-1 md:mb-2">Sample Daily Report</h3>
-                    <p className="text-xs md:text-sm text-gray-600">What you{"'"}ll receive every day</p>
+                    <h3 className="text-lg md:text-xl font-semibold text-foreground mb-1 md:mb-2 font-body">Sample Daily Report</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground font-body">What you'll receive every day</p>
                   </div>
                   
                   <div className="space-y-3 md:space-y-4">
-                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-green-50 rounded-lg">
-                      <span className="text-sm font-medium text-green-800">Morning Walk</span>
-                      <span className="text-xs text-green-600">✓ 45 minutes</span>
-                    </div>
+                    {[
+                      { label: 'Morning Walk', value: '45 minutes' },
+                      { label: 'Feeding Time', value: 'Ate well' },
+                      { label: 'Playtime', value: 'Very active' },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center justify-between p-2.5 md:p-3 bg-muted rounded-lg border border-border">
+                        <span className="text-sm font-medium text-foreground font-body">{item.label}</span>
+                        <span className="text-xs text-primary font-body">✓ {item.value}</span>
+                      </div>
+                    ))}
                     
-                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-blue-50 rounded-lg">
-                      <span className="text-sm font-medium text-blue-800">Feeding Time</span>
-                      <span className="text-xs text-blue-600">✓ Ate well</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-purple-50 rounded-lg">
-                      <span className="text-sm font-medium text-purple-800">Playtime</span>
-                      <span className="text-xs text-purple-600">✓ Very active</span>
-                    </div>
-                    
-                    {/* Sample report photos — BIGGER on mobile */}
                     <div className="grid grid-cols-3 gap-2 mt-3 md:mt-4">
-                      <div className="rounded-lg h-24 md:h-16 overflow-hidden">
-                        <img 
-                          src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop" 
-                          alt="Pet photo 1" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="rounded-lg h-24 md:h-16 overflow-hidden">
-                        <img 
-                          src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=200&h=200&fit=crop" 
-                          alt="Pet photo 2" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="rounded-lg h-24 md:h-16 overflow-hidden">
-                        <img 
-                          src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=200&h=200&fit=crop" 
-                          alt="Pet photo 3" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                      {['photo-1587300003388-59208cc962cb', 'photo-1561037404-61cd46aa615b', 'photo-1544568100-847a948585b9'].map((id, i) => (
+                        <div key={i} className="rounded-lg h-24 md:h-16 overflow-hidden">
+                          <img src={`https://images.unsplash.com/${id}?w=200&h=200&fit=crop`} alt={`Pet photo ${i+1}`} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
                     </div>
                     
-                    <p className="text-xs text-gray-500 text-center italic">
+                    <p className="text-xs text-muted-foreground text-center italic font-body">
                       "Max had a wonderful day! Very playful and ate all his food."
                     </p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-gray-200">
-                    <div className="text-xl md:text-2xl font-bold text-blue-600">96%</div>
-                    <div className="text-xs md:text-sm text-gray-600">Report Compliance</div>
+                  <div className="bg-card rounded-xl p-3 md:p-4 text-center border border-border">
+                    <div className="text-xl md:text-2xl font-bold text-primary font-display">96%</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-body">Report Compliance</div>
                   </div>
-                  <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-gray-200">
-                    <div className="text-xl md:text-2xl font-bold text-green-600">2x/day</div>
-                    <div className="text-xs md:text-sm text-gray-600">Updates Delivered</div>
+                  <div className="bg-card rounded-xl p-3 md:p-4 text-center border border-border">
+                    <div className="text-xl md:text-2xl font-bold text-primary font-display">2x/day</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-body">Updates Delivered</div>
                   </div>
                 </div>
               </div>
