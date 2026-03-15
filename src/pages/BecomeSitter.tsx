@@ -300,20 +300,47 @@ export default function BecomeSitter() {
               </p>
             </div>
             
-            <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
-              {HIGH_DEMAND_SUBURBS.map((suburb) => (
-                <Button
-                  key={suburb.slug}
-                  variant="outline"
-                  className="group border-border hover:border-primary/30 hover:bg-primary/5 transition-all font-body"
-                  onClick={() => navigate(`/become-sitter/${suburb.slug}`)}
-                >
-                  {suburb.name}
-                  <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
-                    High demand
-                  </Badge>
-                </Button>
-              ))}
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3 font-body">🇳🇿 New Zealand</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {HIGH_DEMAND_AREAS.filter(a => a.region === 'Auckland').map((area) => (
+                      <Button
+                        key={area.slug}
+                        variant="outline"
+                        size="sm"
+                        className="group border-border hover:border-primary/30 hover:bg-primary/5 transition-all font-body"
+                        onClick={() => navigate(`/become-sitter/${area.slug}`)}
+                      >
+                        {area.name}
+                        <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
+                          High demand
+                        </Badge>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3 font-body">🇦🇺 Sunshine Coast, QLD</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {HIGH_DEMAND_AREAS.filter(a => a.region === 'Sunshine Coast').map((area) => (
+                      <Button
+                        key={area.slug}
+                        variant="outline"
+                        size="sm"
+                        className="group border-border hover:border-primary/30 hover:bg-primary/5 transition-all font-body"
+                        onClick={() => navigate(`/become-sitter/${area.slug}`)}
+                      >
+                        {area.name}
+                        <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
+                          High demand
+                        </Badge>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
