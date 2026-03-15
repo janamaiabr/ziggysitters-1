@@ -314,14 +314,14 @@ const Index = () => {
                   
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
                     {[
-                      { Icon: CheckCircle, title: 'Daily Photos', desc: "See your pet's day" },
-                      { Icon: Clock, title: 'Care Notes', desc: 'Food, mood & health' },
-                      { Icon: DollarSign, title: 'Pay Guarantee', desc: 'Tied to report quality' },
-                      { Icon: Shield, title: 'Peace of Mind', desc: 'Never worry again' },
+                      { icon: iconCheck, title: 'Daily Photos', desc: "See your pet's day" },
+                      { icon: iconClock, title: 'Care Notes', desc: 'Food, mood & health' },
+                      { icon: iconDollar, title: 'Pay Guarantee', desc: 'Tied to report quality' },
+                      { icon: iconShield, title: 'Peace of Mind', desc: 'Never worry again' },
                     ].map((item) => (
                       <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
-                        <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <item.Icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                        <div className="w-7 h-7 md:w-8 md:h-8 bg-vintage-cream rounded-full flex items-center justify-center flex-shrink-0">
+                          <img src={item.icon} alt="" className="w-5 h-5" />
                         </div>
                         <div>
                           <h4 className="font-semibold text-foreground text-sm md:text-base font-body">{item.title}</h4>
