@@ -104,16 +104,27 @@ const HeroSectionPlayful = ({
                   <span className="text-xs md:text-sm font-semibold text-primary font-body">Local pet sitting — AU & NZ</span>
                 </div>
 
-                {/* Primary CTA */}
-                <div className="pt-2 md:pt-3 space-y-2 md:space-y-3">
-                  <Button 
-                    size="lg" 
-                    data-tour="find-sitter"
-                    className="w-full lg:w-auto text-base md:text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 py-5 md:py-7 px-6 md:px-10 bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-xl min-h-[48px] font-body"
-                    onClick={handleCtaClick}
-                  >
-                    Find a Trusted Sitter Near Me
-                  </Button>
+                {/* Primary CTAs */}
+                <div className="pt-2 md:pt-3 space-y-3 md:space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                    <Button 
+                      size="lg" 
+                      data-tour="find-sitter"
+                      className="text-base md:text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 py-5 md:py-7 px-6 md:px-10 bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-xl min-h-[48px] font-body"
+                      onClick={handleCtaClick}
+                    >
+                      Find a Sitter Near Me
+                    </Button>
+                    <Button 
+                      size="lg"
+                      variant="outline"
+                      data-tour="become-sitter"
+                      className="text-base md:text-lg font-semibold py-5 md:py-7 px-6 md:px-8 rounded-xl min-h-[48px] font-body border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                      onClick={() => navigate('/become-sitter')}
+                    >
+                      Become a Sitter
+                    </Button>
+                  </div>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground font-body">
                     <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> ID Verified</span>
                     <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Daily Photo Updates</span>

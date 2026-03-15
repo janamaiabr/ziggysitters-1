@@ -202,12 +202,12 @@ const Index = () => {
           setCheckOut={setCheckOut}
         />
 
-        {/* Platform Stats — Real marketplace proof */}
-        {(platformStats.sitters > 0 || platformStats.owners > 0) && (
+        {/* Platform Stats — only show when meaningful */}
+        {platformStats.sitters >= 5 && (
           <section className="py-8 md:py-14 bg-secondary">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
-                <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
+                <div className="grid grid-cols-2 gap-4 md:gap-8 text-center">
                   <div>
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
                       {platformStats.sitters}+
@@ -218,17 +218,11 @@ const Index = () => {
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
                       {platformStats.owners}+
                     </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Pet Owners</p>
-                  </div>
-                  <div>
-                    <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
-                      {platformStats.bookings}+
-                    </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Bookings Made</p>
+                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Happy Pet Owners</p>
                   </div>
                 </div>
                 <p className="text-center text-xs md:text-sm text-secondary-foreground/40 mt-4 font-body">
-                  A real community of pet owners and sitters across AU & NZ
+                  A growing community of pet lovers across AU & NZ
                 </p>
               </div>
             </div>
