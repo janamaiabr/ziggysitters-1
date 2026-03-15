@@ -853,8 +853,8 @@ export default function FindSitters() {
                     </Badge>
                   )}
                   {serviceType && (
-                    <Badge variant="secondary" className="text-sm">
-                      🏠 {serviceType === 'pet_sitting_owners_home' ? 'Your Home' : 
+                    <Badge variant="secondary" className="text-sm font-body">
+                      {serviceType === 'pet_sitting_owners_home' ? 'Your Home' : 
                          serviceType === 'pet_sitting_sitters_home' ? "Sitter's Home" : 'Drop-ins'}
                     </Badge>
                   )}
