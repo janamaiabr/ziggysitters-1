@@ -24,7 +24,6 @@ export default function Header() {
       checkAdminStatusAndProfile();
       fetchUnreadMessages();
       
-      // Subscribe to real-time message updates
       const channel = supabase
         .channel('header-messages')
         .on(
@@ -78,14 +77,12 @@ export default function Header() {
     }
     
     try {
-      // Fetch profile info
       const { data: profileData } = await supabase
         .from('profiles')
         .select('role, avatar_url, first_name, last_name')
         .eq('user_id', user.id)
         .maybeSingle();
       
-      // Check admin status using secure user_roles table
       const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
@@ -113,89 +110,59 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-background/98 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 sticky top-0 z-50 border-b border-border/50">
+    <header className="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
       <div className="container mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <img src={logoSvg} alt="ZiggySitters" className="h-7 md:h-9 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          <Link to="/find-sitters" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
+          <Link to="/find-sitters" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body">
             Find Sitters
           </Link>
-          <Link to="/become-sitter" data-tour="become-sitter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
+          <Link to="/become-sitter" data-tour="become-sitter" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body">
             Become a Sitter
           </Link>
-          <Link to="/how-it-works" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
+          <Link to="/how-it-works" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body">
             How it Works
           </Link>
-          <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide">
+          <Link to="/blog" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body">
             Blog
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
+              <button className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 Cities
                 <ChevronDown className="h-3 w-3" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-48">
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-auckland')}>
-                🏙️ Auckland
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-wellington')}>
-                🏛️ Wellington
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-christchurch')}>
-                🌿 Christchurch
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hamilton')}>
-                🌊 Hamilton
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-tauranga')}>
-                ☀️ Tauranga
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-dunedin')}>
-                🏔️ Dunedin
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-napier')}>
-                🎨 Napier
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-nelson')}>
-                ☀️ Nelson
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-new-plymouth')}>
-                🌋 New Plymouth
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-palmerston-north')}>
-                🎓 Palmerston North
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-queenstown')}>
-                ⛰️ Queenstown
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-rotorua')}>
-                ♨️ Rotorua
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-whangarei')}>
-                🌴 Whangarei
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hastings')}>
-                🍇 Hastings
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-auckland')}>Auckland</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-wellington')}>Wellington</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-christchurch')}>Christchurch</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hamilton')}>Hamilton</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-tauranga')}>Tauranga</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-dunedin')}>Dunedin</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-napier')}>Napier</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-nelson')}>Nelson</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-new-plymouth')}>New Plymouth</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-palmerston-north')}>Palmerston North</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-queenstown')}>Queenstown</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-rotorua')}>Rotorua</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-whangarei')}>Whangarei</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hastings')}>Hastings</DropdownMenuItem>
               <DropdownMenuItem disabled className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
                 Australia
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-sunshine-coast')}>
-                ☀️ Sunshine Coast, QLD
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/pet-sitting-sunshine-coast')}>Sunshine Coast, QLD</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/young-walkers" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1">
-            🐕 Young Walkers
+          <Link to="/young-walkers" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body">
+            Young Walkers
           </Link>
           {user && profile?.role === 'pet_sitter' && (
-            <Link to="/calendar" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-200 font-body tracking-wide flex items-center gap-1.5">
+            <Link to="/calendar" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body flex items-center gap-1.5">
               <CalendarIcon className="h-4 w-4" />
               Calendar
             </Link>
@@ -203,14 +170,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Notification Bell - only for logged in users */}
           {user && (
             <div className="hidden md:block">
               <NotificationBell />
             </div>
           )}
           
-          {/* Desktop Navigation */}
           {user ? (
             <div className="hidden md:flex">
               <DropdownMenu>
@@ -221,7 +186,7 @@ export default function Header() {
                         src={profile?.avatar_url || user.user_metadata?.avatar_url} 
                         className="object-cover"
                       />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-body">
                         {profile?.first_name?.[0] || user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -269,11 +234,11 @@ export default function Header() {
             </div>
           ) : (
             <div className="hidden md:flex gap-3">
-              <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')} className="font-body font-medium">
+              <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')} className="font-body font-medium text-foreground/70">
                 Sign In
               </Button>
-              <Button onClick={() => navigate('/find-sitters')} className="font-body font-semibold bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
-                Find a Sitter 🔍
+              <Button onClick={() => navigate('/find-sitters')} className="font-body font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-sm">
+                Find a Sitter
               </Button>
             </div>
           )}
@@ -287,69 +252,43 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle className="font-body">Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col space-y-4 mt-6">
                 {user ? (
                   <>
-                    <div className="flex items-center space-x-3 p-3 bg-accent/50 rounded-lg">
+                    <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
                       <Avatar className="h-10 w-10">
                         <AvatarImage 
                           src={profile?.avatar_url || user.user_metadata?.avatar_url} 
                           className="object-cover"
                         />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary/10 text-primary font-body">
                           {profile?.first_name?.[0] || user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium">
+                        <p className="font-medium font-body">
                           {profile?.first_name || user.user_metadata?.first_name || 'User'}
                         </p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                        <p className="text-sm text-muted-foreground font-body">{user.email}</p>
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/find-sitters')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/find-sitters')}>
                         Find Sitters
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/become-sitter')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/become-sitter')}>
                         Become a Sitter
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/how-it-works')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/how-it-works')}>
                         How it Works
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
                       </Button>
-                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cities</div>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-auckland')}>
-                        🏙️ Auckland
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-wellington')}>
-                        🏛️ Wellington
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-christchurch')}>
-                        🌿 Christchurch
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-napier')}>
-                        🎨 Napier
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-nelson')}>
-                        ☀️ Nelson
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-queenstown')}>
-                        ⛰️ Queenstown
-                      </Button>
-                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Australia</div>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-sunshine-coast')}>
-                        ☀️ Sunshine Coast, QLD
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
-                        🐕 Young Walkers
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-between" onClick={() => handleMobileNavigation('/messages')}>
+                      <Button variant="ghost" className="w-full justify-between font-body" onClick={() => handleMobileNavigation('/messages')}>
                         <span className="flex items-center">
                           <MessageCircle className="mr-2 h-4 w-4" />
                           Messages
@@ -360,35 +299,35 @@ export default function Header() {
                           </Badge>
                         )}
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/profile')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/profile')}>
                         <User className="mr-2 h-4 w-4" />
                         Profile
                       </Button>
                       {profile?.role === 'pet_sitter' && (
-                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/calendar')}>
+                        <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/calendar')}>
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           My Calendar
                         </Button>
                       )}
                       {!isAdmin && (
-                        <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/bookings')}>
+                        <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/bookings')}>
                           <Settings className="mr-2 h-4 w-4" />
                           My Bookings
                         </Button>
                       )}
                       {isAdmin && (
                         <>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin-dashboard')}>
+                          <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/admin-dashboard')}>
                             <Shield className="mr-2 h-4 w-4" />
                             Admin Dashboard
                           </Button>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/admin/search-analytics')}>
+                          <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/admin/search-analytics')}>
                             <Shield className="mr-2 h-4 w-4" />
                             Search Analytics
                           </Button>
                         </>
                       )}
-                      <Button variant="ghost" className="w-full justify-start text-red-600" onClick={handleSignOut}>
+                      <Button variant="ghost" className="w-full justify-start text-destructive font-body" onClick={handleSignOut}>
                         <LogOut className="mr-2 h-4 w-4" />
                         Sign out
                       </Button>
@@ -397,50 +336,27 @@ export default function Header() {
                 ) : (
                   <>
                     <div className="space-y-2">
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/find-sitters')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/find-sitters')}>
                         Find Sitters
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/become-sitter')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/become-sitter')}>
                         Become a Sitter
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/how-it-works')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/how-it-works')}>
                         How it Works
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/blog')}>
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/blog')}>
                         Blog
                       </Button>
-                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cities</div>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-auckland')}>
-                        🏙️ Auckland
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-wellington')}>
-                        🏛️ Wellington
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-christchurch')}>
-                        🌿 Christchurch
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-napier')}>
-                        🎨 Napier
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-nelson')}>
-                        ☀️ Nelson
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-queenstown')}>
-                        ⛰️ Queenstown
-                      </Button>
-                      <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Australia</div>
-                      <Button variant="ghost" className="w-full justify-start text-sm pl-6" onClick={() => handleMobileNavigation('/pet-sitting-sunshine-coast')}>
-                        ☀️ Sunshine Coast, QLD
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleMobileNavigation('/young-walkers')}>
-                        🐕 Young Walkers
+                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/young-walkers')}>
+                        Young Walkers
                       </Button>
                     </div>
                     <div className="space-y-3 pt-4 border-t">
-                      <Button className="w-full" onClick={() => handleMobileNavigation('/auth?tab=signup')}>
+                      <Button className="w-full font-body bg-secondary text-secondary-foreground" onClick={() => handleMobileNavigation('/auth?tab=signup')}>
                         Get Started
                       </Button>
-                      <Button variant="outline" className="w-full" onClick={() => handleMobileNavigation('/auth?tab=signin')}>
+                      <Button variant="outline" className="w-full font-body" onClick={() => handleMobileNavigation('/auth?tab=signin')}>
                         Sign In
                       </Button>
                     </div>
