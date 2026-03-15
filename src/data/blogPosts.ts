@@ -1072,7 +1072,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Complete guide to finding pet sitters on Auckland\'s North Shore. From Takapuna to Albany, discover local options.',
     date: '2026-02-06',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1494947665470-20322015e3a8?w=1200&h=630&fit=crop',
     readTime: '11 min read',
     tag: 'Auckland Guide',
     metaDescription: 'Find trusted pet sitters on Auckland North Shore. Local guide covering Takapuna, Devonport, Albany, Browns Bay.',
