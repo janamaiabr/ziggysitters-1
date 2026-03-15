@@ -122,7 +122,7 @@ export default function Profile() {
                 await refetch();
                 fireSuccess(); // Celebrate with confetti!
                 toast({
-                  title: "🎉 Onboarding Complete!",
+                  title: "Onboarding Complete",
                   description: "Your sitter profile is now active. Pet owners can now find you!",
                 });
               }
