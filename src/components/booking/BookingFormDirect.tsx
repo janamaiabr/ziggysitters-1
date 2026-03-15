@@ -9,8 +9,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, differenceInHours, differenceInDays } from 'date-fns';
-import { Shield, CheckCircle, Zap, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconCheck from '@/assets/icons/icon-check.png';
+import iconClock from '@/assets/icons/icon-clock.png';
+import iconChat from '@/assets/icons/icon-chat.png';
+import iconHouse from '@/assets/icons/icon-house.png';
+import iconBowl from '@/assets/icons/icon-bowl.png';
+import iconPaw from '@/assets/icons/icon-paw.png';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import { ga4 } from '@/lib/ga4';
 interface BookingFormDirectProps {
@@ -289,7 +296,7 @@ export default function BookingFormDirect({
 
   return (
     <Card className="border-2 border-primary/20 shadow-xl bg-card overflow-hidden relative">
-      <CardHeader className="pb-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
+      <CardHeader className="pb-3 bg-accent/50">
         <CardTitle className="flex items-center gap-3">
           <img 
             src={sitter.avatar} 
@@ -297,9 +304,12 @@ export default function BookingFormDirect({
             className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/30"
           />
           <div>
-            <div className="text-xl font-bold">📩 Enquire with {sitter.name.split(' ')[0]}</div>
+            <div className="text-xl font-bold font-display flex items-center gap-2">
+              <img src={iconChat} alt="" className="w-5 h-5" />
+              Enquire with {sitter.name.split(' ')[0]}
+            </div>
             {total > 0 && (
-              <div className="text-lg font-bold text-green-600 dark:text-green-400">
+              <div className="text-lg font-bold text-primary font-display">
                 From NZ${total.toFixed(2)} estimated
               </div>
             )}
@@ -309,15 +319,15 @@ export default function BookingFormDirect({
 
       <CardContent className="space-y-4 pt-4">
         {/* Trust signals - right at the top */}
-        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-3 space-y-1.5">
-          <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
-            <Zap className="w-4 h-4 flex-shrink-0" /> Average response time: 2 hours
+        <div className="bg-accent/50 border border-border rounded-lg p-3 space-y-1.5">
+          <p className="text-sm font-medium text-foreground flex items-center gap-2 font-body">
+            <img src={iconClock} alt="" className="w-4 h-4 flex-shrink-0" /> Average response time: 2 hours
           </p>
-          <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 flex-shrink-0" /> Free to enquire — no payment until sitter accepts
+          <p className="text-sm font-medium text-foreground flex items-center gap-2 font-body">
+            <img src={iconCheck} alt="" className="w-4 h-4 flex-shrink-0" /> Free to enquire — no payment until sitter accepts
           </p>
-          <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
-            <Shield className="w-4 h-4 flex-shrink-0" /> 100% refund if sitter cancels
+          <p className="text-sm font-medium text-foreground flex items-center gap-2 font-body">
+            <img src={iconShield} alt="" className="w-4 h-4 flex-shrink-0" /> 100% refund if sitter cancels
           </p>
         </div>
 
@@ -329,10 +339,19 @@ export default function BookingFormDirect({
               servicesData.map((service) => {
                 const getServiceDisplayName = (type: string) => {
                   switch (type) {
-                    case 'pet_sitting_owners_home': return '🏠 At Your Home';
-                    case 'pet_sitting_sitters_home': return '🏡 At Sitter\'s';
-                    case 'drop_in_visits': return '👀 Drop-ins';
+                    case 'pet_sitting_owners_home': return 'At Your Home';
+                    case 'pet_sitting_sitters_home': return "At Sitter's";
+                    case 'drop_in_visits': return 'Drop-ins';
                     default: return type.replace(/_/g, ' ');
+                  }
+                };
+
+                const getServiceIcon = (type: string) => {
+                  switch (type) {
+                    case 'pet_sitting_owners_home': return iconHouse;
+                    case 'pet_sitting_sitters_home': return iconHouse;
+                    case 'drop_in_visits': return iconBowl;
+                    default: return iconPaw;
                   }
                 };
 
@@ -362,6 +381,7 @@ export default function BookingFormDirect({
                       });
                     }}
                   >
+                    <img src={getServiceIcon(service.service_type)} alt="" className="w-4 h-4 mr-1" />
                     {getServiceDisplayName(service.service_type)} • {getRate()}
                   </Badge>
                 );
@@ -424,40 +444,45 @@ export default function BookingFormDirect({
           <Button 
             onClick={onGuestSignup}
             size="lg"
-            className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+            className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-all hover:scale-[1.02] font-display"
           >
-            📩 Request Free Quote →
+            <img src={iconChat} alt="" className="w-5 h-5 mr-2" />
+            Request Free Quote
+            <span className="ml-2">→</span>
           </Button>
         ) : (
           <Button 
             onClick={handleBooking}
             disabled={loading}
             size="lg"
-            className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+            className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-all hover:scale-[1.02] font-display"
           >
             {loading ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground mr-3"></div>
                 Sending...
               </>
             ) : (
-              '📩 Send Free Enquiry'
+              <>
+                <img src={iconChat} alt="" className="w-5 h-5 mr-2" />
+                Send Free Enquiry
+              </>
             )}
           </Button>
         )}
         
         {/* Reassurance below CTA */}
-        <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+        <div className="flex justify-center gap-4 text-xs text-muted-foreground font-body">
           <span className="flex items-center gap-1">
-            <Shield className="w-3 h-3" />
+            <img src={iconShield} alt="" className="w-3 h-3" />
             No payment needed
           </span>
           <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
+            <img src={iconClock} alt="" className="w-3 h-3" />
             Reply within hours
           </span>
           <span className="flex items-center gap-1">
-            <CheckCircle className="w-3 h-3" />
+            <img src={iconCheck} alt="" className="w-3 h-3" />
             Cancel anytime
           </span>
         </div>
