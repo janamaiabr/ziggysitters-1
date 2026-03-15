@@ -1,9 +1,19 @@
 import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Star, Shield, Heart, Camera, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+import iconShield from "@/assets/icons/icon-shield.png";
+import iconCamera from "@/assets/icons/icon-camera.png";
+import iconHeart from "@/assets/icons/icon-heart.png";
+import iconClock from "@/assets/icons/icon-clock.png";
+import iconStar from "@/assets/icons/icon-star.png";
+import iconCheck from "@/assets/icons/icon-check.png";
+import iconCalendar from "@/assets/icons/icon-calendar.png";
+import iconHouse from "@/assets/icons/icon-house.png";
+import iconPaw from "@/assets/icons/icon-paw.png";
+import iconGift from "@/assets/icons/icon-gift.png";
 
 export default function ChristmasLanding() {
   const isMobile = useIsMobile();
@@ -17,87 +27,70 @@ export default function ChristmasLanding() {
       />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-red-50 to-emerald-50 dark:from-red-950/30 dark:to-emerald-950/30">
-        {/* Festive floating emojis - only animate on desktop */}
-        {!isMobile && (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-10 left-10 text-5xl animate-bounce" style={{ animationDuration: '2s' }}>🎄</div>
-            <div className="absolute top-20 right-12 text-4xl animate-bounce" style={{ animationDelay: "0.4s", animationDuration: '2.5s' }}>🎁</div>
-            <div className="absolute bottom-24 left-1/4 text-4xl animate-bounce" style={{ animationDelay: "0.8s", animationDuration: '3s' }}>🐾</div>
-            <div className="absolute bottom-20 right-1/4 text-5xl animate-bounce" style={{ animationDelay: "1.2s", animationDuration: '2.8s' }}>⭐</div>
-            <div className="absolute top-1/2 right-10 text-3xl animate-bounce" style={{ animationDelay: "1.6s", animationDuration: '2.3s' }}>❄️</div>
-          </div>
-        )}
-
-        {/* Soft festive blobs */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -top-20 -left-10 w-96 h-96 rounded-full bg-red-500/30 dark:bg-red-700/20 blur-3xl" />
-          <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-emerald-500/30 dark:bg-emerald-700/20 blur-3xl" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-red-600/20 dark:bg-red-600/15 blur-3xl" />
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=1600&h=900&fit=crop" alt="Happy pet at Christmas" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/30" />
         </div>
 
         <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 rounded-full bg-red-100 dark:bg-red-900/30 px-4 py-2 text-sm font-semibold shadow-sm mb-6 border-2 border-red-300 dark:border-red-800">
-                <span>🎅 Christmas bookings now open</span>
-                <span className={`text-xs rounded-full bg-red-600 text-white px-2 py-0.5 font-bold ${!isMobile ? 'animate-pulse' : ''}`}>
-                  Limited spots!
-                </span>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6">
-                <span className="text-red-700 dark:text-red-400">
-                  Your Pet&apos;s Perfect
-                </span>
-                <br />
-                <span className="text-emerald-700 dark:text-emerald-400">
-                  Christmas Holiday 🎄
-                </span>
-              </h1>
-
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
-                Heading away for the holidays? Give your furry family the gift of staying home with a trusted, 
-                verified sitter who sends daily photo updates.
-              </p>
-
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link to="/find-sitters?season=christmas">
-                  <Button size="lg" className="h-14 px-8 text-lg font-bold bg-red-600 hover:bg-red-700 shadow-2xl">
-                    🎁 Find Your Christmas Sitter
-                  </Button>
-                </Link>
-                <Link to="/how-it-works">
-                  <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold border-2 border-emerald-600 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950">
-                    How It Works
-                  </Button>
-                </Link>
-              </div>
-
-              <p className="text-sm text-muted-foreground mt-6">
-                ⚡ <strong>Peak dates (Dec 24-27 & New Year&apos;s Eve)</strong> are booking fast. Secure your spot today!
-              </p>
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-4 py-2 text-sm font-semibold mb-6 border border-white/20 text-white font-body">
+              <img src={iconCalendar} alt="" className="w-4 h-4" />
+              Christmas bookings now open
+              <span className={`text-xs rounded-full bg-primary text-primary-foreground px-2 py-0.5 font-bold ${!isMobile ? 'animate-pulse' : ''}`}>
+                Limited spots!
+              </span>
             </div>
+
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 text-white font-display">
+              Your Pet's Perfect
+              <br />
+              <span className="text-primary">Christmas Holiday</span>
+            </h1>
+
+            <p className="text-xl md:text-2xl text-white/80 max-w-3xl mb-8 font-body">
+              Heading away for the holidays? Give your furry family the gift of staying home with a trusted, 
+              verified sitter who sends daily photo updates.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <Link to="/find-sitters?season=christmas">
+                <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xl">
+                  <img src={iconGift} alt="" className="w-5 h-5 mr-2" />
+                  Find Your Christmas Sitter
+                </Button>
+              </Link>
+              <Link to="/how-it-works">
+                <Button size="lg" variant="outline-white" className="h-14 px-8 text-lg font-semibold">
+                  How It Works
+                </Button>
+              </Link>
+            </div>
+
+            <p className="text-sm text-white/60 mt-6 font-body">
+              Peak dates (Dec 24-27 & New Year's Eve) are booking fast. Secure your spot today!
+            </p>
           </div>
         </div>
       </section>
 
       {/* Trust Signals */}
-      <section className="py-12 bg-gradient-to-r from-red-50 to-emerald-50 dark:from-red-950/10 dark:to-emerald-950/10 border-y border-red-200 dark:border-red-900">
+      <section className="py-12 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { icon: Shield, label: "Verified Sitters", desc: "ID & police checked" },
-              { icon: Camera, label: "Daily Updates", desc: "Photos & videos" },
-              { icon: Heart, label: "Trusted by 1000s", desc: "Happy pet parents" },
-              { icon: Clock, label: "24/7 Support", desc: "We're here to help" }
+              { icon: iconShield, label: "Verified Sitters", desc: "ID & police checked" },
+              { icon: iconCamera, label: "Daily Updates", desc: "Photos & videos" },
+              { icon: iconHeart, label: "Trusted by Pet Parents", desc: "Real reviews" },
+              { icon: iconClock, label: "24/7 Support", desc: "We're here to help" }
             ].map((item, i) => (
               <div key={i} className="text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-700 text-white mb-3 shadow-lg">
-                  <item.icon className="w-7 h-7" />
+                <div className="flex justify-center mb-3">
+                  <img src={item.icon} alt="" className="w-10 h-10 brightness-0 invert" />
                 </div>
-                <p className="font-bold text-sm mb-1">{item.label}</p>
-                <p className="text-xs text-muted-foreground">{item.desc}</p>
+                <p className="font-bold text-sm mb-1 text-secondary-foreground font-body">{item.label}</p>
+                <p className="text-xs text-secondary-foreground/60 font-body">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -108,36 +101,29 @@ export default function ChristmasLanding() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              Why Book Your Christmas Sitter <span className="text-red-600">Early?</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 text-lg">
-              The best sitters get snapped up quickly during the festive season
-            </p>
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Don't miss out</p>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
+                Why Book Your Christmas Sitter Early?
+              </h2>
+              <p className="text-lg text-muted-foreground mt-4 font-body">
+                The best sitters get snapped up quickly during the festive season
+              </p>
+            </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                {
-                  emoji: "📅",
-                  title: "Peak Dates Fill Fast",
-                  desc: "Christmas Eve through Boxing Day are the most popular dates. Experienced sitters are already receiving multiple requests."
-                },
-                {
-                  emoji: "⭐",
-                  title: "Best Sitters, Best Care",
-                  desc: "Our most experienced, verified sitters get booked first. Don't miss out on the best care for your precious pets."
-                },
-                {
-                  emoji: "😌",
-                  title: "Peace of Mind",
-                  desc: "Book early and relax. No last-minute scrambling, no settling for less. Just pure holiday relaxation knowing your pets are sorted."
-                }
+                { icon: iconCalendar, title: "Peak Dates Fill Fast", desc: "Christmas Eve through Boxing Day are the most popular dates. Experienced sitters are already receiving multiple requests." },
+                { icon: iconStar, title: "Best Sitters, Best Care", desc: "Our most experienced, verified sitters get booked first. Don't miss out on the best care for your precious pets." },
+                { icon: iconHeart, title: "Peace of Mind", desc: "Book early and relax. No last-minute scrambling, no settling for less. Just pure holiday relaxation knowing your pets are sorted." },
               ].map((item, i) => (
-                <Card key={i} className="border-2 border-red-200 dark:border-red-900 hover:shadow-xl transition-shadow">
+                <Card key={i} className="border border-border hover:shadow-xl transition-shadow bg-card">
                   <CardContent className="p-6 text-center">
-                    <div className="text-5xl mb-4">{item.emoji}</div>
-                    <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                    <p className="text-muted-foreground">{item.desc}</p>
+                    <div className="flex justify-center mb-4">
+                      <img src={item.icon} alt="" className="w-12 h-12" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 font-display text-foreground">{item.title}</h3>
+                    <p className="text-muted-foreground font-body">{item.desc}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -147,30 +133,30 @@ export default function ChristmasLanding() {
       </section>
 
       {/* What's Included */}
-      <section className="py-20 bg-gradient-to-br from-emerald-50 to-red-50 dark:from-emerald-950/10 dark:to-red-950/10">
+      <section className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              What Your Pet Gets This <span className="text-emerald-700">Christmas</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 text-lg">
-              Every booking includes these festive perks
-            </p>
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">What's included</p>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
+                What Your Pet Gets This Christmas
+              </h2>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               {[
-                { icon: "🏡", title: "Stay in Their Own Home", desc: "No stressful kennels. Your pet stays in their safe, familiar environment with all their favourite toys, bed, and routines intact." },
-                { icon: "📸", title: "Daily Photo & Video Updates", desc: "Get adorable photos and videos sent straight to your phone every day. See your pet happy, healthy, and having a great time." },
-                { icon: "💚", title: "One-on-One Attention", desc: "Your sitter focuses entirely on your pet. No sharing attention with dozens of other animals like at boarding facilities." },
-                { icon: "🎄", title: "Holiday Routine Maintained", desc: "Christmas can be stressful for pets. Your sitter keeps their feeding, walking, and play schedule exactly as normal." },
-                { icon: "🚨", title: "Emergency Vet Access", desc: "All sitters have access to 24/7 emergency vet contacts and know exactly what to do if anything comes up." },
-                { icon: "🎁", title: "Special Christmas Treats", desc: "Let your sitter know about any special Christmas treats or toys and they'll make sure your pet feels the festive love!" }
+                { icon: iconHouse, title: "Stay in Their Own Home", desc: "No stressful kennels. Your pet stays in their safe, familiar environment with all their favourite toys, bed, and routines intact." },
+                { icon: iconCamera, title: "Daily Photo & Video Updates", desc: "Get adorable photos and videos sent straight to your phone every day. See your pet happy, healthy, and having a great time." },
+                { icon: iconHeart, title: "One-on-One Attention", desc: "Your sitter focuses entirely on your pet. No sharing attention with dozens of other animals like at boarding facilities." },
+                { icon: iconCalendar, title: "Holiday Routine Maintained", desc: "Christmas can be stressful for pets. Your sitter keeps their feeding, walking, and play schedule exactly as normal." },
+                { icon: iconShield, title: "Emergency Vet Access", desc: "All sitters have access to 24/7 emergency vet contacts and know exactly what to do if anything comes up." },
+                { icon: iconGift, title: "Special Christmas Treats", desc: "Let your sitter know about any special Christmas treats or toys and they'll make sure your pet feels the festive love!" },
               ].map((item, i) => (
-                <div key={i} className="flex gap-4 items-start p-6 bg-background rounded-xl border-2 border-emerald-300 dark:border-emerald-900 hover:shadow-lg transition-shadow">
-                  <div className="text-4xl flex-shrink-0">{item.icon}</div>
+                <div key={i} className="flex gap-4 items-start p-6 bg-card rounded-xl border border-border hover:shadow-lg transition-shadow">
+                  <img src={item.icon} alt="" className="w-10 h-10 flex-shrink-0" />
                   <div>
-                    <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    <h3 className="text-lg font-bold mb-2 font-display text-foreground">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground font-body">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -183,38 +169,26 @@ export default function ChristmasLanding() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              Book in <span className="text-red-600">3 Simple Steps</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 text-lg">
-              Getting your Christmas pet care sorted is easier than wrapping presents
-            </p>
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">3 simple steps</p>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
+                Book in 3 Simple Steps
+              </h2>
+            </div>
 
             <div className="space-y-8">
               {[
-                {
-                  num: "1",
-                  title: "Tell Us About Your Pet & Dates",
-                  desc: "Create a free profile and tell us about your furry friend - their personality, routines, any special needs. Select your Christmas travel dates."
-                },
-                {
-                  num: "2",
-                  title: "Browse Available Sitters",
-                  desc: "See which verified, local sitters are still available for your dates. Read reviews, check their experience, and pick your perfect match."
-                },
-                {
-                  num: "3",
-                  title: "Book & Relax",
-                  desc: "Send a booking request. Once accepted, you'll get your sitter's contact info. Chat, do a meet-and-greet, then enjoy your holiday worry-free!"
-                }
+                { num: "1", title: "Tell Us About Your Pet & Dates", desc: "Create a free profile and tell us about your furry friend — their personality, routines, any special needs. Select your Christmas travel dates." },
+                { num: "2", title: "Browse Available Sitters", desc: "See which verified, local sitters are still available for your dates. Read reviews, check their experience, and pick your perfect match." },
+                { num: "3", title: "Book & Relax", desc: "Send a booking request. Once accepted, you'll get your sitter's contact info. Chat, do a meet-and-greet, then enjoy your holiday worry-free!" },
               ].map((step) => (
                 <div key={step.num} className="flex gap-6 items-start">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center text-2xl font-bold shadow-xl">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-xl font-display">
                     {step.num}
                   </div>
                   <div className="pt-3">
-                    <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                    <p className="text-muted-foreground">{step.desc}</p>
+                    <h3 className="text-xl font-bold mb-2 font-display text-foreground">{step.title}</h3>
+                    <p className="text-muted-foreground font-body">{step.desc}</p>
                   </div>
                 </div>
               ))}
@@ -222,8 +196,8 @@ export default function ChristmasLanding() {
 
             <div className="mt-12 text-center">
               <Link to="/find-sitters">
-                <Button size="lg" className="h-14 px-8 text-lg font-bold bg-emerald-700 hover:bg-emerald-800">
-                  Start Your Search 🎅
+                <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90">
+                  Start Your Search <span className="ml-2">→</span>
                 </Button>
               </Link>
             </div>
@@ -232,48 +206,33 @@ export default function ChristmasLanding() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-br from-red-50 to-emerald-50 dark:from-red-950/10 dark:to-emerald-950/10">
+      <section className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              What Pet Parents Say About Their <span className="text-emerald-700">Christmas Bookings</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 text-lg">
-              Real reviews from real holiday bookings
-            </p>
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Testimonials</p>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
+                What Pet Parents Say About Their Christmas Bookings
+              </h2>
+            </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                {
-                  name: "Sarah & Max",
-                  pet: "Golden Retriever",
-                  text: "We went to the South Island for Christmas and our sitter sent us photos of Max every single day. He looked so happy! Best Christmas present ever.",
-                  stars: 5
-                },
-                {
-                  name: "James & Luna",
-                  pet: "Tabby Cat",
-                  text: "Luna hates change, so we were nervous about leaving her over New Year's. Our sitter kept her routine perfectly and Luna didn't even notice we were gone!",
-                  stars: 5
-                },
-                {
-                  name: "Emma & Buddy",
-                  pet: "Beagle Mix",
-                  text: "Booked last minute for Christmas Eve and got the perfect sitter. Buddy had an amazing time and we could actually relax on holiday. Will book again next year for sure!",
-                  stars: 5
-                }
+                { name: "Sarah & Max", pet: "Golden Retriever", text: "We went to the South Island for Christmas and our sitter sent us photos of Max every single day. He looked so happy!", stars: 5 },
+                { name: "James & Luna", pet: "Tabby Cat", text: "Luna hates change, so we were nervous about leaving her over New Year's. Our sitter kept her routine perfectly and Luna didn't even notice!", stars: 5 },
+                { name: "Emma & Buddy", pet: "Beagle Mix", text: "Booked last minute for Christmas Eve and got the perfect sitter. Buddy had an amazing time and we could actually relax on holiday.", stars: 5 },
               ].map((review, i) => (
-                <Card key={i} className="border-2 border-emerald-300 dark:border-emerald-900">
+                <Card key={i} className="border border-border bg-card">
                   <CardContent className="p-6">
-                    <div className="flex gap-1 mb-3">
+                    <div className="flex gap-0.5 mb-3">
                       {[...Array(review.stars)].map((_, j) => (
-                        <Star key={j} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                        <img key={j} src={iconStar} alt="" className="w-4 h-4" />
                       ))}
                     </div>
-                    <p className="text-sm mb-4 italic">&quot;{review.text}&quot;</p>
-                    <div className="border-t pt-3">
-                      <p className="font-semibold text-sm">{review.name}</p>
-                      <p className="text-xs text-muted-foreground">{review.pet}</p>
+                    <p className="text-sm mb-4 italic text-muted-foreground font-body">"{review.text}"</p>
+                    <div className="border-t border-border pt-3">
+                      <p className="font-semibold text-sm font-body text-foreground">{review.name}</p>
+                      <p className="text-xs text-muted-foreground font-body">{review.pet}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -287,47 +246,29 @@ export default function ChristmasLanding() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              Christmas Booking <span className="text-red-600">FAQs</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 text-lg">
-              Common questions about holiday pet sitting
-            </p>
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">FAQ</p>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
+                Christmas Booking FAQs
+              </h2>
+            </div>
 
             <div className="space-y-4">
               {[
-                {
-                  q: "How much does Christmas pet sitting cost?",
-                  a: "Prices vary by sitter, service type, and location, but typically range from $50-80/day for house sitting or $25-40 per drop-in visit. You'll see exact prices when browsing sitters - many offer holiday packages too!"
-                },
-                {
-                  q: "What if my sitter cancels at the last minute?",
-                  a: "While extremely rare, if your sitter has an emergency, we'll help you find a replacement immediately. Most of our sitters are incredibly reliable - cancellations are less than 1% of all bookings."
-                },
-                {
-                  q: "Can I do a meet-and-greet before Christmas?",
-                  a: "Absolutely! We highly recommend meeting your sitter beforehand so your pet gets comfortable with them. This also lets you go through routines, show where everything is, and ask any questions."
-                },
-                {
-                  q: "What happens if my pet gets sick during the holidays?",
-                  a: "All our sitters have emergency contacts and know what to do. They'll contact you immediately and can take your pet to the vet if needed. Make sure to leave your vet's details during booking."
-                },
-                {
-                  q: "Do sitters work on Christmas Day?",
-                  a: "Yes! Many of our sitters specifically choose to work Christmas Day because they love caring for pets. Your pet will get all their normal care, including festive cuddles!"
-                },
-                {
-                  q: "How far in advance should I book?",
-                  a: "For Christmas dates, we recommend booking at least 4-6 weeks in advance. Peak dates (Dec 23-27) fill up fastest, often 2-3 months ahead. Book now to secure the best sitters!"
-                }
+                { q: "How much does Christmas pet sitting cost?", a: "Prices vary by sitter, service type, and location. You'll see exact prices when browsing sitters — many offer holiday packages too!" },
+                { q: "What if my sitter cancels at the last minute?", a: "While extremely rare, if your sitter has an emergency, we'll help you find a replacement immediately." },
+                { q: "Can I do a meet-and-greet before Christmas?", a: "Absolutely! We highly recommend meeting your sitter beforehand so your pet gets comfortable with them." },
+                { q: "What happens if my pet gets sick during the holidays?", a: "All our sitters have emergency contacts and know what to do. They'll contact you immediately and can take your pet to the vet if needed." },
+                { q: "Do sitters work on Christmas Day?", a: "Yes! Many of our sitters specifically choose to work Christmas Day because they love caring for pets." },
+                { q: "How far in advance should I book?", a: "For Christmas dates, we recommend booking at least 4-6 weeks in advance. Peak dates fill up fastest." },
               ].map((faq, i) => (
-                <Card key={i} className="border-2 border-red-200 dark:border-red-900">
+                <Card key={i} className="border border-border bg-card">
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-2 flex items-start gap-2">
-                      <Check className="w-5 h-5 text-emerald-700 flex-shrink-0 mt-1" />
+                    <h3 className="font-bold text-lg mb-2 flex items-start gap-2 font-display text-foreground">
+                      <img src={iconCheck} alt="" className="w-5 h-5 flex-shrink-0 mt-1" />
                       {faq.q}
                     </h3>
-                    <p className="text-muted-foreground ml-7">{faq.a}</p>
+                    <p className="text-muted-foreground ml-7 font-body">{faq.a}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -337,30 +278,23 @@ export default function ChristmasLanding() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-red-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 text-6xl">🎄</div>
-          <div className="absolute top-20 right-20 text-5xl">⭐</div>
-          <div className="absolute bottom-10 left-1/4 text-6xl">🎁</div>
-          <div className="absolute bottom-20 right-1/3 text-5xl">❄️</div>
-        </div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
+      <section className="py-24 bg-secondary text-secondary-foreground">
+        <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Don&apos;t Leave Your Pet&apos;s Christmas to Chance
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 font-display">
+              Don't Leave Your Pet's Christmas to Chance
             </h2>
-            <p className="text-xl md:text-2xl mb-8 opacity-95">
+            <p className="text-xl md:text-2xl mb-8 text-secondary-foreground/60 font-body">
               The best sitters are getting booked right now. Secure your spot today and give yourself 
               (and your pet) the gift of stress-free holiday travel.
             </p>
             <Link to="/find-sitters">
-              <Button size="lg" variant="secondary" className="h-16 px-10 text-xl font-bold shadow-2xl hover:scale-105 transition-transform">
-                🎅 Find Available Sitters Now
+              <Button size="lg" className="h-16 px-10 text-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xl">
+                Find Available Sitters Now <span className="ml-2">→</span>
               </Button>
             </Link>
-            <p className="text-sm mt-6 opacity-90">
-              No credit card required to browse • Free to create a profile • Book in under 5 minutes
+            <p className="text-sm mt-6 text-secondary-foreground/50 font-body">
+              No credit card required to browse · Free to create a profile · Book in under 5 minutes
             </p>
           </div>
         </div>
