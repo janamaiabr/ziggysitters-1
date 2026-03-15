@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import SEOHead from '@/components/seo/SEOHead';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Check, Star } from 'lucide-react';
+import iconSearch from '@/assets/icons/icon-search.png';
 import { useNavigate } from 'react-router-dom';
 import petServices from '@/assets/pet-services-ai-backup.jpg';
 
