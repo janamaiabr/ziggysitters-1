@@ -215,7 +215,7 @@ export default function BecomeSitter() {
                     { icon: iconShield, title: "98% Completion Rate", desc: "When reports are requested, nearly all our sitters complete them without issue." },
                   ].map((item) => (
                     <div key={item.title} className="flex items-start gap-4">
-                      <img src={item.icon} alt="" className="w-10 h-10 flex-shrink-0" />
+                      <img src={item.icon} alt="" className="w-12 h-12 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-foreground mb-1 font-body">{item.title}</h3>
                         <p className="text-muted-foreground text-sm font-body">{item.desc}</p>
