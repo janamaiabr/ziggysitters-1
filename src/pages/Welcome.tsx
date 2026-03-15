@@ -52,7 +52,7 @@ export default function Welcome() {
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-                  <img src={iconPaw} alt="" className="w-12 h-12" />
+                  <img src={iconPaw} alt="" className="w-14 h-14" />
                 </div>
                 <div className="absolute -top-1 -right-1">
                   <CheckCircle className="w-7 h-7 text-primary bg-card rounded-full" />
