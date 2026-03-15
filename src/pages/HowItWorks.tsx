@@ -1,10 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import SEOHead from '@/components/seo/SEOHead';
-import { Badge } from '@/components/ui/badge';
-import iconSearch from '@/assets/icons/icon-search.png';
 import { useNavigate } from 'react-router-dom';
-import petServices from '@/assets/pet-services-ai-backup.jpg';
 
 import iconShield from '@/assets/icons/icon-shield.png';
 import iconCamera from '@/assets/icons/icon-camera.png';
@@ -18,31 +15,31 @@ import iconBoarding from '@/assets/icons/icon-boarding.png';
 import iconQuestion from '@/assets/icons/icon-question.png';
 
 const forOwners = [
-  { icon: iconPaw, title: 'Search & Browse', description: 'Find verified sitters and choose if you want daily reports' },
-  { icon: iconCamera, title: 'Choose Your Updates', description: "Request daily photo reports when booking - it's your choice" },
-  { icon: iconHeart, title: 'Peace of Mind', description: 'Get daily updates if requested - sitters are held accountable' },
-  { icon: iconShield, title: 'Payment Protection', description: 'When you request reports, sitters must deliver or face 15% deduction' },
+  { icon: iconPaw, title: 'Search & Browse', description: 'Find verified sitters near you. Read reviews and view real profiles.' },
+  { icon: iconCamera, title: 'Choose Your Updates', description: "Request daily photo reports when booking — it's completely optional." },
+  { icon: iconHeart, title: 'Peace of Mind', description: 'Get daily updates when requested — know your pet is happy and safe.' },
+  { icon: iconShield, title: 'Payment Protection', description: 'Secure payments via Stripe. Money protected until service is complete.' },
 ];
 
 const forSitters = [
-  { icon: iconPaw, title: 'Create Profile', description: 'Sign up and showcase your pet care experience' },
-  { icon: iconCamera, title: 'Submit Reports When Requested', description: 'Send daily reports with photos by 9 PM for bookings that request them' },
-  { icon: iconStar, title: 'Build Trust', description: 'Reliable reporting builds your reputation - get more bookings' },
-  { icon: iconPayment, title: 'Earn Full Payment', description: '100% pay when completing requested reports, 15% deduction if missed' },
+  { icon: iconPaw, title: 'Create Profile', description: 'Sign up and showcase your pet care experience.' },
+  { icon: iconCamera, title: 'Send Updates', description: 'Share daily reports with photos when owners request them.' },
+  { icon: iconStar, title: 'Build Trust', description: 'Great updates earn great reviews — grow your bookings over time.' },
+  { icon: iconPayment, title: 'Get Paid', description: 'Set your own rates. Secure payments after each booking.' },
 ];
 
 const safetyFeatures = [
-  { icon: iconShield, title: 'Three Trust Levels', description: 'New sitters, ID verified sitters, and gold star sitters (police vet check)' },
-  { icon: iconPaw, title: 'Identity Verification Available', description: 'Sitters can verify their ID to earn trust badges and stand out' },
-  { icon: iconStar, title: 'Feedback & Ratings', description: 'Transparent feedback system from real pet owners' },
-  { icon: iconPayment, title: 'Secure Payments', description: 'Protected payment processing with money-back guarantee' },
+  { icon: iconShield, title: 'ID Verified', description: 'Sitters verify their identity with government-issued ID.' },
+  { icon: iconPaw, title: 'Local & Vetted', description: 'Every sitter is a real local person in your community.' },
+  { icon: iconStar, title: 'Real Reviews', description: 'Transparent feedback from actual pet owners after bookings.' },
+  { icon: iconPayment, title: 'Secure Payments', description: 'Protected payment processing powered by Stripe.' },
 ];
 
 const services = [
-  { title: "Pet Sitting (Sitter's Home)", description: "Your pet stays at sitter's home with full care", price: 'From $30/day', icon: iconHouse },
-  { title: 'Pet Sitting (Your Home)', description: 'Sitter stays at your home to care for pets', price: 'From $40/day', icon: iconHouse },
-  { title: 'Drop-in Visits', description: 'Pop in to feed, play & give cuddles at your home', price: 'From $20/visit', icon: iconBowl },
-  { title: 'Pet Boarding', description: "Your pet stays at the sitter's home", price: 'From $40/night', icon: iconBoarding },
+  { title: "Pet Sitting (Sitter's Home)", description: "Your pet stays at sitter's home with full care", icon: iconHouse },
+  { title: 'Pet Sitting (Your Home)', description: 'Sitter stays at your home to care for pets', icon: iconHouse },
+  { title: 'Drop-in Visits', description: 'Pop in to feed, play & give cuddles at your home', icon: iconBowl },
+  { title: 'Pet Boarding', description: "Your pet stays at the sitter's home", icon: iconBoarding },
 ];
 
 export default function HowItWorks() {
@@ -72,26 +69,22 @@ export default function HowItWorks() {
         structuredData={structuredData}
       />
       <div className="min-h-screen bg-background">
-        {/* Hero */}
-        <section className="relative min-h-[60vh] flex items-center overflow-hidden">
-          <div className="absolute inset-0">
-            <img src={petServices} alt="Pet sitting services" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/30" />
-          </div>
-          <div className="container mx-auto px-4 py-20 relative z-10">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-widest mb-4 font-body" style={{ color: 'hsl(152 45% 55%)' }}>How it works</p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white leading-[1.1] font-display">
-                Pet Sitting with Optional Daily Updates
+        {/* Hero — clean, no stock image */}
+        <section className="bg-secondary py-20 md:py-28">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl mx-auto text-center">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-4 font-body">How it works</p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-secondary-foreground leading-[1.1] font-display">
+                Book a Local Sitter. Get Daily Updates.
               </h1>
-              <p className="text-lg text-white/80 mb-8 max-w-xl font-body">
-                New Zealand's flexible pet sitting platform - choose daily photo updates when you want them, with accountability guaranteed
+              <p className="text-lg text-secondary-foreground/70 mb-8 max-w-xl mx-auto font-body">
+                Find verified pet sitters near you. Choose daily photo updates when you want them.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold px-8 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
                   Find a Sitter <span className="ml-2">→</span>
                 </Button>
-                <Button size="lg" variant="outline-white" className="font-body px-8 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
+                <Button size="lg" variant="outline" className="font-body px-8 py-6 text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10" onClick={() => navigate('/become-sitter')}>
                   Become a Sitter
                 </Button>
               </div>
@@ -133,7 +126,7 @@ export default function HowItWorks() {
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">For Pet Sitters</p>
               <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Earn Money Caring for Pets</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto font-body">
-                Join New Zealand's leading pet sitting platform. Deliver reports on time, build trust, and earn competitive rates.
+                Join as a pet sitter. Set your own rates, accept bookings that fit your schedule.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -158,9 +151,9 @@ export default function HowItWorks() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Safety</p>
-              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Pet Safety & Verified Sitter Trust</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Your Pet's Safety Comes First</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto font-body">
-                We prioritize pet safety through identity verification, secure payments, and transparent feedback.
+                We prioritize pet safety through identity verification, secure payments, and transparent reviews.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -179,12 +172,13 @@ export default function HowItWorks() {
           </div>
         </section>
 
-        {/* Service Types */}
+        {/* Service Types — no prices */}
         <section className="py-20 md:py-28 bg-muted">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Services</p>
-              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Pet Care Services in New Zealand</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Pet Care Services</h2>
+              <p className="text-muted-foreground max-w-xl mx-auto font-body">Every sitter sets their own rates. Browse profiles to compare.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
               {services.map((service, i) => (
@@ -194,8 +188,7 @@ export default function HowItWorks() {
                       <img src={service.icon} alt="" className="w-16 h-16" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 font-body text-foreground">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4 font-body">{service.description}</p>
-                    <Badge variant="secondary" className="font-body">{service.price}</Badge>
+                    <p className="text-sm text-muted-foreground font-body">{service.description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -212,8 +205,8 @@ export default function HowItWorks() {
             </div>
             <div className="max-w-3xl mx-auto space-y-6">
               {[
-                { q: 'How are pet sitters verified on ZiggySitters?', a: 'ZiggySitters has three sitter trust levels: New sitters, ID Verified sitters, and Gold Star sitters (completed police vet check). All levels can accept bookings.' },
-                { q: "What happens if a sitter doesn't send daily updates?", a: 'When pet owners request daily reports, sitters must deliver. If missed, they face a 15% payment deduction.' },
+                { q: 'How are pet sitters verified?', a: 'Sitters verify their identity with government-issued ID. Some also complete police vet checks for an additional trust badge.' },
+                { q: "What happens if a sitter doesn't send daily updates?", a: "Daily reports are optional — you choose when booking. When requested, sitters are expected to complete them as part of the booking agreement." },
                 { q: 'How do payments work?', a: 'Payments are processed securely through Stripe. You pay when booking, and sitters receive payment after service completion.' },
                 { q: 'Can I meet the pet sitter before booking?', a: 'Absolutely. We encourage meet and greet sessions to ensure a good match before the booking starts.' },
               ].map((faq, i) => (
@@ -233,13 +226,13 @@ export default function HowItWorks() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Ready to Get Started?</h2>
             <p className="text-lg text-secondary-foreground/60 mb-8 max-w-xl mx-auto font-body">
-              Join thousands of NZ pet parents and sitters on ZiggySitters.
+              Find a trusted local sitter or start earning as a pet carer.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
                 Find a Sitter <span className="ml-2">→</span>
               </Button>
-              <Button size="lg" variant="outline-white" className="font-body px-10 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
+              <Button size="lg" variant="outline" className="font-body px-10 py-6 text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10" onClick={() => navigate('/become-sitter')}>
                 Become a Sitter
               </Button>
             </div>

@@ -139,20 +139,15 @@ export default function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-48">
+              <DropdownMenuItem disabled className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                New Zealand
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-auckland')}>Auckland</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-wellington')}>Wellington</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-christchurch')}>Christchurch</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-hamilton')}>Hamilton</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-tauranga')}>Tauranga</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-dunedin')}>Dunedin</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-napier')}>Napier</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-nelson')}>Nelson</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-new-plymouth')}>New Plymouth</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-palmerston-north')}>Palmerston North</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-queenstown')}>Queenstown</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-rotorua')}>Rotorua</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-whangarei')}>Whangarei</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/pet-sitting-hastings')}>Hastings</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/areas')}>All NZ Cities →</DropdownMenuItem>
               <DropdownMenuItem disabled className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
                 Australia
               </DropdownMenuItem>
@@ -234,6 +229,9 @@ export default function Header() {
             <div className="hidden md:flex gap-3">
               <Button variant="ghost" onClick={() => navigate('/auth?tab=signin')} className="font-body font-medium text-foreground/70">
                 Sign In
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/auth?tab=signup')} className="font-body font-medium border-primary/30 text-primary hover:bg-primary/5">
+                Sign Up
               </Button>
               <Button onClick={() => navigate('/find-sitters')} className="font-body font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-sm">
                 Find a Sitter

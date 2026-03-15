@@ -50,12 +50,12 @@ const steps = [
 ];
 
 const HIGH_DEMAND_SUBURBS = [
-  { slug: 'grey-lynn', name: 'Grey Lynn', searches: 45 },
-  { slug: 'ponsonby', name: 'Ponsonby', searches: 52 },
-  { slug: 'mt-eden', name: 'Mt Eden', searches: 38 },
-  { slug: 'remuera', name: 'Remuera', searches: 48 },
-  { slug: 'herne-bay', name: 'Herne Bay', searches: 32 },
-  { slug: 'takapuna', name: 'Takapuna', searches: 41 },
+  { slug: 'grey-lynn', name: 'Grey Lynn' },
+  { slug: 'ponsonby', name: 'Ponsonby' },
+  { slug: 'mt-eden', name: 'Mt Eden' },
+  { slug: 'remuera', name: 'Remuera' },
+  { slug: 'herne-bay', name: 'Herne Bay' },
+  { slug: 'takapuna', name: 'Takapuna' },
 ];
 
 export default function BecomeSitter() {
@@ -212,7 +212,7 @@ export default function BecomeSitter() {
                   {[
                     { icon: iconCamera, title: "Share What You're Already Doing", desc: "Pet owners choose if they want daily updates. When they do, you simply share photos and notes." },
                     { icon: iconStar, title: "Earn Better Reviews", desc: "Owners who see daily updates leave better reviews. Better reviews mean more bookings." },
-                    { icon: iconShield, title: "98% Completion Rate", desc: "When reports are requested, nearly all our sitters complete them without issue." },
+                    { icon: iconShield, title: "Easy & Quick", desc: "Most sitters complete reports in under 5 minutes. Quick photos and a few notes — that's it." },
                   ].map((item) => (
                     <div key={item.title} className="flex items-start gap-4">
                       <img src={item.icon} alt="" className="w-12 h-12 flex-shrink-0" />
@@ -306,7 +306,7 @@ export default function BecomeSitter() {
                 >
                   {suburb.name}
                   <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
-                    {suburb.searches}+/mo
+                    High demand
                   </Badge>
                 </Button>
               ))}
