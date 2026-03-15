@@ -569,8 +569,8 @@ const Index = () => {
                 Get Started Free
               </Button>
             </form>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              ✓ Free to join • ✓ No payment until you book • ✓ Cancel anytime
+            <p className="text-xs md:text-sm text-muted-foreground font-body">
+              Free to join · No payment until you book · Cancel anytime
             </p>
             <div className="mt-4">
               <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => navigate('/find-sitters')}>
