@@ -275,7 +275,7 @@ const Index = () => {
       <NZTrustBadge />
 
       {/* Named Trust Guarantees - Above How It Works */}
-      <section className="py-8 md:py-16 bg-white">
+      <section className="py-8 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <TrustGuarantees />
         </div>
@@ -285,11 +285,11 @@ const Index = () => {
       <HowItWorksSection />
 
       {/* Pet Gallery Section */}
-      <section className="py-8 md:py-16 bg-gradient-to-b from-background to-accent/10">
+      <section className="py-8 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-4 md:mb-12">
-            <h2 className="text-xl md:text-3xl font-bold mb-1 md:mb-4">Happy Pets, Happy Owners</h2>
-            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-xl md:text-3xl font-bold mb-1 md:mb-4 font-display text-foreground">Happy Pets, Happy Owners</h2>
+            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto font-body">
               Our verified sitters care for all kinds of furry friends
             </p>
           </div>
@@ -311,13 +311,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Popular Services — hidden on mobile (covered by How It Works) */}
-      <section className="hidden md:block py-12 md:py-20 bg-accent/5">
+      {/* Popular Services — hidden on mobile */}
+      <section className="hidden md:block py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Updates That Matter, Every Single Day</h2>
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Morning and evening reports with photos, care notes, and behavioural tracking — so you always know how your pet is doing
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Our Services</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4 font-display text-foreground">Updates That Matter, Every Single Day</h2>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto font-body">
+              Morning and evening reports with photos, care notes, and behavioural tracking
             </p>
           </div>
           
@@ -325,15 +326,12 @@ const Index = () => {
             {popularServices.map((service, index) => (
               <Card 
                 key={index} 
-                className="text-center hover:shadow-lg transition-shadow cursor-pointer group"
+                className="text-center hover:shadow-lg transition-shadow cursor-pointer group border border-border bg-card"
                 onClick={() => navigate(`/find-sitters?serviceType=${service.value}`)}
               >
                 <CardContent className="p-4 md:p-8">
-                  <div className="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">{service.name}</h3>
-                  <p className="text-sm md:text-base text-muted-foreground mb-2 md:mb-4">{service.description}</p>
+                  <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 font-body text-foreground">{service.name}</h3>
+                  <p className="text-sm md:text-base text-muted-foreground mb-2 md:mb-4 font-body">{service.description}</p>
                 </CardContent>
               </Card>
             ))}
