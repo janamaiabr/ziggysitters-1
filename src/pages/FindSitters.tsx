@@ -848,8 +848,8 @@ export default function FindSitters() {
                     </Badge>
                   )}
                   {location && (
-                    <Badge variant="secondary" className="text-sm">
-                      📍 {location}
+                    <Badge variant="secondary" className="text-sm font-body">
+                      {location}
                     </Badge>
                   )}
                   {serviceType && (
