@@ -88,7 +88,7 @@ const FEATURES = [
 const TESTIMONIALS = [
   {
     quote:
-      'Jasper is 14 with bad hips. His sitter gives him his arthritis meds perfectly and sends us a photo every afternoon. First time we've actually relaxed on holiday.',
+      "Jasper is 14 with bad hips. His sitter gives him his arthritis meds perfectly and sends us a photo every afternoon. First time we've actually relaxed on holiday.",
     name: 'Sarah T.',
     suburb: 'Buderim',
   },
