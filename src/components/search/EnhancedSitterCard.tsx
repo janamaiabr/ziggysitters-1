@@ -92,7 +92,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
           )}
           {sitter.verified && !sitter.golden_badge && (
             <div className="bg-primary/90 backdrop-blur-sm rounded-lg px-2.5 py-1 flex items-center gap-1 shadow-sm">
-              <img src={iconShield} alt="" className="w-3 h-3" />
+              <img src={iconShield} alt="" className="w-4 h-4" />
               <span className="text-xs font-semibold text-white">Vetted</span>
             </div>
           )}
