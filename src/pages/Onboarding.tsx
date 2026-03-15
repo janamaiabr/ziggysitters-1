@@ -350,7 +350,8 @@ export default function Onboarding() {
     };
 
     fetchExistingProfile();
-  }, [user, navigate, initialLoadComplete, showTerms, step, hasAcceptedTermsLocally]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleRoleSelection = async (role: UserRole) => {
     trackAction('onboarding_role_selected', { role });
