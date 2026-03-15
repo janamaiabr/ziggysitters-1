@@ -646,7 +646,10 @@ export default function SitterProfile() {
               </Card>
             )}
 
-            
+            {/* Reviews */}
+            <ReviewsList sitterId={sitterData.id} sitterName={sitterData.display_name} />
+
+
             {/* Booking Form — after all info */}
             <div id="booking-section" className="space-y-4">
               <BookingFormDirect
