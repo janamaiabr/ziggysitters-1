@@ -440,52 +440,36 @@ const Index = () => {
       </section>
 
       {/* Charity Section - Compact on mobile */}
-      <section className="py-8 md:py-20 bg-[#fafbfa] border-t border-gray-100">
+      <section className="py-8 md:py-20 bg-muted border-t border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <div className="mb-4 md:mb-8">
               <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full mb-3 md:mb-4">
-                <span className="text-xl md:text-2xl">🐾</span>
+                <img src={iconPaw} alt="" className="w-7 h-7 md:w-9 md:h-9" />
               </div>
-              <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
+              <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 font-display text-foreground">
                 Making a Difference Together
               </h2>
-              <p className="text-sm md:text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground font-body">
                 Every booking helps pets in need across New Zealand.
               </p>
             </div>
             
-            <div className="bg-card border rounded-xl p-4 md:p-8 shadow-sm">
+            <div className="bg-card border border-border rounded-xl p-4 md:p-8 shadow-sm">
               <div className="flex items-center justify-center gap-3 mb-3 md:mb-4">
-                <span className="text-3xl md:text-4xl font-bold text-primary">5%</span>
+                <span className="text-3xl md:text-4xl font-bold text-primary font-display">5%</span>
                 <div className="text-left">
-                  <p className="font-semibold text-sm md:text-base">of our profits</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">goes to SPCA NZ</p>
+                  <p className="font-semibold text-sm md:text-base font-body text-foreground">of our profits</p>
+                  <p className="text-xs md:text-sm text-muted-foreground font-body">goes to SPCA NZ</p>
                 </div>
               </div>
               
-              {/* Expanded details hidden on mobile */}
               <div className="hidden md:block">
-                <h3 className="text-xl font-semibold mb-3">SPCA New Zealand</h3>
-                <p className="text-muted-foreground mb-6">
-                  Your bookings help us support the SPCA{"'"}s vital work in animal rescue, providing medical care for abandoned pets, 
+                <h3 className="text-xl font-semibold mb-3 font-body text-foreground">SPCA New Zealand</h3>
+                <p className="text-muted-foreground mb-6 font-body">
+                  Your bookings help us support the SPCA's vital work in animal rescue, providing medical care for abandoned pets, 
                   and funding spay/neuter programs across New Zealand.
                 </p>
-                
-                <div className="grid md:grid-cols-3 gap-6 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Emergency medical care</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span>Shelter support programs</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span>Spay & neuter initiatives</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
