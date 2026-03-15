@@ -16,6 +16,7 @@ import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 // Import hero versions - swap these to switch between versions
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
+import iconPaw from '@/assets/icons/icon-paw.png';
 import NZTrustBadge from '@/components/home/NZTrustBadge';
 // import HeroSectionV2 from '@/components/home/HeroSectionV2';
 // import HeroSectionOriginal from '@/components/home/HeroSectionOriginal';
@@ -64,9 +65,9 @@ const Index = () => {
   }, [user, profile]);
 
   const popularServices = [
-    { name: 'Pet Sitting (Sitter\'s Home)', icon: '🏠', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them', value: 'pet_sitting_sitters_home' },
-    { name: 'Pet Sitting (Your Home)', icon: '🏡', description: 'Sitter comes to your home - request daily reports when booking', value: 'pet_sitting_owners_home' },
-    { name: 'Drop-in Visits', icon: '⏰', description: 'Quick visits with optional photo documentation', value: 'drop_in_visits' },
+    { name: 'Pet Sitting (Sitter\'s Home)', description: 'Your pet stays at sitter\'s home - choose daily photo updates if you want them', value: 'pet_sitting_sitters_home' },
+    { name: 'Pet Sitting (Your Home)', description: 'Sitter comes to your home - request daily reports when booking', value: 'pet_sitting_owners_home' },
+    { name: 'Drop-in Visits', description: 'Quick visits with optional photo documentation', value: 'drop_in_visits' },
   ];
 
   // Real data from database
@@ -193,7 +194,7 @@ const Index = () => {
       {/* Easter Campaign Banner */}
       <EasterBanner />
 
-      <div className="bg-white">
+      <div className="bg-background">
       {/* Geo-aware location banner for international visitors */}
       <GeoLocationBanner />
 
@@ -275,7 +276,7 @@ const Index = () => {
       <NZTrustBadge />
 
       {/* Named Trust Guarantees - Above How It Works */}
-      <section className="py-8 md:py-16 bg-white">
+      <section className="py-8 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <TrustGuarantees />
         </div>
@@ -285,11 +286,11 @@ const Index = () => {
       <HowItWorksSection />
 
       {/* Pet Gallery Section */}
-      <section className="py-8 md:py-16 bg-gradient-to-b from-background to-accent/10">
+      <section className="py-8 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-4 md:mb-12">
-            <h2 className="text-xl md:text-3xl font-bold mb-1 md:mb-4">Happy Pets, Happy Owners</h2>
-            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-xl md:text-3xl font-bold mb-1 md:mb-4 font-display text-foreground">Happy Pets, Happy Owners</h2>
+            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto font-body">
               Our verified sitters care for all kinds of furry friends
             </p>
           </div>
@@ -311,13 +312,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Popular Services — hidden on mobile (covered by How It Works) */}
-      <section className="hidden md:block py-12 md:py-20 bg-accent/5">
+      {/* Popular Services — hidden on mobile */}
+      <section className="hidden md:block py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-16 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">Updates That Matter, Every Single Day</h2>
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Morning and evening reports with photos, care notes, and behavioural tracking — so you always know how your pet is doing
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Our Services</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4 font-display text-foreground">Updates That Matter, Every Single Day</h2>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto font-body">
+              Morning and evening reports with photos, care notes, and behavioural tracking
             </p>
           </div>
           
@@ -325,15 +327,12 @@ const Index = () => {
             {popularServices.map((service, index) => (
               <Card 
                 key={index} 
-                className="text-center hover:shadow-lg transition-shadow cursor-pointer group"
+                className="text-center hover:shadow-lg transition-shadow cursor-pointer group border border-border bg-card"
                 onClick={() => navigate(`/find-sitters?serviceType=${service.value}`)}
               >
                 <CardContent className="p-4 md:p-8">
-                  <div className="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">{service.name}</h3>
-                  <p className="text-sm md:text-base text-muted-foreground mb-2 md:mb-4">{service.description}</p>
+                  <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 font-body text-foreground">{service.name}</h3>
+                  <p className="text-sm md:text-base text-muted-foreground mb-2 md:mb-4 font-body">{service.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -343,72 +342,48 @@ const Index = () => {
 
 
       {/* Daily Reports Section */}
-      <section className="py-8 md:py-20 bg-[#f0f4f8]">
+      <section className="py-8 md:py-20 bg-accent">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
-              {/* Left Content */}
               <div className="space-y-4 md:space-y-6">
-                <div className="inline-flex items-center bg-blue-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium">
+                <div className="inline-flex items-center bg-primary text-primary-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium font-body">
                   <Camera className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2" />
                   Industry First Feature
                 </div>
                 
-                <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
+                <h2 className="text-2xl md:text-4xl font-bold text-foreground font-display">
                   Watch the Bond Grow, Update by Update
                 </h2>
                 
-                <p className="text-sm md:text-lg text-gray-600 leading-relaxed">
+                <p className="text-sm md:text-lg text-muted-foreground leading-relaxed font-body">
                   96% report compliance rate, with updates sent 2x per day. Sitter payment is tied to delivery — the platform monitors every booking automatically.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+                  {[
+                    { Icon: CheckCircle, title: 'Daily Photos', desc: "See your pet's day" },
+                    { Icon: Clock, title: 'Care Notes', desc: 'Food, mood & health' },
+                    { Icon: DollarSign, title: 'Pay Guarantee', desc: 'Tied to report quality' },
+                    { Icon: Shield, title: 'Peace of Mind', desc: 'Never worry again' },
+                  ].map((item) => (
+                    <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
+                      <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <item.Icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground text-sm md:text-base font-body">{item.title}</h4>
+                        <p className="text-xs md:text-sm text-muted-foreground font-body">{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Daily Photos</h4>
-                      <p className="text-xs md:text-sm text-gray-600">See your pet{"'"}s day</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Care Notes</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Food, mood & health</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <DollarSign className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Pay Guarantee</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Tied to report quality</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-2 md:space-x-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Shield className="w-4 h-4 md:w-5 md:h-5 text-orange-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm md:text-base">Peace of Mind</h4>
-                      <p className="text-xs md:text-sm text-gray-600">Never worry again</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
                 
                 <div className="pt-2 md:pt-4">
                   <Button 
                     size="lg" 
                     onClick={() => navigate('/daily-reports-info')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 min-h-[44px]"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 md:px-8 min-h-[44px] font-body"
                   >
                     <Camera className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                     Learn More About Daily Reports
@@ -416,69 +391,47 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Right Content - Visual/Stats */}
               <div className="space-y-4 md:space-y-6">
-                <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-gray-200">
+                <div className="bg-card rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-border">
                   <div className="text-center mb-4 md:mb-6">
-                    <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-1 md:mb-2">Sample Daily Report</h3>
-                    <p className="text-xs md:text-sm text-gray-600">What you{"'"}ll receive every day</p>
+                    <h3 className="text-lg md:text-xl font-semibold text-foreground mb-1 md:mb-2 font-body">Sample Daily Report</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground font-body">What you'll receive every day</p>
                   </div>
                   
                   <div className="space-y-3 md:space-y-4">
-                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-green-50 rounded-lg">
-                      <span className="text-sm font-medium text-green-800">Morning Walk</span>
-                      <span className="text-xs text-green-600">✓ 45 minutes</span>
-                    </div>
+                    {[
+                      { label: 'Morning Walk', value: '45 minutes' },
+                      { label: 'Feeding Time', value: 'Ate well' },
+                      { label: 'Playtime', value: 'Very active' },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center justify-between p-2.5 md:p-3 bg-muted rounded-lg border border-border">
+                        <span className="text-sm font-medium text-foreground font-body">{item.label}</span>
+                        <span className="text-xs text-primary font-body">✓ {item.value}</span>
+                      </div>
+                    ))}
                     
-                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-blue-50 rounded-lg">
-                      <span className="text-sm font-medium text-blue-800">Feeding Time</span>
-                      <span className="text-xs text-blue-600">✓ Ate well</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-purple-50 rounded-lg">
-                      <span className="text-sm font-medium text-purple-800">Playtime</span>
-                      <span className="text-xs text-purple-600">✓ Very active</span>
-                    </div>
-                    
-                    {/* Sample report photos — BIGGER on mobile */}
                     <div className="grid grid-cols-3 gap-2 mt-3 md:mt-4">
-                      <div className="rounded-lg h-24 md:h-16 overflow-hidden">
-                        <img 
-                          src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop" 
-                          alt="Pet photo 1" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="rounded-lg h-24 md:h-16 overflow-hidden">
-                        <img 
-                          src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=200&h=200&fit=crop" 
-                          alt="Pet photo 2" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="rounded-lg h-24 md:h-16 overflow-hidden">
-                        <img 
-                          src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=200&h=200&fit=crop" 
-                          alt="Pet photo 3" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                      {['photo-1587300003388-59208cc962cb', 'photo-1561037404-61cd46aa615b', 'photo-1544568100-847a948585b9'].map((id, i) => (
+                        <div key={i} className="rounded-lg h-24 md:h-16 overflow-hidden">
+                          <img src={`https://images.unsplash.com/${id}?w=200&h=200&fit=crop`} alt={`Pet photo ${i+1}`} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
                     </div>
                     
-                    <p className="text-xs text-gray-500 text-center italic">
+                    <p className="text-xs text-muted-foreground text-center italic font-body">
                       "Max had a wonderful day! Very playful and ate all his food."
                     </p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-gray-200">
-                    <div className="text-xl md:text-2xl font-bold text-blue-600">96%</div>
-                    <div className="text-xs md:text-sm text-gray-600">Report Compliance</div>
+                  <div className="bg-card rounded-xl p-3 md:p-4 text-center border border-border">
+                    <div className="text-xl md:text-2xl font-bold text-primary font-display">96%</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-body">Report Compliance</div>
                   </div>
-                  <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-gray-200">
-                    <div className="text-xl md:text-2xl font-bold text-green-600">2x/day</div>
-                    <div className="text-xs md:text-sm text-gray-600">Updates Delivered</div>
+                  <div className="bg-card rounded-xl p-3 md:p-4 text-center border border-border">
+                    <div className="text-xl md:text-2xl font-bold text-primary font-display">2x/day</div>
+                    <div className="text-xs md:text-sm text-muted-foreground font-body">Updates Delivered</div>
                   </div>
                 </div>
               </div>
@@ -488,52 +441,36 @@ const Index = () => {
       </section>
 
       {/* Charity Section - Compact on mobile */}
-      <section className="py-8 md:py-20 bg-[#fafbfa] border-t border-gray-100">
+      <section className="py-8 md:py-20 bg-muted border-t border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <div className="mb-4 md:mb-8">
               <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full mb-3 md:mb-4">
-                <span className="text-xl md:text-2xl">🐾</span>
+                <img src={iconPaw} alt="" className="w-7 h-7 md:w-9 md:h-9" />
               </div>
-              <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
+              <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 font-display text-foreground">
                 Making a Difference Together
               </h2>
-              <p className="text-sm md:text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground font-body">
                 Every booking helps pets in need across New Zealand.
               </p>
             </div>
             
-            <div className="bg-card border rounded-xl p-4 md:p-8 shadow-sm">
+            <div className="bg-card border border-border rounded-xl p-4 md:p-8 shadow-sm">
               <div className="flex items-center justify-center gap-3 mb-3 md:mb-4">
-                <span className="text-3xl md:text-4xl font-bold text-primary">5%</span>
+                <span className="text-3xl md:text-4xl font-bold text-primary font-display">5%</span>
                 <div className="text-left">
-                  <p className="font-semibold text-sm md:text-base">of our profits</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">goes to SPCA NZ</p>
+                  <p className="font-semibold text-sm md:text-base font-body text-foreground">of our profits</p>
+                  <p className="text-xs md:text-sm text-muted-foreground font-body">goes to SPCA NZ</p>
                 </div>
               </div>
               
-              {/* Expanded details hidden on mobile */}
               <div className="hidden md:block">
-                <h3 className="text-xl font-semibold mb-3">SPCA New Zealand</h3>
-                <p className="text-muted-foreground mb-6">
-                  Your bookings help us support the SPCA{"'"}s vital work in animal rescue, providing medical care for abandoned pets, 
+                <h3 className="text-xl font-semibold mb-3 font-body text-foreground">SPCA New Zealand</h3>
+                <p className="text-muted-foreground mb-6 font-body">
+                  Your bookings help us support the SPCA's vital work in animal rescue, providing medical care for abandoned pets, 
                   and funding spay/neuter programs across New Zealand.
                 </p>
-                
-                <div className="grid md:grid-cols-3 gap-6 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Emergency medical care</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span>Shelter support programs</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span>Spay & neuter initiatives</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -595,10 +532,10 @@ const Index = () => {
       </section>
 
       {/* CTA Section — Quick Email Capture */}
-      <section className="relative py-8 md:py-20 overflow-hidden bg-white">
+      <section className="relative py-8 md:py-20 overflow-hidden bg-background">
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-xl mx-auto">
-            <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-gray-900">
+            <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-foreground font-display">
               Ready to Find Your Pet{"'"}s Person?
             </h2>
             <p className="text-sm md:text-xl mb-4 md:mb-6 text-muted-foreground">
@@ -632,8 +569,8 @@ const Index = () => {
                 Get Started Free
               </Button>
             </form>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              ✓ Free to join • ✓ No payment until you book • ✓ Cancel anytime
+            <p className="text-xs md:text-sm text-muted-foreground font-body">
+              Free to join · No payment until you book · Cancel anytime
             </p>
             <div className="mt-4">
               <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => navigate('/find-sitters')}>
@@ -646,11 +583,12 @@ const Index = () => {
       </div>
 
       {/* Blog Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-primary/5">
+      <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Pet Care Tips & Guides</h2>
-            <p className="text-muted-foreground text-sm md:text-lg">Expert advice to help you provide the best care for your pets in New Zealand</p>
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Blog</p>
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 font-display text-foreground">Pet Care Tips & Guides</h2>
+            <p className="text-muted-foreground text-sm md:text-lg font-body">Expert advice to help you provide the best care for your pets</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
             {[
@@ -680,13 +618,13 @@ const Index = () => {
       <TestimonialsSection />
 
       {/* Sticky Mobile CTA Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
         <Button 
           size="lg" 
-          className="w-full text-base font-bold py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl min-h-[48px] shadow-lg"
+          className="w-full text-base font-bold py-3 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-xl min-h-[48px] shadow-lg font-body"
           onClick={() => navigate('/auth?tab=signup')}
         >
-          🐾 Sign Up Free — Find a Sitter
+          Sign Up Free — Find a Sitter
         </Button>
       </div>
 
