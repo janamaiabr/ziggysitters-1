@@ -436,7 +436,7 @@ const Index = () => {
                   onClick={() => navigate('/become-sitter')}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 min-h-[48px] font-body"
                 >
-                  Become a Sitter <ArrowRight className="w-4 h-4 ml-2" />
+                  Become a Sitter <span className="ml-2">→</span>
                 </Button>
               </div>
             </div>
