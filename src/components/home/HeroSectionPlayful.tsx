@@ -5,7 +5,6 @@ import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
 import heroSitterReal from '@/assets/hero-sitter-real.jpg';
 import heroPetsReal from '@/assets/hero-pets-real.jpg';
-import UrgencyIndicator from './UrgencyIndicator';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 import iconPaw from '@/assets/icons/icon-paw.png';
 import iconShield from '@/assets/icons/icon-shield.png';
