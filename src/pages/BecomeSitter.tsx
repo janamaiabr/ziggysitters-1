@@ -4,7 +4,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Check } from 'lucide-react';
+import iconCheck from '@/assets/icons/icon-check.png';
 import EarningsCalculator from '@/components/sitter-recruitment/EarningsCalculator';
 import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
 import { ga4 } from '@/lib/ga4';
