@@ -20,8 +20,8 @@ export default function CompactSteps() {
       {steps.map((step, index) => (
         <div key={index} className="flex items-center gap-2">
           <div className="flex items-center gap-2 bg-card rounded-full px-3 py-1.5 shadow-sm border border-border">
-            <img src={step.numIcon} alt="" className="w-6 h-6" />
-            <img src={step.icon} alt="" className="w-4 h-4" />
+            <img src={step.numIcon} alt="" className="w-7 h-7" />
+            <img src={step.icon} alt="" className="w-5 h-5" />
             <span className="text-sm font-medium text-foreground font-body">{step.label}</span>
           </div>
           

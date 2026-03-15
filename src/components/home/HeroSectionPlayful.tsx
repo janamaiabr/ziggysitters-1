@@ -94,13 +94,13 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-sm md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0 font-body">
-                  Real people in your neighbourhood who <span className="font-bold text-foreground">love dogs</span> and take care of your pets like their own. ID verified. Daily photo updates.
+                  <span className="font-bold text-foreground">Affordable, local pet sitters</span> you can trust. Real people in your neighbourhood who genuinely love animals. ID verified. Daily photo updates.
                 </p>
 
                 {/* Positioning badge */}
                 <div className="inline-flex items-center gap-2 bg-vintage-cream border border-border rounded-full px-3 py-1.5">
-                  <img src={iconPaw} alt="" className="w-5 h-5" />
-                  <span className="text-xs md:text-sm font-semibold text-primary font-body">Local pet sitting — AU & NZ</span>
+                  <img src={iconPaw} alt="" className="w-6 h-6" />
+                  <span className="text-xs md:text-sm font-semibold text-primary font-body">Affordable local pet sitting — AU & NZ</span>
                 </div>
 
                 {/* Primary CTAs */}
@@ -125,9 +125,9 @@ const HeroSectionPlayful = ({
                     </Button>
                   </div>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground font-body">
-                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> ID Verified</span>
-                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Daily Photo Updates</span>
-                    <span className="hidden sm:flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Free to browse</span>
+                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-5 h-5" /> ID Verified</span>
+                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-5 h-5" /> Daily Photo Updates</span>
+                    <span className="hidden sm:flex items-center gap-1"><img src={iconCheck} alt="" className="w-5 h-5" /> Free to browse</span>
                   </div>
                 </div>
               </div>
@@ -136,13 +136,13 @@ const HeroSectionPlayful = ({
               {/* Feature pills - hidden on mobile */}
               <div className="hidden md:flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <img src={iconCamera} alt="" className="w-5 h-5" /> Daily Photo Updates
+                  <img src={iconCamera} alt="" className="w-7 h-7" /> Daily Photo Updates
                 </div>
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <img src={iconShield} alt="" className="w-5 h-5" /> ID Verified Sitters
+                  <img src={iconShield} alt="" className="w-7 h-7" /> ID Verified Sitters
                 </div>
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <img src={iconCheck} alt="" className="w-5 h-5" /> Trusted Reviews
+                  <img src={iconCheck} alt="" className="w-7 h-7" /> Trusted Reviews
                 </div>
               </div>
 

@@ -200,7 +200,7 @@ const Index = () => {
                 Meet Our Sitters
               </h2>
               <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-                Every photo is real. Every sitter is local and vetted. Browse their profiles and book with confidence.
+                Affordable, vetted locals who genuinely love pets. Browse real profiles and book with confidence.
               </p>
             </div>
             
@@ -257,7 +257,7 @@ const Index = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
                 <div className="space-y-4 md:space-y-6">
                   <div className="inline-flex items-center bg-primary text-primary-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium font-body">
-                    <img src={iconCamera} alt="" className="w-4 h-4 mr-1.5 md:mr-2" />
+                    <img src={iconCamera} alt="" className="w-5 h-5 mr-1.5 md:mr-2" />
                     Daily Photo Updates
                   </div>
                   
@@ -277,8 +277,8 @@ const Index = () => {
                       { icon: iconCheck, title: 'Peace of Mind', desc: 'Never worry again' },
                     ].map((item) => (
                       <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
-                        <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <img src={item.icon} alt="" className="w-5 h-5" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                          <img src={item.icon} alt="" className="w-6 h-6 md:w-7 md:h-7" />
                         </div>
                         <div>
                           <h4 className="font-semibold text-foreground text-sm md:text-base font-body">{item.title}</h4>
@@ -342,11 +342,11 @@ const Index = () => {
               <div className="space-y-4 md:space-y-6">
                 <p className="text-sm font-semibold text-primary uppercase tracking-widest font-body">For Pet Sitters</p>
                 <h2 className="text-2xl md:text-4xl font-bold text-foreground font-display">
-                  Love Pets? Earn Extra Cash
+                  Love Dogs? Earn Extra Cash Doing What You Love
                 </h2>
                 <p className="text-sm md:text-lg text-muted-foreground font-body leading-relaxed">
-                  Set your own rates, choose your hours, and get paid to care for pets in your neighbourhood. 
-                  We handle payments, booking management, and marketing — you just focus on the animals.
+                  Turn your love for animals into income. Set your own rates, choose your hours, and get paid to care for pets in your neighbourhood. 
+                  No upfront costs — we handle payments, bookings, and finding you clients.
                 </p>
                 <div className="space-y-2">
                   {[
@@ -355,7 +355,7 @@ const Index = () => {
                     'Free to join — no upfront costs',
                   ].map(item => (
                     <div key={item} className="flex items-center gap-2 text-sm text-foreground font-body">
-                      <img src={iconCheck} alt="" className="w-4 h-4 flex-shrink-0" />
+                      <img src={iconCheck} alt="" className="w-5 h-5 flex-shrink-0" />
                       {item}
                     </div>
                   ))}
@@ -397,7 +397,7 @@ const Index = () => {
                   size="lg" 
                   variant="outline"
                   onClick={() => navigate('/become-sitter')}
-                  className="px-8 min-h-[48px] font-body text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10"
+                  className="px-8 min-h-[48px] font-body text-lg border-secondary-foreground/30 text-secondary-foreground bg-secondary-foreground/10 hover:bg-secondary-foreground/20"
                 >
                   Become a Sitter
                 </Button>

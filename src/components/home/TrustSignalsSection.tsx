@@ -48,8 +48,8 @@ export default function TrustSignalsSection() {
               key={index}
               className="flex flex-col items-center text-center p-4 rounded-xl bg-secondary-foreground/5 hover:bg-secondary-foreground/10 transition-all duration-300"
             >
-              <div className="w-12 h-12 rounded-full bg-secondary-foreground/10 flex items-center justify-center mb-3">
-                <img src={badge.icon} alt="" className="w-7 h-7" />
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-secondary-foreground/10 flex items-center justify-center mb-3">
+                <img src={badge.icon} alt="" className="w-9 h-9 md:w-10 md:h-10" />
               </div>
               <h4 className="font-semibold text-secondary-foreground text-sm mb-1 font-body">{badge.title}</h4>
               <p className="text-xs text-secondary-foreground/60 font-body">{badge.description}</p>
