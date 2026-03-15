@@ -477,7 +477,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'NZ holidays mean peak demand for pet sitters. Learn how to plan ahead, book early, and ensure your pet is well cared for during every holiday season.',
     date: '2026-02-03',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=1200&h=630&fit=crop',
     readTime: '11 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Plan ahead for holiday pet sitting in New Zealand. Tips for Easter, school holidays, Christmas, and summer. Book early to secure the best sitters.',
