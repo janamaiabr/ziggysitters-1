@@ -38,7 +38,7 @@ const cityStepImages: Record<string, string[]> = {
   "sunshine-coast": [
     "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=600&h=400&fit=crop",
     "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1522276498395-f4f68f7f8571?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
   ],
   "default": [
     "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
