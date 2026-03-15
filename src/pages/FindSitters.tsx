@@ -7,7 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MapPin, Filter, Search, X, Home, Map, List } from 'lucide-react';
+import { Filter, Search, X, Home, Map as MapIcon, List } from 'lucide-react';
+import iconLocation from '@/assets/icons/icon-location.png';
+import iconSearch from '@/assets/icons/icon-search.png';
+import iconMappin from '@/assets/icons/icon-mappin.png';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import { supabase } from '@/integrations/supabase/client';
 import FilterPanel from '@/components/search/FilterPanel';
@@ -608,54 +611,51 @@ export default function FindSitters() {
       
       {/* Location Notice Banner */}
       <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
-        <p className="text-sm md:text-base font-medium">
-          📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
+        <p className="text-sm md:text-base font-medium font-body">
+          <img src={iconLocation} alt="" className="inline h-4 w-4 mr-1 -mt-0.5" /> Currently serving Auckland, New Zealand. Expanding to other cities soon!
         </p>
       </div>
       
       {/* Profile completion banner for new pet owners */}
       {user && profile?.role === 'pet_owner' && (!profile?.phone || !profile?.address) && (
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-b border-purple-200 dark:border-purple-800 py-3 px-4 text-center">
-          <p className="text-sm text-purple-700 dark:text-purple-300">
-            💡 <button onClick={() => navigate('/profile')} className="underline font-medium hover:text-purple-900 dark:hover:text-purple-100">Complete your profile</button> later for a better experience — browse sitters now!
+        <div className="bg-accent border-b border-border py-3 px-4 text-center">
+          <p className="text-sm text-accent-foreground font-body">
+            <button onClick={() => navigate('/profile')} className="underline font-medium hover:text-primary">Complete your profile</button> later for a better experience — browse sitters now!
           </p>
         </div>
       )}
       
       {/* Hero Section with Search - Hide on mobile when results shown */}
-      <section className={`relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIj4KICAgICAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg==')] opacity-30"></div>
-        </div>
+      <section className={`relative bg-muted py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>
         <div className="relative container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center text-gray-800">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Find Trusted Pet Sitters
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 font-display text-foreground">
+              Find Local Pet Sitters
             </h1>
-            <p className="text-lg md:text-xl mb-6 md:mb-8 text-gray-600 max-w-3xl mx-auto px-4">
-              Discover verified, loving pet sitters in your area with guaranteed daily photo updates
+            <p className="text-lg md:text-xl mb-6 md:mb-8 text-muted-foreground max-w-3xl mx-auto px-4 font-body">
+              Discover verified, loving pet sitters in your area with daily photo updates
             </p>
             
             {/* Enhanced Search Bar - Same as Home Page */}
-            <div className="bg-white rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
+            <div className="bg-card rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-border shadow-xl">
               {/* Mobile Optimized: Stack fields properly */}
               <div className="space-y-4">
                 {/* Name Search Row */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 block">Search by name</label>
+                  <label className="text-sm font-medium text-foreground block font-body">Search by name</label>
                   <Input
                     type="text"
                     placeholder="Search by sitter name..."
                     value={nameSearch}
                     onChange={(e) => setNameSearch(e.target.value)}
-                    className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                    className="h-12 border-border text-foreground focus:border-primary bg-background"
                   />
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   {serviceType !== 'pet_sitting_owners_home' && (
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700 block">Where?</label>
+                      <label className="text-sm font-medium text-foreground block font-body">Where?</label>
                       <SuburbAutocomplete
                         value={location}
                         onChange={setLocation}
@@ -665,7 +665,7 @@ export default function FindSitters() {
                   )}
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Service</label>
+                    <label className="text-sm font-medium text-foreground block font-body">Service</label>
                     <Select value={serviceType} onValueChange={(val) => {
                       // Redirect to young walker search if selected
                       if (val === 'young_walker') {
@@ -678,17 +678,17 @@ export default function FindSitters() {
                         setLocation('');
                       }
                     }}>
-                      <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white">
+                      <SelectTrigger className="h-12 border-border text-foreground focus:border-primary bg-background">
                         <SelectValue placeholder="What do you need?" />
                       </SelectTrigger>
-                        <SelectContent className="z-50 bg-white border shadow-lg">
+                        <SelectContent className="z-50 bg-card border shadow-lg">
                           <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
                           <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
                           <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
                           <SelectItem value="young_walker">
                             <span className="flex items-center gap-2">
-                              🐕 Young Dog Walker 
-                              <span className="text-xs text-emerald-600 font-medium">From $15</span>
+                              Young Dog Walker 
+                              <span className="text-xs text-primary font-medium">From $15</span>
                             </span>
                           </SelectItem>
                         </SelectContent>
@@ -698,23 +698,23 @@ export default function FindSitters() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Check-in</label>
+                    <label className="text-sm font-medium text-foreground block font-body">Check-in</label>
                      <Input 
                       type="date"
                       value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
                       onChange={(e) => setSelectedDate(e.target.value ? new Date(e.target.value) : undefined)}
-                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      className="h-12 border-border text-foreground focus:border-primary bg-background"
                       min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Check-out</label>
+                    <label className="text-sm font-medium text-foreground block font-body">Check-out</label>
                      <Input 
                       type="date"
                       value={checkOutDate ? checkOutDate.toISOString().split('T')[0] : ''}
                       onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
-                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      className="h-12 border-border text-foreground focus:border-primary bg-background"
                       min={selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
                     />
                   </div>
@@ -732,7 +732,7 @@ export default function FindSitters() {
                 <Button 
                   variant="outline"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 h-14 md:h-12 rounded-md"
+                  className="border-border text-foreground hover:bg-muted px-8 py-4 h-14 md:h-12 rounded-md"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
@@ -741,7 +741,7 @@ export default function FindSitters() {
                   <Button 
                     variant="outline" 
                     size="lg"
-                    className="px-8 h-14 md:h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
+                    className="px-8 h-14 md:h-12 border-border text-foreground hover:bg-muted"
                     onClick={() => {
                       setLocation('');
                       setServiceType('');
@@ -784,7 +784,7 @@ export default function FindSitters() {
                   className="rounded-none"
                   onClick={() => setViewMode('map')}
                 >
-                  <Map className="w-4 h-4 mr-1" /> Map
+                  <MapIcon className="w-4 h-4 mr-1" /> Map
                 </Button>
               </div>
             </div>
@@ -834,7 +834,7 @@ export default function FindSitters() {
               {/* Add Pets Prompt - subtle but persistent */}
               <AddPetsPrompt />
               
-              <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
+              <h2 className="text-xl md:text-2xl font-semibold mb-2 text-foreground font-display">
                 Available Pet Sitters
               </h2>
               
@@ -842,26 +842,26 @@ export default function FindSitters() {
               {(selectedDate || checkOutDate || location || serviceType) && (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {selectedDate && checkOutDate && (
-                    <Badge variant="secondary" className="text-sm">
-                      📅 {format(selectedDate, 'MMM d')} - {format(checkOutDate, 'MMM d')}
-                      <span className="ml-1 text-green-600">✓ Filtered</span>
+                    <Badge variant="secondary" className="text-sm font-body">
+                      {format(selectedDate, 'MMM d')} - {format(checkOutDate, 'MMM d')}
+                      <span className="ml-1 text-primary">✓ Filtered</span>
                     </Badge>
                   )}
                   {location && (
-                    <Badge variant="secondary" className="text-sm">
-                      📍 {location}
+                    <Badge variant="secondary" className="text-sm font-body">
+                      {location}
                     </Badge>
                   )}
                   {serviceType && (
-                    <Badge variant="secondary" className="text-sm">
-                      🏠 {serviceType === 'pet_sitting_owners_home' ? 'Your Home' : 
+                    <Badge variant="secondary" className="text-sm font-body">
+                      {serviceType === 'pet_sitting_owners_home' ? 'Your Home' : 
                          serviceType === 'pet_sitting_sitters_home' ? "Sitter's Home" : 'Drop-ins'}
                     </Badge>
                   )}
                 </div>
               )}
               
-              <p className="text-gray-600">
+              <p className="text-muted-foreground font-body">
                 {filteredSitters.length === 0 
                   ? 'No sitters found matching your criteria. Try adjusting your filters.' 
                   : selectedDate && checkOutDate
@@ -874,7 +874,7 @@ export default function FindSitters() {
               </p>
               {serviceType === 'pet_sitting_owners_home' && filteredSitters.length > 0 && (
                 <p className="text-sm text-primary mt-1 flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
+                  <img src={iconLocation} alt="" className="h-4 w-4" />
                   These sitters travel to you — your pet stays comfortable at home!
                 </p>
               )}
