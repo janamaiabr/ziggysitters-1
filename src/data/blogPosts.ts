@@ -25,7 +25,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Everything Sunshine Coast pet owners need to know about professional pet sitting — from Noosa to Caloundra, costs, trusted sitters, and tick safety.',
     date: '2026-02-20',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&h=630&fit=crop',
     readTime: '10 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Complete guide to pet sitting on the Sunshine Coast QLD 2026. Find trusted local sitters in Noosa, Maroochydore, Caloundra, Mooloolaba and surrounds.',
