@@ -426,7 +426,7 @@ const Index = () => {
                     'Free to join — no upfront costs',
                   ].map(item => (
                     <div key={item} className="flex items-center gap-2 text-sm text-foreground font-body">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                      <img src={iconCheck} alt="" className="w-4 h-4 flex-shrink-0" />
                       {item}
                     </div>
                   ))}
