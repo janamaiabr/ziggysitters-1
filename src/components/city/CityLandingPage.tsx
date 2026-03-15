@@ -15,6 +15,9 @@ import iconBoarding from "@/assets/icons/icon-boarding.png";
 import iconStar from "@/assets/icons/icon-star.png";
 import iconPaw from "@/assets/icons/icon-paw.png";
 import iconCheck from "@/assets/icons/icon-check.png";
+import testimonialSarah from "@/assets/testimonial-sarah.jpg";
+import testimonialJames from "@/assets/testimonial-james.jpg";
+import testimonialEmma from "@/assets/testimonial-emma.jpg";
 
 // Local genuine pet care photos
 import houseSittingImg from "@/assets/city/house-sitting.jpg";
