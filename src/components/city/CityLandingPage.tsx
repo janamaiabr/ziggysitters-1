@@ -73,9 +73,6 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
   const countryCode = isAU ? "AU" : "NZ";
 
   const heroImage = cityHeroImages[city.slug] || cityHeroImages["hamilton"];
-  const stepImages = cityStepImages[city.slug] || cityStepImages["default"];
-  const whyUsImage = cityWhyUsImages[city.slug] || cityWhyUsImages["default"];
-  const serviceImages = cityServiceImages[city.slug] || cityServiceImages["default"];
 
   const structuredData = {
     "@context": "https://schema.org",
