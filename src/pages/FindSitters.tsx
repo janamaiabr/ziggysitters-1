@@ -637,7 +637,7 @@ export default function FindSitters() {
             </p>
             
             {/* Enhanced Search Bar - Same as Home Page */}
-            <div className="bg-white rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-gray-200 shadow-xl">
+            <div className="bg-card rounded-2xl p-4 md:p-6 max-w-4xl mx-auto border border-border shadow-xl">
               {/* Mobile Optimized: Stack fields properly */}
               <div className="space-y-4">
                 {/* Name Search Row */}
