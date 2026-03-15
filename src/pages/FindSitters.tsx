@@ -861,7 +861,7 @@ export default function FindSitters() {
                 </div>
               )}
               
-              <p className="text-gray-600">
+              <p className="text-muted-foreground font-body">
                 {filteredSitters.length === 0 
                   ? 'No sitters found matching your criteria. Try adjusting your filters.' 
                   : selectedDate && checkOutDate
