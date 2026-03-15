@@ -42,6 +42,11 @@ const cityHeroImages: Record<string, string> = {
   "dunedin": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900&fit=crop",
 };
 
+// Genuine local pet care photos (used across all city pages)
+const cityStepImages = [stepBrowseImg, stepMeetGreetImg, stepBookingImg];
+const cityWhyUsImage = whyUsImg;
+const cityServiceImages = [houseSittingImg, dropInVisitImg, petBoardingImg];
+
 const testimonials = [
   {
     name: "Sarah M.",
