@@ -113,7 +113,7 @@ export default function Contact() {
               <Card className="border border-border bg-card shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 font-display text-foreground">
-                    <img src={iconEmail} alt="" className="w-8 h-8" />
+                    <img src={iconEmail} alt="" className="w-10 h-10" />
                     Send us a Message
                   </CardTitle>
                 </CardHeader>
