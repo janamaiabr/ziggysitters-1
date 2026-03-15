@@ -84,7 +84,7 @@ export default function HowItWorks() {
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold px-8 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
                   Find a Sitter <span className="ml-2">→</span>
                 </Button>
-                <Button size="lg" variant="outline" className="font-body px-8 py-6 text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10" onClick={() => navigate('/become-sitter')}>
+                <Button size="lg" variant="outline" className="font-body px-8 py-6 text-lg border-secondary-foreground/30 text-secondary-foreground bg-secondary-foreground/10 hover:bg-secondary-foreground/20" onClick={() => navigate('/become-sitter')}>
                   Become a Sitter
                 </Button>
               </div>
