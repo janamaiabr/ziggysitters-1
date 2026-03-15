@@ -243,7 +243,7 @@ const Index = () => {
                 Meet Our Sitters
               </h2>
               <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-                Every photo is real. Every sitter is local and ID verified. Browse their profiles and book with confidence.
+                Every photo is real. Every sitter is local and vetted. Browse their profiles and book with confidence.
               </p>
             </div>
             
