@@ -185,7 +185,7 @@ export default function BecomeSitter() {
                   <CardContent className="p-0">
                     <div className="flex items-start gap-5 p-6">
                       <div className="flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <img src={benefit.icon} alt="" className="w-14 h-14" />
+                        <img src={benefit.icon} alt="" className="w-16 h-16" />
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold text-foreground mb-2 font-body">{benefit.title}</h3>
