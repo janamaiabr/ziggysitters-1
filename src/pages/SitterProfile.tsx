@@ -538,16 +538,16 @@ export default function SitterProfile() {
               </Card>
             )}
 
-            {/* Photo Gallery — always show if photos exist, with prominent layout */}
-            {sitterData.gallery.length > 0 && (
-              <Card className="border border-border overflow-hidden">
-                <CardHeader className="bg-muted/50 border-b border-border">
-                  <CardTitle className="flex items-center gap-2 font-display text-foreground">
-                    <img src={iconCamera} alt="" className="w-6 h-6" />
-                    {firstName}'s Pet Care Photos
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-4">
+            {/* Photo Gallery — always show */}
+            <Card className="border border-border overflow-hidden">
+              <CardHeader className="bg-muted/50 border-b border-border">
+                <CardTitle className="flex items-center gap-2 font-display text-foreground">
+                  <img src={iconCamera} alt="" className="w-6 h-6" />
+                  {firstName}'s Pet Care Photos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                {sitterData.gallery.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {sitterData.gallery.map((photo, index) => (
                       <img
@@ -559,9 +559,19 @@ export default function SitterProfile() {
                       />
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                ) : (
+                  <div className="text-center py-8 space-y-3">
+                    <img src={iconCamera} alt="" className="w-10 h-10 mx-auto opacity-40" />
+                    <p className="text-muted-foreground font-body text-sm">
+                      {firstName} hasn't uploaded pet care photos yet.
+                    </p>
+                    <p className="text-muted-foreground/60 font-body text-xs">
+                      Ask {firstName} to share photos from past stays — it helps build trust!
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Services & Rates */}
             <Card className="border border-border overflow-hidden">
