@@ -258,7 +258,9 @@ export default function Auth() {
         if (intendedRole) {
           localStorage.setItem('onboarding_data', JSON.stringify({ role: intendedRole, city: 'Auckland' }));
         }
-        navigate(redirectUrl);
+        // Mark that terms were accepted during signup so onboarding skips the terms step
+        localStorage.setItem('terms_accepted_during_signup', 'true');
+        navigate(signupRedirectUrl);
       }
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred. Please try again.", variant: "destructive" });

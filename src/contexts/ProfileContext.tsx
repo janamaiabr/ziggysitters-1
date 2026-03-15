@@ -136,8 +136,9 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error('Error in fetchProfile:', error);
-      console.log('ProfileContext: Setting needsOnboarding to true due to catch error');
-      setNeedsOnboarding(true);
+      // Don't set needsOnboarding on errors - this causes redirect loops
+      console.log('ProfileContext: Catch error, keeping needsOnboarding as false to prevent loops');
+      setNeedsOnboarding(false);
     } finally {
       console.log('ProfileContext: Setting loading to false');
       setLoading(false);
