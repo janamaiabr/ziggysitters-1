@@ -43,9 +43,9 @@ const cityHeroImages: Record<string, string> = {
 };
 
 // Genuine local pet care photos (used across all city pages)
-const cityStepImages = [stepBrowseImg, stepMeetGreetImg, stepBookingImg];
-const cityWhyUsImage = whyUsImg;
-const cityServiceImages = [houseSittingImg, dropInVisitImg, petBoardingImg];
+const stepImages = [stepBrowseImg, stepMeetGreetImg, stepBookingImg];
+const whyUsImage = whyUsImg;
+const serviceImages = [houseSittingImg, dropInVisitImg, petBoardingImg];
 
 const testimonials = [
   {
