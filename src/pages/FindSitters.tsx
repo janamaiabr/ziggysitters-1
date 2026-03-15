@@ -687,8 +687,8 @@ export default function FindSitters() {
                           <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
                           <SelectItem value="young_walker">
                             <span className="flex items-center gap-2">
-                              🐕 Young Dog Walker 
-                              <span className="text-xs text-emerald-600 font-medium">From $15</span>
+                              Young Dog Walker 
+                              <span className="text-xs text-primary font-medium">From $15</span>
                             </span>
                           </SelectItem>
                         </SelectContent>
