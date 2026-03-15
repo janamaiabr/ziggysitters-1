@@ -1160,10 +1160,10 @@ export default function Profile() {
                         : 'bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-300'
                     }`}>
                       {profile.verification_status === 'rejected' 
-                        ? '⚠️ Your profile verification was not approved. Please update your profile and resubmit for review.'
+                        ? 'Your profile vetting was not approved. Please update your profile and resubmit for review.'
                         : profile.verification_documents_uploaded_at
-                        ? '⏳ Your profile is under review. We\'ll notify you once complete.'
-                        : '📋 Complete verification by uploading required documents in the Verification tab.'
+                        ? 'Your profile is under review. We\'ll notify you once complete.'
+                        : 'Complete vetting by uploading required documents in the Verification tab.'
                       }
                     </div>
                   )}
