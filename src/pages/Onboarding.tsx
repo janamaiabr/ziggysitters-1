@@ -1116,14 +1116,9 @@ export default function Onboarding() {
   // Show email verification after terms acceptance
   if (showEmailVerification && user) {
     return (
-      <div className="min-h-screen relative bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 overflow-hidden py-8 md:py-12 px-4">
-        <div className="absolute inset-0 overflow-hidden -z-10">
-          <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-25 animate-pulse"></div>
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-25 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        </div>
-        
+      <div className="min-h-screen relative bg-background overflow-hidden py-8 md:py-12 px-4">
         <div className="container mx-auto max-w-lg relative z-10">
-          <Card className="shadow-2xl border-2 border-purple-200 dark:border-purple-800 bg-background/95 backdrop-blur">
+          <Card className="shadow-2xl border border-border bg-background">
             <CardContent className="p-6 md:p-8">
               <EmailVerificationStep
                 userId={user.id}
