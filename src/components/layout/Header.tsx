@@ -343,10 +343,7 @@ export default function Header() {
                         How it Works
                       </Button>
                       <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/blog')}>
-                        Blog
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start font-body" onClick={() => handleMobileNavigation('/young-walkers')}>
-                        Young Walkers
+                      Blog
                       </Button>
                     </div>
                     <div className="space-y-3 pt-4 border-t">
