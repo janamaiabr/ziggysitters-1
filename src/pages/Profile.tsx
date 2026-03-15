@@ -713,7 +713,7 @@ export default function Profile() {
       fireSuccess();
       
       toast({
-        title: "🎉 Photo uploaded!",
+        title: "Photo uploaded",
         description: "Your portfolio photo has been uploaded successfully.",
       });
 

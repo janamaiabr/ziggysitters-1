@@ -1204,9 +1204,9 @@ export default function Onboarding() {
                     Setting up...
                   </>
                 ) : step === 2 ? (
-                  'Save & Continue ✨'
+                  'Save & Continue'
                 ) : (
-                  'Next 🎉'
+                  'Next'
                 )}
               </Button>
             </div>

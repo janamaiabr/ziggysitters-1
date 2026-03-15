@@ -402,11 +402,11 @@ export default function Auth() {
 
             <div className="pt-3 border-t text-center text-xs text-muted-foreground">
               By continuing, you agree to our{' '}
-              <Link to="/terms-of-service" className="text-purple-600 dark:text-purple-400 hover:underline">
+              <Link to="/terms-of-service" className="text-primary hover:underline">
                 Terms
               </Link>
               {' '}and{' '}
-              <Link to="/privacy-policy" className="text-purple-600 dark:text-purple-400 hover:underline">
+              <Link to="/privacy-policy" className="text-primary hover:underline">
                 Privacy Policy
               </Link>
               .
