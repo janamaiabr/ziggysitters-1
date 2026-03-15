@@ -4,6 +4,13 @@ import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Mock ResizeObserver for jsdom
+globalThis.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as any;
+
 // Mock supabase
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
