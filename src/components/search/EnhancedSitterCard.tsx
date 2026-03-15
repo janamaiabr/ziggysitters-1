@@ -102,7 +102,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         <div className="absolute bottom-3 left-3 right-3">
           <h3 className="font-bold text-lg text-white mb-0.5 font-body">{sitter.name}</h3>
           <div className="flex items-center text-sm text-white/80">
-            <img src={iconMappin} alt="" className="w-3 h-3 mr-1 shrink-0" />
+            <img src={iconMappin} alt="" className="w-4 h-4 mr-1 shrink-0" />
             <span className="truncate font-body">{sitter.location}</span>
           </div>
         </div>
