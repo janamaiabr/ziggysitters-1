@@ -741,7 +741,7 @@ export default function FindSitters() {
                   <Button 
                     variant="outline" 
                     size="lg"
-                    className="px-8 h-14 md:h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
+                    className="px-8 h-14 md:h-12 border-border text-foreground hover:bg-muted"
                     onClick={() => {
                       setLocation('');
                       setServiceType('');
