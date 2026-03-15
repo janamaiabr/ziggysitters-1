@@ -33,39 +33,14 @@ const cityHeroImages: Record<string, string> = {
   "dunedin": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900&fit=crop",
 };
 
-// City-specific step images
-const cityStepImages: Record<string, string[]> = {
-  "sunshine-coast": [
-    "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
-  ],
-  "default": [
-    "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
-  ],
-};
+// Step images - genuine local photos
+const stepImages = [stepBrowseImg, stepMeetGreetImg, stepBookingImg];
 
-// City-specific "why us" images
-const cityWhyUsImages: Record<string, string> = {
-  "sunshine-coast": "https://images.unsplash.com/photo-1544568100-847a948585b9?w=800&h=1000&fit=crop",
-  "default": "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&h=1000&fit=crop",
-};
+// Why us image
+const whyUsImage = whyUsImg;
 
-// City-specific service images
-const cityServiceImages: Record<string, string[]> = {
-  "sunshine-coast": [
-    "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=600&h=400&fit=crop",
-  ],
-  "default": [
-    "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
-  ],
-};
+// Service images - genuine local photos
+const serviceImages = [houseSittingImg, dropInVisitImg, petBoardingImg];
 
 const testimonials = [
   {
