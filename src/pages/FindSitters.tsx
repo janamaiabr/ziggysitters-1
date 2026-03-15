@@ -618,9 +618,9 @@ export default function FindSitters() {
       
       {/* Profile completion banner for new pet owners */}
       {user && profile?.role === 'pet_owner' && (!profile?.phone || !profile?.address) && (
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-b border-purple-200 dark:border-purple-800 py-3 px-4 text-center">
-          <p className="text-sm text-purple-700 dark:text-purple-300">
-            💡 <button onClick={() => navigate('/profile')} className="underline font-medium hover:text-purple-900 dark:hover:text-purple-100">Complete your profile</button> later for a better experience — browse sitters now!
+        <div className="bg-accent border-b border-border py-3 px-4 text-center">
+          <p className="text-sm text-accent-foreground font-body">
+            <button onClick={() => navigate('/profile')} className="underline font-medium hover:text-primary">Complete your profile</button> later for a better experience — browse sitters now!
           </p>
         </div>
       )}
