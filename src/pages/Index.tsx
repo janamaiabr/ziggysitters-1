@@ -264,8 +264,8 @@ const Index = () => {
               {isMobile ? 'See All Sitters' : 'Find a Sitter Near You'}
               <span className="ml-2">→</span>
             </Button>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              ✓ Free to browse • ✓ No obligation • ✓ Trusted sitters only
+            <p className="text-xs md:text-sm text-gray-500">
+              ✓ Free to browse • ✓ ID Verified • ✓ Daily Photo Updates
             </p>
           </div>
         </div>
