@@ -151,7 +151,7 @@ export default function BecomeSitter() {
                     <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-300 group-hover:-translate-y-1 h-full bg-card">
                       <CardContent className="p-6 text-center">
                         <div className="flex justify-center mb-4">
-                          <img src={step.icon} alt="" className="w-14 h-14" />
+                          <img src={step.icon} alt="" className="w-16 h-16" />
                         </div>
                         <div className="text-xs font-bold text-primary tracking-widest mb-2 font-body">STEP {step.step}</div>
                         <h3 className="text-lg font-semibold text-foreground mb-2 font-body">{step.title}</h3>
