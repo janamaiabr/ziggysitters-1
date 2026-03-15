@@ -665,7 +665,7 @@ export default function FindSitters() {
                   )}
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Service</label>
+                    <label className="text-sm font-medium text-foreground block font-body">Service</label>
                     <Select value={serviceType} onValueChange={(val) => {
                       // Redirect to young walker search if selected
                       if (val === 'young_walker') {
