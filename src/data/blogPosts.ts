@@ -229,7 +229,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Understand the difference between professional dog walking and comprehensive pet sitting services. Learn which option best suits your dog\'s needs and schedule.',
     date: '2026-02-05',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1522276498395-f4f68f7f8571?w=1200&h=630&fit=crop',
     readTime: '10 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Compare dog walking services vs full pet sitting in NZ. Understand costs, benefits, and which option suits your dog\'s needs and your schedule.',
