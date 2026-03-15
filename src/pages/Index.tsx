@@ -583,11 +583,12 @@ const Index = () => {
       </div>
 
       {/* Blog Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-primary/5">
+      <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Pet Care Tips & Guides</h2>
-            <p className="text-muted-foreground text-sm md:text-lg">Expert advice to help you provide the best care for your pets in New Zealand</p>
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Blog</p>
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 font-display text-foreground">Pet Care Tips & Guides</h2>
+            <p className="text-muted-foreground text-sm md:text-lg font-body">Expert advice to help you provide the best care for your pets</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
             {[
