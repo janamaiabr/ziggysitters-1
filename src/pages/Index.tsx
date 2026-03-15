@@ -116,8 +116,8 @@ const Index = () => {
     // Fetch real platform stats
     const fetchStats = async () => {
       const [sittersResult, ownersResult, bookingsResult] = await Promise.all([
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'sitter').eq('onboarding_completed', true),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'owner'),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'pet_sitter').eq('onboarding_completed', true),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'pet_owner'),
         supabase.from('bookings').select('id', { count: 'exact', head: true }),
       ]);
       setPlatformStats({
