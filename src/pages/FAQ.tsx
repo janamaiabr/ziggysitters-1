@@ -156,7 +156,7 @@ export default function FAQ() {
                   <AccordionItem value="updates-guarantee">
                     <AccordionTrigger className="font-body">What if a sitter doesn't send the agreed reports?</AccordionTrigger>
                     <AccordionContent className="font-body text-muted-foreground">
-                      If you've requested daily reports and the sitter fails to deliver them, they face a 15% deduction from their booking payment. This ensures accountability.
+                      If you've requested daily reports, sitters are expected to complete them. We track report compliance and follow up with sitters who miss updates to ensure you stay informed about your pet's care.
                     </AccordionContent>
                   </AccordionItem>
 

@@ -20,7 +20,7 @@ const trustFeatures = [
   {
     icon: Camera,
     title: 'Daily Photo Updates',
-    description: 'Choose to require daily reports with photos - sitters face 15% deduction for non-compliance'
+    description: 'Choose to receive daily reports with photos so you always know your pet is happy and safe'
   },
   {
     icon: Shield,
