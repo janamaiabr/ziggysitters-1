@@ -11,6 +11,7 @@ import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
 import iconPaw from '@/assets/icons/icon-paw.png';
+import sitterCtaImg from '@/assets/home/sitter-cta.jpg';
 import iconCheck from '@/assets/icons/icon-check.png';
 import iconCamera from '@/assets/icons/icon-camera.png';
 import iconClock from '@/assets/icons/icon-clock.png';
@@ -201,12 +202,12 @@ const Index = () => {
           setCheckOut={setCheckOut}
         />
 
-        {/* Platform Stats — Real marketplace proof */}
-        {(platformStats.sitters > 0 || platformStats.owners > 0) && (
+        {/* Platform Stats — only show when meaningful */}
+        {platformStats.sitters >= 5 && (
           <section className="py-8 md:py-14 bg-secondary">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
-                <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
+                <div className="grid grid-cols-2 gap-4 md:gap-8 text-center">
                   <div>
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
                       {platformStats.sitters}+
@@ -217,17 +218,11 @@ const Index = () => {
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
                       {platformStats.owners}+
                     </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Pet Owners</p>
-                  </div>
-                  <div>
-                    <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
-                      {platformStats.bookings}+
-                    </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Bookings Made</p>
+                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Happy Pet Owners</p>
                   </div>
                 </div>
                 <p className="text-center text-xs md:text-sm text-secondary-foreground/40 mt-4 font-body">
-                  A real community of pet owners and sitters across AU & NZ
+                  A growing community of pet lovers across AU & NZ
                 </p>
               </div>
             </div>
@@ -398,15 +393,16 @@ const Index = () => {
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6 md:gap-10 items-center">
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
                 <img 
-                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop" 
-                  alt="Pet sitter with dog"
+                  src={sitterCtaImg}
+                  alt="Pet sitter playing with puppy"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <div className="absolute bottom-4 left-4">
                   <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 border border-border">
-                    <p className="text-sm font-semibold text-foreground font-body">Join {platformStats.sitters}+ sitters</p>
-                    <p className="text-xs text-muted-foreground font-body">earning doing what they love</p>
+                    <p className="text-sm font-semibold text-foreground font-body">Earn doing what you love</p>
+                    <p className="text-xs text-muted-foreground font-body">Set your own rates & hours</p>
                   </div>
                 </div>
               </div>

@@ -8,11 +8,16 @@ import iconNum2 from '@/assets/icons/icon-num-2.png';
 import iconNum3 from '@/assets/icons/icon-num-3.png';
 import iconNum4 from '@/assets/icons/icon-num-4.png';
 
+import stepTellUs from '@/assets/home/step-tell-us.jpg';
+import stepMeetGreet from '@/assets/home/step-meet-greet.jpg';
+import stepBook from '@/assets/home/step-book.jpg';
+import stepUpdates from '@/assets/home/step-updates.jpg';
+
 const steps = [
   {
     title: "Tell Us About Your Pet",
     description: "Share your pet's personality, quirks, and needs — so we can find the right match",
-    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=250&fit=crop",
+    image: stepTellUs,
     icon: iconPaw,
     numIcon: iconNum1,
   },
@@ -20,21 +25,21 @@ const steps = [
     title: "Free Meet & Greet",
     description: "See the chemistry in person — let your pet and their sitter connect before you commit",
     highlight: true,
-    image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=250&fit=crop",
+    image: stepMeetGreet,
     icon: iconHeart,
     numIcon: iconNum2,
   },
   {
     title: "Book Your Match",
     description: "94% of owners book after their first meet & greet — secure your sitter with confidence",
-    image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=250&fit=crop",
+    image: stepBook,
     icon: iconPayment,
     numIcon: iconNum3,
   },
   {
     title: "Watch the Bond Grow",
     description: "Receive morning & evening updates with photos, behavioural notes, and daily care tracking",
-    image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=250&fit=crop",
+    image: stepUpdates,
     icon: iconCamera,
     numIcon: iconNum4,
   }
@@ -91,6 +96,7 @@ export default function HowItWorksSection() {
                     src={step.image} 
                     alt={step.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   

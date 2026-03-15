@@ -15,6 +15,9 @@ import iconBoarding from "@/assets/icons/icon-boarding.png";
 import iconStar from "@/assets/icons/icon-star.png";
 import iconPaw from "@/assets/icons/icon-paw.png";
 import iconCheck from "@/assets/icons/icon-check.png";
+import testimonialSarah from "@/assets/testimonial-sarah.jpg";
+import testimonialJames from "@/assets/testimonial-james.jpg";
+import testimonialEmma from "@/assets/testimonial-emma.jpg";
 
 // Local genuine pet care photos
 import houseSittingImg from "@/assets/city/house-sitting.jpg";
@@ -51,21 +54,21 @@ const testimonials = [
   {
     name: "Sarah M.",
     location: "Auckland",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face",
+    avatar: testimonialSarah,
     text: "The daily photo updates made my holiday so much more relaxing. I could see my cat was happy every single day.",
     rating: 5,
   },
   {
     name: "James T.",
     location: "Grey Lynn",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face",
+    avatar: testimonialJames,
     text: "Found a wonderful local sitter for my two dogs. The whole process was seamless from start to finish.",
     rating: 5,
   },
   {
     name: "Emma L.",
     location: "Hamilton",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face",
+    avatar: testimonialEmma,
     text: "Knowing every sitter is ID verified gave me the confidence to book. My bunny was so well cared for.",
     rating: 5,
   },
