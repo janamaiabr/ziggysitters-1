@@ -184,7 +184,7 @@ const HeroSectionPlayful = ({
                       <Shield className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground font-body">ID Verified ✅</p>
+                      <p className="text-sm font-bold text-foreground font-body">ID Verified</p>
                       <p className="text-xs text-muted-foreground font-body">Background Checked</p>
                     </div>
                   </div>
