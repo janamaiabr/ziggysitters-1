@@ -245,7 +245,6 @@ export default function Messages() {
             </CardContent>
           </Card>
         </main>
-        <Footer />
       </div>
     );
   }
