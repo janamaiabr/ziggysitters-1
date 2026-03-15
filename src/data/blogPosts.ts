@@ -808,7 +808,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'School holidays mean family travel \u2014 but what about your pets? Learn how to plan ahead, find available sitters, and ensure smooth pet care during busy holiday periods.',
     date: '2026-02-04',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?w=1200&h=630&fit=crop',
     readTime: '9 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Planning pet care for NZ school holidays? Essential tips for booking sitters, managing peak demand, and ensuring quality care during family travel periods.',
