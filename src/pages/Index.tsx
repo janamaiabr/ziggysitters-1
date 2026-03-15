@@ -11,6 +11,7 @@ import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
 import iconPaw from '@/assets/icons/icon-paw.png';
+import sitterCtaImg from '@/assets/home/sitter-cta.jpg';
 import iconCheck from '@/assets/icons/icon-check.png';
 import iconCamera from '@/assets/icons/icon-camera.png';
 import iconClock from '@/assets/icons/icon-clock.png';
