@@ -28,7 +28,7 @@ export default function Footer() {
               <li><Link to="/find-sitters" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors min-h-[44px] inline-flex items-center">Find Sitters</Link></li>
               <li><Link to="/become-sitter" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors min-h-[44px] inline-flex items-center">Become a Sitter</Link></li>
               <li><Link to="/how-it-works" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors min-h-[44px] inline-flex items-center">How it Works</Link></li>
-              <li className="hidden md:block"><Link to="/young-walkers" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">Young Dog Walkers</Link></li>
+              
               <li className="hidden md:block"><Link to="/about" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">About Us</Link></li>
               <li className="hidden md:block"><Link to="/security" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">Safety & Trust</Link></li>
             </ul>
