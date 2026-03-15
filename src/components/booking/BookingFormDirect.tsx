@@ -9,8 +9,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, differenceInHours, differenceInDays } from 'date-fns';
-import { Shield, CheckCircle, Zap, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconCheck from '@/assets/icons/icon-check.png';
+import iconClock from '@/assets/icons/icon-clock.png';
+import iconChat from '@/assets/icons/icon-chat.png';
+import iconHouse from '@/assets/icons/icon-house.png';
+import iconBowl from '@/assets/icons/icon-bowl.png';
+import iconPaw from '@/assets/icons/icon-paw.png';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import { ga4 } from '@/lib/ga4';
 interface BookingFormDirectProps {
