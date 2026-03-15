@@ -883,7 +883,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Discover why more New Zealand pet owners are choosing in-home pet sitting over traditional boarding kennels. Compare costs, comfort, and care quality.',
     date: '2026-02-04',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1200&h=630&fit=crop',
     readTime: '11 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Why in-home pet sitting is better than kennels for NZ pets. Compare stress levels, costs, personalised care, and health benefits of home-based pet care.',
