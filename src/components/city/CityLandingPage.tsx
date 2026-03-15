@@ -5,6 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Check, Star } from "lucide-react";
 import { CityData } from "@/data/cityData";
 
+// Custom pet illustrations
+import iconShield from "@/assets/icons/icon-shield.png";
+import iconCamera from "@/assets/icons/icon-camera.png";
+import iconLocation from "@/assets/icons/icon-location.png";
+import iconHeart from "@/assets/icons/icon-heart.png";
+import iconHouse from "@/assets/icons/icon-house.png";
+import iconBowl from "@/assets/icons/icon-bowl.png";
+import iconBoarding from "@/assets/icons/icon-boarding.png";
+import iconStar from "@/assets/icons/icon-star.png";
+import iconPaw from "@/assets/icons/icon-paw.png";
+
 interface CityLandingPageProps {
   city: CityData;
 }
@@ -61,9 +72,8 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         structuredData={structuredData}
       />
 
-      {/* ─── Hero: Full-bleed photography with overlay ─── */}
+      {/* Hero: Full-bleed photography with overlay */}
       <section className="relative min-h-[75vh] flex items-center overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1600&h=900&fit=crop&crop=center"
@@ -75,11 +85,11 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-24 md:py-32">
           <div className="max-w-2xl">
-            <p className="text-primary font-body text-sm font-semibold uppercase tracking-widest mb-4">
+            <p className="text-primary-foreground/80 font-body text-sm font-semibold uppercase tracking-widest mb-4" style={{ color: 'hsl(152 45% 55%)' }}>
               {city.name}, {countryName}
             </p>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display text-white leading-[1.1] mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6 font-display">
               Trusted Pet Sitters{" "}
               <span className="block">in {city.name}</span>
             </h1>
@@ -117,12 +127,12 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         </div>
       </section>
 
-      {/* ─── How It Works — editorial 3-column ─── */}
+      {/* How It Works with custom illustrations */}
       <section className="py-20 md:py-28 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">How it works</p>
-            <h2 className="text-3xl md:text-4xl font-display text-foreground">
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
               Simple, trusted pet care
             </h2>
           </div>
@@ -134,21 +144,24 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 title: "Search your area",
                 desc: "Browse verified sitters in " + city.name + ". Read reviews, see photos, and find someone your pet will love.",
                 img: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
+                icon: iconLocation,
               },
               {
                 step: "02",
                 title: "Book with confidence",
                 desc: "Every sitter is ID verified. Message them before booking, agree on dates, and pay securely through the platform.",
                 img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=400&fit=crop",
+                icon: iconShield,
               },
               {
                 step: "03",
                 title: "Relax & enjoy updates",
                 desc: "Receive daily photo updates and notes about meals, mood, and activity. Your pet is in great hands.",
                 img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
+                icon: iconCamera,
               },
             ].map((item) => (
-              <div key={item.step} className="group">
+              <div key={item.step} className="group text-center">
                 <div className="aspect-[3/2] rounded-2xl overflow-hidden mb-6 shadow-sm">
                   <img
                     src={item.img}
@@ -157,8 +170,11 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                     loading="lazy"
                   />
                 </div>
+                <div className="flex justify-center mb-3">
+                  <img src={item.icon} alt="" className="w-12 h-12" />
+                </div>
                 <span className="text-xs font-body font-bold text-primary tracking-widest">{item.step}</span>
-                <h3 className="text-xl font-display text-foreground mt-1 mb-2">{item.title}</h3>
+                <h3 className="text-xl font-bold font-display text-foreground mt-1 mb-2">{item.title}</h3>
                 <p className="text-[15px] text-muted-foreground font-body leading-relaxed">{item.desc}</p>
               </div>
             ))}
@@ -166,11 +182,10 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         </div>
       </section>
 
-      {/* ─── Why pet owners choose us — split image + text ─── */}
+      {/* Why pet owners choose us — split image + text with custom icons */}
       <section className="py-20 md:py-28 bg-muted">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Image side */}
             <div className="relative">
               <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-lg">
                 <img
@@ -180,24 +195,18 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                   loading="lazy"
                 />
               </div>
-              {/* Floating card overlay */}
               <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 bg-card rounded-xl p-4 md:p-5 shadow-xl border border-border max-w-[220px]">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <span className="text-xs text-muted-foreground font-body">4.9/5</span>
+                  <img src={iconStar} alt="" className="w-8 h-8" />
+                  <span className="text-xs text-muted-foreground font-body">4.9/5 avg rating</span>
                 </div>
                 <p className="text-xs text-muted-foreground font-body italic">"Best decision we ever made for our pup."</p>
               </div>
             </div>
 
-            {/* Text side */}
             <div>
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Why {city.name} pet owners choose us</p>
-              <h2 className="text-3xl md:text-4xl font-display text-foreground mb-6 leading-tight">
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-6 leading-tight">
                 Local people who genuinely love your pets
               </h2>
               <p className="text-muted-foreground font-body mb-8 leading-relaxed">
@@ -206,17 +215,15 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
 
               <div className="space-y-4">
                 {[
-                  "Every sitter is ID verified with " + (isAU ? "Australian" : "NZ") + " documents",
-                  "Daily photo updates so you never have to wonder",
-                  "Local sitters who know " + city.name + "'s parks, vets, and pet spots",
-                  "Transparent reviews from real pet owners",
-                  "Secure payments — your money is protected",
+                  { icon: iconShield, text: "Every sitter is ID verified with " + (isAU ? "Australian" : "NZ") + " documents" },
+                  { icon: iconCamera, text: "Daily photo updates so you never have to wonder" },
+                  { icon: iconLocation, text: "Local sitters who know " + city.name + "'s parks, vets, and pet spots" },
+                  { icon: iconStar, text: "Transparent reviews from real pet owners" },
+                  { icon: iconPaw, text: "Secure payments — your money is protected" },
                 ].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="h-3 w-3 text-primary" />
-                    </div>
-                    <p className="text-sm text-foreground font-body">{item}</p>
+                  <div key={item.text} className="flex items-start gap-3">
+                    <img src={item.icon} alt="" className="w-8 h-8 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-foreground font-body">{item.text}</p>
                   </div>
                 ))}
               </div>
@@ -234,12 +241,12 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         </div>
       </section>
 
-      {/* ─── Testimonials ─── */}
+      {/* Testimonials */}
       <section className="py-20 md:py-28 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Testimonials</p>
-            <h2 className="text-3xl md:text-4xl font-display text-foreground">
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
               What pet parents are saying
             </h2>
           </div>
@@ -266,12 +273,12 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         </div>
       </section>
 
-      {/* ─── Services — editorial photography cards ─── */}
+      {/* Services with custom pet illustrations */}
       <section className="py-20 md:py-28 bg-muted">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Services</p>
-            <h2 className="text-3xl md:text-4xl font-display text-foreground">
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
               Pet care, your way
             </h2>
           </div>
@@ -282,16 +289,19 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                 title: "House Sitting",
                 desc: "Your sitter stays overnight in your home. Pets stay comfortable in their own environment with their routine intact.",
                 img: "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=600&h=400&fit=crop",
+                icon: iconHouse,
               },
               {
                 title: "Drop-in Visits",
                 desc: "Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets who prefer their own space.",
                 img: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600&h=400&fit=crop",
+                icon: iconBowl,
               },
               {
                 title: "Pet Boarding",
                 desc: "Your pet stays at the sitter's home. Great for social pets who love company and new adventures.",
                 img: "https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=600&h=400&fit=crop",
+                icon: iconBoarding,
               },
             ].map((s) => (
               <div key={s.title} className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
@@ -304,7 +314,10 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-lg font-display text-foreground mb-2">{s.title}</h3>
+                  <div className="flex items-center gap-3 mb-3">
+                    <img src={s.icon} alt="" className="w-10 h-10" />
+                    <h3 className="text-lg font-bold font-display text-foreground">{s.title}</h3>
+                  </div>
                   <p className="text-sm text-muted-foreground font-body leading-relaxed">{s.desc}</p>
                 </div>
               </div>
@@ -313,16 +326,33 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         </div>
       </section>
 
-      {/* ─── Neighbourhoods ─── */}
+      {/* Map Section */}
       <section className="py-16 md:py-20 bg-background border-t border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Neighbourhoods</p>
-          <h2 className="text-3xl font-display text-foreground mb-3">
-            Pet sitters across {city.name}
-          </h2>
-          <p className="text-muted-foreground mb-8 font-body">
-            Our sitters are spread across {city.name} so you can always find someone nearby.
-          </p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <div className="flex justify-center mb-4">
+              <img src={iconLocation} alt="" className="w-14 h-14" />
+            </div>
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Neighbourhoods</p>
+            <h2 className="text-3xl font-bold font-display text-foreground mb-3">
+              Pet sitters across {city.name}
+            </h2>
+            <p className="text-muted-foreground mb-8 font-body">
+              Our sitters are spread across {city.name} so you can always find someone nearby.
+            </p>
+          </div>
+
+          {/* Map embed */}
+          <div className="rounded-2xl overflow-hidden shadow-lg border border-border mb-8 aspect-[16/7]">
+            <iframe
+              title={"Map of " + city.name}
+              src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=" + encodeURIComponent(city.name + ", " + countryName) + "&zoom=11&maptype=roadmap"}
+              className="w-full h-full border-0"
+              loading="lazy"
+              allowFullScreen
+            />
+          </div>
+
           <div className="flex flex-wrap justify-center gap-2">
             {city.neighborhoods.map((suburb) => (
               <Badge
@@ -337,11 +367,11 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         </div>
       </section>
 
-      {/* ─── CTA — dark, confident ─── */}
+      {/* CTA */}
       <section className="bg-secondary py-24 text-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
-          <h2 className="text-3xl md:text-5xl font-display text-secondary-foreground mb-4 leading-tight">
-            Your pet deserves the&nbsp;best
+          <h2 className="text-3xl md:text-5xl font-bold font-display text-secondary-foreground mb-4 leading-tight">
+            Your pet deserves the best
           </h2>
           <p className="text-secondary-foreground/60 mb-8 text-lg font-body">
             Join pet owners across {city.name} who trust ZiggySitters for reliable, local pet care.
