@@ -211,7 +211,7 @@ const Index = () => {
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
                       {platformStats.sitters}+
                     </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Verified Sitters</p>
+                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Vetted Sitters</p>
                   </div>
                   <div>
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
