@@ -112,9 +112,9 @@ const HeroSectionPlayful = ({
                     Find a Trusted Sitter Near Me
                   </Button>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground font-body">
-                    <span>✓ ID Verified</span>
-                    <span>✓ Daily Photo Updates</span>
-                    <span className="hidden sm:inline">✓ Free to browse</span>
+                    <span className="flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> ID Verified</span>
+                    <span className="flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> Daily Photo Updates</span>
+                    <span className="hidden sm:flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> Free to browse</span>
                   </div>
                 </div>
               </div>
