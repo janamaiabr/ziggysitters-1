@@ -76,9 +76,9 @@ const galleryPhotos = [
 ];
 
 const servicePhotos = {
-  houseSitting: 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=800&h=500&fit=crop',
-  dropIn: 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=800&h=500&fit=crop',
-  boarding: 'https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=800&h=500&fit=crop',
+  houseSitting: houseSittingImg,
+  dropIn: dropInVisitImg,
+  boarding: petBoardingImg,
 };
 
 export default function AucklandPetSitters() {
