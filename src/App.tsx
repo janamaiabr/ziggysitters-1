@@ -342,7 +342,7 @@ function AppContent() {
             <Route path="/pet-sitting-tauranga" element={<PetSittingTauranga />} />
             <Route path="/pet-sitting-dunedin" element={<PetSittingDunedin />} />
             <Route path="/pet-sitting-sunshine-coast" element={<PetSittingSunshineCoast />} />
-            <Route path="/sunshine-coast" element={<SunshineCoastSeniorPets />} />
+            <Route path="/sunshine-coast" element={<Navigate to="/pet-sitting-sunshine-coast" replace />} />
             <Route path="/pet-sitting-napier" element={<PetSittingNapier />} />
             <Route path="/pet-sitting-nelson" element={<PetSittingNelson />} />
             <Route path="/pet-sitting-new-plymouth" element={<PetSittingNewPlymouth />} />
