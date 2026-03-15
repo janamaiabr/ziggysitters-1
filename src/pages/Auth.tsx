@@ -307,7 +307,7 @@ export default function Auth() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                    className="w-full h-12 text-base"
                     disabled={isLoading}
                   >
                     {isLoading ? "Signing In..." : "Sign In"}
