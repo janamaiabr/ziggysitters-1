@@ -626,17 +626,14 @@ export default function FindSitters() {
       )}
       
       {/* Hero Section with Search - Hide on mobile when results shown */}
-      <section className={`relative bg-gradient-to-br from-slate-50 to-gray-100 py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIj4KICAgICAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg==')] opacity-30"></div>
-        </div>
+      <section className={`relative bg-muted py-12 md:py-20 overflow-hidden ${isMobile && searchPerformed ? 'hidden' : ''}`}>
         <div className="relative container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center text-gray-800">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Find Trusted Pet Sitters
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 font-display text-foreground">
+              Find Local Pet Sitters
             </h1>
-            <p className="text-lg md:text-xl mb-6 md:mb-8 text-gray-600 max-w-3xl mx-auto px-4">
-              Discover verified, loving pet sitters in your area with guaranteed daily photo updates
+            <p className="text-lg md:text-xl mb-6 md:mb-8 text-muted-foreground max-w-3xl mx-auto px-4 font-body">
+              Discover verified, loving pet sitters in your area with daily photo updates
             </p>
             
             {/* Enhanced Search Bar - Same as Home Page */}
