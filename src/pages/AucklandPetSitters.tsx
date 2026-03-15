@@ -18,6 +18,9 @@ import iconNum1 from '@/assets/icons/icon-num-1.png';
 import iconNum2 from '@/assets/icons/icon-num-2.png';
 import iconNum3 from '@/assets/icons/icon-num-3.png';
 import iconNum4 from '@/assets/icons/icon-num-4.png';
+import houseSittingImg from '@/assets/city/house-sitting.jpg';
+import dropInVisitImg from '@/assets/city/drop-in-visit.jpg';
+import petBoardingImg from '@/assets/city/pet-boarding.jpg';
 import iconBoarding from '@/assets/icons/icon-boarding.png';
 
 // Auckland suburbs for SEO
