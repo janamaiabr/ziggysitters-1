@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import logoSvg from '@/assets/logo.svg';
+import ziggyLogo from '@/assets/ziggy-logo.png';
 
 interface OnboardingLayoutProps {
   children: ReactNode;
@@ -14,7 +14,7 @@ export default function OnboardingLayout({ children, showNavigation = true }: On
         <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b border-border">
           <div className="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
             <Link to="/" className="flex items-center">
-              <img src={logoSvg} alt="ZiggySitters" className="h-6 md:h-8 w-auto" />
+              <img src={ziggyLogo} alt="ZiggySitters" className="h-8 md:h-10 w-auto" />
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
@@ -43,21 +43,21 @@ export default function OnboardingLayout({ children, showNavigation = true }: On
       </main>
       
       {showNavigation && (
-        <footer className="bg-gray-900 text-white py-8">
+        <footer className="bg-secondary text-secondary-foreground py-8">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="flex items-center">
-                <img src={logoSvg} alt="ZiggySitters" className="h-6 w-auto filter brightness-0 invert mr-3" />
-                <span className="text-sm text-gray-300">&copy; 2024 ZiggySitters. All rights reserved.</span>
+                <img src={ziggyLogo} alt="ZiggySitters" className="h-6 w-auto brightness-0 invert mr-3" />
+                <span className="text-sm text-secondary-foreground/60">&copy; 2024 ZiggySitters. All rights reserved.</span>
               </div>
               <div className="flex space-x-6 text-sm">
-                <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/terms" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">
                   Terms
                 </Link>
-                <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/privacy" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">
                   Privacy
                 </Link>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/contact" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">
                   Contact
                 </Link>
               </div>

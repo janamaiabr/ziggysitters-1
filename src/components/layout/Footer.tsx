@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Mail } from 'lucide-react';
-import logoSvg from '@/assets/logo.svg';
+import ziggyLogo from '@/assets/ziggy-logo.png';
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-3 md:space-y-4 col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center">
-              <img src={logoSvg} alt="ZiggySitters" className="h-6 md:h-8 w-auto filter brightness-0 invert" />
+              <img src={ziggyLogo} alt="ZiggySitters" className="h-8 md:h-10 w-auto brightness-0 invert" />
             </Link>
             <p className="text-secondary-foreground/60 text-xs md:text-sm leading-relaxed font-body">
               Trusted, verified pet sitters across NZ &amp; Australia.
