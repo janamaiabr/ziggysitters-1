@@ -1083,19 +1083,7 @@ export default function Profile() {
           {/* Stripe Live Mode Warning for Sitters */}
           <StripeLiveModeWarning />
           
-          {/* Quick Links for special features */}
-          {hasYoungWalker && (
-            <div className="mb-6">
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/young-walker-dashboard')}
-                className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 hover:border-emerald-300 text-emerald-700"
-              >
-                <Dog className="w-4 h-4 mr-2" />
-                Go to Young Walker Dashboard
-              </Button>
-            </div>
-          )}
+          
           
           {/* Profile Header Card */}
           <Card data-tour="sitter-profile" className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
