@@ -698,7 +698,7 @@ export default function FindSitters() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Check-in</label>
+                    <label className="text-sm font-medium text-foreground block font-body">Check-in</label>
                      <Input 
                       type="date"
                       value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
