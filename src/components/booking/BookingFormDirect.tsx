@@ -381,6 +381,7 @@ export default function BookingFormDirect({
                       });
                     }}
                   >
+                    <img src={getServiceIcon(service.service_type)} alt="" className="w-4 h-4 mr-1" />
                     {getServiceDisplayName(service.service_type)} • {getRate()}
                   </Badge>
                 );
