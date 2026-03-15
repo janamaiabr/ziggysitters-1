@@ -95,14 +95,14 @@ export const cities: CityData[] = [
     slug: "sunshine-coast",
     name: "Sunshine Coast",
     maoriName: "",
-    heroDescription: "The Sunshine Coast is one of Queensland's most pet-friendly regions. From the beaches of Noosa to the hinterland of Maleny, finding a trusted local pet sitter for your furry family is easy.",
+    heroDescription: "Find a reliable local pet sitter on the Sunshine Coast. Real people in your area who love dogs and treat your pets like family. ID verified, daily photo updates, and affordable rates.",
     neighborhoods: ["Noosa Heads", "Maroochydore", "Caloundra", "Mooloolaba", "Buderim", "Nambour", "Coolum Beach", "Peregian Beach", "Maleny", "Montville"],
     parks: ["Noosa National Park", "Maroochy Bushland Botanic Garden", "Mooloolah River National Park", "Kondalilla National Park", "Mary Cairncross Scenic Reserve", "Cotton Tree Park"],
     vetInfo: "The Sunshine Coast has excellent veterinary care including Sunshine Coast Animal Emergency Service and numerous local clinics across the region.",
-    localContext: "Sunshine Coast pets enjoy a subtropical lifestyle with stunning beaches, hinterland trails, and year-round warm weather. Our local sitters know the best off-leash beaches, understand tick and snake safety, and are familiar with the relaxed coastal lifestyle your pets love.",
-    metaTitle: "Pet Sitting on Sunshine Coast — Trusted Local Sitters | ZiggySitters",
-    metaDescription: "Find trusted pet sitters on the Sunshine Coast, QLD. Local, vetted sitters for dogs, cats and all pets. Daily photo updates. Book your Sunshine Coast pet sitter today!",
-    metaKeywords: "pet sitting sunshine coast, dog sitter sunshine coast, cat sitter sunshine coast, pet care sunshine coast qld, pet sitter near me sunshine coast"
+    localContext: "Sunshine Coast pet owners love the outdoor lifestyle — beach walks, hinterland trails, and year-round warm weather. Our local sitters know the best off-leash beaches, understand tick and snake safety, and are part of the relaxed coastal community your pets love.",
+    metaTitle: "Pet Sitting Sunshine Coast — Reliable Local Sitters | ZiggySitters",
+    metaDescription: "Find affordable, reliable pet sitters on the Sunshine Coast. Local people who love dogs. ID verified, daily photo updates. Noosa, Maroochydore, Caloundra & more.",
+    metaKeywords: "pet sitting sunshine coast, dog sitter sunshine coast, cat sitter sunshine coast, affordable pet care sunshine coast, local pet sitter sunshine coast"
   },
   {
     slug: "napier",
