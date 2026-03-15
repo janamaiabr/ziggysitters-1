@@ -814,9 +814,8 @@ export default function Onboarding() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 flex items-center gap-2">
+                  <h3 className="text-xl md:text-2xl font-bold mb-1">
                     {isLoading && data.role === 'pet_owner' ? 'Setting up...' : 'Pet Owner'}
-                    <span className="text-2xl">💜</span>
                   </h3>
                   <p className="text-sm md:text-base text-muted-foreground">
                     {isLoading && data.role === 'pet_owner' 
