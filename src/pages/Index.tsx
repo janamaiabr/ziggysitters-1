@@ -488,7 +488,7 @@ const Index = () => {
       </section>
 
       {/* Charity Section - Compact on mobile */}
-      <section className="py-8 md:py-20 bg-primary/5">
+      <section className="py-8 md:py-20 bg-[#fafbfa] border-t border-gray-100">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <div className="mb-4 md:mb-8">
