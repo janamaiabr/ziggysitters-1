@@ -86,13 +86,13 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         <div className="absolute top-3 left-3 flex gap-1.5">
           {sitter.golden_badge && (
             <div className="bg-amber-500/90 backdrop-blur-sm rounded-lg px-2.5 py-1 flex items-center gap-1 shadow-sm">
-              <img src={iconStar} alt="" className="w-3 h-3" />
+              <img src={iconStar} alt="" className="w-4 h-4" />
               <span className="text-xs font-semibold text-white">Vetted</span>
             </div>
           )}
           {sitter.verified && !sitter.golden_badge && (
             <div className="bg-primary/90 backdrop-blur-sm rounded-lg px-2.5 py-1 flex items-center gap-1 shadow-sm">
-              <img src={iconShield} alt="" className="w-3 h-3" />
+              <img src={iconShield} alt="" className="w-4 h-4" />
               <span className="text-xs font-semibold text-white">Vetted</span>
             </div>
           )}
@@ -102,7 +102,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         <div className="absolute bottom-3 left-3 right-3">
           <h3 className="font-bold text-lg text-white mb-0.5 font-body">{sitter.name}</h3>
           <div className="flex items-center text-sm text-white/80">
-            <img src={iconMappin} alt="" className="w-3 h-3 mr-1 shrink-0" />
+            <img src={iconMappin} alt="" className="w-4 h-4 mr-1 shrink-0" />
             <span className="truncate font-body">{sitter.location}</span>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
                     key={s}
                     src={iconStar}
                     alt=""
-                    className={`h-3.5 w-3.5 ${
+                    className={`h-4.5 w-4.5 ${
                       s <= Math.round(sitter.rating || 0)
                         ? 'opacity-100'
                         : 'opacity-20'

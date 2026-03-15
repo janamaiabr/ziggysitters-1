@@ -113,7 +113,7 @@ export default function Contact() {
               <Card className="border border-border bg-card shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 font-display text-foreground">
-                    <img src={iconEmail} alt="" className="w-8 h-8" />
+                    <img src={iconEmail} alt="" className="w-10 h-10" />
                     Send us a Message
                   </CardTitle>
                 </CardHeader>
@@ -202,7 +202,7 @@ export default function Contact() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <img src={iconEmail} alt="" className="h-5 w-5" style={{ filter: 'hue-rotate(0deg)' }} />
+                      <img src={iconEmail} alt="" className="h-7 w-7" />
                       <div>
                         <p className="font-medium font-body text-foreground">Email</p>
                         <p className="text-muted-foreground font-body">hello@ziggysitters.com</p>
@@ -210,7 +210,7 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <img src={iconMappin} alt="" className="h-5 w-5" />
+                      <img src={iconMappin} alt="" className="h-7 w-7" />
                       <div>
                         <p className="font-medium font-body text-foreground">Location</p>
                         <p className="text-muted-foreground font-body">Auckland, New Zealand</p>
@@ -218,7 +218,7 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <img src={iconClock} alt="" className="h-5 w-5" />
+                      <img src={iconClock} alt="" className="h-7 w-7" />
                       <div>
                         <p className="font-medium font-body text-foreground">Support Hours</p>
                         <p className="text-muted-foreground font-body">Mon-Fri: 8AM-8PM NZST</p>
@@ -231,7 +231,7 @@ export default function Contact() {
                 <Card className="border border-border bg-card shadow-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 font-display text-foreground">
-                      <img src={iconQuestion} alt="" className="w-6 h-6" />
+                      <img src={iconQuestion} alt="" className="w-8 h-8" />
                       Common Questions
                     </CardTitle>
                   </CardHeader>

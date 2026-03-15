@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Mail } from 'lucide-react';
-import ziggyLogo from '@/assets/ziggy-logo.png';
+import ziggyIcon from '@/assets/ziggy-icon.png';
 
 export default function Footer() {
   return (
@@ -9,8 +9,9 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
           {/* Company Info */}
           <div className="space-y-3 md:space-y-4 col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center">
-              <img src={ziggyLogo} alt="ZiggySitters" className="h-12 md:h-14 w-auto brightness-0 invert" />
+            <Link to="/" className="flex items-center gap-2">
+              <img src={ziggyIcon} alt="ZiggySitters" className="h-10 md:h-12 w-auto brightness-0 invert" />
+              <span className="text-lg font-bold text-secondary-foreground font-display">ZiggySitters</span>
             </Link>
             <p className="text-secondary-foreground/60 text-xs md:text-sm leading-relaxed font-body">
               Trusted, verified pet sitters across NZ &amp; Australia.

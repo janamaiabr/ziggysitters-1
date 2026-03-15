@@ -52,7 +52,7 @@ export default function Welcome() {
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-                  <img src={iconPaw} alt="" className="w-12 h-12" />
+                  <img src={iconPaw} alt="" className="w-14 h-14" />
                 </div>
                 <div className="absolute -top-1 -right-1">
                   <CheckCircle className="w-7 h-7 text-primary bg-card rounded-full" />
@@ -69,14 +69,14 @@ export default function Welcome() {
             <Check className="w-4 h-4 mr-2" /> Account Created
           </Badge>
           <Badge className="px-4 py-2 text-sm bg-secondary/10 text-secondary border border-secondary/20 font-body">
-            <img src={iconShield} alt="" className="w-4 h-4 mr-2" /> Community Member
+            <img src={iconShield} alt="" className="w-5 h-5 mr-2" /> Community Member
           </Badge>
         </div>
 
         <Card className="shadow-lg border border-border bg-card">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-3 font-display text-foreground">
-              <img src={iconStar} alt="" className="w-8 h-8" />
+              <img src={iconStar} alt="" className="w-10 h-10" />
               Next Steps
             </CardTitle>
             <p className="text-muted-foreground mt-2 font-body">Here are some things you can do to get the most out of ZiggySitters</p>

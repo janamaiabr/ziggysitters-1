@@ -37,7 +37,7 @@ export default function ExitIntentPopup() {
 
         <div className="bg-secondary p-6 text-center">
           <div className="flex justify-center mb-4">
-            <img src={iconHeart} alt="" className="w-14 h-14" />
+            <img src={iconHeart} alt="" className="w-16 h-16" />
           </div>
           <h3 className="text-2xl font-bold text-secondary-foreground mb-2 font-display">
             Wait! Don't go yet

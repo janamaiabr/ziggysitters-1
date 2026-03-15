@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Menu, User, Settings, LogOut, Shield, X, Calendar as CalendarIcon, MessageCircle, MapPin, ChevronDown } from 'lucide-react';
-import ziggyLogo from '@/assets/ziggy-logo.png';
+import ziggyIcon from '@/assets/ziggy-icon.png';
 import { useState, useEffect } from 'react';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import { Badge } from '@/components/ui/badge';
@@ -112,8 +112,9 @@ export default function Header() {
   return (
     <header className="bg-background/95 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
       <div className="container mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <img src={ziggyLogo} alt="ZiggySitters" className="h-12 md:h-14 w-auto" />
+        <Link to="/" className="flex items-center gap-2">
+          <img src={ziggyIcon} alt="ZiggySitters" className="h-10 md:h-12 w-auto" />
+          <span className="text-lg md:text-xl font-bold text-foreground font-display">ZiggySitters</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

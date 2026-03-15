@@ -41,7 +41,7 @@ const steps = [
 ];
 
 const trustBadges = [
-  { icon: iconShield, text: "ID Verified Sitters" },
+  { icon: iconShield, text: "ID Vetted Sitters" },
   { icon: iconPayment, text: "Secure Payment Protection" },
   { icon: iconCamera, text: "Daily Update Promise" }
 ];
@@ -65,8 +65,8 @@ export default function HowItWorksSection() {
         {/* Trust badges - hidden on mobile */}
         <div className="hidden md:flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
           {trustBadges.map((badge, index) => (
-            <div key={index} className="flex items-center gap-2 px-4 py-2 bg-card rounded-full shadow-sm border border-border">
-              <img src={badge.icon} alt="" className="w-5 h-5" />
+            <div key={index} className="flex items-center gap-2.5 px-5 py-2.5 bg-card rounded-full shadow-sm border border-border">
+              <img src={badge.icon} alt="" className="w-7 h-7" />
               <span className="text-sm font-medium text-foreground font-body">{badge.text}</span>
             </div>
           ))}
@@ -96,14 +96,14 @@ export default function HowItWorksSection() {
                   
                   {/* Vintage number badge on image */}
                   <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3">
-                    <img src={step.numIcon} alt="" className="w-8 h-8 md:w-10 md:h-10 drop-shadow-lg" />
+                    <img src={step.numIcon} alt="" className="w-10 h-10 md:w-14 md:h-14 drop-shadow-lg" />
                   </div>
                 </div>
                 
                 {/* Content */}
                 <div className="p-3 md:p-5">
-                  <div className="hidden md:flex w-10 h-10 rounded-xl bg-vintage-cream items-center justify-center mb-3">
-                    <img src={step.icon} alt="" className="w-6 h-6" />
+                  <div className="hidden md:flex w-12 h-12 rounded-xl bg-vintage-cream items-center justify-center mb-3">
+                    <img src={step.icon} alt="" className="w-8 h-8" />
                   </div>
                   
                   <h3 className="text-sm md:text-lg font-bold mb-1 md:mb-2 text-foreground font-body">{step.title}</h3>

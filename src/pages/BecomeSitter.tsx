@@ -125,9 +125,9 @@ export default function BecomeSitter() {
               </div>
 
               <div className="flex flex-wrap gap-4 mt-8 text-sm text-white/70 font-body">
-                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Free to join</span>
-                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> No commitments</span>
-                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Set your own rates</span>
+                <span className="flex items-center gap-2"><img src={iconCheck} alt="" className="h-5 w-5" /> Free to join</span>
+                <span className="flex items-center gap-2"><img src={iconCheck} alt="" className="h-5 w-5" /> No commitments</span>
+                <span className="flex items-center gap-2"><img src={iconCheck} alt="" className="h-5 w-5" /> Set your own rates</span>
               </div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function BecomeSitter() {
                     <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-300 group-hover:-translate-y-1 h-full bg-card">
                       <CardContent className="p-6 text-center">
                         <div className="flex justify-center mb-4">
-                          <img src={step.icon} alt="" className="w-14 h-14" />
+                          <img src={step.icon} alt="" className="w-16 h-16" />
                         </div>
                         <div className="text-xs font-bold text-primary tracking-widest mb-2 font-body">STEP {step.step}</div>
                         <h3 className="text-lg font-semibold text-foreground mb-2 font-body">{step.title}</h3>
@@ -185,7 +185,7 @@ export default function BecomeSitter() {
                   <CardContent className="p-0">
                     <div className="flex items-start gap-5 p-6">
                       <div className="flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <img src={benefit.icon} alt="" className="w-14 h-14" />
+                        <img src={benefit.icon} alt="" className="w-16 h-16" />
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold text-foreground mb-2 font-body">{benefit.title}</h3>
@@ -215,7 +215,7 @@ export default function BecomeSitter() {
                     { icon: iconShield, title: "98% Completion Rate", desc: "When reports are requested, nearly all our sitters complete them without issue." },
                   ].map((item) => (
                     <div key={item.title} className="flex items-start gap-4">
-                      <img src={item.icon} alt="" className="w-10 h-10 flex-shrink-0" />
+                      <img src={item.icon} alt="" className="w-12 h-12 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-foreground mb-1 font-body">{item.title}</h3>
                         <p className="text-muted-foreground text-sm font-body">{item.desc}</p>
@@ -231,21 +231,21 @@ export default function BecomeSitter() {
                   <CardContent className="p-6">
                     <div className="text-center mb-4">
                       <div className="flex justify-center mb-3">
-                        <img src={iconShield} alt="" className="w-14 h-14" />
+                        <img src={iconShield} alt="" className="w-16 h-16" />
                       </div>
                       <h3 className="text-lg font-bold text-foreground font-body">Accountability Standard</h3>
                       <p className="text-sm text-muted-foreground mt-1 font-body">When updates are requested</p>
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 bg-muted rounded-xl p-3 border border-border">
-                        <img src={iconCheck} alt="" className="w-5 h-5 flex-shrink-0" />
+                        <img src={iconCheck} alt="" className="w-6 h-6 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-sm text-foreground font-body">Complete all reports</p>
                           <p className="text-xs text-muted-foreground font-body">Earn 100% payment</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 bg-muted rounded-xl p-3 border border-border">
-                        <img src={iconPaw} alt="" className="w-5 h-5 flex-shrink-0" />
+                        <img src={iconPaw} alt="" className="w-6 h-6 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-sm text-foreground font-body">Miss a requested report</p>
                           <p className="text-xs text-muted-foreground font-body">15% deduction applies</p>
@@ -288,7 +288,7 @@ export default function BecomeSitter() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
               <div className="flex justify-center mb-4">
-                <img src={iconLocation} alt="" className="w-12 h-12" />
+                <img src={iconLocation} alt="" className="w-14 h-14" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-foreground font-display">Pet Sitters Needed in These Areas</h2>
               <p className="text-muted-foreground mt-2 font-body">
