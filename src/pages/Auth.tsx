@@ -222,8 +222,8 @@ export default function Auth() {
         metaPixel.trackCompleteRegistration();
 
         toast({
-          title: "Account Created! \uD83C\uDF89",
-          description: "Welcome to ZiggySitters! Let\u0027s set up your profile.",
+          title: "Account Created",
+          description: "Welcome to ZiggySitters! Let's set up your profile.",
         });
         navigate(redirectUrl);
       }
