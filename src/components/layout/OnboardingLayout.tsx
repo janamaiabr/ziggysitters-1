@@ -51,13 +51,13 @@ export default function OnboardingLayout({ children, showNavigation = true }: On
                 <span className="text-sm text-secondary-foreground/60">&copy; 2024 ZiggySitters. All rights reserved.</span>
               </div>
               <div className="flex space-x-6 text-sm">
-                <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/terms" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">
                   Terms
                 </Link>
-                <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/privacy" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">
                   Privacy
                 </Link>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/contact" className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors">
                   Contact
                 </Link>
               </div>
