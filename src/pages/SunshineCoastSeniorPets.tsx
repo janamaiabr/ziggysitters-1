@@ -51,7 +51,7 @@ const FEATURES = [
     icon: <Pill className="h-6 w-6" />,
     title: 'Medication management',
     description:
-      'Oral meds, eye drops, insulin, subcutaneous fluids — your pet won't miss a dose. We document every administration in your daily report.',
+      "Oral meds, eye drops, insulin, subcutaneous fluids — your pet won't miss a dose. We document every administration in your daily report.",
   },
   {
     icon: <Activity className="h-6 w-6" />,
