@@ -360,14 +360,16 @@ serve(async (req) => {
         appliedPromoCode = bookingData.promoCode.toUpperCase();
         
         // Increment promo code usage
+        const { data: currentPromo } = await supabaseClient
+          .from('promo_codes')
+          .select('current_uses')
+          .eq('code', appliedPromoCode)
+          .single();
+        
         const { error: updateError } = await supabaseClient
           .from('promo_codes')
-          .update({ current_uses: supabaseClient.raw('current_uses + 1') })
+          .update({ current_uses: (currentPromo?.current_uses || 0) + 1 })
           .eq('code', appliedPromoCode);
-        
-        if (updateError) {
-          logStep("Failed to increment promo usage", { error: updateError });
-        }
         
         logStep("Promo code applied", { 
           code: appliedPromoCode, 
