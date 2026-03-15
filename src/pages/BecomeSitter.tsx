@@ -105,7 +105,7 @@ export default function BecomeSitter() {
                   className="px-10 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg font-body"
                   onClick={() => {
                     ga4.clickSignup('become_sitter_hero');
-                    document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' });
+                    navigate('/auth?tab=signup&role=pet_sitter');
                   }}
                 >
                   Join Now — It's Free
