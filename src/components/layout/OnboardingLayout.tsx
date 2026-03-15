@@ -43,12 +43,12 @@ export default function OnboardingLayout({ children, showNavigation = true }: On
       </main>
       
       {showNavigation && (
-        <footer className="bg-gray-900 text-white py-8">
+        <footer className="bg-secondary text-secondary-foreground py-8">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="flex items-center">
-                <img src={logoSvg} alt="ZiggySitters" className="h-6 w-auto filter brightness-0 invert mr-3" />
-                <span className="text-sm text-gray-300">&copy; 2024 ZiggySitters. All rights reserved.</span>
+                <img src={ziggyLogo} alt="ZiggySitters" className="h-6 w-auto brightness-0 invert mr-3" />
+                <span className="text-sm text-secondary-foreground/60">&copy; 2024 ZiggySitters. All rights reserved.</span>
               </div>
               <div className="flex space-x-6 text-sm">
                 <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
