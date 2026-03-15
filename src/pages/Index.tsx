@@ -16,6 +16,7 @@ import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 // Import hero versions - swap these to switch between versions
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
+import iconPaw from '@/assets/icons/icon-paw.png';
 import NZTrustBadge from '@/components/home/NZTrustBadge';
 // import HeroSectionV2 from '@/components/home/HeroSectionV2';
 // import HeroSectionOriginal from '@/components/home/HeroSectionOriginal';
