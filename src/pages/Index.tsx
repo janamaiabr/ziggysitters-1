@@ -217,24 +217,19 @@ const Index = () => {
       />
 
       {/* Featured Sitters - Premium Showcase */}
-      <section className="py-10 md:py-24 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse hidden md:block" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse hidden md:block" style={{ animationDelay: '1s' }} />
-        
+      <section className="py-10 md:py-24 relative overflow-hidden bg-[#fafbfa] border-y border-gray-100">
         <div className="container mx-auto px-4 relative z-10">
           {/* Section Header */}
           <div className="text-center mb-6 md:mb-16">
-            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-3 py-1.5 md:px-4 md:py-2 mb-3 md:mb-4">
-              <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary animate-pulse" />
-              <span className="text-xs md:text-sm font-medium text-primary">Personality Matched</span>
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1.5 md:px-4 md:py-2 mb-3 md:mb-4">
+              <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-600" />
+              <span className="text-xs md:text-sm font-medium text-emerald-700">Verified Local Sitters</span>
             </div>
-            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Meet Your Pet{"'"}s Perfect Match
+            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 text-gray-900">
+              Meet Local Sitters Near You
             </h2>
-            <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Sitters matched to your pet{"'"}s personality, verified and ready to connect
+            <p className="text-sm md:text-xl text-gray-500 max-w-2xl mx-auto">
+              Real people in your area — ID verified and ready to care for your pets
             </p>
           </div>
           
