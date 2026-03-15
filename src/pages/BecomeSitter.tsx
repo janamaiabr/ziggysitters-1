@@ -212,7 +212,7 @@ export default function BecomeSitter() {
                   {[
                     { icon: iconCamera, title: "Share What You're Already Doing", desc: "Pet owners choose if they want daily updates. When they do, you simply share photos and notes." },
                     { icon: iconStar, title: "Earn Better Reviews", desc: "Owners who see daily updates leave better reviews. Better reviews mean more bookings." },
-                    { icon: iconShield, title: "98% Completion Rate", desc: "When reports are requested, nearly all our sitters complete them without issue." },
+                    { icon: iconShield, title: "Easy & Quick", desc: "Most sitters complete reports in under 5 minutes. Quick photos and a few notes — that's it." },
                   ].map((item) => (
                     <div key={item.title} className="flex items-start gap-4">
                       <img src={item.icon} alt="" className="w-12 h-12 flex-shrink-0" />
