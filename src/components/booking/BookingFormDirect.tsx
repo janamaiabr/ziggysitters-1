@@ -339,10 +339,19 @@ export default function BookingFormDirect({
               servicesData.map((service) => {
                 const getServiceDisplayName = (type: string) => {
                   switch (type) {
-                    case 'pet_sitting_owners_home': return '🏠 At Your Home';
-                    case 'pet_sitting_sitters_home': return '🏡 At Sitter\'s';
-                    case 'drop_in_visits': return '👀 Drop-ins';
+                    case 'pet_sitting_owners_home': return 'At Your Home';
+                    case 'pet_sitting_sitters_home': return "At Sitter's";
+                    case 'drop_in_visits': return 'Drop-ins';
                     default: return type.replace(/_/g, ' ');
+                  }
+                };
+
+                const getServiceIcon = (type: string) => {
+                  switch (type) {
+                    case 'pet_sitting_owners_home': return iconHouse;
+                    case 'pet_sitting_sitters_home': return iconHouse;
+                    case 'drop_in_visits': return iconBowl;
+                    default: return iconPaw;
                   }
                 };
 
