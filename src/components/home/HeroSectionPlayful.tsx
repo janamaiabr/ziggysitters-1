@@ -8,6 +8,7 @@ import heroSitterReal from '@/assets/hero-sitter-real.jpg';
 import heroPetsReal from '@/assets/hero-pets-real.jpg';
 import UrgencyIndicator from './UrgencyIndicator';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
+import iconPaw from '@/assets/icons/icon-paw.png';
 import CompactSteps from './CompactSteps';
 import LocalSocialProof from './LocalSocialProof';
 
