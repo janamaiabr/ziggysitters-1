@@ -397,7 +397,7 @@ const Index = () => {
                   size="lg" 
                   variant="outline"
                   onClick={() => navigate('/become-sitter')}
-                  className="px-8 min-h-[48px] font-body text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10"
+                  className="px-8 min-h-[48px] font-body text-lg border-secondary-foreground/30 text-secondary-foreground bg-secondary-foreground/10 hover:bg-secondary-foreground/20"
                 >
                   Become a Sitter
                 </Button>
