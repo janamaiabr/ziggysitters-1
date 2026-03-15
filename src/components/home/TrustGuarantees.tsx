@@ -40,8 +40,8 @@ export default function TrustGuarantees() {
             key={index}
             className="bg-muted rounded-xl p-4 md:p-5 border border-border hover:shadow-sm transition-shadow"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-vintage-cream flex items-center justify-center flex-shrink-0 mb-3 md:mb-4">
-              <img src={g.icon} alt="" className="w-6 h-6 md:w-7 md:h-7" />
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl bg-vintage-cream flex items-center justify-center flex-shrink-0 mb-3 md:mb-4">
+              <img src={g.icon} alt="" className="w-9 h-9 md:w-10 md:h-10" />
             </div>
             <h4 className="font-bold text-foreground text-sm md:text-base mb-1 md:mb-2 font-body">{g.name}</h4>
             <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-body">{g.description}</p>

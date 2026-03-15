@@ -100,7 +100,7 @@ const HeroSectionPlayful = ({
                 {/* Positioning badge */}
                 <div className="inline-flex items-center gap-2 bg-vintage-cream border border-border rounded-full px-3 py-1.5">
                   <img src={iconPaw} alt="" className="w-6 h-6" />
-                  <span className="text-xs md:text-sm font-semibold text-primary font-body">Local pet sitting — AU & NZ</span>
+                  <span className="text-xs md:text-sm font-semibold text-primary font-body">Affordable local pet sitting — AU & NZ</span>
                 </div>
 
                 {/* Primary CTAs */}
