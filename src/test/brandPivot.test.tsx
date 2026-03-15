@@ -194,11 +194,12 @@ describe('Brand Pivot: HeroSectionPlayful', () => {
 });
 
 describe('Brand Pivot: Routing', () => {
-  it('/sunshine-coast redirects to /pet-sitting-sunshine-coast', async () => {
-    // This is validated by checking App.tsx route config
-    const { default: App } = await import('@/App');
-    // The component should render without error — the route should redirect
-    // Actual redirect tested via integration, but import should not fail
-    expect(App).toBeDefined();
+  it('/sunshine-coast route is configured as redirect in App.tsx', async () => {
+    // Read the route config file to verify redirect is set up
+    // This is a static verification — the Navigate component handles the redirect at runtime
+    const fs = await import('fs');
+    const appContent = fs.readFileSync('src/App.tsx', 'utf8');
+    expect(appContent).toContain('path="/sunshine-coast"');
+    expect(appContent).toContain('Navigate to="/pet-sitting-sunshine-coast"');
   });
 });
