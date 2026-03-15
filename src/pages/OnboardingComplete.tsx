@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Star, Shield, Phone, Heart, Award, Search, Users } from 'lucide-react';
+import { CheckCircle, Star, Shield, Phone, Heart, Award, Search, Users, Home, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useProfile } from '@/contexts/ProfileContext';
@@ -11,7 +11,6 @@ export default function OnboardingComplete() {
   const isMobile = useIsMobile();
   const { profile, loading } = useProfile();
 
-  // Different next steps based on user role
   const getNextSteps = () => {
     if (!profile) return [];
 
@@ -20,7 +19,7 @@ export default function OnboardingComplete() {
         {
           icon: Search,
           title: 'Find Pet Sitters',
-          description: 'Browse and book trusted pet sitters in your area',
+          description: 'Browse and book local sitters in your area',
           action: 'Find Sitters',
           path: '/find-sitters'
         },
@@ -39,7 +38,9 @@ export default function OnboardingComplete() {
           path: '/profile?tab=pets'
         }
       ];
-    } else if (profile.role === 'pet_sitter') {
+    }
+
+    if (profile.role === 'pet_sitter') {
       return [
         {
           icon: Star,
@@ -50,8 +51,8 @@ export default function OnboardingComplete() {
         },
         {
           icon: Shield,
-          title: 'Get Verified',
-          description: 'Upload verification documents for trust',
+          title: 'Get Vetted',
+          description: 'Upload documents to build trust with owners',
           action: 'Upload Documents',
           path: '/profile?tab=verification'
         },
@@ -64,39 +65,38 @@ export default function OnboardingComplete() {
         }
       ];
     }
+
     return [];
   };
 
   const nextSteps = getNextSteps();
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 ${isMobile ? 'p-4' : 'py-12'}`}>
+    <div className={`min-h-screen bg-background ${isMobile ? 'p-4' : 'py-12'}`}>
       <div className={`container mx-auto ${isMobile ? 'px-0' : 'px-4'}`}>
         <div className={`max-w-${isMobile ? 'full' : '2xl'} mx-auto`}>
-          <Card className="text-center">
+          <Card className="text-center border-border">
             <CardHeader className={isMobile ? 'p-6' : 'p-8'}>
               <div className="flex justify-center mb-4">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-10 h-10 text-green-600" />
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-10 h-10 text-primary" />
                 </div>
               </div>
-              
+
               <CardTitle className={`${isMobile ? 'text-xl' : 'text-2xl'} mb-4`}>
-                🎉 Welcome to ZiggySitters!
+                Welcome to ZiggySitters
               </CardTitle>
-              
+
               <p className={`text-muted-foreground ${isMobile ? 'text-base' : 'text-lg'} max-w-md mx-auto`}>
-                {profile?.role === 'pet_owner' 
-                  ? "Your profile has been successfully created. You're now ready to find trusted pet sitters!"
+                {profile?.role === 'pet_owner'
+                  ? "Your profile is ready. You can now find a trusted sitter."
                   : profile?.role === 'pet_sitter'
-                  ? "Your sitter profile has been created. Complete your verification to start accepting bookings!"
-                  : "Your profile has been created. You can now find sitters or offer pet sitting services!"
-                }
+                  ? 'Your sitter profile is ready. Complete vetting to start accepting bookings.'
+                  : 'Your profile has been created. You can now find or offer pet care services.'}
               </p>
             </CardHeader>
-            
+
             <CardContent className={`space-y-6 ${isMobile ? 'p-6 pt-0' : 'p-8 pt-0'}`}>
-              {/* Achievement Badges */}
               <div className="flex justify-center space-x-4">
                 <Badge variant="secondary" className="flex items-center gap-2">
                   <Award className="w-4 h-4" />
@@ -109,12 +109,11 @@ export default function OnboardingComplete() {
                 {profile?.role === 'pet_sitter' && (
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Star className="w-4 h-4" />
-                    {profile?.is_verified ? 'Verified Sitter' : 'Pending Verification'}
+                    {profile?.is_verified ? 'Vetted Sitter' : 'Vetting Pending'}
                   </Badge>
                 )}
               </div>
 
-              {/* Next Steps */}
               {loading ? (
                 <div className="text-center">Loading...</div>
               ) : (
@@ -122,10 +121,10 @@ export default function OnboardingComplete() {
                   <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold`}>
                     {profile?.role === 'pet_owner' ? 'Get Started' : 'Next Steps'}
                   </h3>
-                  
+
                   <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-3'} gap-4`}>
                     {nextSteps.map((step, index) => (
-                      <Card key={index} className="hover:shadow-md transition-shadow">
+                      <Card key={index} className="hover:shadow-md transition-shadow border-border">
                         <CardContent className={isMobile ? 'p-4' : 'p-6'}>
                           <div className="flex flex-col items-center text-center space-y-3">
                             <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
@@ -135,9 +134,9 @@ export default function OnboardingComplete() {
                               <h4 className="font-medium">{step.title}</h4>
                               <p className="text-sm text-muted-foreground">{step.description}</p>
                             </div>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
+                            <Button
+                              variant="outline"
+                              size="sm"
                               onClick={() => navigate(step.path)}
                               className="w-full"
                             >
@@ -151,7 +150,6 @@ export default function OnboardingComplete() {
                 </div>
               )}
 
-              {/* Support Information */}
               <div className="bg-muted/50 rounded-lg p-4">
                 <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
                   <Phone className="w-4 h-4" />
@@ -159,29 +157,28 @@ export default function OnboardingComplete() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-3 justify-center`}>
-                <Button 
-                  onClick={() => navigate('/')}
-                  className={isMobile ? 'w-full' : 'px-8'}
-                >
-                  🏠 Go to Homepage
+                <Button onClick={() => navigate('/')} className={isMobile ? 'w-full' : 'px-8'}>
+                  <Home className="w-4 h-4 mr-2" />
+                  Go to Homepage
                 </Button>
                 {profile?.role === 'pet_owner' ? (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => navigate('/find-sitters')}
                     className={isMobile ? 'w-full' : 'px-8'}
                   >
-                    🔍 Find Sitters
+                    <Search className="w-4 h-4 mr-2" />
+                    Find Sitters
                   </Button>
                 ) : (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => navigate('/profile')}
                     className={isMobile ? 'w-full' : 'px-8'}
                   >
-                    👤 Complete Profile
+                    <UserCircle className="w-4 h-4 mr-2" />
+                    Complete Profile
                   </Button>
                 )}
               </div>

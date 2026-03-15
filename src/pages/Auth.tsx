@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Sparkles, Heart, Clock, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, Clock, CheckCircle2 } from 'lucide-react';
+import iconPaw from '@/assets/icons/icon-paw.png';
 import { supabase } from '@/integrations/supabase/client';
 import { metaPixel } from '@/lib/metaPixel';
 import { ga4 } from '@/lib/ga4';
@@ -221,8 +222,8 @@ export default function Auth() {
         metaPixel.trackCompleteRegistration();
 
         toast({
-          title: "Account Created! \uD83C\uDF89",
-          description: "Welcome to ZiggySitters! Let\u0027s set up your profile.",
+          title: "Account Created",
+          description: "Welcome to ZiggySitters! Let's set up your profile.",
         });
         navigate(redirectUrl);
       }
@@ -242,14 +243,13 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md relative z-10 space-y-6">
-        {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 rounded-full shadow-lg">
-            <Heart className="h-8 w-8 text-pink-500 dark:text-pink-400" fill="currentColor" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full shadow-sm">
+            <img src={iconPaw} alt="" className="h-8 w-8" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
             ZiggySitters
           </h1>
           <p className="text-muted-foreground">
@@ -257,7 +257,7 @@ export default function Auth() {
           </p>
         </div>
 
-        <Card className="border border-purple-200 dark:border-purple-800 shadow-xl">
+        <Card className="border border-border shadow-xl">
           <CardContent className="pt-6 space-y-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-4">
@@ -307,13 +307,13 @@ export default function Auth() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                    className="w-full h-12 text-base"
                     disabled={isLoading}
                   >
                     {isLoading ? "Signing In..." : "Sign In"}
                   </Button>
                   <div className="text-center">
-                    <Link to="/forgot-password" className="text-sm text-purple-600 dark:text-purple-400 hover:underline">
+                    <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                       Forgot your password?
                     </Link>
                   </div>
@@ -326,12 +326,12 @@ export default function Auth() {
                   {/* Progress indicator */}
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">1</div>
-                      <span className="font-medium text-purple-600">Create account</span>
+                      <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">1</div>
+                      <span className="font-medium text-primary">Create account</span>
                     </div>
-                    <div className="w-8 h-px bg-gray-300"></div>
+                    <div className="w-8 h-px bg-border"></div>
                     <div className="flex items-center gap-1.5">
-                      <div className="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold">2</div>
+                      <div className="w-7 h-7 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-bold">2</div>
                       <span>Set up profile</span>
                     </div>
                   </div>
@@ -380,7 +380,7 @@ export default function Auth() {
 
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                    className="w-full h-12 text-base"
                     disabled={isLoading || (formData.password.length > 0 && formData.password.length < 6)}
                   >
                     {isLoading ? "Creating Account..." : "Create Free Account"}
@@ -402,11 +402,11 @@ export default function Auth() {
 
             <div className="pt-3 border-t text-center text-xs text-muted-foreground">
               By continuing, you agree to our{' '}
-              <Link to="/terms-of-service" className="text-purple-600 dark:text-purple-400 hover:underline">
+              <Link to="/terms-of-service" className="text-primary hover:underline">
                 Terms
               </Link>
               {' '}and{' '}
-              <Link to="/privacy-policy" className="text-purple-600 dark:text-purple-400 hover:underline">
+              <Link to="/privacy-policy" className="text-primary hover:underline">
                 Privacy Policy
               </Link>
               .

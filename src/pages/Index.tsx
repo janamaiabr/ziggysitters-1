@@ -277,7 +277,7 @@ const Index = () => {
                 <span className="ml-2">→</span>
               </Button>
               <p className="text-xs md:text-sm text-muted-foreground font-body">
-                Free to browse · ID Verified · Daily Photo Updates
+                Free to browse · ID Vetted · Daily Photo Updates
               </p>
             </div>
           </div>

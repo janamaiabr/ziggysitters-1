@@ -122,7 +122,7 @@ export default function Profile() {
                 await refetch();
                 fireSuccess(); // Celebrate with confetti!
                 toast({
-                  title: "🎉 Onboarding Complete!",
+                  title: "Onboarding Complete",
                   description: "Your sitter profile is now active. Pet owners can now find you!",
                 });
               }
@@ -345,8 +345,8 @@ export default function Profile() {
       fireSuccess();
       
       toast({
-        title: "🎉 Document uploaded successfully!",
-        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for verification. Great progress!`,
+        title: "Document uploaded successfully",
+        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for vetting. Great progress!`,
       });
 
       // Refresh profile data
@@ -612,7 +612,7 @@ export default function Profile() {
         fireSuccess();
         
         toast({
-          title: "🎉 Service added!",
+          title: "Service added",
           description: "Your new service has been added successfully. You're making great progress!",
         });
       }
@@ -713,7 +713,7 @@ export default function Profile() {
       fireSuccess();
       
       toast({
-        title: "🎉 Photo uploaded!",
+        title: "Photo uploaded",
         description: "Your portfolio photo has been uploaded successfully.",
       });
 
@@ -1135,9 +1135,9 @@ export default function Profile() {
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <h1 className="text-2xl md:text-3xl font-bold truncate">{userProfile.name}</h1>
                     {userProfile.verified && (
-                      <Badge className="bg-green-500 text-white border-0">
+                      <Badge className="bg-primary text-primary-foreground border-0">
                         <Shield className="w-3 h-3 mr-1" />
-                        Verified
+                        Vetted
                       </Badge>
                     )}
                     {profile.role === 'pet_sitter' && !userProfile.verified && (
@@ -1149,7 +1149,7 @@ export default function Profile() {
                   
                   {/* Role Badge */}
                   <Badge variant="outline" className="mb-3 capitalize">
-                    {hasYoungWalker ? '🚶 Young Walker Parent' : profile.role === 'pet_sitter' ? '🐕 Pet Sitter' : profile.role === 'pet_owner' ? '🏠 Pet Owner' : profile.role.replace('_', ' ')}
+                    {hasYoungWalker ? 'Young Walker Parent' : profile.role === 'pet_sitter' ? 'Pet Sitter' : profile.role === 'pet_owner' ? 'Pet Owner' : profile.role.replace('_', ' ')}
                   </Badge>
                   
                   {/* Verification Status Message for Sitters */}
@@ -1160,10 +1160,10 @@ export default function Profile() {
                         : 'bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-300'
                     }`}>
                       {profile.verification_status === 'rejected' 
-                        ? '⚠️ Your profile verification was not approved. Please update your profile and resubmit for review.'
+                        ? 'Your profile vetting was not approved. Please update your profile and resubmit for review.'
                         : profile.verification_documents_uploaded_at
-                        ? '⏳ Your profile is under review. We\'ll notify you once complete.'
-                        : '📋 Complete verification by uploading required documents in the Verification tab.'
+                        ? 'Your profile is under review. We\'ll notify you once complete.'
+                        : 'Complete vetting by uploading required documents in the Verification tab.'
                       }
                     </div>
                   )}

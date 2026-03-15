@@ -188,16 +188,16 @@ const BookingSuccess = () => {
         <CardHeader className="text-center">
           {paymentStatus === 'success' ? (
             <>
-              <CheckCircle className="h-12 w-12 text-green-600 mx-auto" />
-              <CardTitle className="text-green-600">Payment Successful! 🎉</CardTitle>
+              <CheckCircle className="h-12 w-12 text-primary mx-auto" />
+              <CardTitle className="text-primary">Payment Successful</CardTitle>
               <CardDescription>
                 Your booking has been confirmed and the pet sitter has been notified.
               </CardDescription>
             </>
           ) : (
             <>
-              <AlertCircle className="h-12 w-12 text-red-600 mx-auto" />
-              <CardTitle className="text-red-600">Payment Failed</CardTitle>
+              <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+              <CardTitle className="text-destructive">Payment Failed</CardTitle>
               <CardDescription>
                 There was an issue processing your payment. Please try again or contact support.
               </CardDescription>
@@ -206,25 +206,13 @@ const BookingSuccess = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           {paymentStatus === 'success' && (
-            <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-3 text-left">
-              <h3 className="font-semibold text-green-800 dark:text-green-200 text-base">📋 What happens next?</h3>
-              <div className="space-y-2 text-sm text-green-700 dark:text-green-300">
-                <p className="flex items-start gap-2">
-                  <span className="flex-shrink-0 mt-0.5">📧</span>
-                  <span>Your sitter will receive an <strong>email notification right now</strong></span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="flex-shrink-0 mt-0.5">⏰</span>
-                  <span>Expected response time: <strong>within 2-4 hours</strong></span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="flex-shrink-0 mt-0.5">🔄</span>
-                  <span>If no response in 24h, <strong>we'll follow up automatically</strong></span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="flex-shrink-0 mt-0.5">💬</span>
-                  <span>You can also message your sitter directly from <strong>My Bookings</strong></span>
-                </p>
+            <div className="bg-muted border border-border rounded-lg p-4 space-y-3 text-left">
+              <h3 className="font-semibold text-foreground text-base">What happens next?</h3>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>Your sitter will receive an <strong>email notification right now</strong>.</p>
+                <p>Expected response time: <strong>within 2-4 hours</strong>.</p>
+                <p>If no response in 24h, <strong>we'll follow up automatically</strong>.</p>
+                <p>You can also message your sitter directly from <strong>My Bookings</strong>.</p>
               </div>
             </div>
           )}
