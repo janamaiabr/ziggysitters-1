@@ -69,8 +69,10 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         console.error('Error fetching profile:', error);
-        console.log('ProfileContext: Setting needsOnboarding to true due to error');
-        setNeedsOnboarding(true);
+        // Don't set needsOnboarding on transient errors - this can cause redirect loops
+        // Only set it when we're sure the profile doesn't exist
+        console.log('ProfileContext: Error fetching profile, keeping needsOnboarding as false to prevent loops');
+        setNeedsOnboarding(false);
       } else if (!data) {
         console.log('ProfileContext: No profile found, setting needsOnboarding to true');
         setNeedsOnboarding(true);
