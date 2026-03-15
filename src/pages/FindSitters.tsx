@@ -732,7 +732,7 @@ export default function FindSitters() {
                 <Button 
                   variant="outline"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 h-14 md:h-12 rounded-md"
+                  className="border-border text-foreground hover:bg-muted px-8 py-4 h-14 md:h-12 rounded-md"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filters
