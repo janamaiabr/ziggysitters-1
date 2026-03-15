@@ -94,7 +94,7 @@ const HeroSectionPlayful = ({
                 </h1>
                 
                 <p className="text-sm md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0 font-body">
-                  Real people in your neighbourhood who <span className="font-bold text-foreground">love dogs</span> and take care of your pets like their own. ID verified. Daily photo updates.
+                  <span className="font-bold text-foreground">Affordable, local pet sitters</span> you can trust. Real people in your neighbourhood who genuinely love animals. ID verified. Daily photo updates.
                 </p>
 
                 {/* Positioning badge */}
