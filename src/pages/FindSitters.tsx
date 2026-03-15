@@ -681,7 +681,7 @@ export default function FindSitters() {
                       <SelectTrigger className="h-12 border-border text-foreground focus:border-primary bg-background">
                         <SelectValue placeholder="What do you need?" />
                       </SelectTrigger>
-                        <SelectContent className="z-50 bg-white border shadow-lg">
+                        <SelectContent className="z-50 bg-card border shadow-lg">
                           <SelectItem value="pet_sitting_sitters_home">Pet Sitting (Sitter's Home)</SelectItem>
                           <SelectItem value="pet_sitting_owners_home">Pet Sitting (Your Home)</SelectItem>
                           <SelectItem value="drop_in_visits">Drop-in Visits</SelectItem>
