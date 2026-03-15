@@ -444,40 +444,45 @@ export default function BookingFormDirect({
           <Button 
             onClick={onGuestSignup}
             size="lg"
-            className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+            className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-all hover:scale-[1.02] font-display"
           >
-            📩 Request Free Quote →
+            <img src={iconChat} alt="" className="w-5 h-5 mr-2" />
+            Request Free Quote
+            <span className="ml-2">→</span>
           </Button>
         ) : (
           <Button 
             onClick={handleBooking}
             disabled={loading}
             size="lg"
-            className="w-full h-16 text-xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-green-500/30 transition-all hover:scale-[1.02]"
+            className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-all hover:scale-[1.02] font-display"
           >
             {loading ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground mr-3"></div>
                 Sending...
               </>
             ) : (
-              '📩 Send Free Enquiry'
+              <>
+                <img src={iconChat} alt="" className="w-5 h-5 mr-2" />
+                Send Free Enquiry
+              </>
             )}
           </Button>
         )}
         
         {/* Reassurance below CTA */}
-        <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+        <div className="flex justify-center gap-4 text-xs text-muted-foreground font-body">
           <span className="flex items-center gap-1">
-            <Shield className="w-3 h-3" />
+            <img src={iconShield} alt="" className="w-3 h-3" />
             No payment needed
           </span>
           <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
+            <img src={iconClock} alt="" className="w-3 h-3" />
             Reply within hours
           </span>
           <span className="flex items-center gap-1">
-            <CheckCircle className="w-3 h-3" />
+            <img src={iconCheck} alt="" className="w-3 h-3" />
             Cancel anytime
           </span>
         </div>
