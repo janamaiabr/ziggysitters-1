@@ -221,7 +221,7 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <Clock className="h-5 w-5 text-primary" />
+                      <img src={iconClock} alt="" className="h-5 w-5" />
                       <div>
                         <p className="font-medium font-body text-foreground">Support Hours</p>
                         <p className="text-muted-foreground font-body">Mon-Fri: 8AM-8PM NZST</p>
