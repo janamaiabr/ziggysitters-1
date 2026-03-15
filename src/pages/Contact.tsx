@@ -6,11 +6,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { MapPin, Phone, Mail, Clock, MessageCircle, HelpCircle, Shield } from 'lucide-react';
+import { MapPin, Mail, Clock, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { metaPixel } from '@/lib/metaPixel';
+
+import iconEmail from '@/assets/icons/icon-email.png';
+import iconQuestion from '@/assets/icons/icon-question.png';
+import iconShield from '@/assets/icons/icon-shield.png';
 
 export default function Contact() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,32 +24,6 @@ export default function Contact() {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-  const [testEmailLoading, setTestEmailLoading] = useState(false);
-
-  const sendTestEmails = async () => {
-    setTestEmailLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("test-all-emails");
-
-      if (error) throw error;
-
-      toast({
-        title: "Test emails sent!",
-        description: "Check janamaia@gmail.com for all test emails",
-      });
-
-      console.log("Test email results:", data);
-    } catch (error) {
-      console.error("Error sending test emails:", error);
-      toast({
-        title: "Error",
-        description: "Failed to send test emails",
-        variant: "destructive",
-      });
-    } finally {
-      setTestEmailLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +51,6 @@ export default function Contact() {
 
       if (error) throw error;
 
-      // Track contact event
       metaPixel.trackContact();
 
       toast({
@@ -84,7 +63,7 @@ export default function Contact() {
       console.error('Error sending message:', error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again or call us directly.",
+        description: "Failed to send message. Please try again or email us directly.",
         variant: "destructive"
       });
     } finally {
@@ -107,217 +86,187 @@ export default function Contact() {
         keywords="contact pet sitters, customer support, pet care questions, ZiggySitters help"
         canonical="/contact"
       />
-      <div className="container mx-auto px-4 py-12">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Have questions or need help? We're here for you. Get in touch and we'll respond as quickly as possible.
-          </p>
-        </div>
-
-        {/* Test Emails Button - Development Only */}
-        <div className="mb-8 p-4 bg-muted rounded-lg">
-          <h2 className="text-lg font-semibold mb-2">Email Testing</h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Send test emails of all email types to janamaia@gmail.com
-          </p>
-          <Button onClick={sendTestEmails} disabled={testEmailLoading}>
-            {testEmailLoading ? "Sending..." : "Send All Test Emails"}
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Send us a Message
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-2">
-                        Full Name *
-                      </label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium mb-2">
-                        Email Address *
-                      </label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        placeholder="your.email@example.com"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                      Subject *
-                    </label>
-                    <Input
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      placeholder="What can we help you with?"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">
-                      Message *
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      placeholder="Tell us more about your question or concern..."
-                    />
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={loading}
-                  >
-                    {loading ? 'Sending...' : 'Send Message'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+      <div className="min-h-screen bg-background">
+        {/* Hero */}
+        <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+          <div className="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1600&h=800&fit=crop" alt="Contact us" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
           </div>
-
-          {/* Contact Information */}
-          <div className="space-y-6">
-            {/* Quick Contact */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Get in Touch</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Email</p>
-                    <p className="text-gray-600">hello@ziggysitters.com</p>
-                  </div>
-                </div>
-                
-                
-                <div className="flex items-center space-x-3">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Location</p>
-                    <p className="text-gray-600">Auckland, New Zealand</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Support Hours</p>
-                    <p className="text-gray-600">Mon-Fri: 8AM-8PM NZST</p>
-                    <p className="text-gray-600">Weekends: 9AM-5PM NZST</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Common Topics */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5" />
-                  Common Questions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-medium">Booking Support</h4>
-                    <p className="text-sm text-gray-600">Help with bookings, cancellations, and payments</p>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Sitter Verification</h4>
-                    <p className="text-sm text-gray-600">Questions about becoming a verified pet sitter</p>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Safety & Security</h4>
-                    <p className="text-sm text-gray-600">Platform safety, reporting issues, and account security</p>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Technical Issues</h4>
-                    <p className="text-sm text-gray-600">App problems, login issues, and bug reports</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-          </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2">How do I book a pet sitter?</h3>
-                <p className="text-sm text-gray-600">
-                  Browse verified sitters in your area, view their profiles and feedback, 
-                  then send a booking request with your pet's details and dates.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Are all sitters verified?</h3>
-                <p className="text-sm text-gray-600">
-                  Yes, all sitters complete identity verification and profile validation 
-                  before they can accept bookings on our platform.
-                </p>
-              </div>
+          <div className="container mx-auto px-4 py-20 relative z-10">
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold uppercase tracking-widest mb-4 font-body" style={{ color: 'hsl(152 45% 55%)' }}>Get in Touch</p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-[1.1] font-display mb-6">Contact Us</h1>
+              <p className="text-lg text-white/80 font-body max-w-xl">
+                Have questions or need help? We're here for you. Get in touch and we'll respond as quickly as possible.
+              </p>
             </div>
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2">What if something goes wrong?</h3>
-                <p className="text-sm text-gray-600">
-                  Contact us immediately through our platform. We take all safety 
-                  concerns seriously and will help resolve any issues.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">How do payments work?</h3>
-                <p className="text-sm text-gray-600">
-                  Secure payments are processed through our platform. Payment is held 
-                  securely and released to sitters after successful service completion.
-                </p>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="py-20 md:py-28 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Contact Form */}
+              <Card className="border border-border bg-card shadow-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 font-display text-foreground">
+                    <img src={iconEmail} alt="" className="w-8 h-8" />
+                    Send us a Message
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium mb-2 font-body text-foreground">
+                          Full Name *
+                        </label>
+                        <Input
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          placeholder="Your full name"
+                          className="font-body"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium mb-2 font-body text-foreground">
+                          Email Address *
+                        </label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                          placeholder="your.email@example.com"
+                          className="font-body"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="subject" className="block text-sm font-medium mb-2 font-body text-foreground">
+                        Subject *
+                      </label>
+                      <Input
+                        id="subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
+                        placeholder="What can we help you with?"
+                        className="font-body"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium mb-2 font-body text-foreground">
+                        Message *
+                      </label>
+                      <Textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        rows={6}
+                        placeholder="Tell us more about your question or concern..."
+                        className="font-body"
+                      />
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body" 
+                      disabled={loading}
+                    >
+                      {loading ? 'Sending...' : 'Send Message'}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+
+              {/* Contact Information */}
+              <div className="space-y-6">
+                <Card className="border border-border bg-card shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="font-display text-foreground">Get in Touch</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Mail className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium font-body text-foreground">Email</p>
+                        <p className="text-muted-foreground font-body">hello@ziggysitters.com</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium font-body text-foreground">Location</p>
+                        <p className="text-muted-foreground font-body">Auckland, New Zealand</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <Clock className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium font-body text-foreground">Support Hours</p>
+                        <p className="text-muted-foreground font-body">Mon-Fri: 8AM-8PM NZST</p>
+                        <p className="text-muted-foreground font-body">Weekends: 9AM-5PM NZST</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border border-border bg-card shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3 font-display text-foreground">
+                      <img src={iconQuestion} alt="" className="w-6 h-6" />
+                      Common Questions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[
+                        { title: 'Booking Support', desc: 'Help with bookings, cancellations, and payments' },
+                        { title: 'Sitter Verification', desc: 'Questions about becoming a verified pet sitter' },
+                        { title: 'Safety & Security', desc: 'Platform safety, reporting issues, and account security' },
+                        { title: 'Technical Issues', desc: 'App problems, login issues, and bug reports' },
+                      ].map((item, i) => (
+                        <div key={i}>
+                          <h4 className="font-medium font-body text-foreground">{item.title}</h4>
+                          <p className="text-sm text-muted-foreground font-body">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-24 bg-secondary text-secondary-foreground">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Looking for a Pet Sitter Instead?</h2>
+            <p className="text-lg text-secondary-foreground/60 mb-8 max-w-xl mx-auto font-body">
+              Browse verified sitters in your area and book with confidence.
+            </p>
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
+              Find a Sitter <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </section>
       </div>
     </>
   );

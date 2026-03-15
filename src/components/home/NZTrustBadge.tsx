@@ -1,59 +1,47 @@
-import { Shield, MapPin, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconLocation from '@/assets/icons/icon-location.png';
+import iconCamera from '@/assets/icons/icon-camera.png';
 
 export default function NZTrustBadge() {
   const navigate = useNavigate();
 
   return (
-    <section className="py-8 md:py-16 bg-gray-900 relative overflow-hidden">
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-16 md:py-24 bg-secondary">
+      <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           {/* Main badge */}
-          <div className="text-center mb-6 md:mb-10">
-            <div className="inline-flex items-center gap-2 md:gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-8 py-3 md:py-4 mb-3 md:mb-6">
-              <Shield className="w-7 h-7 md:w-10 md:h-10 text-white" />
+          <div className="text-center mb-10 md:mb-14">
+            <div className="inline-flex items-center gap-3 bg-secondary-foreground/10 rounded-2xl px-6 md:px-8 py-4 mb-6">
+              <img src={iconShield} alt="" className="w-10 h-10 md:w-12 md:h-12" />
               <div className="text-left">
-                <div className="text-lg md:text-3xl font-bold text-white">100% Local Sitters</div>
-                <div className="text-gray-400 text-xs md:text-sm">Every sitter is local, verified, and loves pets</div>
+                <div className="text-xl md:text-3xl font-bold text-secondary-foreground font-display">100% Local Sitters</div>
+                <div className="text-secondary-foreground/60 text-xs md:text-sm font-body">Every sitter is local, verified, and loves pets</div>
               </div>
             </div>
-            <p className="text-gray-400 text-sm md:text-lg max-w-2xl mx-auto">
+            <p className="text-secondary-foreground/60 text-sm md:text-lg max-w-2xl mx-auto font-body">
               Every ZiggySitters pet sitter is a verified local. Real people in your neighbourhood who genuinely love animals.
             </p>
           </div>
 
           {/* Trust signals */}
-          <div className="flex md:grid md:grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-10 overflow-x-auto pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
-            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-xl p-3.5 md:p-5 min-w-[200px] md:min-w-0 flex-shrink-0 md:flex-shrink border border-white/10">
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-5 h-5 md:w-7 md:h-7 text-emerald-400" />
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6 mb-10">
+            {[
+              { icon: iconLocation, title: "Local Sitters", desc: "In your neighbourhood" },
+              { icon: iconShield, title: "ID Verified", desc: "Government ID checked" },
+              { icon: iconCamera, title: "Daily Updates", desc: "Photos & care notes" },
+            ].map((item) => (
+              <div key={item.title} className="flex items-center gap-3 bg-secondary-foreground/5 rounded-xl p-4 md:p-5 border border-secondary-foreground/10">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <img src={item.icon} alt="" className="w-7 h-7 md:w-8 md:h-8" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-secondary-foreground text-sm md:text-lg font-body">{item.title}</h4>
+                  <p className="text-secondary-foreground/60 text-xs md:text-sm font-body">{item.desc}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-bold text-white text-sm md:text-lg">Local Sitters</h4>
-                <p className="text-gray-400 text-xs md:text-sm">In your neighbourhood</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-xl p-3.5 md:p-5 min-w-[200px] md:min-w-0 flex-shrink-0 md:flex-shrink border border-white/10">
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-5 h-5 md:w-7 md:h-7 text-emerald-400" />
-              </div>
-              <div>
-                <h4 className="font-bold text-white text-sm md:text-lg">ID Verified</h4>
-                <p className="text-gray-400 text-xs md:text-sm">Government ID checked</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-xl p-3.5 md:p-5 min-w-[200px] md:min-w-0 flex-shrink-0 md:flex-shrink border border-white/10">
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
-                <Shield className="w-5 h-5 md:w-7 md:h-7 text-emerald-400" />
-              </div>
-              <div>
-                <h4 className="font-bold text-white text-sm md:text-lg">Daily Updates</h4>
-                <p className="text-gray-400 text-xs md:text-sm">Photos & care notes</p>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* CTA */}
@@ -61,7 +49,7 @@ export default function NZTrustBadge() {
             <Button
               size="lg"
               onClick={() => navigate("/our-sitters")}
-              className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-6 md:px-8 py-4 md:py-6 text-base md:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all min-h-[44px]"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8 py-6 text-base md:text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all min-h-[44px] font-body"
             >
               Meet Our Sitters
             </Button>
