@@ -867,33 +867,6 @@ export default function Onboarding() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Young Walker Option */}
-        <div 
-          className="relative cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl"
-          onClick={() => navigate('/young-walker-registration')}
-        >
-          <Card className="border-2 border-emerald-200 dark:border-emerald-800 overflow-hidden bg-gradient-to-br from-emerald-50 via-background to-teal-50 dark:from-emerald-950/20 dark:via-background dark:to-teal-950/20">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex items-center gap-5">
-                <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Dog className="w-8 h-8 md:w-10 md:h-10 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-xl md:text-2xl font-bold mb-1">
-                    Young Dog Walker
-                  </h3>
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    Ages 12-17 • Parent registers their child
-                  </p>
-                </div>
-                <div className="flex-shrink-0">
-                  <ArrowRight className="h-6 w-6 text-emerald-500" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
       {data.role === 'pet_sitter' && (
