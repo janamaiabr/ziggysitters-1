@@ -93,8 +93,8 @@ export default function FeaturedSittersCarousel() {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <img src={iconStar} alt="" className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2.5 text-lg">
+          <img src={iconStar} alt="" className="h-7 w-7" />
           Meet Our Top Sitters
         </CardTitle>
       </CardHeader>
