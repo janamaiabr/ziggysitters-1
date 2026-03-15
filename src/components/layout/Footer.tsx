@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Mail } from 'lucide-react';
-import logoSvg from '@/assets/logo.svg';
+import ziggyLogo from '@/assets/ziggy-logo.png';
 
 export default function Footer() {
   return (
