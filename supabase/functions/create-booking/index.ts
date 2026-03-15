@@ -209,15 +209,14 @@ serve(async (req) => {
     const serviceTypeMapping = {
       'pet_sitting_owners_home': 'pet_sitting_owners_home',
       'pet_sitting_sitters_home': 'pet_sitting_sitters_home',
-      'drop_in_visits': 'drop_in_visits',
-      'dog_walking': 'dog_walking'
+      'drop_in_visits': 'drop_in_visits'
     };
 
     // Map frontend service type to database enum
     const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping] || bookingData.serviceType;
     
     // Validate that the service type exists
-    const validServiceTypes = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits', 'dog_walking'];
+    const validServiceTypes = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits'];
     if (!validServiceTypes.includes(dbServiceType)) {
       throw new Error(`Invalid service type: ${bookingData.serviceType}. Please select a valid service.`);
     }
