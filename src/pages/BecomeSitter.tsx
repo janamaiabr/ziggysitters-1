@@ -306,7 +306,7 @@ export default function BecomeSitter() {
                 >
                   {suburb.name}
                   <Badge variant="secondary" className="ml-2 text-xs bg-primary/10 text-primary border-primary/20">
-                    {suburb.searches}+/mo
+                    High demand
                   </Badge>
                 </Button>
               ))}
