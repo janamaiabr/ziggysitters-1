@@ -158,9 +158,6 @@ export default function Header() {
               <DropdownMenuItem onClick={() => navigate('/pet-sitting-sunshine-coast')}>Sunshine Coast, QLD</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/young-walkers" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body">
-            Young Walkers
-          </Link>
           {user && profile?.role === 'pet_sitter' && (
             <Link to="/calendar" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 font-body flex items-center gap-1.5">
               <CalendarIcon className="h-4 w-4" />
