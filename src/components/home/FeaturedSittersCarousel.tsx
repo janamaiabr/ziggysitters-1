@@ -31,6 +31,7 @@ export default function FeaturedSittersCarousel() {
         .from('public_sitters')
         .select('id, first_name, last_name, suburb, city, avatar_url, bio, is_verified, golden_badge_approved')
         .eq('onboarding_completed', true)
+        .eq('is_verified', true)
         .not('avatar_url', 'is', null)
         .neq('avatar_url', '')
         .order('golden_badge_approved', { ascending: false })
