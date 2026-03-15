@@ -612,7 +612,7 @@ export default function Profile() {
         fireSuccess();
         
         toast({
-          title: "🎉 Service added!",
+          title: "Service added",
           description: "Your new service has been added successfully. You're making great progress!",
         });
       }
