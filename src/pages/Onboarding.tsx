@@ -1184,11 +1184,11 @@ export default function Onboarding() {
                 variant="outline"
                 onClick={prevStep}
                 disabled={step === 1}
-                className="px-6 border-2 border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+                className="px-6 border border-border"
               >
                 Previous
               </Button>
-              
+
               <Button
                 onClick={nextStep}
                 disabled={
@@ -1196,7 +1196,7 @@ export default function Onboarding() {
                   (step === 1 && !data.role) ||
                   (step === 2 && (!data.first_name || !data.last_name || !data.phone || !data.address || !data.suburb))
                 }
-                className="px-6 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 hover:from-purple-600 hover:via-blue-600 hover:to-indigo-600 shadow-lg"
+                className="px-6 shadow-lg"
               >
                 {isLoading ? (
                   <>
