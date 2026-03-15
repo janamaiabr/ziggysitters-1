@@ -50,10 +50,10 @@ export default function BookingFormDirect({
   const formatDateForInput = (d: Date) => d.toISOString().split('T')[0];
   
   const [startDate, setStartDate] = useState<Date | undefined>(
-    initialCheckIn ? new Date(initialCheckIn) : today
+    initialCheckIn ? new Date(initialCheckIn) : undefined
   );
   const [endDate, setEndDate] = useState<Date | undefined>(
-    initialCheckOut ? new Date(initialCheckOut) : tomorrow
+    initialCheckOut ? new Date(initialCheckOut) : undefined
   );
   // Hidden defaults for simplified form
   const [startTime] = useState('09:00');
