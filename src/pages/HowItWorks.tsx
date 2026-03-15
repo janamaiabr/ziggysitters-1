@@ -207,7 +207,7 @@ export default function HowItWorks() {
         <section className="py-20 md:py-28 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <div className="flex justify-center mb-4"><img src={iconQuestion} alt="" className="w-12 h-12" /></div>
+              <div className="flex justify-center mb-4"><img src={iconQuestion} alt="" className="w-14 h-14" /></div>
               <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">Common Questions</h2>
             </div>
             <div className="max-w-3xl mx-auto space-y-6">

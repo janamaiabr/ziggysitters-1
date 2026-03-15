@@ -76,7 +76,7 @@ export default function Welcome() {
         <Card className="shadow-lg border border-border bg-card">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-3 font-display text-foreground">
-              <img src={iconStar} alt="" className="w-8 h-8" />
+              <img src={iconStar} alt="" className="w-10 h-10" />
               Next Steps
             </CardTitle>
             <p className="text-muted-foreground mt-2 font-body">Here are some things you can do to get the most out of ZiggySitters</p>

@@ -120,7 +120,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
                     key={s}
                     src={iconStar}
                     alt=""
-                    className={`h-3.5 w-3.5 ${
+                    className={`h-4.5 w-4.5 ${
                       s <= Math.round(sitter.rating || 0)
                         ? 'opacity-100'
                         : 'opacity-20'

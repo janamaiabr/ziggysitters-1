@@ -231,7 +231,7 @@ export default function Contact() {
                 <Card className="border border-border bg-card shadow-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 font-display text-foreground">
-                      <img src={iconQuestion} alt="" className="w-6 h-6" />
+                      <img src={iconQuestion} alt="" className="w-8 h-8" />
                       Common Questions
                     </CardTitle>
                   </CardHeader>

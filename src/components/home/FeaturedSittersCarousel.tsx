@@ -123,7 +123,7 @@ export default function FeaturedSittersCarousel() {
                     />
                   </div>
                   <p className="text-sm text-muted-foreground flex items-center gap-1">
-                    <img src={iconLocation} alt="" className="h-3 w-3" />
+                    <img src={iconLocation} alt="" className="h-4 w-4" />
                     {sitter.location}
                   </p>
                   <p className="text-sm text-muted-foreground line-clamp-1 mt-1">

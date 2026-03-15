@@ -91,7 +91,7 @@ export default function About() {
                 <Card key={i} className="text-center border border-border bg-card hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex justify-center mb-4">
-                      <img src={v.icon} alt="" className="w-14 h-14" />
+                      <img src={v.icon} alt="" className="w-16 h-16" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 font-body text-foreground">{v.title}</h3>
                     <p className="text-sm text-muted-foreground font-body">{v.description}</p>

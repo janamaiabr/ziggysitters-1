@@ -288,7 +288,7 @@ export default function BecomeSitter() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
               <div className="flex justify-center mb-4">
-                <img src={iconLocation} alt="" className="w-12 h-12" />
+                <img src={iconLocation} alt="" className="w-14 h-14" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-foreground font-display">Pet Sitters Needed in These Areas</h2>
               <p className="text-muted-foreground mt-2 font-body">
