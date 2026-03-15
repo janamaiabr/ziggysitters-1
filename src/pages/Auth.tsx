@@ -313,7 +313,7 @@ export default function Auth() {
                     {isLoading ? "Signing In..." : "Sign In"}
                   </Button>
                   <div className="text-center">
-                    <Link to="/forgot-password" className="text-sm text-purple-600 dark:text-purple-400 hover:underline">
+                    <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                       Forgot your password?
                     </Link>
                   </div>
