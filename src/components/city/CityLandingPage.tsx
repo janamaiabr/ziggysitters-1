@@ -3,7 +3,7 @@ import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Shield, Heart, ArrowRight, Check, Home, Clock, Users, Star, Camera, Leaf } from "lucide-react";
+import { MapPin, Shield, Heart, ArrowRight, Check, Home, Clock, Users, Star, Camera, CheckCircle } from "lucide-react";
 import { CityData } from "@/data/cityData";
 
 interface CityLandingPageProps {
@@ -17,8 +17,6 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
   const isAU = AU_CITIES.includes(city.slug);
   const countryName = isAU ? "Australia" : "New Zealand";
   const countryCode = isAU ? "AU" : "NZ";
-  const idLabel = isAU ? "AU ID Verified" : "NZ ID Verified";
-  const sittersLabel = isAU ? "Local AU Sitters" : "100% NZ-Based Sitters";
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -38,7 +36,6 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
       "addressLocality": city.name,
       "addressCountry": countryCode
     },
-    "priceRange": isAU ? "A$55-95/day" : "NZ$55-95/day",
     "serviceType": ["Pet Sitting", "House Sitting", "Drop-in Visits", "Pet Care"]
   };
 
@@ -52,271 +49,259 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
         structuredData={structuredData}
       />
 
-      {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900" />
-
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-10 left-10 text-8xl animate-float">&#x1F33F;</div>
-          <div className="absolute top-32 right-20 text-6xl animate-float" style={{ animationDelay: "1s" }}>&#x1F33F;</div>
-          <div className="absolute bottom-20 left-1/4 text-7xl animate-float" style={{ animationDelay: "2s" }}>&#x1F43E;</div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10 py-20">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-6">
-              <Badge className="bg-white/10 text-white border-white/20 backdrop-blur-sm px-4 py-2 text-sm">
-                <MapPin className="w-4 h-4 mr-2" />
-                {sittersLabel}
-              </Badge>
+      {/* Hero Section — Clean white/off-white premium design */}
+      <section className="relative bg-[#f8faf8] border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-28">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+                <MapPin className="h-3.5 w-3.5" />
+                {city.name}, {countryName}
+              </div>
               {city.maoriName && (
-                <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 backdrop-blur-sm px-4 py-2 text-sm">
-                  <Leaf className="w-4 h-4 mr-2" />
+                <div className="inline-flex items-center gap-2 bg-gray-50 text-gray-600 border border-gray-200 rounded-full px-4 py-1.5 text-sm font-medium mb-6 ml-2">
                   {city.maoriName}
-                </Badge>
+                </div>
               )}
-            </div>
 
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
-              {"Pet Sitting in " + city.name + " \u2014 Trusted Local Sitters"}
-            </h1>
+              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold leading-[1.1] text-gray-900 mb-6 tracking-tight">
+                Reliable Pet Sitters in{" "}
+                <span className="text-emerald-600">{city.name}</span>
+              </h1>
 
-            <p className="text-xl text-white/80 mb-8 max-w-xl leading-relaxed">
-              {city.heroDescription}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-10">
-              <Button
-                size="lg"
-                onClick={() => navigate("/find-sitters")}
-                className="gap-2 bg-white text-emerald-900 hover:bg-white/90 font-bold text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
-              >
-                Find a Sitter in {city.name}
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-              <Button
-                size="lg"
-                onClick={() => navigate("/become-sitter")}
-                className="bg-emerald-500 text-white hover:bg-emerald-400 font-semibold px-8 py-6 border-2 border-emerald-400"
-              >
-                Become a Sitter
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap gap-4 text-sm text-white/70">
-              <span className="flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-400/30">
-                <Camera className="w-5 h-5 text-emerald-300" /> Daily Photo Updates
-              </span>
-              <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Check className="w-5 h-5 text-emerald-400" /> {idLabel}
-              </span>
-              <span className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Star className="w-5 h-5 text-emerald-400" /> Trusted Reviews
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" className="w-full">
-            <path d="M0,64 C480,120 960,0 1440,64 L1440,120 L0,120 Z" fill="hsl(var(--background))" />
-          </svg>
-        </div>
-      </section>
-
-      {/* Local Context Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                {"Why Choose Local Pet Sitters in " + city.name + "?"}
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {city.localContext}
+              <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                {city.heroDescription}
               </p>
-            </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              <Card className="text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1">
-                <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-                  <MapPin className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">Local Knowledge</h3>
-                <p className="text-muted-foreground">
-                  {"Sitters who know " + city.name + "\u2019s best parks, vet clinics, and pet-friendly spots inside out."}
-                </p>
-              </Card>
-
-              <Card className="text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1">
-                <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg">
-                  <Shield className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">{isAU ? "AU Verified" : "NZ Verified"}</h3>
-                <p className="text-muted-foreground">
-                  {"Every sitter is verified with " + (isAU ? "Australian" : "NZ") + " documents. Real locals you can trust with your home and pets."}
-                </p>
-              </Card>
-
-              <Card className="text-center p-8 border-2 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1">
-                <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
-                  <Heart className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">Family Values</h3>
-                <p className="text-muted-foreground">
-                  {"Your pets are treated like family, not just another booking. The " + (isAU ? "Aussie" : "Kiwi") + " way of caring."}
-                </p>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Neighbourhoods Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700">
-              <MapPin className="w-4 h-4 mr-2" />
-              {"Covering All of " + city.name}
-            </Badge>
-            <h2 className="text-3xl font-bold mb-4">
-              {"Pet Sitters Across " + city.name + " Neighbourhoods"}
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              {"Our sitters are spread across " + city.name + " so you can always find someone nearby."}
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              {city.neighborhoods.map((suburb) => (
-                <span
-                  key={suburb}
-                  className="px-4 py-2.5 bg-card border border-border rounded-xl text-sm font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 hover:border-emerald-300 transition-all cursor-default"
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <Button
+                  size="lg"
+                  className="bg-gray-900 hover:bg-gray-800 text-white font-semibold shadow-sm px-8 py-6 text-lg"
+                  onClick={() => navigate("/find-sitters")}
                 >
-                  {suburb}
-                </span>
+                  Find a Sitter in {city.name}
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-6 text-lg"
+                  onClick={() => navigate("/become-sitter")}
+                >
+                  Become a Sitter
+                </Button>
+              </div>
+            </div>
+
+            {/* Trust signals grid */}
+            <div className="grid grid-cols-2 gap-3 max-w-xs w-full">
+              {[
+                { icon: <Shield className="h-5 w-5 text-emerald-600" />, label: "ID Verified" },
+                { icon: <Camera className="h-5 w-5 text-emerald-600" />, label: "Daily Photo Updates" },
+                { icon: <MapPin className="h-5 w-5 text-emerald-600" />, label: "Local Sitters" },
+                { icon: <Heart className="h-5 w-5 text-emerald-600" />, label: "Must Love Dogs" },
+              ].map(item => (
+                <div
+                  key={item.label}
+                  className="bg-white rounded-xl p-4 text-center border border-gray-200 shadow-sm"
+                >
+                  <div className="flex justify-center mb-2">{item.icon}</div>
+                  <div className="text-sm font-medium text-gray-700">{item.label}</div>
+                </div>
               ))}
             </div>
           </div>
         </div>
       </section>
 
+      {/* Why Choose Local Section */}
+      <section className="py-20 md:py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+              {"Why pet owners in " + city.name + " choose ZiggySitters"}
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+              {city.localContext}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <MapPin className="h-6 w-6" />,
+                title: "Local Knowledge",
+                description: "Sitters who know " + city.name + "'s best parks, vet clinics, and pet-friendly spots inside out."
+              },
+              {
+                icon: <Shield className="h-6 w-6" />,
+                title: "ID Verified",
+                description: "Every sitter is verified with " + (isAU ? "Australian" : "NZ") + " documents. Real locals you can trust."
+              },
+              {
+                icon: <Camera className="h-6 w-6" />,
+                title: "Daily Photo Updates",
+                description: "See exactly how your pet is doing — photos, notes on meals, mood, and activity."
+              },
+              {
+                icon: <Heart className="h-6 w-6" />,
+                title: "People Who Love Pets",
+                description: "Every sitter genuinely loves animals. Your pet is treated like family, not just a booking."
+              },
+              {
+                icon: <Star className="h-6 w-6" />,
+                title: "Trusted Reviews",
+                description: "Read honest reviews from other " + city.name + " pet owners before you book."
+              },
+              {
+                icon: <Users className="h-6 w-6" />,
+                title: "Your Neighbourhood",
+                description: "Find sitters right in your neighbourhood — no driving across town."
+              }
+            ].map(feature => (
+              <div key={feature.title} className="group">
+                <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+                  {feature.icon}
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2 text-lg">{feature.title}</h3>
+                <p className="text-[15px] text-gray-500 leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Neighbourhoods Section */}
+      <section className="bg-[#fafbfa] py-16 border-y border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">
+            {"Pet Sitters Across " + city.name}
+          </h2>
+          <p className="text-gray-500 mb-8 text-lg">
+            {"Our sitters are spread across " + city.name + " so you can always find someone nearby."}
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {city.neighborhoods.map((suburb) => (
+              <Badge
+                key={suburb}
+                variant="outline"
+                className="bg-white border-gray-200 text-gray-600 text-sm font-normal px-4 py-2 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-colors cursor-default"
+              >
+                {suburb}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Parks & Vet Info */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-start">
             <div>
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <span className="text-2xl">&#x1F333;</span> {"Popular Parks in " + city.name}
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
+                {"Popular Parks in " + city.name}
               </h3>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-3">
                 {city.parks.map((park) => (
-                  <div key={park} className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg">
-                    <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                    <span className="font-medium">{park}</span>
+                  <div key={park} className="flex items-center gap-3 text-[15px] text-gray-700">
+                    <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                    {park}
                   </div>
                 ))}
               </div>
             </div>
-            <div>
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <span className="text-2xl">&#x1FA7A;</span> Local Vet Services
-              </h3>
-              <div className="p-6 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                <p className="text-muted-foreground leading-relaxed">
-                  {city.vetInfo}
-                </p>
-              </div>
-              <div className="mt-6 p-6 bg-purple-50 dark:bg-purple-950/20 rounded-xl border border-purple-200 dark:border-purple-800">
-                <h4 className="font-bold mb-2">Our Sitters Know the Area</h4>
-                <p className="text-muted-foreground">
-                  {"Every ZiggySitters sitter in " + city.name + " is familiar with local emergency vet locations and can respond quickly if your pet needs care."}
-                </p>
-              </div>
+            <div className="space-y-4">
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <div className="p-6">
+                  <h3 className="font-semibold text-gray-900 mb-2 text-lg">Local Vet Services</h3>
+                  <p className="text-[15px] text-gray-500 leading-relaxed">{city.vetInfo}</p>
+                </div>
+              </Card>
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <div className="p-6">
+                  <h3 className="font-semibold text-gray-900 mb-2 text-lg">Our Sitters Know the Area</h3>
+                  <p className="text-[15px] text-gray-500 leading-relaxed">
+                    {"Every ZiggySitters sitter in " + city.name + " is familiar with local emergency vet locations and can respond quickly if your pet needs care."}
+                  </p>
+                </div>
+              </Card>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
+      {/* Services — No prices */}
+      <section className="bg-[#fafbfa] py-20 border-y border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
               {"Pet Care Services in " + city.name}
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-gray-500 text-lg">
               Choose the care that suits your pet best
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="p-6 hover:shadow-xl transition-all hover:-translate-y-1">
-              <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 w-fit mb-4">
-                <Home className="w-6 h-6 text-emerald-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">House Sitting</h3>
-              <p className="text-muted-foreground mb-4">
-                Your sitter stays overnight in your home. Pets stay comfortable in their own environment.
-              </p>
-              <p className="text-2xl font-bold text-emerald-600">From {isAU ? "A$" : "$"}65<span className="text-sm font-normal text-muted-foreground">/night</span></p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-xl transition-all hover:-translate-y-1">
-              <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/40 w-fit mb-4">
-                <Clock className="w-6 h-6 text-teal-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Drop-in Visits</h3>
-              <p className="text-muted-foreground mb-4">
-                Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets.
-              </p>
-              <p className="text-2xl font-bold text-teal-600">From {isAU ? "A$" : "$"}35<span className="text-sm font-normal text-muted-foreground">/visit</span></p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-xl transition-all hover:-translate-y-1">
-              <div className="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 w-fit mb-4">
-                <Users className="w-6 h-6 text-cyan-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Pet Boarding</h3>
-              <p className="text-muted-foreground mb-4">
-                {"Your pet stays at the sitter\u2019s home. Great for social pets who love company."}
-              </p>
-              <p className="text-2xl font-bold text-cyan-600">From {isAU ? "A$" : "$"}55<span className="text-sm font-normal text-muted-foreground">/night</span></p>
-            </Card>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Home className="h-6 w-6 text-emerald-600" />,
+                title: "House Sitting",
+                description: "Your sitter stays overnight in your home. Pets stay comfortable in their own environment with their routine intact.",
+                bg: "bg-emerald-50"
+              },
+              {
+                icon: <Clock className="h-6 w-6 text-teal-600" />,
+                title: "Drop-in Visits",
+                description: "Daily visits for feeding, cuddles, and playtime. Perfect for cats and independent pets who prefer their own space.",
+                bg: "bg-teal-50"
+              },
+              {
+                icon: <Users className="h-6 w-6 text-cyan-600" />,
+                title: "Pet Boarding",
+                description: "Your pet stays at the sitter's home. Great for social pets who love company and new adventures.",
+                bg: "bg-cyan-50"
+              }
+            ].map(service => (
+              <Card key={service.title} className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div className="p-6">
+                  <div className={"inline-flex items-center justify-center w-12 h-12 rounded-xl " + service.bg + " mb-4"}>
+                    {service.icon}
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2 text-lg">{service.title}</h3>
+                  <p className="text-[15px] text-gray-500 leading-relaxed">{service.description}</p>
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-800" />
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-10 left-10 text-8xl animate-float">&#x1F33F;</div>
-          <div className="absolute bottom-10 right-10 text-7xl animate-bounce-slow" style={{ animationDelay: "1s" }}>&#x1F43E;</div>
-        </div>
-
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            {"Ready to Find Your Perfect "}
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-cyan-300">
-              {city.name + " Sitter?"}
-            </span>
+      <section className="bg-gray-900 py-20 text-center">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+            {"Find your pet's perfect sitter in "}
+            <span className="text-emerald-400">{city.name}</span>
           </h2>
-          <p className="text-xl text-white/70 mb-10 max-w-2xl mx-auto">
-            {"Join pet owners across " + city.name + " who trust ZiggySitters with their fur babies. Book your next holiday worry-free."}
+          <p className="text-gray-400 mb-8 text-lg">
+            {"Join pet owners across " + city.name + " who trust ZiggySitters. ID verified. Daily photo updates. Local people who love pets."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg px-10 py-6 text-lg"
               onClick={() => navigate("/find-sitters")}
-              className="gap-2 bg-white text-emerald-800 hover:bg-white/90 font-bold px-10 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
             >
               Find Sitters Near Me
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
             <Button
               size="lg"
+              variant="outline"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800 px-10 py-6 text-lg"
               onClick={() => navigate("/become-sitter")}
-              className="bg-emerald-500 text-white hover:bg-emerald-400 font-semibold px-10 py-6 text-lg border-2 border-emerald-400"
             >
               Become a Sitter
             </Button>
