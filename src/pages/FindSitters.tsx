@@ -611,8 +611,8 @@ export default function FindSitters() {
       
       {/* Location Notice Banner */}
       <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
-        <p className="text-sm md:text-base font-medium">
-          📍 Currently serving Auckland, New Zealand. Expanding to other cities soon - stay tuned!
+        <p className="text-sm md:text-base font-medium font-body">
+          <img src={iconLocation} alt="" className="inline h-4 w-4 mr-1 -mt-0.5" /> Currently serving Auckland, New Zealand. Expanding to other cities soon!
         </p>
       </div>
       
