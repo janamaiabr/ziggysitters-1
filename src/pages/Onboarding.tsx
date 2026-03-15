@@ -1134,32 +1134,15 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 overflow-hidden py-8 md:py-12 px-4">
-      {/* Subtle background decoration - no animations for better Safari performance */}
-      {step === 1 && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
-          <div className="absolute top-20 left-1/4 text-4xl md:text-5xl">💜</div>
-          <div className="absolute top-32 right-1/4 text-3xl md:text-4xl">🐾</div>
-          <div className="absolute bottom-32 right-1/3 text-3xl md:text-4xl">🎉</div>
-          <div className="absolute bottom-20 left-1/4 text-4xl md:text-5xl">💙</div>
-        </div>
-      )}
-
-      {/* Subtle background blobs - no animations */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className="absolute top-10 right-20 w-80 h-80 bg-purple-300 dark:bg-purple-700 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-700 rounded-full blur-3xl opacity-20"></div>
-      </div>
-
+    <div className="min-h-screen relative bg-background overflow-hidden py-8 md:py-12 px-4">
       <div className="container mx-auto max-w-5xl relative z-10">
-        <Card className="shadow-2xl border-2 border-purple-200 dark:border-purple-800 bg-background/95 backdrop-blur">
+        <Card className="shadow-2xl border border-border bg-background">
           <CardHeader className="text-center space-y-4 pb-6">
             <div className="flex items-center justify-center gap-3">
               <PawPrint className="w-8 h-8 text-primary" />
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Welcome to ZiggySitters!
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                Welcome to ZiggySitters
               </h1>
-              <span className="text-2xl">🎉</span>
             </div>
                 
             {/* Progress indicator - hide for pet owners at step 2 */}
