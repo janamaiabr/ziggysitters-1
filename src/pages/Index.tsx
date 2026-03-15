@@ -680,10 +680,10 @@ const Index = () => {
       <TestimonialsSection />
 
       {/* Sticky Mobile CTA Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
         <Button 
           size="lg" 
-          className="w-full text-base font-bold py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl min-h-[48px] shadow-lg"
+          className="w-full text-base font-bold py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl min-h-[48px] shadow-lg"
           onClick={() => navigate('/auth?tab=signup')}
         >
           🐾 Sign Up Free — Find a Sitter
