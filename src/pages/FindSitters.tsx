@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Filter, Search, X, Home, List } from 'lucide-react';
+import { Filter, Search, X, Home, Map as MapIcon, List } from 'lucide-react';
 import iconLocation from '@/assets/icons/icon-location.png';
 import iconSearch from '@/assets/icons/icon-search.png';
 import iconMappin from '@/assets/icons/icon-mappin.png';
