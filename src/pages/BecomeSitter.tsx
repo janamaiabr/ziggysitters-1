@@ -49,13 +49,17 @@ const steps = [
   { step: 4, title: 'Start Earning', description: 'Accept bookings, care for pets, send updates, and get paid', icon: iconHeart },
 ];
 
-const HIGH_DEMAND_SUBURBS = [
-  { slug: 'grey-lynn', name: 'Grey Lynn' },
-  { slug: 'ponsonby', name: 'Ponsonby' },
-  { slug: 'mt-eden', name: 'Mt Eden' },
-  { slug: 'remuera', name: 'Remuera' },
-  { slug: 'herne-bay', name: 'Herne Bay' },
-  { slug: 'takapuna', name: 'Takapuna' },
+const HIGH_DEMAND_AREAS = [
+  { slug: 'grey-lynn', name: 'Grey Lynn', region: 'Auckland' },
+  { slug: 'ponsonby', name: 'Ponsonby', region: 'Auckland' },
+  { slug: 'mt-eden', name: 'Mt Eden', region: 'Auckland' },
+  { slug: 'remuera', name: 'Remuera', region: 'Auckland' },
+  { slug: 'herne-bay', name: 'Herne Bay', region: 'Auckland' },
+  { slug: 'takapuna', name: 'Takapuna', region: 'Auckland' },
+  { slug: 'noosa-heads', name: 'Noosa Heads', region: 'Sunshine Coast' },
+  { slug: 'maroochydore', name: 'Maroochydore', region: 'Sunshine Coast' },
+  { slug: 'buderim', name: 'Buderim', region: 'Sunshine Coast' },
+  { slug: 'caloundra', name: 'Caloundra', region: 'Sunshine Coast' },
 ];
 
 export default function BecomeSitter() {
