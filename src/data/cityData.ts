@@ -17,7 +17,7 @@ export const cities: CityData[] = [
     slug: "auckland",
     name: "Auckland",
     maoriName: "Tamaki Makaurau",
-    heroDescription: "New Zealand\u2019s largest city is home to thousands of pet-loving families. Whether you live in Ponsonby, Remuera, or out on the North Shore, finding a trusted local pet sitter has never been easier.",
+    heroDescription: "Auckland's biggest city, thousands of pet owners — and reliable local sitters ready to help. Find someone in your neighbourhood who genuinely loves dogs and will treat your pets like their own.",
     neighborhoods: ["Ponsonby", "Grey Lynn", "Remuera", "Mt Eden", "Devonport", "Takapuna", "Mission Bay", "Howick", "Henderson", "Manukau"],
     parks: ["Cornwall Park", "Western Springs", "Meola Reef Dog Park", "Barry Curtis Park", "Long Bay Regional Park", "Bastion Point"],
     vetInfo: "Auckland has excellent emergency vet care available 24/7, including Auckland Emergency Veterinary Clinic in Grey Lynn and After Hours Veterinary Clinic in Newmarket.",

@@ -97,7 +97,7 @@ import AdminStorageOptimizer from "./pages/AdminStorageOptimizer";
 import AdminSitterVetting from "./pages/AdminSitterVetting";
 import AdminVetClinics from "./pages/AdminVetClinics";
 import AdminKPIDashboard from "./pages/AdminKPIDashboard";
-import SunshineCoastSeniorPets from "./pages/SunshineCoastSeniorPets";
+// SunshineCoastSeniorPets merged into PetSittingSunshineCoast
 import PetSittingAuckland from "./pages/PetSittingAuckland";
 import PetSittingWellington from "./pages/PetSittingWellington";
 import PetSittingChristchurch from "./pages/PetSittingChristchurch";
