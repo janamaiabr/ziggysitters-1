@@ -1149,7 +1149,7 @@ export default function Profile() {
                   
                   {/* Role Badge */}
                   <Badge variant="outline" className="mb-3 capitalize">
-                    {hasYoungWalker ? '🚶 Young Walker Parent' : profile.role === 'pet_sitter' ? '🐕 Pet Sitter' : profile.role === 'pet_owner' ? '🏠 Pet Owner' : profile.role.replace('_', ' ')}
+                    {hasYoungWalker ? 'Young Walker Parent' : profile.role === 'pet_sitter' ? 'Pet Sitter' : profile.role === 'pet_owner' ? 'Pet Owner' : profile.role.replace('_', ' ')}
                   </Badge>
                   
                   {/* Verification Status Message for Sitters */}
