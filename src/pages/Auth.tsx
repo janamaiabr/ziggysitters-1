@@ -226,6 +226,10 @@ export default function Auth() {
           title: "Account Created",
           description: "Welcome to ZiggySitters! Let's set up your profile.",
         });
+        // Pass intended role to onboarding if specified
+        if (intendedRole) {
+          localStorage.setItem('onboarding_data', JSON.stringify({ role: intendedRole, city: 'Auckland' }));
+        }
         navigate(redirectUrl);
       }
     } catch (error) {
