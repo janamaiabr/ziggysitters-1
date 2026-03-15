@@ -64,7 +64,7 @@ export default function FAQ() {
         {/* Hero */}
         <section className="relative min-h-[50vh] flex items-center overflow-hidden">
           <div className="absolute inset-0">
-            <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=1600&h=800&fit=crop" alt="Pet care" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1600&h=800&fit=crop" alt="Pet care" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
           </div>
           <div className="container mx-auto px-4 py-20 relative z-10">

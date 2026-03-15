@@ -56,14 +56,14 @@ const cityWhyUsImages: Record<string, string> = {
 // City-specific service images
 const cityServiceImages: Record<string, string[]> = {
   "sunshine-coast": [
-    "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=400&fit=crop",
     "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=400&fit=crop",
     "https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=600&h=400&fit=crop",
   ],
   "default": [
-    "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
   ],
 };
 
