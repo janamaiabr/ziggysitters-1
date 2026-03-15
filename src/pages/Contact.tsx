@@ -14,9 +14,6 @@ import iconClock from '@/assets/icons/icon-clock.png';
 import { useNavigate } from 'react-router-dom';
 import { metaPixel } from '@/lib/metaPixel';
 
-import iconEmail from '@/assets/icons/icon-email.png';
-import iconQuestion from '@/assets/icons/icon-question.png';
-import iconShield from '@/assets/icons/icon-shield.png';
 
 export default function Contact() {
   const { toast } = useToast();
