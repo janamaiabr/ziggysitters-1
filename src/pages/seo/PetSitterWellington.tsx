@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { MapPin, Star, Shield, Heart } from 'lucide-react';
 
 export default function PetSitterWellington() {
@@ -142,7 +142,6 @@ export default function PetSitterWellington() {
         </section>
       </main>
       
-      <Footer />
     </>
   );
 }

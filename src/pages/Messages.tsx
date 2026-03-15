@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { Send, MessageCircle, ArrowLeft } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -245,7 +245,6 @@ export default function Messages() {
             </CardContent>
           </Card>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -399,7 +398,6 @@ export default function Messages() {
           </Card>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
