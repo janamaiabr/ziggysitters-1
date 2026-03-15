@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Shield, Camera, CheckCircle } from 'lucide-react';
+import { Search, Shield, Camera, CheckCircle, Check } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
 import heroSitterReal from '@/assets/hero-sitter-real.jpg';
@@ -112,9 +112,9 @@ const HeroSectionPlayful = ({
                     Find a Trusted Sitter Near Me
                   </Button>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground font-body">
-                    <span>✓ ID Verified</span>
-                    <span>✓ Daily Photo Updates</span>
-                    <span className="hidden sm:inline">✓ Free to browse</span>
+                    <span className="flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> ID Verified</span>
+                    <span className="flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> Daily Photo Updates</span>
+                    <span className="hidden sm:flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> Free to browse</span>
                   </div>
                 </div>
               </div>
@@ -150,7 +150,7 @@ const HeroSectionPlayful = ({
                       <Shield className="w-3 h-3 text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-foreground font-body">ID Verified ✅</p>
+                      <p className="text-[10px] font-bold text-foreground font-body">ID Verified</p>
                       <p className="text-[9px] text-muted-foreground font-body">Background Checked</p>
                     </div>
                   </div>
@@ -184,7 +184,7 @@ const HeroSectionPlayful = ({
                       <Shield className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground font-body">ID Verified ✅</p>
+                      <p className="text-sm font-bold text-foreground font-body">ID Verified</p>
                       <p className="text-xs text-muted-foreground font-body">Background Checked</p>
                     </div>
                   </div>
@@ -273,7 +273,7 @@ const HeroSectionPlayful = ({
 
           <div className="hidden md:block text-center mt-4">
             <p className="text-sm text-muted-foreground bg-accent border border-border rounded-full px-4 py-2 inline-flex items-center gap-2 font-body">
-              ⏰ <span className="font-medium text-foreground">Most owners book within 24 hours</span> of finding their sitter
+              <img src={iconPaw} alt="" className="w-4 h-4" /> <span className="font-medium text-foreground">Most owners book within 24 hours</span> of finding their sitter
             </p>
           </div>
         </div>
