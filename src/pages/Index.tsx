@@ -300,7 +300,7 @@ const Index = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
                 <div className="space-y-4 md:space-y-6">
                   <div className="inline-flex items-center bg-primary text-primary-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium font-body">
-                    <Camera className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2" />
+                    <img src={iconCamera} alt="" className="w-4 h-4 mr-1.5 md:mr-2" />
                     Industry First Feature
                   </div>
                   
