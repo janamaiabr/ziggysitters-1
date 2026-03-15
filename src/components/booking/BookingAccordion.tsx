@@ -39,14 +39,12 @@ const serviceRates = {
   'pet_sitting_sitters_home': 66.00, // per day
   'pet_sitting_owners_home': 55.00,  // per day
   'drop_in_visits': 27.50,           // per hour
-  'dog_walking': 25.00,              // per hour
 };
 
 const serviceLabels = {
   'pet_sitting_sitters_home': 'Pet Sitting (Sitter\'s Home)',
   'pet_sitting_owners_home': 'Pet Sitting (Your Home)', 
   'drop_in_visits': 'Drop-in Visits',
-  'dog_walking': 'Dog Walking',
 };
 
 const serviceUnits = {
@@ -290,19 +288,7 @@ export default function BookingAccordion({
       return;
     }
 
-    // Check selected pets
-    if (selectedPetIds.length === 0) {
-      trackDropoff('booking', 'validation_failed', {
-        sitter_id: sitter.id,
-        reason: 'no_pets_selected',
-      });
-      toast({
-        title: 'No Pets Selected',
-        description: 'Please select at least one pet for this booking.',
-        variant: 'destructive'
-      });
-      return;
-    }
+    // Pet selection is now optional - owners can add pet details later
 
     console.log('Setting loading to true');
     setLoading(true);

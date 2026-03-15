@@ -289,7 +289,7 @@ export default function DailyReports() {
           <Alert className="mb-6 border border-orange-300 bg-orange-50">
             <Info className="h-5 w-5 text-orange-600" />
             <AlertDescription className="text-sm text-gray-800 ml-2">
-              <strong>Important:</strong> When pet owners request daily reports, you must submit them or face a 15% payment reduction.
+              <strong>Important:</strong> Daily reports help pet owners stay connected with their pets. Quick & easy — most reports take under 5 minutes.
               <br />
               <strong>Reporting Schedule:</strong> Submit one report per day during the booking period, anytime within the 24-hour day. The first report should be submitted on the booking start date.
             </AlertDescription>

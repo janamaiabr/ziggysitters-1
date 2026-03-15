@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface BookingRequest {
@@ -206,7 +206,6 @@ serve(async (req) => {
     }
 
     // Service type mapping from frontend to database enum
-    // ONLY 3 CORE SERVICES (dog walking removed)
     const serviceTypeMapping = {
       'pet_sitting_owners_home': 'pet_sitting_owners_home',
       'pet_sitting_sitters_home': 'pet_sitting_sitters_home',
@@ -216,10 +215,10 @@ serve(async (req) => {
     // Map frontend service type to database enum
     const dbServiceType = serviceTypeMapping[bookingData.serviceType as keyof typeof serviceTypeMapping] || bookingData.serviceType;
     
-    // Validate that the service type exists - ONLY 3 CORE SERVICES
+    // Validate that the service type exists
     const validServiceTypes = ['pet_sitting_owners_home', 'pet_sitting_sitters_home', 'drop_in_visits'];
     if (!validServiceTypes.includes(dbServiceType)) {
-      throw new Error(`Invalid service type: ${bookingData.serviceType}. Only pet sitting and drop-in visits are available.`);
+      throw new Error(`Invalid service type: ${bookingData.serviceType}. Please select a valid service.`);
     }
     
     // Get sitter's service pricing to validate amount
@@ -360,14 +359,16 @@ serve(async (req) => {
         appliedPromoCode = bookingData.promoCode.toUpperCase();
         
         // Increment promo code usage
+        const { data: currentPromo } = await supabaseClient
+          .from('promo_codes')
+          .select('current_uses')
+          .eq('code', appliedPromoCode)
+          .single();
+        
         const { error: updateError } = await supabaseClient
           .from('promo_codes')
-          .update({ current_uses: supabaseClient.raw('current_uses + 1') })
+          .update({ current_uses: (currentPromo?.current_uses || 0) + 1 })
           .eq('code', appliedPromoCode);
-        
-        if (updateError) {
-          logStep("Failed to increment promo usage", { error: updateError });
-        }
         
         logStep("Promo code applied", { 
           code: appliedPromoCode, 
