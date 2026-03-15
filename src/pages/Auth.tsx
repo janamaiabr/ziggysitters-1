@@ -326,12 +326,12 @@ export default function Auth() {
                   {/* Progress indicator */}
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">1</div>
-                      <span className="font-medium text-purple-600">Create account</span>
+                      <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">1</div>
+                      <span className="font-medium text-primary">Create account</span>
                     </div>
-                    <div className="w-8 h-px bg-gray-300"></div>
+                    <div className="w-8 h-px bg-border"></div>
                     <div className="flex items-center gap-1.5">
-                      <div className="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold">2</div>
+                      <div className="w-7 h-7 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-bold">2</div>
                       <span>Set up profile</span>
                     </div>
                   </div>
