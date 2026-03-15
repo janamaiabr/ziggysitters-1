@@ -646,9 +646,6 @@ export default function SitterProfile() {
               </Card>
             )}
 
-            {/* Reviews */}
-            <ReviewsList sitterId={sitterData.id} sitterName={sitterData.display_name} />
-            
             {/* Booking Form — after all info */}
             <div id="booking-section" className="space-y-4">
               <BookingFormDirect
@@ -697,6 +694,9 @@ export default function SitterProfile() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Reviews */}
+            <ReviewsList sitterId={sitterData.id} sitterName={sitterData.display_name} />
 
             {/* FAQ */}
             <FAQAccordion 
