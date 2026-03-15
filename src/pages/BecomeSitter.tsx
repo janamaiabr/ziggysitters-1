@@ -50,12 +50,12 @@ const steps = [
 ];
 
 const HIGH_DEMAND_SUBURBS = [
-  { slug: 'grey-lynn', name: 'Grey Lynn', searches: 45 },
-  { slug: 'ponsonby', name: 'Ponsonby', searches: 52 },
-  { slug: 'mt-eden', name: 'Mt Eden', searches: 38 },
-  { slug: 'remuera', name: 'Remuera', searches: 48 },
-  { slug: 'herne-bay', name: 'Herne Bay', searches: 32 },
-  { slug: 'takapuna', name: 'Takapuna', searches: 41 },
+  { slug: 'grey-lynn', name: 'Grey Lynn' },
+  { slug: 'ponsonby', name: 'Ponsonby' },
+  { slug: 'mt-eden', name: 'Mt Eden' },
+  { slug: 'remuera', name: 'Remuera' },
+  { slug: 'herne-bay', name: 'Herne Bay' },
+  { slug: 'takapuna', name: 'Takapuna' },
 ];
 
 export default function BecomeSitter() {
