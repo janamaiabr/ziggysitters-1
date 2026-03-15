@@ -222,20 +222,23 @@ export default function HowItWorks() {
         </section>
 
         {/* CTA */}
-        <section className="py-24 bg-secondary text-secondary-foreground">
+        <section className="py-24 bg-muted">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Ready to Get Started?</h2>
-            <p className="text-lg text-secondary-foreground/60 mb-8 max-w-xl mx-auto font-body">
-              Find a trusted local sitter or start earning as a pet carer.
+            <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-foreground">Ready to Get Started?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto font-body">
+              Find an affordable, trusted local sitter — or earn extra cash caring for pets.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
                 Find a Sitter <span className="ml-2">→</span>
               </Button>
-              <Button size="lg" variant="outline" className="font-body px-10 py-6 text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10" onClick={() => navigate('/become-sitter')}>
-                Become a Sitter
+              <Button size="lg" variant="outline" className="font-body px-10 py-6 text-lg border-border text-foreground hover:bg-accent" onClick={() => navigate('/become-sitter')}>
+                Become a Sitter — It's Free
               </Button>
             </div>
+            <p className="text-sm text-muted-foreground mt-4 font-body">
+              Free to join · No payment until you book · Cancel anytime
+            </p>
           </div>
         </section>
       </div>
