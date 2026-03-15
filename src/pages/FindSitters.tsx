@@ -642,13 +642,13 @@ export default function FindSitters() {
               <div className="space-y-4">
                 {/* Name Search Row */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 block">Search by name</label>
+                  <label className="text-sm font-medium text-foreground block font-body">Search by name</label>
                   <Input
                     type="text"
                     placeholder="Search by sitter name..."
                     value={nameSearch}
                     onChange={(e) => setNameSearch(e.target.value)}
-                    className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                    className="h-12 border-border text-foreground focus:border-primary bg-background"
                   />
                 </div>
                 
