@@ -191,7 +191,7 @@ export default function Contact() {
                       disabled={loading}
                     >
                       {loading ? 'Sending...' : 'Send Message'}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <span className="ml-2">→</span>
                     </Button>
                   </form>
                 </CardContent>
