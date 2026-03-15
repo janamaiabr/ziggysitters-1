@@ -337,7 +337,7 @@ const Index = () => {
                       onClick={() => navigate('/daily-reports-info')}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 md:px-8 min-h-[44px] font-body"
                     >
-                      <Camera className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                      <img src={iconCamera} alt="" className="mr-2 h-5 w-5" />
                       Learn More About Daily Reports
                     </Button>
                   </div>
