@@ -342,11 +342,11 @@ const Index = () => {
               <div className="space-y-4 md:space-y-6">
                 <p className="text-sm font-semibold text-primary uppercase tracking-widest font-body">For Pet Sitters</p>
                 <h2 className="text-2xl md:text-4xl font-bold text-foreground font-display">
-                  Love Pets? Earn Extra Cash
+                  Love Dogs? Earn Extra Cash Doing What You Love
                 </h2>
                 <p className="text-sm md:text-lg text-muted-foreground font-body leading-relaxed">
-                  Set your own rates, choose your hours, and get paid to care for pets in your neighbourhood. 
-                  We handle payments, booking management, and marketing — you just focus on the animals.
+                  Turn your love for animals into income. Set your own rates, choose your hours, and get paid to care for pets in your neighbourhood. 
+                  No upfront costs — we handle payments, bookings, and finding you clients.
                 </p>
                 <div className="space-y-2">
                   {[
