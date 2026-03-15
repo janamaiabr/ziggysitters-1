@@ -6,7 +6,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { MapPin, Mail, Clock, ArrowRight } from 'lucide-react';
+import iconEmail from '@/assets/icons/icon-email.png';
+import iconQuestion from '@/assets/icons/icon-question.png';
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconMappin from '@/assets/icons/icon-mappin.png';
+import iconClock from '@/assets/icons/icon-clock.png';
 import { useNavigate } from 'react-router-dom';
 import { metaPixel } from '@/lib/metaPixel';
 
