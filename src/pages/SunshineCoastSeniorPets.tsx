@@ -69,7 +69,7 @@ const FEATURES = [
     icon: <Phone className="h-6 w-6" />,
     title: 'Emergency plan included',
     description:
-      'Every booking includes your vet's details, nearest emergency hospital, and a clear escalation process. No scrambling if something changes.',
+      "Every booking includes your vet's details, nearest emergency hospital, and a clear escalation process. No scrambling if something changes.",
   },
   {
     icon: <Camera className="h-6 w-6" />,
