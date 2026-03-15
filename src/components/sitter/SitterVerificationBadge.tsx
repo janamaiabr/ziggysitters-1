@@ -42,7 +42,7 @@ export default function SitterVerificationBadge({
 
   const labels: Record<number, string> = {
     1: 'New Sitter',
-    2: 'Verified',
+    2: 'Vetted',
     3: 'Gold Star'
   };
 

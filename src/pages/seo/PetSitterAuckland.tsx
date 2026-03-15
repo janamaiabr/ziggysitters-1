@@ -10,7 +10,7 @@ export default function PetSitterAuckland() {
     <>
       <Helmet>
         <title>Pet Sitter Auckland | Trusted Local Pet Sitters | ZiggySitters</title>
-        <meta name="description" content="Find trusted pet sitters in Auckland, NZ. Verified local sitters for dogs, cats & more. Book online, secure payments, 24/7 support. From $50/day." />
+        <meta name="description" content="Find trusted pet sitters in Auckland, NZ. Vetted local sitters for dogs, cats & more. Book online, secure payments, 24/7 support. From $50/day." />
         <meta name="keywords" content="pet sitter auckland, dog sitter auckland, cat sitter auckland, pet sitting auckland nz, house sitter auckland" />
         <link rel="canonical" href="https://ziggysitters.co.nz/pet-sitter-auckland" />
       </Helmet>
