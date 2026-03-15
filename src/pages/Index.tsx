@@ -398,15 +398,16 @@ const Index = () => {
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6 md:gap-10 items-center">
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
                 <img 
-                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop" 
-                  alt="Pet sitter with dog"
+                  src={sitterCtaImg}
+                  alt="Pet sitter playing with puppy"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <div className="absolute bottom-4 left-4">
                   <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 border border-border">
-                    <p className="text-sm font-semibold text-foreground font-body">Join {platformStats.sitters}+ sitters</p>
-                    <p className="text-xs text-muted-foreground font-body">earning doing what they love</p>
+                    <p className="text-sm font-semibold text-foreground font-body">Earn doing what you love</p>
+                    <p className="text-xs text-muted-foreground font-body">Set your own rates & hours</p>
                   </div>
                 </div>
               </div>
