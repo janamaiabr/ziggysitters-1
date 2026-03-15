@@ -100,7 +100,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      'Luna is 16 with hyperthyroidism. I was terrified to leave her. Our sitter even sent voice messages explaining how she was eating. Genuinely caring people.',
+      "Luna is 16 with hyperthyroidism. I was terrified to leave her. Our sitter even sent voice messages explaining how she was eating. Genuinely caring people.",
     name: 'Emma R.',
     suburb: 'Noosa',
   },
