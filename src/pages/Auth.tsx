@@ -31,7 +31,7 @@ export default function Auth() {
 
   const defaultTab = searchParams.get('tab') || 'signin';
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const redirectUrl = searchParams.get('redirect') || '/onboarding';
+  const signupRedirectUrl = searchParams.get('redirect') || '/onboarding';
   const intendedRole = searchParams.get('role') || '';
 
   useEffect(() => {
