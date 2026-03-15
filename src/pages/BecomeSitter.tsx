@@ -358,7 +358,7 @@ export default function BecomeSitter() {
               }}
             >
               Apply Now — It's Free
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <span className="ml-2">→</span>
             </Button>
           </div>
         </section>
