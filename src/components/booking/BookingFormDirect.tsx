@@ -153,28 +153,8 @@ export default function BookingFormDirect({
     const realService = servicesData.find(s => s.service_type === serviceType);
     
     if (realService) {
-      if (serviceType === 'dog_walking' && realService.hourly_rate) {
-        if (!startTime || !endTime) return 0;
-        
-        const [startHour, startMin] = startTime.split(':').map(Number);
-        const [endHour, endMin] = endTime.split(':').map(Number);
-        let startMinutes = startHour * 60 + startMin;
-        let endMinutes = endHour * 60 + endMin;
-        
-        if (endMinutes <= startMinutes) {
-          endMinutes += 24 * 60;
-        }
-        
-        let durationHours = (endMinutes - startMinutes) / 60;
-        durationHours = Math.max(0.5, Math.round(durationHours * 2) / 2);
-        
-        let daysBooked = 1;
-        if (repeatAcrossDays && startDate && endDate) {
-          daysBooked = Math.max(1, differenceInDays(endDate, startDate));
-        }
-        
-        return durationHours * realService.hourly_rate * daysBooked;
-      }
+      // Per-pet pricing: multiply by number of pets (minimum 1)
+      const petCount = Math.max(1, selectedPetIds.length);
       
       if (realService.hourly_rate && startTime && endTime) {
         if (!startDate || !endDate) return 0;
@@ -192,7 +172,7 @@ export default function BookingFormDirect({
         if (!startDate || !endDate) return 0;
         const rate = realService.daily_rate || realService.overnight_rate;
         const totalDays = Math.max(1, differenceInDays(endDate, startDate) + 1);
-        return totalDays * rate;
+        return totalDays * rate * petCount;
       }
     }
     
