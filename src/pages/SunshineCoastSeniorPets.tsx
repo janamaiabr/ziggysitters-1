@@ -277,9 +277,9 @@ export default function SunshineCoastSeniorPets() {
                         <Clock className="h-5 w-5 text-blue-500" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Your pet's schedule, not ours</h3>
+                        <h3 className="font-semibold text-gray-900 mb-1">Your pet&apos;s schedule, not ours</h3>
                         <p className="text-sm text-gray-500 leading-relaxed">
-                          Meds at 7am and 6pm? Dinner at 4:30? Short walk but no stairs? We work around your pet's routine exactly as you set it.
+                          Meds at 7am and 6pm? Dinner at 4:30? Short walk but no stairs? We work around your pet&apos;s routine exactly as you set it.
                         </p>
                       </div>
                     </div>
