@@ -842,9 +842,9 @@ export default function FindSitters() {
               {(selectedDate || checkOutDate || location || serviceType) && (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {selectedDate && checkOutDate && (
-                    <Badge variant="secondary" className="text-sm">
-                      📅 {format(selectedDate, 'MMM d')} - {format(checkOutDate, 'MMM d')}
-                      <span className="ml-1 text-green-600">✓ Filtered</span>
+                    <Badge variant="secondary" className="text-sm font-body">
+                      {format(selectedDate, 'MMM d')} - {format(checkOutDate, 'MMM d')}
+                      <span className="ml-1 text-primary">✓ Filtered</span>
                     </Badge>
                   )}
                   {location && (
