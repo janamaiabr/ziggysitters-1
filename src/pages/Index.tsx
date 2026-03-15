@@ -272,9 +272,9 @@ const Index = () => {
                 }}
                 className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-6 md:px-10 py-5 md:py-7 text-base md:text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 min-h-[48px] font-body"
               >
-                <Search className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                <img src={iconSearch} alt="" className="w-5 h-5 mr-2" />
                 {isMobile ? 'See All Sitters' : 'Browse All Sitters Near You'}
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <span className="ml-2">→</span>
               </Button>
               <p className="text-xs md:text-sm text-muted-foreground font-body">
                 Free to browse · ID Verified · Daily Photo Updates
