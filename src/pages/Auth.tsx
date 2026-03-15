@@ -257,7 +257,7 @@ export default function Auth() {
           </p>
         </div>
 
-        <Card className="border border-purple-200 dark:border-purple-800 shadow-xl">
+        <Card className="border border-border shadow-xl">
           <CardContent className="pt-6 space-y-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-4">
