@@ -345,8 +345,8 @@ export default function Profile() {
       fireSuccess();
       
       toast({
-        title: "🎉 Document uploaded successfully!",
-        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for verification. Great progress!`,
+        title: "Document uploaded successfully",
+        description: `${type === 'id' ? 'ID' : 'Police Vet'} document uploaded for vetting. Great progress!`,
       });
 
       // Refresh profile data
