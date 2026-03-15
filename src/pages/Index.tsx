@@ -52,15 +52,36 @@ const Index = () => {
 
   useEffect(() => {
     const fetchSitters = async () => {
-      const { data, error } = await supabase
+      // Fetch vetted sitters first (verified + golden badge), then fill with other completed sitters
+      const { data: vettedData } = await supabase
         .from('public_sitters')
         .select('*')
         .eq('onboarding_completed', true)
+        .eq('is_verified', true)
         .not('avatar_url', 'is', null)
         .neq('avatar_url', '')
         .order('golden_badge_approved', { ascending: false })
         .order('rating', { ascending: false })
         .limit(6);
+
+      let data = vettedData || [];
+
+      // If we don't have enough vetted sitters, fill with other completed sitters
+      if (data.length < 6) {
+        const vettedIds = data.map(s => s.id);
+        const { data: extraData } = await supabase
+          .from('public_sitters')
+          .select('*')
+          .eq('onboarding_completed', true)
+          .not('avatar_url', 'is', null)
+          .neq('avatar_url', '')
+          .order('rating', { ascending: false })
+          .limit(6 - data.length);
+        
+        if (extraData) {
+          data = [...data, ...extraData.filter(s => !vettedIds.includes(s.id))].slice(0, 6);
+        }
+      }
       
       if (data && data.length > 0) {
         const sitterIds = data.map(s => s.id);
