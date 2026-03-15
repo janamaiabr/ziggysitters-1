@@ -238,7 +238,7 @@ export default function BecomeSitter() {
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 bg-muted rounded-xl p-3 border border-border">
-                        <Check className="w-5 h-5 text-primary flex-shrink-0" />
+                        <img src={iconCheck} alt="" className="w-5 h-5 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-sm text-foreground font-body">Complete all reports</p>
                           <p className="text-xs text-muted-foreground font-body">Earn 100% payment</p>
