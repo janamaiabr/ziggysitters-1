@@ -75,7 +75,7 @@ const FEATURES = [
     icon: <Camera className="h-6 w-6" />,
     title: 'Daily photo & video updates',
     description:
-      'See exactly how your pet is doing — not a generic "all good" text, but photos, notes on appetite, mood, medication times, and activity.',
+      'See exactly how your pet is doing — not a generic all-good text, but photos, notes on appetite, mood, medication times, and activity.',
   },
   {
     icon: <Users className="h-6 w-6" />,
