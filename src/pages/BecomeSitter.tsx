@@ -159,7 +159,7 @@ export default function BecomeSitter() {
                       </CardContent>
                     </Card>
                     {index < steps.length - 1 && (
-                      <ArrowRight className="hidden lg:block absolute top-1/2 -right-3 w-6 h-6 text-border -translate-y-1/2 z-10" />
+                      <span className="hidden lg:block absolute top-1/2 -right-3 text-border -translate-y-1/2 z-10 text-xl">→</span>
                     )}
                   </div>
                 ))}
