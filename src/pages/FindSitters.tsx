@@ -709,7 +709,7 @@ export default function FindSitters() {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 block">Check-out</label>
+                    <label className="text-sm font-medium text-foreground block font-body">Check-out</label>
                      <Input 
                       type="date"
                       value={checkOutDate ? checkOutDate.toISOString().split('T')[0] : ''}
