@@ -834,7 +834,7 @@ export default function FindSitters() {
               {/* Add Pets Prompt - subtle but persistent */}
               <AddPetsPrompt />
               
-              <h2 className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
+              <h2 className="text-xl md:text-2xl font-semibold mb-2 text-foreground font-display">
                 Available Pet Sitters
               </h2>
               
