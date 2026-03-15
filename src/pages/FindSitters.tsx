@@ -714,7 +714,7 @@ export default function FindSitters() {
                       type="date"
                       value={checkOutDate ? checkOutDate.toISOString().split('T')[0] : ''}
                       onChange={(e) => setCheckOutDate(e.target.value ? new Date(e.target.value) : undefined)}
-                      className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white"
+                      className="h-12 border-border text-foreground focus:border-primary bg-background"
                       min={selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
                     />
                   </div>
