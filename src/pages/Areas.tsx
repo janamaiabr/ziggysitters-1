@@ -115,8 +115,8 @@ export default function Areas() {
               Areas We Service
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Find trusted, verified pet sitters across Auckland, Hamilton and the Sunshine Coast. 
-              Click on any suburb to see available sitters in your area.
+              Find trusted, vetted pet sitters across Auckland, Hamilton and the Sunshine Coast.
+              Click any suburb to see available sitters in your area.
             </p>
           </div>
         </section>

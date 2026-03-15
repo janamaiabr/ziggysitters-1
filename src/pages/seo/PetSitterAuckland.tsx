@@ -61,7 +61,7 @@ export default function PetSitterAuckland() {
               </div>
               <div>
                 <div className="text-3xl font-bold text-primary">100%</div>
-                <div className="text-muted-foreground">Verified Sitters</div>
+                <div className="text-muted-foreground">Vetted Sitters</div>
               </div>
             </div>
           </div>
