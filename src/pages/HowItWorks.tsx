@@ -89,7 +89,7 @@ export default function HowItWorks() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold px-8 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-                  Find a Sitter <ArrowRight className="ml-2 h-4 w-4" />
+                  Find a Sitter <span className="ml-2">→</span>
                 </Button>
                 <Button size="lg" variant="outline-white" className="font-body px-8 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
                   Become a Sitter
