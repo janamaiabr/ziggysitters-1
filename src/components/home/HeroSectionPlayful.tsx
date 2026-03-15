@@ -268,19 +268,9 @@ const HeroSectionPlayful = ({
             </div>
           </div>
 
-          {/* Urgency & Social Proof - hidden on mobile */}
-          <div className="hidden md:block mt-6 md:mt-8">
-            <UrgencyIndicator location={location} />
-          </div>
-
+          {/* Social Proof */}
           <div className="hidden md:block mt-6 md:mt-8">
             <LocalSocialProof />
-          </div>
-
-          <div className="hidden md:block text-center mt-4">
-            <p className="text-sm text-muted-foreground bg-accent border border-border rounded-full px-4 py-2 inline-flex items-center gap-2 font-body">
-              <img src={iconPaw} alt="" className="w-4 h-4" /> <span className="font-medium text-foreground">Most owners book within 24 hours</span> of finding their sitter
-            </p>
           </div>
         </div>
       </div>
