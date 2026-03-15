@@ -3,7 +3,6 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import BookingFormDirect from '@/components/booking/BookingFormDirect';
 import { useAuth } from '@/hooks/useAuth';
@@ -23,6 +22,8 @@ import PublicAvailabilityCalendar from '@/components/calendar/PublicAvailability
 import ReviewsList from '@/components/reviews/ReviewsList';
 import { ga4 } from '@/lib/ga4';
 import BookingExitSurvey from '@/components/booking/BookingExitSurvey';
+import { MapContainer, TileLayer, Circle } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 import iconMappin from '@/assets/icons/icon-mappin.png';
 import iconClock from '@/assets/icons/icon-clock.png';
@@ -60,6 +61,8 @@ interface SitterData {
   specialties: string[];
   gallery: string[];
   competencyTags: string[];
+  latitude: number | null;
+  longitude: number | null;
 }
 
 interface Testimonial {
@@ -84,6 +87,7 @@ export default function SitterProfile() {
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [serviceAreas, setServiceAreas] = useState<string[]>([]);
+  const [completedBookings, setCompletedBookings] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   
   const buildSearchUrl = () => {
@@ -112,9 +116,7 @@ export default function SitterProfile() {
     if (user && profile?.role === 'pet_owner' && sitterData) {
       const timer = setTimeout(() => {
         const bookingSection = document.getElementById('booking-section');
-        if (bookingSection) {
-          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 500);
       return () => clearTimeout(timer);
     }
@@ -123,9 +125,7 @@ export default function SitterProfile() {
       metaPixel.trackViewContent('Sitter Profile', 'Pet Sitter');
       setTimeout(() => {
         const bookingSection = document.getElementById('booking-section');
-        if (bookingSection) {
-          bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     } else if (shouldOpenBooking && !user) {
       const currentUrl = `/sitter/${id}?${searchParams.toString()}`;
@@ -142,7 +142,7 @@ export default function SitterProfile() {
       if (!id) return;
       
       try {
-        let data = null;
+        let data: any = null;
         let goldenBadgeData = null;
 
         const { data: rpcData, error } = await supabase
@@ -157,7 +157,6 @@ export default function SitterProfile() {
             .eq('id', id)
             .eq('onboarding_completed', true)
             .maybeSingle();
-          
           if (viewData && !viewError) data = viewData;
         }
         
@@ -166,32 +165,27 @@ export default function SitterProfile() {
           .select('golden_badge_approved')
           .eq('id', id)
           .maybeSingle();
-        
         goldenBadgeData = goldenBadgeResult;
 
-        if (error && !data) {
-          setSitterData(null);
-          setLoading(false);
-          return;
-        }
-        
-        if (!data) {
+        if ((error && !data) || !data) {
           setSitterData(null);
           setLoading(false);
           return;
         }
 
-        // Fetch services, portfolio, testimonials, and service areas in parallel
-        const [servicesResult, portfolioResult, testimonialsResult, areasResult] = await Promise.all([
+        // Fetch services, portfolio, testimonials, service areas, and completed bookings in parallel
+        const [servicesResult, portfolioResult, testimonialsResult, areasResult, bookingsCountResult] = await Promise.all([
           supabase.from('sitter_services').select('*').eq('sitter_id', id).eq('is_offered', true),
           supabase.storage.from('profile-photos').list(`${id}/portfolio`, { limit: 10, sortBy: { column: 'created_at', order: 'desc' } }),
           supabase.from('sitter_testimonials').select('id, client_name, testimonial_text, rating, client_relationship').eq('sitter_id', id).eq('is_approved', true).limit(3),
           supabase.from('sitter_service_areas').select('suburb, city').eq('sitter_id', id),
+          supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('sitter_id', id).eq('status', 'completed'),
         ]);
 
         setServicesData(servicesResult.data || []);
         setTestimonials(testimonialsResult.data || []);
         setServiceAreas(areasResult.data?.map(a => a.suburb) || []);
+        setCompletedBookings(bookingsCountResult.count || 0);
 
         const portfolioUrls = portfolioResult.data?.map(file => {
           const { data: { publicUrl } } = supabase.storage
@@ -205,7 +199,7 @@ export default function SitterProfile() {
           switch (service.service_type) {
             case 'drop_in_visits': return 'Drop-in Visits';
             case 'pet_sitting_owners_home': return 'Pet Sitting (Your Home)';
-            case 'pet_sitting_sitters_home': return 'Pet Sitting (Sitter\'s Home)';
+            case 'pet_sitting_sitters_home': return "Pet Sitting (Sitter's Home)";
             default: return 'Pet Care';
           }
         });
@@ -221,7 +215,7 @@ export default function SitterProfile() {
           location: `${data.suburb || 'Auckland'}, ${data.city || 'New Zealand'}`,
           suburb: data.suburb || 'Auckland',
           city: data.city || 'New Zealand',
-          rating: data.rating || 4.8,
+          rating: data.rating || 0,
           feedback_count: data.total_reviews || 0,
           baseRate: baseRate!,
           hourlyRate: baseRate!,
@@ -233,10 +227,9 @@ export default function SitterProfile() {
           avatar: data.avatar_url,
           verified: data.is_verified,
           hasPoliceVet: !!(goldenBadgeData?.golden_badge_approved),
-          bio: data.bio || 'Experienced pet care provider',
+          bio: data.bio || '',
           experience: sData.length > 0 ? 
-            `${Math.max(...sData.map(s => s.experience_years || 0))} years experience` : 
-            'Experienced pet care provider',
+            `${Math.max(...sData.map(s => s.experience_years || 0))} years` : '',
           availability: ['Available for bookings'],
           specialties: sData.length > 0 ? 
             sData.flatMap(s => {
@@ -245,9 +238,11 @@ export default function SitterProfile() {
               if (s.allows_puppies) specs.push('Puppy care');
               if (s.allows_senior_pets) specs.push('Senior pet care');
               return specs;
-            }).slice(0, 3) : ['Pet care specialist'],
+            }).slice(0, 4) : [],
           gallery: portfolioUrls.length > 0 ? portfolioUrls : [],
           competencyTags: data.competency_tags || [],
+          latitude: data.latitude || null,
+          longitude: data.longitude || null,
         };
 
         setSitterData(transformedData);
@@ -281,9 +276,7 @@ export default function SitterProfile() {
   const handleCheckAvailability = () => {
     if (!user) {
       const calendarSection = document.querySelector('[data-availability-calendar]');
-      if (calendarSection) {
-        calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (calendarSection) calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     ga4.clickBook(sitterData!.id, sitterData!.display_name, 'profile_header');
@@ -364,6 +357,7 @@ export default function SitterProfile() {
   }
 
   const firstName = sitterData.display_name.split(' ')[0];
+  const hasLocation = sitterData.latitude && sitterData.longitude;
 
   return (
     <div className="min-h-screen bg-background">
@@ -380,15 +374,24 @@ export default function SitterProfile() {
           </Button>
           
           <div className="flex flex-col md:flex-row gap-8 items-start">
-            {/* Large Avatar */}
+            {/* Large Avatar with aspect ratio */}
             <div className="relative flex-shrink-0">
-              <Avatar className="h-32 w-32 md:h-40 md:w-40 ring-4 ring-primary/30 shadow-xl">
-                <AvatarImage src={sitterData.avatar} className="object-cover" />
-                <AvatarFallback className="bg-primary/20 text-primary-foreground text-3xl font-display">
-                  {sitterData.display_name.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+              {sitterData.avatar ? (
+                <div className="w-36 md:w-48 aspect-[3/4] rounded-2xl overflow-hidden ring-4 ring-primary/20 shadow-2xl">
+                  <img 
+                    src={sitterData.avatar} 
+                    alt={sitterData.display_name}
+                    className="w-full h-full object-cover object-[center_20%]"
+                  />
+                </div>
+              ) : (
+                <Avatar className="h-36 w-36 md:h-48 md:w-48 ring-4 ring-primary/20 shadow-2xl">
+                  <AvatarFallback className="bg-primary/20 text-primary-foreground text-4xl font-display">
+                    {sitterData.display_name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
                 <SitterVerificationBadge 
                   isVerified={sitterData.verified || false}
                   hasGoldenBadge={sitterData.hasPoliceVet || false}
@@ -398,43 +401,67 @@ export default function SitterProfile() {
             </div>
             
             {/* Info */}
-            <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl font-bold font-display text-secondary-foreground mb-2">
+            <div className="flex-1 pt-1">
+              <h1 className="text-3xl md:text-4xl font-bold font-display text-secondary-foreground mb-3">
                 {sitterData.display_name}
               </h1>
               
-              <div className="flex flex-wrap items-center gap-4 mb-4">
-                <span className="flex items-center text-secondary-foreground/70 font-body">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-4">
+                <span className="flex items-center text-secondary-foreground/70 font-body text-sm">
                   <img src={iconMappin} alt="" className="w-5 h-5 mr-1.5" />
                   {sitterData.location}
                 </span>
-                <span className="flex items-center text-secondary-foreground/70 font-body">
+                <span className="flex items-center text-secondary-foreground/70 font-body text-sm">
                   <img src={iconClock} alt="" className="w-5 h-5 mr-1.5" />
-                  Usually responds within 2-4 hours
+                  Usually responds within 2-4 hrs
                 </span>
-              </div>
-              
-              {/* Price highlight */}
-              {sitterData.baseRate && sitterData.baseRate !== Infinity && (
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="text-2xl md:text-3xl font-bold text-primary font-display">
-                    From NZ${sitterData.baseRate}/day
+                {sitterData.feedback_count > 0 && (
+                  <span className="flex items-center text-secondary-foreground/70 font-body text-sm">
+                    <img src={iconStar} alt="" className="w-5 h-5 mr-1.5" />
+                    {sitterData.rating.toFixed(1)} ({sitterData.feedback_count} reviews)
                   </span>
-                  <span className="text-sm text-secondary-foreground/50 font-body">· Free to enquire</span>
-                </div>
-              )}
+                )}
+              </div>
+
+              {/* Stats row */}
+              <div className="flex flex-wrap gap-3 mb-5">
+                {sitterData.baseRate && sitterData.baseRate !== Infinity && (
+                  <div className="bg-primary/15 rounded-xl px-4 py-2">
+                    <span className="text-xl md:text-2xl font-bold text-primary font-display">
+                      From NZ${sitterData.baseRate}
+                    </span>
+                    <span className="text-xs text-secondary-foreground/50 font-body ml-1">/day</span>
+                  </div>
+                )}
+                {completedBookings > 0 && (
+                  <div className="bg-secondary-foreground/10 rounded-xl px-4 py-2 flex items-center gap-2">
+                    <img src={iconCheck} alt="" className="w-5 h-5" />
+                    <span className="text-sm font-semibold text-secondary-foreground font-body">
+                      {completedBookings} booking{completedBookings !== 1 ? 's' : ''} completed
+                    </span>
+                  </div>
+                )}
+                {sitterData.experience && sitterData.experience !== '0 years' && (
+                  <div className="bg-secondary-foreground/10 rounded-xl px-4 py-2 flex items-center gap-2">
+                    <img src={iconStar} alt="" className="w-5 h-5" />
+                    <span className="text-sm font-semibold text-secondary-foreground font-body">
+                      {sitterData.experience} experience
+                    </span>
+                  </div>
+                )}
+              </div>
               
               {/* Trust pills */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {sitterData.verified && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-sm font-medium text-primary-foreground font-body">
-                    <img src={iconCheck} alt="" className="w-4 h-4" /> ID Verified
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-xs font-medium text-primary-foreground font-body">
+                    <img src={iconShield} alt="" className="w-4 h-4" /> ID Verified
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-sm font-medium text-primary-foreground font-body">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-xs font-medium text-primary-foreground font-body">
                   <img src={iconCamera} alt="" className="w-4 h-4" /> Daily Photo Updates
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-sm font-medium text-primary-foreground font-body">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-xs font-medium text-primary-foreground font-body">
                   <img src={iconHeart} alt="" className="w-4 h-4" /> Free Meet & Greet
                 </span>
               </div>
@@ -485,37 +512,33 @@ export default function SitterProfile() {
             )}
 
             {/* About — prominent bio section */}
-            <Card className="border border-border overflow-hidden">
-              <CardHeader className="bg-muted/50 border-b border-border">
-                <CardTitle className="flex items-center gap-2 font-display text-foreground">
-                  <img src={iconPaw} alt="" className="w-6 h-6" />
-                  About {firstName}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <p className="text-foreground/80 font-body text-base leading-relaxed mb-4">{sitterData.bio}</p>
-                
-                {/* Experience & specialties inline */}
-                <div className="flex flex-wrap gap-4 pt-4 border-t border-border">
-                  <div className="flex items-center gap-2">
-                    <img src={iconStar} alt="" className="w-5 h-5" />
-                    <span className="text-sm font-medium text-foreground font-body">{sitterData.experience}</span>
-                  </div>
-                  {[...new Set(sitterData.specialties)].map((specialty, i) => (
-                    <Badge key={`${specialty}-${i}`} variant="secondary" className="font-body text-sm">
-                      {specialty}
-                    </Badge>
-                  ))}
-                  {sitterData.competencyTags?.map((tag, i) => (
-                    <Badge key={`tag-${i}`} variant="outline" className="font-body text-sm">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {sitterData.bio && (
+              <Card className="border border-border overflow-hidden">
+                <CardHeader className="bg-muted/50 border-b border-border">
+                  <CardTitle className="flex items-center gap-2 font-display text-foreground">
+                    <img src={iconPaw} alt="" className="w-6 h-6" />
+                    About {firstName}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <p className="text-foreground/80 font-body text-base leading-relaxed mb-4">{sitterData.bio}</p>
+                  
+                  {/* Experience & specialties */}
+                  {(sitterData.specialties.length > 0 || sitterData.competencyTags.length > 0) && (
+                    <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
+                      {[...new Set(sitterData.specialties)].map((s, i) => (
+                        <Badge key={`s-${i}`} variant="secondary" className="font-body text-sm">{s}</Badge>
+                      ))}
+                      {sitterData.competencyTags.map((tag, i) => (
+                        <Badge key={`t-${i}`} variant="outline" className="font-body text-sm">{tag}</Badge>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Photo Gallery — prominent if available */}
+            {/* Photo Gallery — always show if photos exist, with prominent layout */}
             {sitterData.gallery.length > 0 && (
               <Card className="border border-border overflow-hidden">
                 <CardHeader className="bg-muted/50 border-b border-border">
@@ -531,7 +554,7 @@ export default function SitterProfile() {
                         key={index}
                         src={photo}
                         alt={`${firstName} caring for pets - photo ${index + 1}`}
-                        className="w-full h-40 md:h-48 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                        className="w-full aspect-[4/3] object-cover rounded-lg shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
                         loading="lazy"
                       />
                     ))}
@@ -540,7 +563,7 @@ export default function SitterProfile() {
               </Card>
             )}
 
-            {/* Services & Rates — visual cards */}
+            {/* Services & Rates */}
             <Card className="border border-border overflow-hidden">
               <CardHeader className="bg-muted/50 border-b border-border">
                 <CardTitle className="flex items-center gap-2 font-display text-foreground">
@@ -560,7 +583,6 @@ export default function SitterProfile() {
                           <div className="font-semibold font-body text-foreground text-sm">{getServiceDisplayName(service.service_type)}</div>
                           <div className="text-xs text-muted-foreground font-body mt-0.5">{getServiceDescription(service.service_type)}</div>
                           <div className="text-base font-bold text-primary font-display mt-2">{getRate(service)}</div>
-                          {/* Pet info */}
                           <div className="flex flex-wrap gap-1 mt-2">
                             {service.accepted_pet_species?.map((species: string) => (
                               <span key={species} className="text-xs bg-accent px-2 py-0.5 rounded-full text-accent-foreground font-body">
@@ -613,8 +635,11 @@ export default function SitterProfile() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Reviews */}
+            <ReviewsList sitterId={sitterData.id} sitterName={sitterData.display_name} />
             
-            {/* Booking Form */}
+            {/* Booking Form — after all info */}
             <div id="booking-section" className="space-y-4">
               <BookingFormDirect
                 sitter={{
@@ -635,11 +660,7 @@ export default function SitterProfile() {
                   trackEvent({
                     eventType: 'booking',
                     eventName: 'guest_booking_cta_clicked',
-                    eventData: {
-                      sitter_id: sitterData.id,
-                      sitter_name: sitterData.display_name,
-                      source: 'profile_booking_form'
-                    }
+                    eventData: { sitter_id: sitterData.id, sitter_name: sitterData.display_name, source: 'profile_booking_form' }
                   });
                   const params = new URLSearchParams(searchParams);
                   params.set('booking', 'true');
@@ -667,12 +688,6 @@ export default function SitterProfile() {
               </Card>
             </div>
 
-            {/* Reviews */}
-            <ReviewsList 
-              sitterId={sitterData.id}
-              sitterName={sitterData.display_name}
-            />
-
             {/* FAQ */}
             <FAQAccordion 
               sitterName={sitterData.display_name}
@@ -684,7 +699,7 @@ export default function SitterProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Location & Areas */}
+            {/* Location Map */}
             <Card className="border border-border overflow-hidden">
               <CardHeader className="bg-muted/50 border-b border-border py-4">
                 <CardTitle className="flex items-center gap-2 text-base font-display text-foreground">
@@ -692,19 +707,48 @@ export default function SitterProfile() {
                   Location
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-5">
-                <p className="font-semibold text-foreground font-body mb-1">{sitterData.suburb}</p>
-                <p className="text-sm text-muted-foreground font-body mb-4">{sitterData.city}</p>
-                {serviceAreas.length > 0 && (
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 font-body">Also covers</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {serviceAreas.filter(a => a !== sitterData.suburb).map((area, i) => (
-                        <span key={i} className="text-xs bg-muted px-2.5 py-1 rounded-full text-foreground font-body">{area}</span>
-                      ))}
-                    </div>
+              <CardContent className="p-0">
+                {hasLocation ? (
+                  <div className="h-48 w-full">
+                    <MapContainer
+                      center={[sitterData.latitude!, sitterData.longitude!]}
+                      zoom={13}
+                      scrollWheelZoom={false}
+                      dragging={false}
+                      zoomControl={false}
+                      style={{ height: '100%', width: '100%' }}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; OpenStreetMap'
+                      />
+                      <Circle
+                        center={[sitterData.latitude!, sitterData.longitude!]}
+                        radius={500}
+                        pathOptions={{ 
+                          color: 'hsl(152, 35%, 38%)', 
+                          fillColor: 'hsl(152, 35%, 38%)', 
+                          fillOpacity: 0.15,
+                          weight: 2
+                        }}
+                      />
+                    </MapContainer>
                   </div>
-                )}
+                ) : null}
+                <div className="p-5">
+                  <p className="font-semibold text-foreground font-body mb-1">{sitterData.suburb}</p>
+                  <p className="text-sm text-muted-foreground font-body mb-3">{sitterData.city}</p>
+                  {serviceAreas.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 font-body">Also covers</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {serviceAreas.filter(a => a !== sitterData.suburb).map((area, i) => (
+                          <span key={i} className="text-xs bg-muted px-2.5 py-1 rounded-full text-foreground font-body">{area}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -737,7 +781,7 @@ export default function SitterProfile() {
               </CardContent>
             </Card>
 
-            {/* Verification */}
+            {/* Trust & Safety */}
             <Card className="border border-border overflow-hidden">
               <CardHeader className="bg-muted/50 border-b border-border py-4">
                 <CardTitle className="flex items-center gap-2 text-base font-display text-foreground">
@@ -765,7 +809,7 @@ export default function SitterProfile() {
                 {sitterData.hasPoliceVet && (
                   <div className="flex items-center gap-3">
                     <img src={iconStar} alt="" className="w-5 h-5" />
-                    <span className="text-sm font-body text-foreground font-semibold">Police Vet Checked ⭐</span>
+                    <span className="text-sm font-body text-foreground font-semibold">Police Vet Checked</span>
                   </div>
                 )}
               </CardContent>
@@ -801,9 +845,7 @@ export default function SitterProfile() {
           onEnquiryClick={() => setIsMessageDialogOpen(true)}
           onBookingClick={() => {
             const bookingSection = document.getElementById('booking-section');
-            if (bookingSection) {
-              bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }}
           sitterName={sitterData.display_name}
           isGuest={!user}
