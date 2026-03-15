@@ -13,6 +13,12 @@ import iconHouse from '@/assets/icons/icon-house.png';
 import iconBowl from '@/assets/icons/icon-bowl.png';
 import iconBoarding from '@/assets/icons/icon-boarding.png';
 import iconQuestion from '@/assets/icons/icon-question.png';
+import iconNum1 from '@/assets/icons/icon-num-1.png';
+import iconNum2 from '@/assets/icons/icon-num-2.png';
+import iconNum3 from '@/assets/icons/icon-num-3.png';
+import iconNum4 from '@/assets/icons/icon-num-4.png';
+
+const numIcons = [iconNum1, iconNum2, iconNum3, iconNum4];
 
 const forOwners = [
   { icon: iconPaw, title: 'Search & Browse', description: 'Find verified sitters near you. Read reviews and view real profiles.' },
@@ -69,7 +75,7 @@ export default function HowItWorks() {
         structuredData={structuredData}
       />
       <div className="min-h-screen bg-background">
-        {/* Hero — clean, no stock image */}
+        {/* Hero */}
         <section className="bg-secondary py-20 md:py-28">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto text-center">
@@ -84,7 +90,7 @@ export default function HowItWorks() {
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold px-8 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
                   Find a Sitter <span className="ml-2">→</span>
                 </Button>
-                <Button size="lg" variant="outline" className="font-body px-8 py-6 text-lg border-secondary-foreground/30 text-secondary-foreground bg-secondary-foreground/10 hover:bg-secondary-foreground/20" onClick={() => navigate('/become-sitter')}>
+                <Button size="lg" variant="outline-white" className="font-body px-8 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
                   Become a Sitter
                 </Button>
               </div>
@@ -104,14 +110,16 @@ export default function HowItWorks() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
               {forOwners.map((step, i) => (
-                <Card key={i} className="text-center border border-border shadow-sm hover:shadow-md transition-all relative bg-card">
+                <Card key={i} className="text-center border border-border shadow-sm hover:shadow-md transition-all relative bg-card pt-4">
                   <CardContent className="p-8">
+                    <div className="absolute -top-5 -left-3">
+                      <img src={numIcons[i]} alt={`Step ${i + 1}`} className="w-12 h-12" />
+                    </div>
                     <div className="flex justify-center mb-4">
                       <img src={step.icon} alt="" className="w-16 h-16" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 font-body text-foreground">{step.title}</h3>
                     <p className="text-sm text-muted-foreground font-body">{step.description}</p>
-                    <div className="absolute -top-3 -left-3 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm font-body">{i + 1}</div>
                   </CardContent>
                 </Card>
               ))}
@@ -131,14 +139,16 @@ export default function HowItWorks() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {forSitters.map((step, i) => (
-                <Card key={i} className="text-center border border-border shadow-sm hover:shadow-md transition-all relative bg-card">
+                <Card key={i} className="text-center border border-border shadow-sm hover:shadow-md transition-all relative bg-card pt-4">
                   <CardContent className="p-8">
+                    <div className="absolute -top-5 -left-3">
+                      <img src={numIcons[i]} alt={`Step ${i + 1}`} className="w-12 h-12" />
+                    </div>
                     <div className="flex justify-center mb-4">
                       <img src={step.icon} alt="" className="w-16 h-16" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 font-body text-foreground">{step.title}</h3>
                     <p className="text-sm text-muted-foreground font-body">{step.description}</p>
-                    <div className="absolute -top-3 -left-3 w-8 h-8 bg-secondary text-secondary-foreground rounded-full flex items-center justify-center font-bold text-sm font-body">{i + 1}</div>
                   </CardContent>
                 </Card>
               ))}
@@ -172,7 +182,7 @@ export default function HowItWorks() {
           </div>
         </section>
 
-        {/* Service Types — no prices */}
+        {/* Service Types */}
         <section className="py-20 md:py-28 bg-muted">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
@@ -222,21 +232,21 @@ export default function HowItWorks() {
         </section>
 
         {/* CTA */}
-        <section className="py-24 bg-muted">
+        <section className="py-24 bg-secondary">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-foreground">Ready to Get Started?</h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto font-body">
+            <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-secondary-foreground">Ready to Get Started?</h2>
+            <p className="text-lg text-secondary-foreground/70 mb-8 max-w-xl mx-auto font-body">
               Find an affordable, trusted local sitter — or earn extra cash caring for pets.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
                 Find a Sitter <span className="ml-2">→</span>
               </Button>
-              <Button size="lg" variant="outline" className="font-body px-10 py-6 text-lg border-border text-foreground hover:bg-accent" onClick={() => navigate('/become-sitter')}>
+              <Button size="lg" variant="outline-white" className="font-body px-10 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
                 Become a Sitter — It's Free
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-4 font-body">
+            <p className="text-sm text-secondary-foreground/50 mt-4 font-body">
               Free to join · No payment until you book · Cancel anytime
             </p>
           </div>
