@@ -874,7 +874,7 @@ export default function FindSitters() {
               </p>
               {serviceType === 'pet_sitting_owners_home' && filteredSitters.length > 0 && (
                 <p className="text-sm text-primary mt-1 flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
+                  <img src={iconLocation} alt="" className="h-4 w-4" />
                   These sitters travel to you — your pet stays comfortable at home!
                 </p>
               )}
