@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Shield, Camera, CheckCircle, Check } from 'lucide-react';
 import SuburbAutocomplete from '@/components/search/SuburbAutocomplete';
 import { useNavigate } from 'react-router-dom';
 import heroSitterReal from '@/assets/hero-sitter-real.jpg';
@@ -9,6 +8,10 @@ import heroPetsReal from '@/assets/hero-pets-real.jpg';
 import UrgencyIndicator from './UrgencyIndicator';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 import iconPaw from '@/assets/icons/icon-paw.png';
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconCamera from '@/assets/icons/icon-camera.png';
+import iconCheck from '@/assets/icons/icon-check.png';
+import iconSearch from '@/assets/icons/icon-search.png';
 import CompactSteps from './CompactSteps';
 import LocalSocialProof from './LocalSocialProof';
 
@@ -96,7 +99,7 @@ const HeroSectionPlayful = ({
                 </p>
 
                 {/* Positioning badge */}
-                <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1.5">
+                <div className="inline-flex items-center gap-2 bg-vintage-cream border border-border rounded-full px-3 py-1.5">
                   <img src={iconPaw} alt="" className="w-5 h-5" />
                   <span className="text-xs md:text-sm font-semibold text-primary font-body">Local pet sitting — AU & NZ</span>
                 </div>
@@ -112,9 +115,9 @@ const HeroSectionPlayful = ({
                     Find a Trusted Sitter Near Me
                   </Button>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground font-body">
-                    <span className="flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> ID Verified</span>
-                    <span className="flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> Daily Photo Updates</span>
-                    <span className="hidden sm:flex items-center gap-1"><Check className="w-3 h-3 text-primary" /> Free to browse</span>
+                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> ID Verified</span>
+                    <span className="flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Daily Photo Updates</span>
+                    <span className="hidden sm:flex items-center gap-1"><img src={iconCheck} alt="" className="w-4 h-4" /> Free to browse</span>
                   </div>
                 </div>
               </div>
@@ -127,13 +130,13 @@ const HeroSectionPlayful = ({
               {/* Feature pills - hidden on mobile */}
               <div className="hidden md:flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <Camera className="w-4 h-4 text-primary" /> Daily Photo Updates
+                  <img src={iconCamera} alt="" className="w-5 h-5" /> Daily Photo Updates
                 </div>
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <Shield className="w-4 h-4 text-primary" /> ID Verified Sitters
+                  <img src={iconShield} alt="" className="w-5 h-5" /> ID Verified Sitters
                 </div>
                 <div className="flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-2 text-sm font-medium text-foreground font-body">
-                  <CheckCircle className="w-4 h-4 text-primary" /> Trusted Reviews
+                  <img src={iconCheck} alt="" className="w-5 h-5" /> Trusted Reviews
                 </div>
               </div>
 
@@ -146,9 +149,7 @@ const HeroSectionPlayful = ({
                 />
                 <div className="absolute bottom-2 right-2 bg-card/95 backdrop-blur-sm rounded-lg px-2.5 py-1.5 shadow-lg border border-border">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <Shield className="w-3 h-3 text-primary-foreground" />
-                    </div>
+                    <img src={iconShield} alt="" className="w-6 h-6" />
                     <div>
                       <p className="text-[10px] font-bold text-foreground font-body">ID Verified</p>
                       <p className="text-[9px] text-muted-foreground font-body">Background Checked</p>
@@ -180,9 +181,7 @@ const HeroSectionPlayful = ({
                 {/* Trust badge overlay */}
                 <div className="absolute bottom-8 right-8 bg-card/95 backdrop-blur-sm rounded-xl px-5 py-4 shadow-xl border border-border">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                      <Shield className="w-6 h-6 text-primary-foreground" />
-                    </div>
+                    <img src={iconShield} alt="" className="w-12 h-12" />
                     <div>
                       <p className="text-sm font-bold text-foreground font-body">ID Verified</p>
                       <p className="text-xs text-muted-foreground font-body">Background Checked</p>
@@ -243,7 +242,7 @@ const HeroSectionPlayful = ({
                   className="h-11 md:h-12 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-6 whitespace-nowrap bg-secondary text-secondary-foreground hover:bg-secondary/90 min-h-[44px] font-body"
                   onClick={handleSearch}
                 >
-                  <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                  <img src={iconSearch} alt="" className="mr-2 h-5 w-5" />
                   View Sitters
                 </Button>
               </div>

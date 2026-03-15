@@ -1,10 +1,17 @@
-import { Search, MessageCircle, CreditCard, Camera } from 'lucide-react';
+import iconSearch from '@/assets/icons/icon-search.png';
+import iconChat from '@/assets/icons/icon-chat.png';
+import iconCreditcard from '@/assets/icons/icon-creditcard.png';
+import iconCamera from '@/assets/icons/icon-camera.png';
+import iconNum1 from '@/assets/icons/icon-num-1.png';
+import iconNum2 from '@/assets/icons/icon-num-2.png';
+import iconNum3 from '@/assets/icons/icon-num-3.png';
+import iconNum4 from '@/assets/icons/icon-num-4.png';
 
 const steps = [
-  { icon: Search, label: 'Search', number: '1' },
-  { icon: MessageCircle, label: 'Meet & Greet (Free)', number: '2' },
-  { icon: CreditCard, label: 'Book Securely', number: '3' },
-  { icon: Camera, label: 'Get Daily Updates', number: '4' },
+  { icon: iconSearch, label: 'Search', numIcon: iconNum1 },
+  { icon: iconChat, label: 'Meet & Greet (Free)', numIcon: iconNum2 },
+  { icon: iconCreditcard, label: 'Book Securely', numIcon: iconNum3 },
+  { icon: iconCamera, label: 'Get Daily Updates', numIcon: iconNum4 },
 ];
 
 export default function CompactSteps() {
@@ -13,10 +20,8 @@ export default function CompactSteps() {
       {steps.map((step, index) => (
         <div key={index} className="flex items-center gap-2">
           <div className="flex items-center gap-2 bg-card rounded-full px-3 py-1.5 shadow-sm border border-border">
-            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold font-body">
-              {step.number}
-            </div>
-            <step.icon className="w-4 h-4 text-primary" />
+            <img src={step.numIcon} alt="" className="w-6 h-6" />
+            <img src={step.icon} alt="" className="w-4 h-4" />
             <span className="text-sm font-medium text-foreground font-body">{step.label}</span>
           </div>
           

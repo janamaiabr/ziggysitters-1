@@ -3,8 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, CheckCircle, Camera, Shield, Clock, DollarSign, Search, Heart, Mail, Users, Star, ArrowRight } from 'lucide-react';
+
 import { Input } from '@/components/ui/input';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +11,12 @@ import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
 import iconPaw from '@/assets/icons/icon-paw.png';
+import iconCheck from '@/assets/icons/icon-check.png';
+import iconCamera from '@/assets/icons/icon-camera.png';
+import iconClock from '@/assets/icons/icon-clock.png';
+import iconDollar from '@/assets/icons/icon-dollar.png';
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconSearch from '@/assets/icons/icon-search.png';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
 import TrustGuarantees from '@/components/home/TrustGuarantees';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
@@ -267,9 +272,9 @@ const Index = () => {
                 }}
                 className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-6 md:px-10 py-5 md:py-7 text-base md:text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 min-h-[48px] font-body"
               >
-                <Search className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                <img src={iconSearch} alt="" className="w-5 h-5 mr-2" />
                 {isMobile ? 'See All Sitters' : 'Browse All Sitters Near You'}
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <span className="ml-2">→</span>
               </Button>
               <p className="text-xs md:text-sm text-muted-foreground font-body">
                 Free to browse · ID Verified · Daily Photo Updates
@@ -295,7 +300,7 @@ const Index = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
                 <div className="space-y-4 md:space-y-6">
                   <div className="inline-flex items-center bg-primary text-primary-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium font-body">
-                    <Camera className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2" />
+                    <img src={iconCamera} alt="" className="w-4 h-4 mr-1.5 md:mr-2" />
                     Industry First Feature
                   </div>
                   
@@ -309,14 +314,14 @@ const Index = () => {
                   
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
                     {[
-                      { Icon: CheckCircle, title: 'Daily Photos', desc: "See your pet's day" },
-                      { Icon: Clock, title: 'Care Notes', desc: 'Food, mood & health' },
-                      { Icon: DollarSign, title: 'Pay Guarantee', desc: 'Tied to report quality' },
-                      { Icon: Shield, title: 'Peace of Mind', desc: 'Never worry again' },
+                      { icon: iconCheck, title: 'Daily Photos', desc: "See your pet's day" },
+                      { icon: iconClock, title: 'Care Notes', desc: 'Food, mood & health' },
+                      { icon: iconDollar, title: 'Pay Guarantee', desc: 'Tied to report quality' },
+                      { icon: iconShield, title: 'Peace of Mind', desc: 'Never worry again' },
                     ].map((item) => (
                       <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
-                        <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <item.Icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                        <div className="w-7 h-7 md:w-8 md:h-8 bg-vintage-cream rounded-full flex items-center justify-center flex-shrink-0">
+                          <img src={item.icon} alt="" className="w-5 h-5" />
                         </div>
                         <div>
                           <h4 className="font-semibold text-foreground text-sm md:text-base font-body">{item.title}</h4>
@@ -332,7 +337,7 @@ const Index = () => {
                       onClick={() => navigate('/daily-reports-info')}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 md:px-8 min-h-[44px] font-body"
                     >
-                      <Camera className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                      <img src={iconCamera} alt="" className="mr-2 h-5 w-5" />
                       Learn More About Daily Reports
                     </Button>
                   </div>
@@ -421,7 +426,7 @@ const Index = () => {
                     'Free to join — no upfront costs',
                   ].map(item => (
                     <div key={item} className="flex items-center gap-2 text-sm text-foreground font-body">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                      <img src={iconCheck} alt="" className="w-4 h-4 flex-shrink-0" />
                       {item}
                     </div>
                   ))}
@@ -431,7 +436,7 @@ const Index = () => {
                   onClick={() => navigate('/become-sitter')}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 min-h-[48px] font-body"
                 >
-                  Become a Sitter <ArrowRight className="w-4 h-4 ml-2" />
+                  Become a Sitter <span className="ml-2">→</span>
                 </Button>
               </div>
             </div>
