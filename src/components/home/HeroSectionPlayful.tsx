@@ -122,10 +122,6 @@ const HeroSectionPlayful = ({
                 </div>
               </div>
 
-              {/* Compact steps - hidden on mobile */}
-              <div className="hidden md:block pt-2">
-                <CompactSteps />
-              </div>
 
               {/* Feature pills - hidden on mobile */}
               <div className="hidden md:flex flex-wrap justify-center lg:justify-start gap-2.5">
