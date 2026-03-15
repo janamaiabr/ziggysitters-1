@@ -243,14 +243,13 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md relative z-10 space-y-6">
-        {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 rounded-full shadow-lg">
-            <Heart className="h-8 w-8 text-pink-500 dark:text-pink-400" fill="currentColor" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full shadow-sm">
+            <img src={iconPaw} alt="" className="h-8 w-8" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
             ZiggySitters
           </h1>
           <p className="text-muted-foreground">
