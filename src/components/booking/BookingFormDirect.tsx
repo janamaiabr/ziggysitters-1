@@ -329,7 +329,6 @@ export default function BookingFormDirect({
               servicesData.map((service) => {
                 const getServiceDisplayName = (type: string) => {
                   switch (type) {
-                    case 'dog_walking': return '🚶 Walking';
                     case 'pet_sitting_owners_home': return '🏠 At Your Home';
                     case 'pet_sitting_sitters_home': return '🏡 At Sitter\'s';
                     case 'drop_in_visits': return '👀 Drop-ins';

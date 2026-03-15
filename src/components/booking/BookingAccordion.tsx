@@ -288,19 +288,7 @@ export default function BookingAccordion({
       return;
     }
 
-    // Check selected pets
-    if (selectedPetIds.length === 0) {
-      trackDropoff('booking', 'validation_failed', {
-        sitter_id: sitter.id,
-        reason: 'no_pets_selected',
-      });
-      toast({
-        title: 'No Pets Selected',
-        description: 'Please select at least one pet for this booking.',
-        variant: 'destructive'
-      });
-      return;
-    }
+    // Pet selection is now optional - owners can add pet details later
 
     console.log('Setting loading to true');
     setLoading(true);
