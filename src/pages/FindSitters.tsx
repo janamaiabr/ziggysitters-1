@@ -678,7 +678,7 @@ export default function FindSitters() {
                         setLocation('');
                       }
                     }}>
-                      <SelectTrigger className="h-12 border-gray-300 text-gray-800 focus:border-primary bg-white">
+                      <SelectTrigger className="h-12 border-border text-foreground focus:border-primary bg-background">
                         <SelectValue placeholder="What do you need?" />
                       </SelectTrigger>
                         <SelectContent className="z-50 bg-white border shadow-lg">
