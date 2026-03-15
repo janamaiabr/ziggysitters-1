@@ -213,7 +213,7 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <MapPin className="h-5 w-5 text-primary" />
+                      <img src={iconMappin} alt="" className="h-5 w-5" />
                       <div>
                         <p className="font-medium font-body text-foreground">Location</p>
                         <p className="text-muted-foreground font-body">Auckland, New Zealand</p>
