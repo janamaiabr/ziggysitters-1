@@ -263,8 +263,8 @@ export default function SunshineCoastSeniorPets() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">End-of-life care</h3>
-                        <p className="text-sm text-gray-500 leading-relaxed">
-                          We work with families through their pet's final chapter. Our sitters bring the gentleness and patience this time requires.
+                <p className="text-sm text-gray-500 leading-relaxed">
+                          We work with families through their pet&apos;s final chapter. Our sitters bring the gentleness and patience this time requires.
                         </p>
                       </div>
                     </div>
