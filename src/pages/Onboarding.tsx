@@ -879,9 +879,8 @@ export default function Onboarding() {
                   <Dog className="w-8 h-8 md:w-10 md:h-10 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 flex items-center gap-2">
+                  <h3 className="text-xl md:text-2xl font-bold mb-1">
                     Young Dog Walker
-                    <span className="text-2xl">🐕</span>
                   </h3>
                   <p className="text-sm md:text-base text-muted-foreground">
                     Ages 12-17 • Parent registers their child
