@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Star } from 'lucide-react';
+import iconSearch from '@/assets/icons/icon-search.png';
 import { useNavigate } from 'react-router-dom';
 
 import iconHeart from '@/assets/icons/icon-heart.png';
