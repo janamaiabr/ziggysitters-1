@@ -142,7 +142,6 @@ export default function PetSitterWellington() {
         </section>
       </main>
       
-      <Footer />
     </>
   );
 }
