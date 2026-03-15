@@ -532,7 +532,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section — Quick Email Capture */}
-      <section className="relative py-8 md:py-20 overflow-hidden bg-white">
+      <section className="relative py-8 md:py-20 overflow-hidden bg-background">
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-xl mx-auto">
             <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-gray-900">
