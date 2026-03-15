@@ -275,7 +275,7 @@ const Index = () => {
       <NZTrustBadge />
 
       {/* Named Trust Guarantees - Above How It Works */}
-      <section className="py-8 md:py-16 bg-background">
+      <section className="py-8 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <TrustGuarantees />
         </div>
