@@ -69,7 +69,7 @@ export default function Welcome() {
             <Check className="w-4 h-4 mr-2" /> Account Created
           </Badge>
           <Badge className="px-4 py-2 text-sm bg-secondary/10 text-secondary border border-secondary/20 font-body">
-            <img src={iconShield} alt="" className="w-4 h-4 mr-2" /> Community Member
+            <img src={iconShield} alt="" className="w-5 h-5 mr-2" /> Community Member
           </Badge>
         </div>
 
