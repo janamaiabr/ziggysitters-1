@@ -231,7 +231,7 @@ export default function BecomeSitter() {
                   <CardContent className="p-6">
                     <div className="text-center mb-4">
                       <div className="flex justify-center mb-3">
-                        <img src={iconShield} alt="" className="w-14 h-14" />
+                        <img src={iconShield} alt="" className="w-16 h-16" />
                       </div>
                       <h3 className="text-lg font-bold text-foreground font-body">Accountability Standard</h3>
                       <p className="text-sm text-muted-foreground mt-1 font-body">When updates are requested</p>
