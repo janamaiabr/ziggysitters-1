@@ -27,6 +27,11 @@ vi.mock('@/integrations/supabase/client', () => ({
             })
           })
         }),
+        gte: () => ({
+          order: () => ({
+            limit: () => Promise.resolve({ data: [], error: null })
+          })
+        }),
         in: () => Promise.resolve({ data: [], error: null })
       })
     }),
