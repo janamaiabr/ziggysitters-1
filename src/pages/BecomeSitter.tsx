@@ -109,7 +109,7 @@ export default function BecomeSitter() {
                   }}
                 >
                   Join Now — It's Free
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <span className="ml-2">→</span>
                 </Button>
                 <Button 
                   size="lg" 
