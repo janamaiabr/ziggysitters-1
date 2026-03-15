@@ -16,6 +16,15 @@ import iconStar from "@/assets/icons/icon-star.png";
 import iconPaw from "@/assets/icons/icon-paw.png";
 import iconCheck from "@/assets/icons/icon-check.png";
 
+// Local genuine pet care photos
+import houseSittingImg from "@/assets/city/house-sitting.jpg";
+import dropInVisitImg from "@/assets/city/drop-in-visit.jpg";
+import petBoardingImg from "@/assets/city/pet-boarding.jpg";
+import stepBrowseImg from "@/assets/city/step-browse.jpg";
+import stepMeetGreetImg from "@/assets/city/step-meet-greet.jpg";
+import stepBookingImg from "@/assets/city/step-booking.jpg";
+import whyUsImg from "@/assets/city/why-us.jpg";
+
 interface CityLandingPageProps {
   city: CityData;
 }
@@ -33,39 +42,10 @@ const cityHeroImages: Record<string, string> = {
   "dunedin": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900&fit=crop",
 };
 
-// City-specific step images
-const cityStepImages: Record<string, string[]> = {
-  "sunshine-coast": [
-    "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
-  ],
-  "default": [
-    "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
-  ],
-};
-
-// City-specific "why us" images
-const cityWhyUsImages: Record<string, string> = {
-  "sunshine-coast": "https://images.unsplash.com/photo-1544568100-847a948585b9?w=800&h=1000&fit=crop",
-  "default": "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&h=1000&fit=crop",
-};
-
-// City-specific service images
-const cityServiceImages: Record<string, string[]> = {
-  "sunshine-coast": [
-    "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=600&h=400&fit=crop",
-  ],
-  "default": [
-    "https://images.unsplash.com/photo-1544568100-847a948585b9?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=400&fit=crop",
-  ],
-};
+// Genuine local pet care photos (used across all city pages)
+const stepImages = [stepBrowseImg, stepMeetGreetImg, stepBookingImg];
+const whyUsImage = whyUsImg;
+const serviceImages = [houseSittingImg, dropInVisitImg, petBoardingImg];
 
 const testimonials = [
   {
@@ -98,9 +78,6 @@ export default function CityLandingPage({ city }: CityLandingPageProps) {
   const countryCode = isAU ? "AU" : "NZ";
 
   const heroImage = cityHeroImages[city.slug] || cityHeroImages["hamilton"];
-  const stepImages = cityStepImages[city.slug] || cityStepImages["default"];
-  const whyUsImage = cityWhyUsImages[city.slug] || cityWhyUsImages["default"];
-  const serviceImages = cityServiceImages[city.slug] || cityServiceImages["default"];
 
   const structuredData = {
     "@context": "https://schema.org",
