@@ -193,7 +193,7 @@ const Index = () => {
       {/* Easter Campaign Banner */}
       <EasterBanner />
 
-      <div className="bg-gradient-to-b from-background to-accent/20">
+      <div className="bg-white">
       {/* Geo-aware location banner for international visitors */}
       <GeoLocationBanner />
 
@@ -217,24 +217,19 @@ const Index = () => {
       />
 
       {/* Featured Sitters - Premium Showcase */}
-      <section className="py-10 md:py-24 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse hidden md:block" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse hidden md:block" style={{ animationDelay: '1s' }} />
-        
+      <section className="py-10 md:py-24 relative overflow-hidden bg-[#fafbfa] border-y border-gray-100">
         <div className="container mx-auto px-4 relative z-10">
           {/* Section Header */}
           <div className="text-center mb-6 md:mb-16">
-            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-3 py-1.5 md:px-4 md:py-2 mb-3 md:mb-4">
-              <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary animate-pulse" />
-              <span className="text-xs md:text-sm font-medium text-primary">Personality Matched</span>
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1.5 md:px-4 md:py-2 mb-3 md:mb-4">
+              <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-600" />
+              <span className="text-xs md:text-sm font-medium text-emerald-700">Verified Local Sitters</span>
             </div>
-            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Meet Your Pet{"'"}s Perfect Match
+            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 text-gray-900">
+              Meet Local Sitters Near You
             </h2>
-            <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Sitters matched to your pet{"'"}s personality, verified and ready to connect
+            <p className="text-sm md:text-xl text-gray-500 max-w-2xl mx-auto">
+              Real people in your area — ID verified and ready to care for your pets
             </p>
           </div>
           
@@ -263,14 +258,14 @@ const Index = () => {
                 });
                 navigate('/find-sitters');
               }}
-              className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:from-purple-600 hover:via-indigo-600 hover:to-blue-600 px-6 md:px-10 py-5 md:py-7 text-base md:text-lg font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 animate-pulse-subtle min-h-[48px]"
+              className="bg-gray-900 hover:bg-gray-800 text-white px-6 md:px-10 py-5 md:py-7 text-base md:text-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 min-h-[48px]"
             >
               <Search className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-              {isMobile ? 'See All Sitters' : 'Find Your Perfect Sitter Now'}
+              {isMobile ? 'See All Sitters' : 'Find a Sitter Near You'}
               <span className="ml-2">→</span>
             </Button>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              ✓ Free to browse • ✓ No obligation • ✓ Trusted sitters only
+            <p className="text-xs md:text-sm text-gray-500">
+              ✓ Free to browse • ✓ ID Verified • ✓ Daily Photo Updates
             </p>
           </div>
         </div>
@@ -280,7 +275,7 @@ const Index = () => {
       <NZTrustBadge />
 
       {/* Named Trust Guarantees - Above How It Works */}
-      <section className="py-8 md:py-16 bg-background">
+      <section className="py-8 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <TrustGuarantees />
         </div>
@@ -348,7 +343,7 @@ const Index = () => {
 
 
       {/* Daily Reports Section */}
-      <section className="py-8 md:py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <section className="py-8 md:py-20 bg-[#f0f4f8]">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
@@ -493,7 +488,7 @@ const Index = () => {
       </section>
 
       {/* Charity Section - Compact on mobile */}
-      <section className="py-8 md:py-20 bg-primary/5">
+      <section className="py-8 md:py-20 bg-[#fafbfa] border-t border-gray-100">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <div className="mb-4 md:mb-8">
@@ -600,10 +595,10 @@ const Index = () => {
       </section>
 
       {/* CTA Section — Quick Email Capture */}
-      <section className="relative py-8 md:py-20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <section className="relative py-8 md:py-20 overflow-hidden bg-white">
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-xl mx-auto">
-            <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-gray-900">
               Ready to Find Your Pet{"'"}s Person?
             </h2>
             <p className="text-sm md:text-xl mb-4 md:mb-6 text-muted-foreground">
@@ -685,10 +680,10 @@ const Index = () => {
       <TestimonialsSection />
 
       {/* Sticky Mobile CTA Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
         <Button 
           size="lg" 
-          className="w-full text-base font-bold py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white rounded-xl min-h-[48px] shadow-lg"
+          className="w-full text-base font-bold py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl min-h-[48px] shadow-lg"
           onClick={() => navigate('/auth?tab=signup')}
         >
           🐾 Sign Up Free — Find a Sitter

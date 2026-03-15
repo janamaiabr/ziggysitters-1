@@ -97,7 +97,7 @@ import AdminStorageOptimizer from "./pages/AdminStorageOptimizer";
 import AdminSitterVetting from "./pages/AdminSitterVetting";
 import AdminVetClinics from "./pages/AdminVetClinics";
 import AdminKPIDashboard from "./pages/AdminKPIDashboard";
-import SunshineCoastSeniorPets from "./pages/SunshineCoastSeniorPets";
+// SunshineCoastSeniorPets merged into PetSittingSunshineCoast
 import PetSittingAuckland from "./pages/PetSittingAuckland";
 import PetSittingWellington from "./pages/PetSittingWellington";
 import PetSittingChristchurch from "./pages/PetSittingChristchurch";
@@ -342,7 +342,7 @@ function AppContent() {
             <Route path="/pet-sitting-tauranga" element={<PetSittingTauranga />} />
             <Route path="/pet-sitting-dunedin" element={<PetSittingDunedin />} />
             <Route path="/pet-sitting-sunshine-coast" element={<PetSittingSunshineCoast />} />
-            <Route path="/sunshine-coast" element={<SunshineCoastSeniorPets />} />
+            <Route path="/sunshine-coast" element={<Navigate to="/pet-sitting-sunshine-coast" replace />} />
             <Route path="/pet-sitting-napier" element={<PetSittingNapier />} />
             <Route path="/pet-sitting-nelson" element={<PetSittingNelson />} />
             <Route path="/pet-sitting-new-plymouth" element={<PetSittingNewPlymouth />} />
