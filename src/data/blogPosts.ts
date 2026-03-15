@@ -451,7 +451,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Torn between pet sitting and boarding kennels? We compare cost, comfort, and care quality to help NZ pet owners make the right choice for their furry family.',
     date: '2026-02-03',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=1200&h=630&fit=crop',
     readTime: '10 min read',
     tag: 'For Pet Owners',
     metaDescription: 'Compare pet sitting vs boarding kennels in New Zealand. Costs, comfort, and care quality compared to help NZ pet owners choose the best option.',
