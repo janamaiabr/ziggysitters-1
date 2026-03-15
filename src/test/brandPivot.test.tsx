@@ -60,9 +60,11 @@ const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false 
 
 function renderWithProviders(ui: React.ReactElement) {
   return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>{ui}</MemoryRouter>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>{ui}</MemoryRouter>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
