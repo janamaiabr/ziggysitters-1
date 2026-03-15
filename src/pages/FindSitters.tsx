@@ -784,7 +784,7 @@ export default function FindSitters() {
                   className="rounded-none"
                   onClick={() => setViewMode('map')}
                 >
-                  <Map className="w-4 h-4 mr-1" /> Map
+                  <MapIcon className="w-4 h-4 mr-1" /> Map
                 </Button>
               </div>
             </div>
