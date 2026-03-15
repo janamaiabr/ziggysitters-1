@@ -113,7 +113,7 @@ export default function Header() {
     <header className="bg-background/95 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
       <div className="container mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src={ziggyLogo} alt="ZiggySitters" className="h-9 md:h-11 w-auto" />
+          <img src={ziggyLogo} alt="ZiggySitters" className="h-12 md:h-14 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
