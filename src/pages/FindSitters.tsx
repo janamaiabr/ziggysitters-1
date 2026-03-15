@@ -655,7 +655,7 @@ export default function FindSitters() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   {serviceType !== 'pet_sitting_owners_home' && (
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700 block">Where?</label>
+                      <label className="text-sm font-medium text-foreground block font-body">Where?</label>
                       <SuburbAutocomplete
                         value={location}
                         onChange={setLocation}
