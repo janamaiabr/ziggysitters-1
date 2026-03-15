@@ -3,25 +3,19 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
-
-import { Input } from '@/components/ui/input';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
 import EnhancedSitterCard from '@/components/search/EnhancedSitterCard';
 import StripeLiveModeWarning from '@/components/sitter/StripeLiveModeWarning';
 import HeroSectionPlayful from '@/components/home/HeroSectionPlayful';
-import iconPaw from '@/assets/icons/icon-paw.png';
 import sitterCtaImg from '@/assets/home/sitter-cta.jpg';
+import dailyReportScreenshot from '@/assets/home/daily-report-screenshot.jpg';
 import iconCheck from '@/assets/icons/icon-check.png';
 import iconCamera from '@/assets/icons/icon-camera.png';
-import iconClock from '@/assets/icons/icon-clock.png';
-import iconDollar from '@/assets/icons/icon-dollar.png';
-import iconShield from '@/assets/icons/icon-shield.png';
 import iconSearch from '@/assets/icons/icon-search.png';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
 import TrustGuarantees from '@/components/home/TrustGuarantees';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
-import TrustSignalsSection from '@/components/home/TrustSignalsSection';
 import ExitIntentPopup from '@/components/home/ExitIntentPopup';
 import GeoLocationBanner from '@/components/home/GeoLocationBanner';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
@@ -43,7 +37,6 @@ const Index = () => {
   const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || '');
   const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || '');
 
-  // Track home page view
   useEffect(() => {
     trackAction('home_page_viewed', {
       is_authenticated: !!user,
@@ -52,13 +45,11 @@ const Index = () => {
     });
   }, [user, profile]);
 
-  // Real data from database
   const [featuredSitters, setFeaturedSitters] = useState([]);
   const [platformStats, setPlatformStats] = useState({ sitters: 0, owners: 0, bookings: 0 });
 
   useEffect(() => {
     const fetchSitters = async () => {
-      // Fetch vetted sitters first (verified + golden badge), then fill with other completed sitters
       const { data: vettedData } = await supabase
         .from('public_sitters')
         .select('*')
@@ -72,7 +63,6 @@ const Index = () => {
 
       let data = vettedData || [];
 
-      // If we don't have enough vetted sitters, fill with other completed sitters
       if (data.length < 6) {
         const vettedIds = data.map(s => s.id);
         const { data: extraData } = await supabase
@@ -140,7 +130,6 @@ const Index = () => {
       }
     };
 
-    // Fetch real platform stats
     const fetchStats = async () => {
       const [sittersResult, ownersResult, bookingsResult] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'pet_sitter').eq('onboarding_completed', true),
@@ -190,7 +179,7 @@ const Index = () => {
           </div>
         )}
         
-        {/* Hero */}
+        {/* 1. Hero */}
         <HeroSectionPlayful
           location={location}
           setLocation={setLocation}
@@ -202,34 +191,7 @@ const Index = () => {
           setCheckOut={setCheckOut}
         />
 
-        {/* Platform Stats — only show when meaningful */}
-        {platformStats.sitters >= 5 && (
-          <section className="py-8 md:py-14 bg-secondary">
-            <div className="container mx-auto px-4">
-              <div className="max-w-4xl mx-auto">
-                <div className="grid grid-cols-2 gap-4 md:gap-8 text-center">
-                  <div>
-                    <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
-                      {platformStats.sitters}+
-                    </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Vetted Sitters</p>
-                  </div>
-                  <div>
-                    <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
-                      {platformStats.owners}+
-                    </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Happy Pet Owners</p>
-                  </div>
-                </div>
-                <p className="text-center text-xs md:text-sm text-secondary-foreground/40 mt-4 font-body">
-                  A growing community of pet lovers across AU & NZ
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Featured Sitters — Real photos from actual sitters */}
+        {/* 2. Featured Sitters */}
         <section className="py-10 md:py-24 relative overflow-hidden bg-muted border-y border-border">
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-6 md:mb-16">
@@ -278,17 +240,17 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Trust Guarantees */}
+        {/* 3. Trust Guarantees */}
         <section className="py-8 md:py-16 bg-background">
           <div className="container mx-auto px-4">
             <TrustGuarantees />
           </div>
         </section>
 
-        {/* How It Works */}
+        {/* 4. How It Works */}
         <HowItWorksSection />
 
-        {/* Daily Reports Section */}
+        {/* 5. Daily Reports — with product screenshot */}
         <section className="py-8 md:py-20 bg-accent">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
@@ -296,26 +258,26 @@ const Index = () => {
                 <div className="space-y-4 md:space-y-6">
                   <div className="inline-flex items-center bg-primary text-primary-foreground px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium font-body">
                     <img src={iconCamera} alt="" className="w-4 h-4 mr-1.5 md:mr-2" />
-                    Industry First Feature
+                    Daily Photo Updates
                   </div>
                   
                   <h2 className="text-2xl md:text-4xl font-bold text-foreground font-display">
-                    Watch the Bond Grow, Update by Update
+                    See How Your Pet's Day Went
                   </h2>
                   
                   <p className="text-sm md:text-lg text-muted-foreground leading-relaxed font-body">
-                    96% report compliance rate, with updates sent 2x per day. Sitter payment is tied to delivery — the platform monitors every booking automatically.
+                    When you request daily updates, your sitter sends photos and notes about meals, walks, mood, and more. You'll never have to wonder how your pet is doing.
                   </p>
                   
                   <div className="grid grid-cols-2 gap-3 md:gap-4">
                     {[
-                      { icon: iconCheck, title: 'Daily Photos', desc: "See your pet's day" },
-                      { icon: iconClock, title: 'Care Notes', desc: 'Food, mood & health' },
-                      { icon: iconDollar, title: 'Pay Guarantee', desc: 'Tied to report quality' },
-                      { icon: iconShield, title: 'Peace of Mind', desc: 'Never worry again' },
+                      { icon: iconCamera, title: 'Daily Photos', desc: "See your pet's day" },
+                      { icon: iconCheck, title: 'Care Notes', desc: 'Food, mood & health' },
+                      { icon: iconCheck, title: 'Your Choice', desc: 'Opt-in when booking' },
+                      { icon: iconCheck, title: 'Peace of Mind', desc: 'Never worry again' },
                     ].map((item) => (
                       <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
-                        <div className="w-7 h-7 md:w-8 md:h-8 bg-vintage-cream rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                           <img src={item.icon} alt="" className="w-5 h-5" />
                         </div>
                         <div>
@@ -338,47 +300,18 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <div className="space-y-4 md:space-y-6">
-                  <div className="bg-card rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-border">
-                    <div className="text-center mb-4 md:mb-6">
-                      <h3 className="text-lg md:text-xl font-semibold text-foreground mb-1 md:mb-2 font-body">Sample Daily Report</h3>
-                      <p className="text-xs md:text-sm text-muted-foreground font-body">What you'll receive every day</p>
-                    </div>
-                    
-                    <div className="space-y-3 md:space-y-4">
-                      {[
-                        { label: 'Morning Walk', value: '45 minutes' },
-                        { label: 'Feeding Time', value: 'Ate well' },
-                        { label: 'Playtime', value: 'Very active' },
-                      ].map((item) => (
-                        <div key={item.label} className="flex items-center justify-between p-2.5 md:p-3 bg-muted rounded-lg border border-border">
-                          <span className="text-sm font-medium text-foreground font-body">{item.label}</span>
-                          <span className="text-xs text-primary font-body">✓ {item.value}</span>
-                        </div>
-                      ))}
-                      
-                      <div className="grid grid-cols-3 gap-2 mt-3 md:mt-4">
-                        {['photo-1587300003388-59208cc962cb', 'photo-1561037404-61cd46aa615b', 'photo-1544568100-847a948585b9'].map((id, i) => (
-                          <div key={i} className="rounded-lg h-24 md:h-16 overflow-hidden">
-                            <img src={`https://images.unsplash.com/${id}?w=200&h=200&fit=crop`} alt={`Pet photo ${i+1}`} className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <p className="text-xs text-muted-foreground text-center italic font-body">
-                        "Max had a wonderful day! Very playful and ate all his food."
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3 md:gap-4">
-                    <div className="bg-card rounded-xl p-3 md:p-4 text-center border border-border">
-                      <div className="text-xl md:text-2xl font-bold text-primary font-display">96%</div>
-                      <div className="text-xs md:text-sm text-muted-foreground font-body">Report Compliance</div>
-                    </div>
-                    <div className="bg-card rounded-xl p-3 md:p-4 text-center border border-border">
-                      <div className="text-xl md:text-2xl font-bold text-primary font-display">2x/day</div>
-                      <div className="text-xs md:text-sm text-muted-foreground font-body">Updates Delivered</div>
+                {/* Product screenshot instead of fake mock */}
+                <div className="flex justify-center">
+                  <div className="relative max-w-[320px] md:max-w-[380px]">
+                    <img 
+                      src={dailyReportScreenshot} 
+                      alt="ZiggySitters daily report showing pet photos, meal notes, and activity updates"
+                      className="w-full rounded-2xl shadow-2xl border border-border"
+                      loading="lazy"
+                    />
+                    <div className="absolute -bottom-3 -right-3 bg-card rounded-lg px-3 py-2 shadow-lg border border-border">
+                      <p className="text-xs font-semibold text-foreground font-body">Real app screenshot</p>
+                      <p className="text-[10px] text-muted-foreground font-body">What owners actually receive</p>
                     </div>
                   </div>
                 </div>
@@ -387,7 +320,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* For Sitters CTA */}
+        {/* 6. For Sitters CTA */}
         <section className="py-12 md:py-20 bg-background border-t border-border">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6 md:gap-10 items-center">
@@ -439,137 +372,52 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Charity Section */}
-        <section className="py-8 md:py-20 bg-muted border-t border-border">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto">
-              <div className="mb-4 md:mb-8">
-                <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full mb-3 md:mb-4">
-                  <img src={iconPaw} alt="" className="w-7 h-7 md:w-9 md:h-9" />
-                </div>
-                <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 font-display text-foreground">
-                  Making a Difference Together
-                </h2>
-                <p className="text-sm md:text-lg text-muted-foreground font-body">
-                  Every booking helps pets in need across New Zealand.
-                </p>
-              </div>
-              
-              <div className="bg-card border border-border rounded-xl p-4 md:p-8 shadow-sm">
-                <div className="flex items-center justify-center gap-3 mb-3 md:mb-4">
-                  <span className="text-3xl md:text-4xl font-bold text-primary font-display">5%</span>
-                  <div className="text-left">
-                    <p className="font-semibold text-sm md:text-base font-body text-foreground">of our profits</p>
-                    <p className="text-xs md:text-sm text-muted-foreground font-body">goes to SPCA NZ</p>
-                  </div>
-                </div>
-                
-                <div className="hidden md:block">
-                  <h3 className="text-xl font-semibold mb-3 font-body text-foreground">SPCA New Zealand</h3>
-                  <p className="text-muted-foreground mb-6 font-body">
-                    Your bookings help us support the SPCA's vital work in animal rescue, providing medical care for abandoned pets, 
-                    and funding spay/neuter programs across New Zealand.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* 7. Testimonials */}
+        <TestimonialsSection />
 
-        {/* CTA Section */}
-        <section className="relative py-8 md:py-20 overflow-hidden bg-background">
+        {/* 8. Final CTA — single clear action */}
+        <section className="relative py-8 md:py-20 overflow-hidden bg-secondary">
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-xl mx-auto">
-              <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-foreground font-display">
+              <h2 className="text-xl md:text-4xl font-bold mb-3 md:mb-6 text-secondary-foreground font-display">
                 Ready to Find Your Pet{"'"}s Person?
               </h2>
-              <p className="text-sm md:text-xl mb-4 md:mb-6 text-muted-foreground font-body">
-                Join {platformStats.owners}+ pet owners who trust ZiggySitters for their furry family members.
+              <p className="text-sm md:text-xl mb-4 md:mb-6 text-secondary-foreground/70 font-body">
+                Book a local, verified sitter. Get daily photo updates. Simple.
               </p>
-              <form
-                className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const form = e.target as HTMLFormElement;
-                  const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
-                  const email = emailInput?.value?.trim();
-                  if (!email) return;
-                  try {
-                    await fetch('https://formspree.io/f/xpwzgkby', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ email, source: 'ziggy-homepage-cta' }),
-                    });
-                  } catch {}
-                  navigate(`/auth?tab=signup&email=${encodeURIComponent(email)}`);
-                }}
-              >
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  required
-                  className="h-12 text-base font-body"
-                />
-                <Button type="submit" size="lg" className="px-6 md:px-8 shadow-lg hover:shadow-xl transition-all min-h-[48px] whitespace-nowrap font-body">
-                  Get Started Free
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate('/find-sitters')}
+                  className="px-8 shadow-lg hover:shadow-xl transition-all min-h-[48px] font-body bg-primary text-primary-foreground hover:bg-primary/90 text-lg"
+                >
+                  Find a Sitter <span className="ml-2">→</span>
                 </Button>
-              </form>
-              <p className="text-xs md:text-sm text-muted-foreground font-body">
-                Free to join · No payment until you book · Cancel anytime
-              </p>
-              <div className="mt-4">
-                <Button variant="ghost" size="sm" className="text-muted-foreground font-body" onClick={() => navigate('/find-sitters')}>
-                  Or browse sitters first →
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => navigate('/become-sitter')}
+                  className="px-8 min-h-[48px] font-body text-lg border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/10"
+                >
+                  Become a Sitter
                 </Button>
               </div>
+              <p className="text-xs md:text-sm text-secondary-foreground/50 mt-4 font-body">
+                Free to join · No payment until you book · Cancel anytime
+              </p>
             </div>
           </div>
         </section>
       </div>
-
-      {/* Blog Section */}
-      <section className="py-12 md:py-20 bg-muted">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Blog</p>
-            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 font-display text-foreground">Pet Care Tips & Guides</h2>
-            <p className="text-muted-foreground text-sm md:text-lg font-body">Expert advice to help you provide the best care for your pets</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
-            {[
-              { slug: 'how-to-choose-pet-sitter-nz-buyer-guide', title: 'How to Choose a Pet Sitter in NZ', tag: 'For Pet Owners' },
-              { slug: 'pet-sitting-costs-nz-budget-guide', title: 'Pet Sitting Costs in NZ: Budget Guide', tag: 'For Pet Owners' },
-              { slug: 'ultimate-guide-pet-sitting-auckland', title: 'Ultimate Guide to Pet Sitting in Auckland', tag: 'Auckland Guide' },
-            ].map((post) => (
-              <Link key={post.slug} to={`/blog/${post.slug}`} className="group block p-6 bg-card rounded-xl border border-border hover:shadow-lg transition-all">
-                <span className="text-xs font-medium text-primary font-body">{post.tag}</span>
-                <h3 className="text-lg font-semibold mt-2 group-hover:text-primary transition-colors font-body text-foreground">{post.title}</h3>
-                <span className="text-sm text-muted-foreground mt-2 inline-block font-body">Read more →</span>
-              </Link>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link to="/blog" className="inline-flex items-center text-primary font-medium hover:underline font-body">
-              View all blog posts →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Signals */}
-      <TrustSignalsSection />
-
-      {/* Testimonials */}
-      <TestimonialsSection />
 
       {/* Sticky Mobile CTA Bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 safe-area-bottom">
         <Button 
           size="lg" 
           className="w-full text-base font-bold py-3 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-xl min-h-[48px] shadow-lg font-body"
-          onClick={() => navigate('/auth?tab=signup')}
+          onClick={() => navigate('/find-sitters')}
         >
-          Sign Up Free — Find a Sitter
+          Find a Sitter Near Me
         </Button>
       </div>
 
