@@ -1,23 +1,26 @@
-import { Shield, Camera, MapPin, Heart } from 'lucide-react';
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconCamera from '@/assets/icons/icon-camera.png';
+import iconMappin from '@/assets/icons/icon-mappin.png';
+import iconHeart from '@/assets/icons/icon-heart.png';
 
 const guarantees = [
   {
-    icon: Shield,
+    icon: iconShield,
     name: 'ID Verified Sitters',
     description: 'Every sitter provides government ID. Real people, verified locally.',
   },
   {
-    icon: Camera,
+    icon: iconCamera,
     name: 'Daily Photo Updates',
     description: "See your pet's day — photos, meal notes, mood, and activity updates.",
   },
   {
-    icon: MapPin,
+    icon: iconMappin,
     name: 'Local to Your Area',
     description: 'Sitters in your neighbourhood who know the parks, vets, and your community.',
   },
   {
-    icon: Heart,
+    icon: iconHeart,
     name: 'People Who Love Pets',
     description: 'Every sitter is a genuine animal lover. Your pet is family, not a transaction.',
   },
@@ -37,8 +40,8 @@ export default function TrustGuarantees() {
             key={index}
             className="bg-muted rounded-xl p-4 md:p-5 border border-border hover:shadow-sm transition-shadow"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 mb-3 md:mb-4">
-              <g.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-vintage-cream flex items-center justify-center flex-shrink-0 mb-3 md:mb-4">
+              <img src={g.icon} alt="" className="w-6 h-6 md:w-7 md:h-7" />
             </div>
             <h4 className="font-bold text-foreground text-sm md:text-base mb-1 md:mb-2 font-body">{g.name}</h4>
             <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-body">{g.description}</p>

@@ -1,40 +1,42 @@
-import { Check } from 'lucide-react';
-
 import iconPaw from '@/assets/icons/icon-paw.png';
 import iconHeart from '@/assets/icons/icon-heart.png';
 import iconPayment from '@/assets/icons/icon-payment.png';
 import iconCamera from '@/assets/icons/icon-camera.png';
 import iconShield from '@/assets/icons/icon-shield.png';
+import iconNum1 from '@/assets/icons/icon-num-1.png';
+import iconNum2 from '@/assets/icons/icon-num-2.png';
+import iconNum3 from '@/assets/icons/icon-num-3.png';
+import iconNum4 from '@/assets/icons/icon-num-4.png';
 
 const steps = [
   {
-    number: "1",
     title: "Tell Us About Your Pet",
     description: "Share your pet's personality, quirks, and needs — so we can find the right match",
     image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=250&fit=crop",
     icon: iconPaw,
+    numIcon: iconNum1,
   },
   {
-    number: "2",
     title: "Free Meet & Greet",
     description: "See the chemistry in person — let your pet and their sitter connect before you commit",
     highlight: true,
     image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=250&fit=crop",
     icon: iconHeart,
+    numIcon: iconNum2,
   },
   {
-    number: "3",
     title: "Book Your Match",
     description: "94% of owners book after their first meet & greet — secure your sitter with confidence",
     image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=250&fit=crop",
     icon: iconPayment,
+    numIcon: iconNum3,
   },
   {
-    number: "4",
     title: "Watch the Bond Grow",
     description: "Receive morning & evening updates with photos, behavioural notes, and daily care tracking",
     image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=250&fit=crop",
     icon: iconCamera,
+    numIcon: iconNum4,
   }
 ];
 
@@ -92,15 +94,15 @@ export default function HowItWorksSection() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   
-                  {/* Number badge on image */}
-                  <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3 w-7 h-7 md:w-9 md:h-9 rounded-full bg-primary text-primary-foreground font-bold text-sm md:text-base flex items-center justify-center shadow-lg font-body">
-                    {step.number}
+                  {/* Vintage number badge on image */}
+                  <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3">
+                    <img src={step.numIcon} alt="" className="w-8 h-8 md:w-10 md:h-10 drop-shadow-lg" />
                   </div>
                 </div>
                 
                 {/* Content */}
                 <div className="p-3 md:p-5">
-                  <div className="hidden md:flex w-10 h-10 rounded-xl bg-primary/10 items-center justify-center mb-3">
+                  <div className="hidden md:flex w-10 h-10 rounded-xl bg-vintage-cream items-center justify-center mb-3">
                     <img src={step.icon} alt="" className="w-6 h-6" />
                   </div>
                   

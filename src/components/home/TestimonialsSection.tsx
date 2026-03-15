@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import iconStar from '@/assets/icons/icon-star.png';
 
 const testimonials = [
   {
@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
               {/* Stars */}
               <div className="flex gap-0.5 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <img key={i} src={iconStar} alt="" className="w-5 h-5" />
                 ))}
               </div>
               
