@@ -960,7 +960,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Everything you need to know about pet sitting in Christchurch. Find trusted local sitters, understand costs, and discover the best pet care in the Garden City.',
     date: '2026-02-06',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1477884213360-7e9d7dcc8f9b?w=1200&h=630&fit=crop',
     readTime: '11 min read',
     tag: 'Pet Care Tips',
     metaDescription: 'Complete guide to pet sitting in Christchurch 2026. Find trusted local sitters, understand costs, and get the best pet care in Canterbury.',
