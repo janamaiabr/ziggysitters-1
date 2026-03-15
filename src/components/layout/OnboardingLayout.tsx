@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import logoSvg from '@/assets/logo.svg';
+import ziggyLogo from '@/assets/ziggy-logo.png';
 
 interface OnboardingLayoutProps {
   children: ReactNode;
