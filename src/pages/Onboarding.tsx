@@ -1154,9 +1154,9 @@ export default function Onboarding() {
                       <div
                         key={i}
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          i + 1 <= step 
-                            ? 'bg-gradient-to-r from-purple-500 to-blue-500 scale-110' 
-                            : 'bg-gray-300 dark:bg-gray-600'
+                          i + 1 <= step
+                            ? 'bg-primary scale-110'
+                            : 'bg-muted'
                         }`}
                       />
                     ))}
