@@ -728,7 +728,7 @@ export const blogPosts: BlogPostData[] = [
     excerpt: 'Cats can experience significant stress when their owners leave. Recognise the signs of feline separation anxiety and learn proven strategies to keep cats calm.',
     date: '2026-02-04',
     author: 'ZiggySitters Team',
-    image: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=1200&h=630&fit=crop',
+    image: 'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=1200&h=630&fit=crop',
     readTime: '10 min read',
     tag: 'Pet Care Tips',
     metaDescription: 'Understanding cat separation anxiety in NZ. Signs, causes, and proven solutions to reduce feline stress when owners travel. Expert pet sitting advice.',
