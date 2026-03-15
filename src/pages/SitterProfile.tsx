@@ -5,18 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  MapPin, 
-  Heart, 
-  Calendar,
-  DollarSign,
-  Award,
-  Shield,
-  Clock,
-  ArrowLeft,
-  MessageCircle,
-  Search
-} from 'lucide-react';
 import BookingFormDirect from '@/components/booking/BookingFormDirect';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/contexts/ProfileContext';
@@ -26,7 +14,6 @@ import { useEventTracking } from '@/hooks/useEventTracking';
 import { useSearchTracking } from '@/hooks/useSearchTracking';
 import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
 import SitterVerificationBadge from '@/components/sitter/SitterVerificationBadge';
 import QuickQuestionDialog from '@/components/messaging/QuickQuestionDialog';
 import GuestEnquiryDialog from '@/components/messaging/GuestEnquiryDialog';
@@ -36,6 +23,16 @@ import PublicAvailabilityCalendar from '@/components/calendar/PublicAvailability
 import ReviewsList from '@/components/reviews/ReviewsList';
 import { ga4 } from '@/lib/ga4';
 import BookingExitSurvey from '@/components/booking/BookingExitSurvey';
+
+import iconMappin from '@/assets/icons/icon-mappin.png';
+import iconClock from '@/assets/icons/icon-clock.png';
+import iconChat from '@/assets/icons/icon-chat.png';
+import iconCalendar from '@/assets/icons/icon-calendar.png';
+import iconDollar from '@/assets/icons/icon-dollar.png';
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconSearch from '@/assets/icons/icon-search.png';
+import iconCheck from '@/assets/icons/icon-check.png';
+import iconPaw from '@/assets/icons/icon-paw.png';
 
 interface SitterData {
   id: string;
@@ -49,7 +46,7 @@ interface SitterData {
   petTypes: string[];
   avatar: string;
   verified: boolean;
-  hasPoliceVet?: boolean; // Gold badge
+  hasPoliceVet?: boolean;
   
   bio: string;
   experience: string;
@@ -72,25 +69,21 @@ export default function SitterProfile() {
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Build smart "back to search" URL from saved context
   const buildSearchUrl = () => {
     const context = getSearchContext();
     const params = new URLSearchParams();
-    
     if (context?.location) params.set('location', context.location);
     if (context?.serviceType) params.set('serviceType', context.serviceType);
     if (context?.checkIn) params.set('checkIn', context.checkIn);
     if (context?.checkOut) params.set('checkOut', context.checkOut);
-    
     return params.toString() ? `/find-sitters?${params.toString()}` : '/find-sitters';
   };
   
   const handleBackToSearch = () => {
-    clearSearchContext(); // Clear after navigating back
+    clearSearchContext();
     navigate(buildSearchUrl());
   };
   
-  // Get dates from URL params
   const checkInDate = searchParams.get('checkIn');
   const checkOutDate = searchParams.get('checkOut');
   const serviceTypeParam = searchParams.get('serviceType');
@@ -101,12 +94,10 @@ export default function SitterProfile() {
     serviceType: serviceTypeParam || undefined,
   };
   
-  // Handle URL params for booking/inquiry redirects
   useEffect(() => {
     const shouldOpenBooking = searchParams.get('booking') === 'true';
     const shouldOpenInquiry = searchParams.get('inquiry') === 'true';
     
-    // Auto-scroll to booking section for pet owners
     if (user && profile?.role === 'pet_owner' && sitterData) {
       const timer = setTimeout(() => {
         const bookingSection = document.getElementById('booking-section');
@@ -119,7 +110,6 @@ export default function SitterProfile() {
     
     if (shouldOpenBooking && user) {
       metaPixel.trackViewContent('Sitter Profile', 'Pet Sitter');
-      
       setTimeout(() => {
         const bookingSection = document.getElementById('booking-section');
         if (bookingSection) {
@@ -131,24 +121,16 @@ export default function SitterProfile() {
       navigate(`/auth?redirect=${encodeURIComponent(currentUrl)}`);
     }
     
-    // Auto-open inquiry dialog after login
     if (shouldOpenInquiry && user && sitterData) {
       setIsMessageDialogOpen(true);
     }
   }, [searchParams, user, id, navigate, sitterData, profile?.role]);
 
-  // Load sitter data from the secure database view
   useEffect(() => {
     const fetchSitterData = async () => {
-      if (!id) {
-        console.log('No sitter ID provided');
-        return;
-      }
+      if (!id) return;
       
       try {
-        console.log('Fetching sitter with ID:', id);
-        
-        // Use RPC function for public access (works for anonymous users)
         let data = null;
         let goldenBadgeData = null;
 
@@ -157,10 +139,7 @@ export default function SitterProfile() {
         
         data = rpcData?.[0] || null;
 
-        // Fallback: if RPC returns no data, try public_sitters view directly
-        // This fixes "Sitter Not Found" when RPC has different filters than search
         if (!data) {
-          console.log('RPC returned no data, trying public_sitters view fallback');
           const { data: viewData, error: viewError } = await supabase
             .from('public_sitters')
             .select('*')
@@ -168,13 +147,9 @@ export default function SitterProfile() {
             .eq('onboarding_completed', true)
             .maybeSingle();
           
-          if (viewData && !viewError) {
-            data = viewData;
-            console.log('Found sitter via public_sitters view fallback');
-          }
+          if (viewData && !viewError) data = viewData;
         }
         
-        // Get golden badge status
         const { data: goldenBadgeResult } = await supabase
           .from('public_sitters')
           .select('golden_badge_approved')
@@ -183,45 +158,30 @@ export default function SitterProfile() {
         
         goldenBadgeData = goldenBadgeResult;
 
-        console.log('Profile fetch result:', { data, error });
-
         if (error && !data) {
-          console.error('Error fetching sitter:', error);
           setSitterData(null);
           setLoading(false);
           return;
         }
         
         if (!data) {
-          console.error('Sitter not found - no data returned from any source');
           setSitterData(null);
           setLoading(false);
           return;
         }
 
-        console.log('Sitter data found:', data);
-
-        // Fetch actual services for this sitter
         const { data: servicesData } = await supabase
           .from('sitter_services')
           .select('*')
           .eq('sitter_id', id)
           .eq('is_offered', true);
 
-        console.log('Services data:', servicesData);
-
-        // Store services data for displaying rates
         setServicesData(servicesData || []);
 
-        // Fetch portfolio photos from storage
         const { data: portfolioFiles } = await supabase.storage
           .from('profile-photos')
-          .list(`${id}/portfolio`, {
-            limit: 10,
-            sortBy: { column: 'created_at', order: 'desc' }
-          });
+          .list(`${id}/portfolio`, { limit: 10, sortBy: { column: 'created_at', order: 'desc' } });
 
-        // Generate portfolio URLs
         const portfolioUrls = portfolioFiles?.map(file => {
           const { data: { publicUrl } } = supabase.storage
             .from('profile-photos')
@@ -229,7 +189,6 @@ export default function SitterProfile() {
           return publicUrl;
         }) || [];
 
-        // Transform services data
         const serviceNames = servicesData?.map(service => {
           switch (service.service_type) {
             case 'drop_in_visits': return 'Drop-in Visits';
@@ -239,13 +198,11 @@ export default function SitterProfile() {
           }
         }) || ['Pet Sitting', 'Drop-in Visits'];
 
-        // Get the lowest rate from actual services
         const rates = servicesData?.map(service => 
           service.hourly_rate || service.daily_rate || service.overnight_rate
         ).filter(Boolean) || [];
         const baseRate = rates.length > 0 ? Math.min(...rates) : null;
 
-        // Transform the data to match our interface using real data
         const transformedData = {
           id: data.id,
           display_name: `${data.first_name} ${data.last_name.charAt(0)}.`,
@@ -261,8 +218,7 @@ export default function SitterProfile() {
             ) : ['Dogs', 'Cats'],
           avatar: data.avatar_url,
           verified: data.is_verified,
-          hasPoliceVet: !!(goldenBadgeData?.golden_badge_approved), // Gold badge
-          
+          hasPoliceVet: !!(goldenBadgeData?.golden_badge_approved),
           bio: data.bio || 'Experienced pet care provider',
           experience: servicesData?.length > 0 ? 
             `${Math.max(...servicesData.map(s => s.experience_years || 0))} years experience` : 
@@ -279,13 +235,9 @@ export default function SitterProfile() {
           gallery: portfolioUrls.length > 0 ? portfolioUrls : []
         };
 
-        console.log('Setting sitter data:', transformedData);
         setSitterData(transformedData);
         
-        // GA4 conversion event: view_sitter_profile
         ga4.viewSitterProfile(id, transformedData.display_name, transformedData.location);
-
-        // Track profile view event (Supabase)
         trackEvent({
           eventType: 'page_view',
           eventName: 'sitter_profile_view',
@@ -299,12 +251,7 @@ export default function SitterProfile() {
             services_count: transformedData.services.length,
           }
         });
-        
-        // Track view content event (Meta)
-        metaPixel.trackViewContent(
-          transformedData.display_name,
-          'Sitter Profile'
-        );
+        metaPixel.trackViewContent(transformedData.display_name, 'Sitter Profile');
       } catch (error) {
         console.error('Error in fetchSitterData:', error);
         setSitterData(null);
@@ -321,21 +268,19 @@ export default function SitterProfile() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Loading sitter profile...</p>
+          <p className="font-body text-muted-foreground">Loading sitter profile...</p>
         </div>
       </div>
     );
   }
   
-  // sitterData is now loaded from the database via useEffect above
-  
   if (!sitterData) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Sitter Not Found</h1>
-          <Button onClick={handleBackToSearch}>
-            <Search className="mr-2 h-4 w-4" />
+          <h1 className="text-2xl font-bold mb-4 font-display text-foreground">Sitter Not Found</h1>
+          <Button onClick={handleBackToSearch} className="font-body">
+            <img src={iconSearch} alt="" className="mr-2 h-4 w-4" />
             Back to Search
           </Button>
         </div>
@@ -346,55 +291,55 @@ export default function SitterProfile() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-background py-8">
+      <div className="bg-muted py-8 border-b border-border">
         <div className="container mx-auto px-4">
           <Button 
             variant="outline" 
             onClick={handleBackToSearch}
-            className="mb-6"
+            className="mb-6 font-body"
           >
-            <Search className="mr-2 h-4 w-4" />
+            <img src={iconSearch} alt="" className="mr-2 h-4 w-4" />
             Back to Search
           </Button>
           
           <div className="flex flex-col md:flex-row gap-6 items-start">
-            <Avatar className="h-24 w-24">
+            <Avatar className="h-24 w-24 ring-2 ring-border">
               <AvatarImage 
                 src={sitterData.avatar} 
                 className="object-cover"
               />
-              <AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary font-body">
                 {sitterData.display_name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
             
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <h1 className="text-3xl font-bold">{sitterData.display_name}</h1>
+                <h1 className="text-3xl font-bold font-display text-foreground">{sitterData.display_name}</h1>
                 <SitterVerificationBadge 
                   isVerified={sitterData.verified || false}
                   hasGoldenBadge={sitterData.hasPoliceVet || false}
                 />
               </div>
               
-              <div className="flex items-center text-muted-foreground mb-2">
-                <MapPin className="w-4 h-4 mr-1" />
+              <div className="flex items-center text-muted-foreground mb-2 font-body">
+                <img src={iconMappin} alt="" className="w-4 h-4 mr-1" />
                 {sitterData.location}
               </div>
               
               {/* Prominent price display */}
               {sitterData.baseRate && sitterData.baseRate !== Infinity && (
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  <span className="text-2xl font-bold text-primary font-display">
                     From NZ${sitterData.baseRate}/day
                   </span>
-                  <span className="text-sm text-muted-foreground">• Free to enquire</span>
+                  <span className="text-sm text-muted-foreground font-body">· Free to enquire</span>
                 </div>
               )}
               
-              {/* Response time indicator */}
-              <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
-                <Clock className="w-4 h-4" />
+              {/* Response time */}
+              <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground font-body">
+                <img src={iconClock} alt="" className="w-4 h-4" />
                 <span>Usually responds within 2-4 hours</span>
               </div>
               
@@ -404,22 +349,21 @@ export default function SitterProfile() {
                     <Button 
                       size="lg"
                       variant="outline"
+                      className="font-body"
                       onClick={() => {
                         ga4.clickMessage(sitterData.id, sitterData.display_name, false);
                         setIsMessageDialogOpen(true);
                       }}
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      💬 Quick Question
+                      <img src={iconChat} alt="" className="mr-2 h-4 w-4" />
+                      Quick Question
                     </Button>
                     <Button 
                       size="lg"
-                      className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
+                      className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg font-bold font-body"
                       onClick={() => {
-                        // GA4 conversion events
                         ga4.clickBook(sitterData.id, sitterData.display_name, 'profile_header');
                         ga4.startBooking(sitterData.id, sitterData.display_name, serviceTypeParam || undefined);
-                        // Track booking dialog open
                         trackEvent({
                           eventType: 'booking',
                           eventName: 'booking_dialog_open',
@@ -429,7 +373,6 @@ export default function SitterProfile() {
                             source: 'profile_page'
                           }
                         });
-                        // Scroll to booking form
                         setTimeout(() => {
                           const bookingSection = document.getElementById('booking-section');
                           if (bookingSection) {
@@ -438,8 +381,8 @@ export default function SitterProfile() {
                         }, 100);
                       }}
                     >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      📅 Check Availability
+                      <img src={iconCalendar} alt="" className="mr-2 h-4 w-4" />
+                      Check Availability
                       <span className="ml-2">→</span>
                     </Button>
                   </>
@@ -449,26 +392,24 @@ export default function SitterProfile() {
                     <Button 
                       size="lg"
                       variant="outline"
+                      className="font-body"
                       onClick={() => {
                         ga4.clickMessage(sitterData.id, sitterData.display_name, true);
                         setIsMessageDialogOpen(true);
                       }}
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      💬 Quick Question
+                      <img src={iconChat} alt="" className="mr-2 h-4 w-4" />
+                      Quick Question
                     </Button>
                     <Button 
                       size="lg"
-                      className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white shadow-lg font-bold"
+                      className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg font-bold font-body"
                       onClick={() => {
-                        // GA4 conversion events
                         ga4.clickBook(sitterData.id, sitterData.display_name, 'guest_profile_header');
-                        // Scroll to availability calendar first (no login required to see it)
                         const calendarSection = document.querySelector('[data-availability-calendar]');
                         if (calendarSection) {
                           calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
-                        // Track the action
                         trackEvent({
                           eventType: 'booking',
                           eventName: 'guest_check_availability_clicked',
@@ -480,8 +421,8 @@ export default function SitterProfile() {
                         });
                       }}
                     >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      📅 View Availability
+                      <img src={iconCalendar} alt="" className="mr-2 h-4 w-4" />
+                      View Availability
                       <span className="ml-2">→</span>
                     </Button>
                   </>
@@ -497,17 +438,17 @@ export default function SitterProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Show alert if current user is a sitter */}
+            {/* Sitter role alert */}
             {profile?.role === 'pet_sitter' && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
+                <img src={iconPaw} alt="" className="h-4 w-4" />
+                <AlertDescription className="font-body">
                   Pet sitters cannot book other sitters. Only pet owners can make bookings.
                 </AlertDescription>
               </Alert>
             )}
             
-            {/* Booking Form - Always visible, but guests see it disabled with signup prompt */}
+            {/* Booking Form */}
             <div id="booking-section" className="space-y-4">
               <BookingFormDirect
                 sitter={{
@@ -525,7 +466,6 @@ export default function SitterProfile() {
                 initialServiceType={serviceTypeParam || undefined}
                 isGuestPreview={!user}
                 onGuestSignup={() => {
-                  // Track guest CTA click
                   trackEvent({
                     eventType: 'booking',
                     eventName: 'guest_booking_cta_clicked',
@@ -542,19 +482,19 @@ export default function SitterProfile() {
                 }}
               />
               
-              {/* Quick Question - Lower commitment alternative */}
-              <Card className="border border-dashed border-muted-foreground/30">
+              {/* Quick Question */}
+              <Card className="border border-dashed border-border">
                 <CardContent className="p-4 text-center">
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <p className="text-sm text-muted-foreground mb-3 font-body">
                     Not ready to book? Just have a question?
                   </p>
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full"
+                    className="w-full font-body"
                     onClick={() => setIsMessageDialogOpen(true)}
                   >
-                    <MessageCircle className="mr-2 h-4 w-4" />
+                    <img src={iconChat} alt="" className="mr-2 h-4 w-4" />
                     Ask {sitterData.display_name.split(' ')[0]} a Quick Question
                   </Button>
                 </CardContent>
@@ -562,19 +502,19 @@ export default function SitterProfile() {
             </div>
             
             {/* About */}
-            <Card>
+            <Card className="border border-border">
               <CardHeader>
-                <CardTitle>About {sitterData.display_name.split(' ')[0]}</CardTitle>
+                <CardTitle className="font-display text-foreground">About {sitterData.display_name.split(' ')[0]}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{sitterData.bio}</p>
+                <p className="text-muted-foreground font-body">{sitterData.bio}</p>
               </CardContent>
             </Card>
 
             {/* Services & Rates */}
-            <Card>
+            <Card className="border border-border">
               <CardHeader>
-                <CardTitle>Services & Rates</CardTitle>
+                <CardTitle className="font-display text-foreground">Services & Rates</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {servicesData.length > 0 ? (
@@ -598,7 +538,6 @@ export default function SitterProfile() {
                     };
 
                     const getRate = (service: any) => {
-                      // Format rates to always show 2 decimal places
                       if (service.hourly_rate) return `NZ$${Number(service.hourly_rate).toFixed(2)}/hour`;
                       if (service.daily_rate) return `NZ$${Number(service.daily_rate).toFixed(2)}/day`;
                       if (service.overnight_rate) return `NZ$${Number(service.overnight_rate).toFixed(2)}/night`;
@@ -608,39 +547,39 @@ export default function SitterProfile() {
                     return (
                       <div key={service.id} className="flex justify-between items-center">
                         <div>
-                          <div className="font-medium">{getServiceDisplayName(service.service_type)}</div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="font-medium font-body text-foreground">{getServiceDisplayName(service.service_type)}</div>
+                          <div className="text-xs text-muted-foreground font-body">
                             {getServiceDescription(service.service_type)}
                           </div>
                         </div>
-                        <div className="text-right font-semibold">{getRate(service)}</div>
+                        <div className="text-right font-semibold font-body text-foreground">{getRate(service)}</div>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-muted-foreground">No services configured yet.</p>
+                  <p className="text-muted-foreground font-body">No services configured yet.</p>
                 )}
               </CardContent>
             </Card>
 
             {/* Experience & Specialties */}
-            <Card>
+            <Card className="border border-border">
               <CardHeader>
-                <CardTitle>Experience & Specialties</CardTitle>
+                <CardTitle className="font-display text-foreground">Experience & Specialties</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-medium mb-2">Experience</h4>
-                  <p className="text-muted-foreground">{sitterData.experience} of professional pet care</p>
+                  <h4 className="font-medium mb-2 font-body text-foreground">Experience</h4>
+                  <p className="text-muted-foreground font-body">{sitterData.experience} of professional pet care</p>
                 </div>
                 
                 <Separator />
                 
                 <div>
-                  <h4 className="font-medium mb-2">Specialities</h4>
+                  <h4 className="font-medium mb-2 font-body text-foreground">Specialities</h4>
                   <div className="flex flex-wrap gap-2">
                     {[...new Set(sitterData.specialties)].map((specialty, index) => (
-                      <Badge key={`${specialty}-${index}`} variant="outline">
+                      <Badge key={`${specialty}-${index}`} variant="outline" className="font-body">
                         {specialty}
                       </Badge>
                     ))}
@@ -650,10 +589,10 @@ export default function SitterProfile() {
                 <Separator />
                 
                 <div>
-                  <h4 className="font-medium mb-2">Pet Types</h4>
+                  <h4 className="font-medium mb-2 font-body text-foreground">Pet Types</h4>
                   <div className="flex flex-wrap gap-2">
                     {sitterData.petTypes.map((type) => (
-                      <Badge key={type} variant="secondary">
+                      <Badge key={type} variant="secondary" className="font-body">
                         {type}
                       </Badge>
                     ))}
@@ -664,9 +603,9 @@ export default function SitterProfile() {
 
             {/* Photo Gallery */}
             {sitterData.gallery.length > 0 && (
-              <Card>
+              <Card className="border border-border">
                 <CardHeader>
-                  <CardTitle>Photos</CardTitle>
+                  <CardTitle className="font-display text-foreground">Photos</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -683,13 +622,13 @@ export default function SitterProfile() {
               </Card>
             )}
 
-            {/* Reviews Section */}
+            {/* Reviews */}
             <ReviewsList 
               sitterId={sitterData.id}
               sitterName={sitterData.display_name}
             />
 
-            {/* FAQ Section */}
+            {/* FAQ */}
             <FAQAccordion 
               sitterName={sitterData.display_name}
               services={sitterData.services}
@@ -700,30 +639,28 @@ export default function SitterProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card>
+            {/* Starting Rate */}
+            <Card className="border border-border">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <DollarSign className="mr-2 h-5 w-5" />
+                <CardTitle className="flex items-center font-display text-foreground">
+                  <img src={iconDollar} alt="" className="mr-2 h-5 w-5" />
                   Starting Rate
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">
+                  <div className="text-2xl font-bold font-display text-foreground">
                     {sitterData.baseRate && sitterData.baseRate !== Infinity ? `From NZ$${sitterData.baseRate}` : 'Contact for pricing'}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground font-body">
                     Per service (varies by type)
                   </div>
                 </div>
-                
-                {/* Removed send message functionality */}
               </CardContent>
             </Card>
 
-            {/* Public Availability Calendar - NO LOGIN REQUIRED */}
-            <Card data-availability-calendar>
+            {/* Availability Calendar */}
+            <Card data-availability-calendar className="border border-border">
               <CardContent className="pt-4">
                 <PublicAvailabilityCalendar 
                   sitterId={sitterData.id}
@@ -733,21 +670,27 @@ export default function SitterProfile() {
             </Card>
 
             {/* Verification */}
-            <Card>
+            <Card className="border border-border">
               <CardHeader>
-                <CardTitle className="flex items-center text-sm md:text-base">
-                  <Shield className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                <CardTitle className="flex items-center text-sm md:text-base font-display text-foreground">
+                  <img src={iconShield} alt="" className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                   <span className="truncate">Verification</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Identity Verified</span>
-                  <Badge variant="secondary">✓</Badge>
+                  <span className="text-sm font-body text-foreground">Identity Verified</span>
+                  <Badge variant="secondary" className="font-body">
+                    <img src={iconCheck} alt="" className="w-3 h-3 mr-1" />
+                    Yes
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Profile Verified</span>
-                  <Badge variant="secondary">✓</Badge>
+                  <span className="text-sm font-body text-foreground">Profile Verified</span>
+                  <Badge variant="secondary" className="font-body">
+                    <img src={iconCheck} alt="" className="w-3 h-3 mr-1" />
+                    Yes
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
@@ -755,7 +698,7 @@ export default function SitterProfile() {
         </div>
       </div>
       
-      {/* Enquiry Dialogs - Different for logged in vs guest users */}
+      {/* Dialogs */}
       {sitterData && user && (
         <QuickQuestionDialog
           isOpen={isMessageDialogOpen}
@@ -776,7 +719,7 @@ export default function SitterProfile() {
         />
       )}
       
-      {/* Floating CTA Buttons - Now visible on all devices when scrolled */}
+      {/* Floating CTA */}
       {sitterData && (profile?.role === 'pet_owner' || !user) && (
         <FloatingEnquiryButton 
           onEnquiryClick={() => setIsMessageDialogOpen(true)}
@@ -791,7 +734,7 @@ export default function SitterProfile() {
         />
       )}
 
-      {/* Exit-intent survey for booking form abandonment */}
+      {/* Exit survey */}
       {sitterData && (
         <BookingExitSurvey
           sitterId={sitterData.id}

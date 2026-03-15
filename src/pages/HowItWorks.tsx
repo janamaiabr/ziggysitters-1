@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import SEOHead from '@/components/seo/SEOHead';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Check, Star } from 'lucide-react';
+import iconSearch from '@/assets/icons/icon-search.png';
 import { useNavigate } from 'react-router-dom';
 import petServices from '@/assets/pet-services-ai-backup.jpg';
 
@@ -89,7 +89,7 @@ export default function HowItWorks() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold px-8 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-                  Find a Sitter <ArrowRight className="ml-2 h-4 w-4" />
+                  Find a Sitter <span className="ml-2">→</span>
                 </Button>
                 <Button size="lg" variant="outline-white" className="font-body px-8 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
                   Become a Sitter
@@ -237,7 +237,7 @@ export default function HowItWorks() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-                Find a Sitter <ArrowRight className="ml-2 h-4 w-4" />
+                Find a Sitter <span className="ml-2">→</span>
               </Button>
               <Button size="lg" variant="outline-white" className="font-body px-10 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
                 Become a Sitter

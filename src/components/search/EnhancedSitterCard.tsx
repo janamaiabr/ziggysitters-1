@@ -1,7 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Star, Dog } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { YOUNG_WALKER_CONFIG } from '@/config/features';
+import iconMappin from '@/assets/icons/icon-mappin.png';
+import iconShield from '@/assets/icons/icon-shield.png';
+import iconStar from '@/assets/icons/icon-star.png';
 
 const COMPETENCY_TAG_LABELS: Record<string, string> = {
   medication_admin: 'Meds',
@@ -73,7 +76,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
 
         {/* Price badge — top right */}
         <div className="absolute top-3 right-3">
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm">
+          <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-border">
             <span className="font-bold text-foreground">${sitter.baseRate}</span>
             <span className="text-xs text-muted-foreground">/{sitter.isYoungWalker ? 'walk' : 'day'}</span>
           </div>
@@ -83,13 +86,13 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
         <div className="absolute top-3 left-3 flex gap-1.5">
           {sitter.golden_badge && (
             <div className="bg-amber-500/90 backdrop-blur-sm rounded-lg px-2.5 py-1 flex items-center gap-1 shadow-sm">
-              <Star className="w-3 h-3 fill-white text-white" />
+              <img src={iconStar} alt="" className="w-3 h-3" />
               <span className="text-xs font-semibold text-white">Vetted</span>
             </div>
           )}
           {sitter.verified && !sitter.golden_badge && (
             <div className="bg-primary/90 backdrop-blur-sm rounded-lg px-2.5 py-1 flex items-center gap-1 shadow-sm">
-              <Shield className="w-3 h-3 text-white" />
+              <img src={iconShield} alt="" className="w-3 h-3" />
               <span className="text-xs font-semibold text-white">Verified</span>
             </div>
           )}
@@ -97,10 +100,10 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
 
         {/* Name + location on photo */}
         <div className="absolute bottom-3 left-3 right-3">
-          <h3 className="font-bold text-lg text-white mb-0.5">{sitter.name}</h3>
+          <h3 className="font-bold text-lg text-white mb-0.5 font-body">{sitter.name}</h3>
           <div className="flex items-center text-sm text-white/80">
-            <MapPin className="w-3 h-3 mr-1 shrink-0" />
-            <span className="truncate">{sitter.location}</span>
+            <img src={iconMappin} alt="" className="w-3 h-3 mr-1 shrink-0" />
+            <span className="truncate font-body">{sitter.location}</span>
           </div>
         </div>
       </div>
@@ -113,38 +116,40 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
             <div className="flex items-center gap-1">
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
+                  <img
                     key={s}
+                    src={iconStar}
+                    alt=""
                     className={`h-3.5 w-3.5 ${
                       s <= Math.round(sitter.rating || 0)
-                        ? 'fill-amber-400 text-amber-400'
-                        : 'text-muted-foreground/30'
+                        ? 'opacity-100'
+                        : 'opacity-20'
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-xs text-muted-foreground">({sitter.feedback_count})</span>
+              <span className="text-xs text-muted-foreground font-body">({sitter.feedback_count})</span>
             </div>
           ) : (
-            <span className="text-xs text-muted-foreground">New sitter</span>
+            <span className="text-xs text-muted-foreground font-body">New sitter</span>
           )}
           {experienceYears >= 2 && (
-            <span className="text-xs text-muted-foreground">· {experienceYears}+ yrs</span>
+            <span className="text-xs text-muted-foreground font-body">· {experienceYears}+ yrs</span>
           )}
         </div>
 
         {/* Bio */}
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{sitter.bio}</p>
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3 font-body">{sitter.bio}</p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1 mb-3">
           {sitter.services.slice(0, 2).map((service) => (
-            <Badge key={service} variant="outline" className="text-[10px] py-0 px-1.5 h-5 font-normal">
+            <Badge key={service} variant="outline" className="text-[10px] py-0 px-1.5 h-5 font-normal font-body">
               {service.replace('Pet Sitting ', '').replace('(', '').replace(')', '')}
             </Badge>
           ))}
           {hasFencedYard && (
-            <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-5 text-primary border-primary/20 font-normal">
+            <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-5 text-primary border-primary/20 font-normal font-body">
               Fenced yard
             </Badge>
           )}
@@ -153,7 +158,7 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
               <Badge
                 key={tag}
                 variant="outline"
-                className="text-[10px] py-0 px-1.5 h-5 font-normal"
+                className="text-[10px] py-0 px-1.5 h-5 font-normal font-body"
                 data-testid={`competency-badge-${tag}`}
               >
                 {COMPETENCY_TAG_LABELS[tag]}
@@ -161,6 +166,18 @@ export default function EnhancedSitterCard({ sitter, onViewProfile, onSitterClic
             ) : null
           ))}
         </div>
+
+        {/* CTA Button */}
+        <Button 
+          size="sm" 
+          className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold font-body"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick();
+          }}
+        >
+          View Profile & Book →
+        </Button>
       </div>
     </Card>
   );

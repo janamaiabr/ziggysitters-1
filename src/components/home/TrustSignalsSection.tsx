@@ -8,8 +8,8 @@ import iconCheck from '@/assets/icons/icon-check.png';
 const trustBadges = [
   {
     icon: iconShield,
-    title: "Verified Sitters",
-    description: "All sitters are ID verified"
+    title: "Vetted Sitters",
+    description: "All sitters are ID vetted"
   },
   {
     icon: iconCreditcard,

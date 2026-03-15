@@ -6,13 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { MapPin, Mail, Clock, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { metaPixel } from '@/lib/metaPixel';
-
 import iconEmail from '@/assets/icons/icon-email.png';
 import iconQuestion from '@/assets/icons/icon-question.png';
 import iconShield from '@/assets/icons/icon-shield.png';
+import iconMappin from '@/assets/icons/icon-mappin.png';
+import iconClock from '@/assets/icons/icon-clock.png';
+import { useNavigate } from 'react-router-dom';
+import { metaPixel } from '@/lib/metaPixel';
+
 
 export default function Contact() {
   const { toast } = useToast();
@@ -187,7 +188,7 @@ export default function Contact() {
                       disabled={loading}
                     >
                       {loading ? 'Sending...' : 'Send Message'}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <span className="ml-2">→</span>
                     </Button>
                   </form>
                 </CardContent>
@@ -201,7 +202,7 @@ export default function Contact() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <Mail className="h-5 w-5 text-primary" />
+                      <img src={iconEmail} alt="" className="h-5 w-5" style={{ filter: 'hue-rotate(0deg)' }} />
                       <div>
                         <p className="font-medium font-body text-foreground">Email</p>
                         <p className="text-muted-foreground font-body">hello@ziggysitters.com</p>
@@ -209,7 +210,7 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <MapPin className="h-5 w-5 text-primary" />
+                      <img src={iconMappin} alt="" className="h-5 w-5" />
                       <div>
                         <p className="font-medium font-body text-foreground">Location</p>
                         <p className="text-muted-foreground font-body">Auckland, New Zealand</p>
@@ -217,7 +218,7 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <Clock className="h-5 w-5 text-primary" />
+                      <img src={iconClock} alt="" className="h-5 w-5" />
                       <div>
                         <p className="font-medium font-body text-foreground">Support Hours</p>
                         <p className="text-muted-foreground font-body">Mon-Fri: 8AM-8PM NZST</p>
@@ -263,7 +264,7 @@ export default function Contact() {
               Browse verified sitters in your area and book with confidence.
             </p>
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-              Find a Sitter <ArrowRight className="ml-2 h-4 w-4" />
+              Find a Sitter <span className="ml-2">→</span>
             </Button>
           </div>
         </section>

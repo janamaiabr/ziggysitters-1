@@ -211,7 +211,7 @@ const Index = () => {
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
                       {platformStats.sitters}+
                     </div>
-                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Verified Sitters</p>
+                    <p className="text-xs md:text-sm text-secondary-foreground/60 font-body mt-1">Vetted Sitters</p>
                   </div>
                   <div>
                     <div className="text-2xl md:text-4xl font-bold text-secondary-foreground font-display">
@@ -243,7 +243,7 @@ const Index = () => {
                 Meet Our Sitters
               </h2>
               <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-                Every photo is real. Every sitter is local and ID verified. Browse their profiles and book with confidence.
+                Every photo is real. Every sitter is local and vetted. Browse their profiles and book with confidence.
               </p>
             </div>
             

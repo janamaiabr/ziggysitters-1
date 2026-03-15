@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Star } from 'lucide-react';
+import iconSearch from '@/assets/icons/icon-search.png';
 import { useNavigate } from 'react-router-dom';
 
 import iconHeart from '@/assets/icons/icon-heart.png';
@@ -136,7 +136,7 @@ export default function About() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-body px-10 py-6 text-lg" onClick={() => navigate('/find-sitters')}>
-                Find a Sitter <ArrowRight className="ml-2 h-4 w-4" />
+                Find a Sitter <span className="ml-2">→</span>
               </Button>
               <Button size="lg" variant="outline-white" className="font-body px-10 py-6 text-lg" onClick={() => navigate('/become-sitter')}>
                 Become a Sitter

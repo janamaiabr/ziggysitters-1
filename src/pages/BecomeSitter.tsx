@@ -4,7 +4,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Check } from 'lucide-react';
+import iconCheck from '@/assets/icons/icon-check.png';
 import EarningsCalculator from '@/components/sitter-recruitment/EarningsCalculator';
 import SitterLeadForm from '@/components/sitter-recruitment/SitterLeadForm';
 import { ga4 } from '@/lib/ga4';
@@ -109,7 +109,7 @@ export default function BecomeSitter() {
                   }}
                 >
                   Join Now — It's Free
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <span className="ml-2">→</span>
                 </Button>
                 <Button 
                   size="lg" 
@@ -125,9 +125,9 @@ export default function BecomeSitter() {
               </div>
 
               <div className="flex flex-wrap gap-4 mt-8 text-sm text-white/70 font-body">
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> Free to join</span>
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> No commitments</span>
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-primary" /> Set your own rates</span>
+                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Free to join</span>
+                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> No commitments</span>
+                <span className="flex items-center gap-1.5"><img src={iconCheck} alt="" className="h-4 w-4" /> Set your own rates</span>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function BecomeSitter() {
                       </CardContent>
                     </Card>
                     {index < steps.length - 1 && (
-                      <ArrowRight className="hidden lg:block absolute top-1/2 -right-3 w-6 h-6 text-border -translate-y-1/2 z-10" />
+                      <span className="hidden lg:block absolute top-1/2 -right-3 text-border -translate-y-1/2 z-10 text-xl">→</span>
                     )}
                   </div>
                 ))}
@@ -238,7 +238,7 @@ export default function BecomeSitter() {
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 bg-muted rounded-xl p-3 border border-border">
-                        <Check className="w-5 h-5 text-primary flex-shrink-0" />
+                        <img src={iconCheck} alt="" className="w-5 h-5 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-sm text-foreground font-body">Complete all reports</p>
                           <p className="text-xs text-muted-foreground font-body">Earn 100% payment</p>
@@ -358,7 +358,7 @@ export default function BecomeSitter() {
               }}
             >
               Apply Now — It's Free
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <span className="ml-2">→</span>
             </Button>
           </div>
         </section>
