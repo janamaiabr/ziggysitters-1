@@ -193,7 +193,7 @@ const Index = () => {
       {/* Easter Campaign Banner */}
       <EasterBanner />
 
-      <div className="bg-gradient-to-b from-background to-accent/20">
+      <div className="bg-white">
       {/* Geo-aware location banner for international visitors */}
       <GeoLocationBanner />
 
