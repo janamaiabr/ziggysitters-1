@@ -95,7 +95,35 @@ export default function Auth() {
       } else {
         trackAction('signin_completed');
         toast({ title: "Welcome back!", description: "You have successfully signed in." });
-        navigate(redirectUrl);
+        // For sign-in, check if user already completed onboarding
+        // Don't send existing users to /onboarding - send them to dashboard
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user?.id) {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('onboarding_completed, role')
+              .eq('user_id', session.user.id)
+              .maybeSingle();
+            
+            if (profileData?.onboarding_completed) {
+              // User already onboarded - go to appropriate page
+              const customRedirect = searchParams.get('redirect');
+              if (customRedirect && customRedirect !== '/onboarding') {
+                navigate(customRedirect);
+              } else if (profileData.role === 'pet_sitter') {
+                navigate('/profile');
+              } else {
+                navigate('/find-sitters');
+              }
+              return;
+            }
+          }
+        } catch (e) {
+          console.error('Error checking onboarding status after sign-in:', e);
+        }
+        // User hasn't completed onboarding, send to onboarding
+        navigate('/onboarding');
       }
     } catch (error) {
       trackAction('signin_error', { error: 'unexpected' });
