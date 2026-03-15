@@ -1135,9 +1135,9 @@ export default function Profile() {
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <h1 className="text-2xl md:text-3xl font-bold truncate">{userProfile.name}</h1>
                     {userProfile.verified && (
-                      <Badge className="bg-green-500 text-white border-0">
+                      <Badge className="bg-primary text-primary-foreground border-0">
                         <Shield className="w-3 h-3 mr-1" />
-                        Verified
+                        Vetted
                       </Badge>
                     )}
                     {profile.role === 'pet_sitter' && !userProfile.verified && (

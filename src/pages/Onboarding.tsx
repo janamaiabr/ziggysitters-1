@@ -788,7 +788,7 @@ export default function Onboarding() {
   const renderRoleSelection = () => (
     <div className="space-y-8 max-w-3xl mx-auto">
       <div className="text-center space-y-3">
-        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground">
           How would you like to use ZiggySitters?
         </h2>
         <p className="text-base md:text-lg text-muted-foreground">

@@ -188,16 +188,16 @@ const BookingSuccess = () => {
         <CardHeader className="text-center">
           {paymentStatus === 'success' ? (
             <>
-              <CheckCircle className="h-12 w-12 text-green-600 mx-auto" />
-              <CardTitle className="text-green-600">Payment Successful! 🎉</CardTitle>
+              <CheckCircle className="h-12 w-12 text-primary mx-auto" />
+              <CardTitle className="text-primary">Payment Successful</CardTitle>
               <CardDescription>
                 Your booking has been confirmed and the pet sitter has been notified.
               </CardDescription>
             </>
           ) : (
             <>
-              <AlertCircle className="h-12 w-12 text-red-600 mx-auto" />
-              <CardTitle className="text-red-600">Payment Failed</CardTitle>
+              <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+              <CardTitle className="text-destructive">Payment Failed</CardTitle>
               <CardDescription>
                 There was an issue processing your payment. Please try again or contact support.
               </CardDescription>
