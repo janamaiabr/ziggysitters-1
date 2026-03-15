@@ -277,8 +277,8 @@ const Index = () => {
                       { icon: iconCheck, title: 'Peace of Mind', desc: 'Never worry again' },
                     ].map((item) => (
                       <div key={item.title} className="flex items-start space-x-2 md:space-x-3">
-                        <div className="w-7 h-7 md:w-8 md:h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <img src={item.icon} alt="" className="w-5 h-5" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                          <img src={item.icon} alt="" className="w-6 h-6 md:w-7 md:h-7" />
                         </div>
                         <div>
                           <h4 className="font-semibold text-foreground text-sm md:text-base font-body">{item.title}</h4>
