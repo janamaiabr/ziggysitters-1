@@ -205,7 +205,7 @@ export default function Contact() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <Mail className="h-5 w-5 text-primary" />
+                      <img src={iconEmail} alt="" className="h-5 w-5" style={{ filter: 'hue-rotate(0deg)' }} />
                       <div>
                         <p className="font-medium font-body text-foreground">Email</p>
                         <p className="text-muted-foreground font-body">hello@ziggysitters.com</p>
