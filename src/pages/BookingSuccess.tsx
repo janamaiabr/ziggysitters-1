@@ -113,7 +113,7 @@ const BookingSuccess = () => {
           setPaymentStatus('success');
           
           // Track purchase completion
-          metaPixel.trackPurchase(data.amount || 0, 'NZD');
+          metaPixel.trackPurchase(data.amount || 0, data.currency || 'NZD');
           
           // Show email verification prompt for unverified pet owners
           if (!emailVerified) {

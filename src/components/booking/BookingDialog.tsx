@@ -514,7 +514,7 @@ export default function BookingDialog({ isOpen, onClose, sitter, servicesData = 
       }
     });
 
-    metaPixel.trackInitiateCheckout({ value: total, currency: 'NZD' });
+    metaPixel.trackInitiateCheckout({ value: total, currency: sitter.location?.toLowerCase().includes('sunshine') || sitter.location?.toLowerCase().includes('qld') ? 'AUD' : 'NZD' });
 
     setLoading(true);
 
