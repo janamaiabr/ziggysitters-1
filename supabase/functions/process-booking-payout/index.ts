@@ -51,7 +51,7 @@ serve(async (req) => {
         penalty_applied,
         booking_reference,
         owner:profiles!bookings_owner_id_fkey(email, first_name, last_name),
-        sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name, stripe_account_id, stripe_account_enabled)
+        sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name, stripe_account_id, stripe_account_enabled, city, suburb)
       `)
       .eq("id", booking_id)
       .maybeSingle();
