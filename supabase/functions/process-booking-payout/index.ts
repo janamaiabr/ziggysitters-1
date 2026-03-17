@@ -255,13 +255,13 @@ serve(async (req) => {
     try {
       logStep("Creating Stripe Transfer to sitter", {
         amount: sitterReceived,
-        destination: booking.sitter.stripe_account_id
+        destination: sitter.stripe_account_id
       });
 
       const transfer = await stripe.transfers.create({
         amount: Math.round(sitterReceived * 100), // Convert to cents
         currency: 'nzd',
-        destination: booking.sitter.stripe_account_id,
+        destination: sitter.stripe_account_id,
         description: `Payout for booking ${booking.booking_reference}${penaltyApplied ? ` (penalty: $${penaltyAmount})` : ''}`,
         metadata: {
           booking_id: booking_id,
