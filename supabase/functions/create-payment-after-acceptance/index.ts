@@ -147,7 +147,7 @@ serve(async (req) => {
     logStep('Fetching sitter profile', { sitterId: booking.sitter_id });
     const { data: sitterProfile, error: sitterError } = await supabaseClient
       .from('profiles')
-      .select('stripe_account_id, stripe_account_enabled, first_name, last_name')
+      .select('stripe_account_id, stripe_account_enabled, first_name, last_name, city, suburb')
       .eq('id', booking.sitter_id)
       .maybeSingle();
 
