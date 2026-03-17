@@ -178,9 +178,9 @@ serve(async (req) => {
           await supabaseClient.functions.invoke('send-penalty-notification', {
             body: {
               booking_id: booking_id,
-              owner_email: booking.owner.email,
-              owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
-              sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+              owner_email: owner.email,
+              owner_name: `${owner.first_name} ${owner.last_name}`,
+              sitter_name: `${sitter.first_name} ${sitter.last_name}`,
               penalty_amount: penaltyAmount,
               reports_completed: booking.daily_reports_completed,
               reports_required: booking.daily_reports_required,
@@ -194,9 +194,9 @@ serve(async (req) => {
           await supabaseClient.functions.invoke('send-sitter-penalty-notification', {
             body: {
               booking_id: booking_id,
-              sitter_email: booking.sitter.email,
-              sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-              owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+              sitter_email: sitter.email,
+              sitter_name: `${sitter.first_name} ${sitter.last_name}`,
+              owner_name: `${owner.first_name} ${owner.last_name}`,
               penalty_amount: penaltyAmount,
               reports_completed: booking.daily_reports_completed,
               reports_required: booking.daily_reports_required,
