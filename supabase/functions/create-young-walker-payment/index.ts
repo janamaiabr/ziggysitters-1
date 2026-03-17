@@ -84,7 +84,7 @@ serve(async (req) => {
       .from("profiles")
       .select("stripe_account_id, stripe_account_enabled")
       .eq("user_id", booking.young_walker.parent_user_id)
-      .single();
+      .maybeSingle();
 
     if (parentError || !parentProfile) {
       console.error("🔴 Parent profile fetch error:", parentError);

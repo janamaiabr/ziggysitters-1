@@ -77,7 +77,7 @@ serve(async (req) => {
           .from('profiles')
           .select('first_name, last_name, email')
           .eq('id', booking.sitter_id)
-          .single();
+          .maybeSingle();
 
         const { error: updateError } = await supabaseClient
           .from('bookings')
