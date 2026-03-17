@@ -268,7 +268,7 @@ serve(async (req) => {
           price_data: {
             currency: 'nzd',
             product_data: {
-              name: `${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} - ${booking.booking_reference}`,
+              name: `${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())} - ${booking.booking_reference}`,
               description: `Pet sitting service from ${booking.start_date} to ${booking.end_date}`,
             },
             unit_amount: Math.round(booking.total_amount * 100), // Convert to cents

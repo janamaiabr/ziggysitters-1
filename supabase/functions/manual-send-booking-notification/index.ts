@@ -55,25 +55,28 @@ serve(async (req) => {
 
     console.log(`[MANUAL-NOTIFICATION] Found booking, checking sitter Stripe status`);
 
+    const sitter = booking.sitter as any;
+    const owner = booking.owner as any;
+
     // Check if sitter has Stripe setup completed
-    const hasStripeSetup = booking.sitter.stripe_account_id && 
-                          booking.sitter.stripe_account_enabled;
+    const hasStripeSetup = sitter.stripe_account_id && 
+                          sitter.stripe_account_enabled;
 
     // Determine which notification function to use
     const notificationFunction = hasStripeSetup 
       ? 'send-booking-notification' 
       : 'send-booking-notification-no-stripe';
 
-    console.log(`[MANUAL-NOTIFICATION] Using ${notificationFunction} for ${booking.sitter.email}`);
-    console.log(`[MANUAL-NOTIFICATION] Stripe status: accountId=${booking.sitter.stripe_account_id}, enabled=${booking.sitter.stripe_account_enabled}`);
+    console.log(`[MANUAL-NOTIFICATION] Using ${notificationFunction} for ${sitter.email}`);
+    console.log(`[MANUAL-NOTIFICATION] Stripe status: accountId=${sitter.stripe_account_id}, enabled=${sitter.stripe_account_enabled}`);
 
     // Invoke the appropriate notification function
     const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke(notificationFunction, {
       body: {
         booking_id: booking.id,
-        sitter_email: booking.sitter.email,
-        sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-        owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+        sitter_email: sitter.email,
+        sitter_name: `${sitter.first_name} ${sitter.last_name}`,
+        owner_name: `${owner.first_name} ${owner.last_name}`,
         service_type: booking.service_type,
         start_date: booking.start_date,
         end_date: booking.end_date,
@@ -91,7 +94,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: `${hasStripeSetup ? 'Standard' : 'Stripe setup required'} notification sent to ${booking.sitter.email}`,
+      message: `${hasStripeSetup ? 'Standard' : 'Stripe setup required'} notification sent to ${sitter.email}`,
       notification_type: notificationFunction,
       emailResult 
     }), {

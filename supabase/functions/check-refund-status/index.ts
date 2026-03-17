@@ -84,7 +84,7 @@ serve(async (req) => {
         logStep("Error checking payment intent", { 
           bookingId: booking.id, 
           paymentIntentId: booking.stripe_payment_intent_id,
-          error: error.message 
+          error: (error as Error).message 
         });
       }
     }

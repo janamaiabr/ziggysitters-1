@@ -124,11 +124,11 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    logStep("ERROR in auto-process-payouts", { error: error.message });
+    logStep("ERROR in auto-process-payouts", { error: (error as Error).message });
     return new Response(
       JSON.stringify({ 
         success: false,
-        error: error.message 
+        error: (error as Error).message 
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
