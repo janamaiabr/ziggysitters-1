@@ -165,9 +165,9 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="ZiggySitters - Pet Sitters with Optional Daily Photo Updates | Auckland & Hamilton"
-        description="Find trusted pet sitters in Auckland and Hamilton who can send daily photo updates when you request them. Book verified pet care today."
-        keywords="pet sitters Auckland, pet sitters Hamilton, daily pet reports, pet sitting with photos, verified pet care, cat sitting"
+        title="ZiggySitters - Trusted Pet Sitters with Daily Photo Updates | NZ & Sunshine Coast"
+        description="Find verified pet sitters in Auckland, Hamilton, and Australia's Sunshine Coast. Daily photo updates, senior pet specialists, secure payments. Book today."
+        keywords="pet sitters Auckland, pet sitters Sunshine Coast, pet sitting Australia, daily pet reports, pet sitting with photos, verified pet care, senior pet sitting, cat sitting"
         canonical="/"
         structuredData={structuredData}
       />
