@@ -266,7 +266,7 @@ serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: 'nzd',
+            currency: isAustralianSitter ? 'aud' : 'nzd',
             product_data: {
               name: `${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())} - ${booking.booking_reference}`,
               description: `Pet sitting service from ${booking.start_date} to ${booking.end_date}`,
