@@ -252,12 +252,21 @@ serve(async (req) => {
       logStep('Created new Stripe customer', { customerId });
     }
 
+    // Detect currency from sitter location
+    const auCities = ['sunshine coast', 'maroochydore', 'buderim', 'noosa', 'caloundra', 'coolum', 'mooloolaba', 'nambour'];
+    const sitterLocation = `${sitterProfile.city || ''} ${sitterProfile.suburb || ''}`.toLowerCase();
+    const isAustralianSitter = auCities.some(c => sitterLocation.includes(c));
+    const currency = isAustralianSitter ? 'aud' : 'nzd';
+    
+    logStep('Currency detected', { currency, sitterCity: sitterProfile.city, sitterSuburb: sitterProfile.suburb });
+
     // Create checkout session with Stripe Connect (escrow via destination charge)
     logStep('Creating Stripe checkout session', {
       customerId,
       totalAmount: booking.total_amount,
       platformFee: booking.platform_fee,
-      sitterAccount: sitterProfile.stripe_account_id
+      sitterAccount: sitterProfile.stripe_account_id,
+      currency
     });
     
     const session = await stripe.checkout.sessions.create({
