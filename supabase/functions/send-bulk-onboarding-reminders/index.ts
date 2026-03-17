@@ -35,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
         .select('role')
         .eq('user_id', user.id)
         .eq('role', 'admin')
-        .single();
+        .maybeSingle();
 
       if (!adminCheck) {
         throw new Error("Admin access required");
