@@ -59,7 +59,7 @@ serve(async (req) => {
         )
       `)
       .eq("id", bookingId)
-      .single();
+      .maybeSingle();
 
     if (bookingError || !booking) {
       console.error("🔴 Booking fetch error:", bookingError);
