@@ -33,7 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("id, email_verification_token, email_verification_sent_at")
       .eq("user_id", user_id)
-      .single();
+      .maybeSingle();
 
     if (profileError || !profile) {
       throw new Error("Profile not found");

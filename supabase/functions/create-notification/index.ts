@@ -47,7 +47,7 @@ const handler = async (req: Request): Promise<Response> => {
         metadata: metadata || {},
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("Error creating notification:", error);

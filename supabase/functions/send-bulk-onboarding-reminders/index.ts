@@ -108,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('profiles')
         .select('stripe_account_enabled, id_document_urls')
         .eq('id', sitter.id)
-        .single();
+        .maybeSingle();
 
       if (!profile?.stripe_account_enabled) {
         missingSteps.push('Connect your bank account via Stripe');

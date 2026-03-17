@@ -35,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from('profiles')
       .select('phone, suburb, city')
       .eq('id', profileId)
-      .single();
+      .maybeSingle();
 
     const { data: pets } = await supabase
       .from('pets')

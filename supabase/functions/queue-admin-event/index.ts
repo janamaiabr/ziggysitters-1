@@ -35,7 +35,7 @@ serve(async (req) => {
         event_data,
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw new Error(`Failed to queue event: ${error.message}`);
