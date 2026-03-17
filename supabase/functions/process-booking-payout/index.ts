@@ -253,14 +253,20 @@ serve(async (req) => {
     // Create Stripe Transfer to pay the sitter FIRST before updating booking status
     let transferId: string;
     try {
+      // Detect currency from sitter location
+      const auCities = ['sunshine coast', 'maroochydore', 'buderim', 'noosa', 'caloundra', 'coolum', 'mooloolaba', 'nambour'];
+      const sitterLocation = `${sitter.city || ''} ${sitter.suburb || ''}`.toLowerCase();
+      const currency = auCities.some((c: string) => sitterLocation.includes(c)) ? 'aud' : 'nzd';
+
       logStep("Creating Stripe Transfer to sitter", {
         amount: sitterReceived,
-        destination: sitter.stripe_account_id
+        destination: sitter.stripe_account_id,
+        currency
       });
 
       const transfer = await stripe.transfers.create({
         amount: Math.round(sitterReceived * 100), // Convert to cents
-        currency: 'nzd',
+        currency,
         destination: sitter.stripe_account_id,
         description: `Payout for booking ${booking.booking_reference}${penaltyApplied ? ` (penalty: $${penaltyAmount})` : ''}`,
         metadata: {
