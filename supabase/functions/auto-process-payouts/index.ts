@@ -92,12 +92,12 @@ serve(async (req) => {
         });
 
       } catch (error) {
-        logStep(`ERROR processing payout for ${booking.booking_reference}`, { error: error.message });
+        logStep(`ERROR processing payout for ${booking.booking_reference}`, { error: (error as Error).message });
         failCount++;
         results.push({
           booking_reference: booking.booking_reference,
           status: 'failed',
-          error: error.message
+          error: (error as Error).message
         });
       }
     }
