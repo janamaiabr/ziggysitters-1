@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("role")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (profile?.role !== "admin") {
       throw new Error("Admin access required");

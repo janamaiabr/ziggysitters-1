@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("id")
       .eq("user_id", user_id)
-      .single();
+      .maybeSingle();
 
     if (profileError || !profile) {
       throw new Error("Profile not found");

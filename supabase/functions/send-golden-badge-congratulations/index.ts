@@ -37,7 +37,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("email, first_name, last_name")
       .eq("id", sitterId)
-      .single();
+      .maybeSingle();
 
     if (profileError || !profile) {
       throw new Error("Sitter not found");

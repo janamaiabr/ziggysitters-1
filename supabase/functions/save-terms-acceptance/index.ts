@@ -45,7 +45,7 @@ serve(async (req) => {
       .update({ terms_accepted: true })
       .eq('user_id', user.id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Database error:', error);

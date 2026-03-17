@@ -35,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from('profiles')
       .select('id')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (profileError) {
       console.error('Error fetching profile:', profileError);

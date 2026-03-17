@@ -609,7 +609,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('profiles')
         .select('*')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       let journeyHtml = '<p style="color: #666;">No journey data available</p>';
       if (sitterProfile) {
@@ -686,7 +686,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('profiles')
         .select('*')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       // Build journey with session ID
       let journeyHtml = '<p style="color: #666;">No journey data available</p>';

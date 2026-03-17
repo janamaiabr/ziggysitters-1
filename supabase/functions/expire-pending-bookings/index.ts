@@ -71,13 +71,13 @@ serve(async (req) => {
           .from('profiles')
           .select('first_name, last_name, email')
           .eq('id', booking.owner_id)
-          .single();
+          .maybeSingle();
 
         const { data: sitter } = await supabaseClient
           .from('profiles')
           .select('first_name, last_name, email')
           .eq('id', booking.sitter_id)
-          .single();
+          .maybeSingle();
 
         const { error: updateError } = await supabaseClient
           .from('bookings')

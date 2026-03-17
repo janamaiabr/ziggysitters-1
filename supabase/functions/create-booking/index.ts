@@ -363,7 +363,7 @@ serve(async (req) => {
           .from('promo_codes')
           .select('current_uses')
           .eq('code', appliedPromoCode)
-          .single();
+          .maybeSingle();
         
         const { error: updateError } = await supabaseClient
           .from('promo_codes')

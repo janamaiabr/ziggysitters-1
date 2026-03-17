@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       .select('role')
       .eq('user_id', user.id)
       .eq('role', 'admin')
-      .single();
+      .maybeSingle();
 
     if (roleError || !roleData) {
       console.error('Admin check failed:', roleError);
@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
           .from('profiles')
           .select('email, first_name, last_name, user_id')
           .eq('user_id', userId)
-          .single();
+          .maybeSingle();
 
         // Get cancellation reason if exists
         const { data: cancellationRequest } = await supabaseClient
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
           .eq('user_id', userId)
           .order('requested_at', { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
         // Store deleted user information before deletion
         if (userProfile) {

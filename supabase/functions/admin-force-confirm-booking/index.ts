@@ -40,11 +40,15 @@ serve(async (req) => {
       })
       .eq('id', booking_id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (updateError) {
       console.error('[FORCE-CONFIRM] Error updating booking:', updateError);
       throw new Error(`Failed to update booking: ${updateError.message}`);
+    }
+
+    if (!booking) {
+      throw new Error('Booking not found after update');
     }
 
     console.log('[FORCE-CONFIRM] Booking updated successfully:', booking.booking_reference);

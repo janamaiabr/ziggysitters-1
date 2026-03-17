@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("email, first_name")
       .eq("id", recipientId)
-      .single();
+      .maybeSingle();
 
     if (recipientError || !recipient?.email) {
       console.error("[send-message-notification] Failed to get recipient:", recipientError);
@@ -55,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("email_subscriptions")
       .select("booking_notifications")
       .eq("user_id", recipientId)
-      .single();
+      .maybeSingle();
 
     // Use booking_notifications setting for messages (they're booking-related)
     if (subscriptions && subscriptions.booking_notifications === false) {

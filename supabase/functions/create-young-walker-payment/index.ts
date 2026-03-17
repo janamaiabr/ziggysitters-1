@@ -59,7 +59,7 @@ serve(async (req) => {
         )
       `)
       .eq("id", bookingId)
-      .single();
+      .maybeSingle();
 
     if (bookingError || !booking) {
       console.error("🔴 Booking fetch error:", bookingError);
@@ -73,7 +73,7 @@ serve(async (req) => {
       .from("profiles")
       .select("id, user_id")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (!clientProfile || clientProfile.id !== booking.client_id) {
       throw new Error("You are not authorized to pay for this booking");
@@ -84,7 +84,7 @@ serve(async (req) => {
       .from("profiles")
       .select("stripe_account_id, stripe_account_enabled")
       .eq("user_id", booking.young_walker.parent_user_id)
-      .single();
+      .maybeSingle();
 
     if (parentError || !parentProfile) {
       console.error("🔴 Parent profile fetch error:", parentError);

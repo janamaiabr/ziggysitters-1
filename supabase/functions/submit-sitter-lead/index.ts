@@ -41,7 +41,7 @@ serve(async (req) => {
         source: source || "website",
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       // Duplicate email
