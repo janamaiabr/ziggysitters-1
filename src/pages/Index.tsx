@@ -386,7 +386,7 @@ const Index = () => {
                 Ready to Find Your Pet{"'"}s Person?
               </h2>
               <p className="text-sm md:text-xl mb-4 md:mb-6 text-secondary-foreground/70 font-body">
-                Book a local, verified sitter. Get daily photo updates. Simple.
+                Book a local, verified sitter in NZ or Sunshine Coast. Get daily photo updates. Simple.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button 
