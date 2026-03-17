@@ -151,12 +151,15 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "ZiggySitters",
-    "description": "Professional pet sitting services in Auckland and Hamilton with optional daily photo updates and detailed reports.",
+    "description": "Professional pet sitting services in New Zealand and Australia's Sunshine Coast with optional daily photo updates and detailed reports.",
     "url": "https://ziggysitters.com",
     "email": "hello@ziggysitters.com",
-    "address": { "@type": "PostalAddress", "addressLocality": "Auckland", "addressCountry": "New Zealand" },
-    "areaServed": ["Auckland, New Zealand", "Hamilton, New Zealand"],
-    "serviceType": ["Pet Sitting", "Pet Care", "Daily Reports", "Drop-in Visits"],
+    "address": [
+      { "@type": "PostalAddress", "addressLocality": "Auckland", "addressCountry": "New Zealand" },
+      { "@type": "PostalAddress", "addressLocality": "Sunshine Coast", "addressRegion": "QLD", "addressCountry": "Australia" },
+    ],
+    "areaServed": ["Auckland, New Zealand", "Hamilton, New Zealand", "Sunshine Coast, Queensland, Australia"],
+    "serviceType": ["Pet Sitting", "Pet Care", "Daily Reports", "Drop-in Visits", "Senior Pet Care"],
   };
 
   return (
