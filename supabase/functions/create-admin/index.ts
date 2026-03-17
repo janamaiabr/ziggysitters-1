@@ -87,7 +87,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Failed to create admin user',
-        details: error.message 
+        details: (error as Error).message 
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -62,13 +62,13 @@ export const ga4 = {
   },
 
   /** Booking form is submitted successfully */
-  completeBooking: (sitterId: string, sitterName: string, serviceType: string, totalAmount: number) => {
+  completeBooking: (sitterId: string, sitterName: string, serviceType: string, totalAmount: number, currency: string = 'NZD') => {
     trackGA4Event('complete_booking', {
       sitter_id: sitterId,
       sitter_name: sitterName,
       service_type: serviceType,
       value: totalAmount,
-      currency: 'NZD',
+      currency,
     });
   },
 

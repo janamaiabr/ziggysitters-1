@@ -147,7 +147,7 @@ serve(async (req) => {
     logStep('Fetching sitter profile', { sitterId: booking.sitter_id });
     const { data: sitterProfile, error: sitterError } = await supabaseClient
       .from('profiles')
-      .select('stripe_account_id, stripe_account_enabled, first_name, last_name')
+      .select('stripe_account_id, stripe_account_enabled, first_name, last_name, city, suburb')
       .eq('id', booking.sitter_id)
       .maybeSingle();
 
@@ -252,12 +252,21 @@ serve(async (req) => {
       logStep('Created new Stripe customer', { customerId });
     }
 
+    // Detect currency from sitter location
+    const auCities = ['sunshine coast', 'maroochydore', 'buderim', 'noosa', 'caloundra', 'coolum', 'mooloolaba', 'nambour'];
+    const sitterLocation = `${sitterProfile.city || ''} ${sitterProfile.suburb || ''}`.toLowerCase();
+    const isAustralianSitter = auCities.some(c => sitterLocation.includes(c));
+    const currency = isAustralianSitter ? 'aud' : 'nzd';
+    
+    logStep('Currency detected', { currency, sitterCity: sitterProfile.city, sitterSuburb: sitterProfile.suburb });
+
     // Create checkout session with Stripe Connect (escrow via destination charge)
     logStep('Creating Stripe checkout session', {
       customerId,
       totalAmount: booking.total_amount,
       platformFee: booking.platform_fee,
-      sitterAccount: sitterProfile.stripe_account_id
+      sitterAccount: sitterProfile.stripe_account_id,
+      currency
     });
     
     const session = await stripe.checkout.sessions.create({
@@ -266,9 +275,9 @@ serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: 'nzd',
+            currency: isAustralianSitter ? 'aud' : 'nzd',
             product_data: {
-              name: `${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} - ${booking.booking_reference}`,
+              name: `${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())} - ${booking.booking_reference}`,
               description: `Pet sitting service from ${booking.start_date} to ${booking.end_date}`,
             },
             unit_amount: Math.round(booking.total_amount * 100), // Convert to cents

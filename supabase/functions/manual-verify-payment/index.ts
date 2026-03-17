@@ -93,7 +93,7 @@ serve(async (req) => {
       bookingRefPayments = refPaymentIntents.data;
       console.log('[MANUAL-VERIFY] Found payment intents by booking_reference:', bookingRefPayments.length);
     } catch (e) {
-      console.log('[MANUAL-VERIFY] Could not search by booking_reference:', e.message);
+      console.log('[MANUAL-VERIFY] Could not search by booking_reference:', (e as Error).message);
     }
 
     // Find a successful payment for this amount
@@ -187,7 +187,7 @@ serve(async (req) => {
     console.error('[MANUAL-VERIFY] Error:', error);
     return new Response(JSON.stringify({ 
       success: false,
-      error: error.message 
+      error: (error as Error).message 
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

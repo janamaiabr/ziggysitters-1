@@ -151,20 +151,23 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "ZiggySitters",
-    "description": "Professional pet sitting services in Auckland and Hamilton with optional daily photo updates and detailed reports.",
+    "description": "Professional pet sitting services in New Zealand and Australia's Sunshine Coast with optional daily photo updates and detailed reports.",
     "url": "https://ziggysitters.com",
     "email": "hello@ziggysitters.com",
-    "address": { "@type": "PostalAddress", "addressLocality": "Auckland", "addressCountry": "New Zealand" },
-    "areaServed": ["Auckland, New Zealand", "Hamilton, New Zealand"],
-    "serviceType": ["Pet Sitting", "Pet Care", "Daily Reports", "Drop-in Visits"],
+    "address": [
+      { "@type": "PostalAddress", "addressLocality": "Auckland", "addressCountry": "New Zealand" },
+      { "@type": "PostalAddress", "addressLocality": "Sunshine Coast", "addressRegion": "QLD", "addressCountry": "Australia" },
+    ],
+    "areaServed": ["Auckland, New Zealand", "Hamilton, New Zealand", "Sunshine Coast, Queensland, Australia"],
+    "serviceType": ["Pet Sitting", "Pet Care", "Daily Reports", "Drop-in Visits", "Senior Pet Care"],
   };
 
   return (
     <>
       <SEOHead 
-        title="ZiggySitters - Pet Sitters with Optional Daily Photo Updates | Auckland & Hamilton"
-        description="Find trusted pet sitters in Auckland and Hamilton who can send daily photo updates when you request them. Book verified pet care today."
-        keywords="pet sitters Auckland, pet sitters Hamilton, daily pet reports, pet sitting with photos, verified pet care, cat sitting"
+        title="ZiggySitters - Trusted Pet Sitters with Daily Photo Updates | NZ & Sunshine Coast"
+        description="Find verified pet sitters in Auckland, Hamilton, and Australia's Sunshine Coast. Daily photo updates, senior pet specialists, secure payments. Book today."
+        keywords="pet sitters Auckland, pet sitters Sunshine Coast, pet sitting Australia, daily pet reports, pet sitting with photos, verified pet care, senior pet sitting, cat sitting"
         canonical="/"
         structuredData={structuredData}
       />
@@ -383,7 +386,7 @@ const Index = () => {
                 Ready to Find Your Pet{"'"}s Person?
               </h2>
               <p className="text-sm md:text-xl mb-4 md:mb-6 text-secondary-foreground/70 font-body">
-                Book a local, verified sitter. Get daily photo updates. Simple.
+                Book a local, verified sitter in NZ or Sunshine Coast. Get daily photo updates. Simple.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button 

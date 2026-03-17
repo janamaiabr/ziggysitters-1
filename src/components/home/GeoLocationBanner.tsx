@@ -16,7 +16,7 @@ export default function GeoLocationBanner() {
     <div className="bg-muted/80 border-b border-border py-2 px-4">
       <div className="container mx-auto flex items-center justify-center gap-4">
         <p className="text-sm text-muted-foreground">
-          🌏 Now in <span className="font-medium text-foreground">NZ + Sunshine Coast, QLD</span> — expanding!
+          🌏 Serving <span className="font-medium text-foreground">NZ (Auckland, Hamilton) + Sunshine Coast, QLD</span> — more cities coming!
         </p>
         <Button
           variant="ghost"

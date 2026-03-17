@@ -51,7 +51,7 @@ serve(async (req) => {
         penalty_applied,
         booking_reference,
         owner:profiles!bookings_owner_id_fkey(email, first_name, last_name),
-        sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name, stripe_account_id, stripe_account_enabled)
+        sitter:profiles!bookings_sitter_id_fkey(email, first_name, last_name, stripe_account_id, stripe_account_enabled, city, suburb)
       `)
       .eq("id", booking_id)
       .maybeSingle();
@@ -71,6 +71,9 @@ serve(async (req) => {
       reports_required: booking.daily_reports_required 
     });
 
+    const sitter = booking.sitter as any;
+    const owner = booking.owner as any;
+
     // Verify booking is completed
     if (booking.status !== "completed") {
       throw new Error("Booking must be completed before processing payout");
@@ -86,11 +89,11 @@ serve(async (req) => {
     });
 
     // Verify sitter's Stripe account
-    if (!booking.sitter.stripe_account_id || !booking.sitter.stripe_account_enabled) {
+    if (!sitter.stripe_account_id || !sitter.stripe_account_enabled) {
       throw new Error("Sitter Stripe account not found or not enabled");
     }
 
-    logStep("Sitter Stripe account verified", { account_id: booking.sitter.stripe_account_id });
+    logStep("Sitter Stripe account verified", { account_id: sitter.stripe_account_id });
 
     // Check if penalty needs to be applied
     let penaltyAmount = 0;
@@ -132,7 +135,7 @@ serve(async (req) => {
           limit: 10,
         });
 
-        const totalRefunded = existingRefunds.data.reduce((sum, refund) => {
+        const totalRefunded = existingRefunds.data.reduce((sum: number, refund: any) => {
           return sum + (refund.status === 'succeeded' ? refund.amount : 0);
         }, 0) / 100; // Convert from cents to dollars
 
@@ -175,9 +178,9 @@ serve(async (req) => {
           await supabaseClient.functions.invoke('send-penalty-notification', {
             body: {
               booking_id: booking_id,
-              owner_email: booking.owner.email,
-              owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
-              sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
+              owner_email: owner.email,
+              owner_name: `${owner.first_name} ${owner.last_name}`,
+              sitter_name: `${sitter.first_name} ${sitter.last_name}`,
               penalty_amount: penaltyAmount,
               reports_completed: booking.daily_reports_completed,
               reports_required: booking.daily_reports_required,
@@ -191,9 +194,9 @@ serve(async (req) => {
           await supabaseClient.functions.invoke('send-sitter-penalty-notification', {
             body: {
               booking_id: booking_id,
-              sitter_email: booking.sitter.email,
-              sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-              owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+              sitter_email: sitter.email,
+              sitter_name: `${sitter.first_name} ${sitter.last_name}`,
+              owner_name: `${owner.first_name} ${owner.last_name}`,
               penalty_amount: penaltyAmount,
               reports_completed: booking.daily_reports_completed,
               reports_required: booking.daily_reports_required,
@@ -208,7 +211,7 @@ serve(async (req) => {
         // IMPORTANT: Don't fail the entire payout if refund fails
         // The sitter should still get paid (minus penalty), even if we can't refund the owner
         logStep("WARNING: Refund failed, but continuing with payout", { 
-          error: refundError.message,
+          error: (refundError as Error).message,
           penalty_amount: penaltyAmount,
           note: "Penalty will still be deducted from sitter payment" 
         });
@@ -221,7 +224,7 @@ serve(async (req) => {
         // Log this issue for manual review
         console.error(`[PROCESS-PAYOUT] MANUAL REVIEW NEEDED: Booking ${booking.booking_reference} - ` +
           `Refund of $${penaltyAmount} to owner failed, but penalty deducted from sitter payout. ` +
-          `Reason: ${refundError.message}`);
+          `Reason: ${(refundError as Error).message}`);
       }
     } else {
       logStep("No penalty required", { 
@@ -250,15 +253,21 @@ serve(async (req) => {
     // Create Stripe Transfer to pay the sitter FIRST before updating booking status
     let transferId: string;
     try {
+      // Detect currency from sitter location
+      const auCities = ['sunshine coast', 'maroochydore', 'buderim', 'noosa', 'caloundra', 'coolum', 'mooloolaba', 'nambour'];
+      const sitterLocation = `${sitter.city || ''} ${sitter.suburb || ''}`.toLowerCase();
+      const currency = auCities.some((c: string) => sitterLocation.includes(c)) ? 'aud' : 'nzd';
+
       logStep("Creating Stripe Transfer to sitter", {
         amount: sitterReceived,
-        destination: booking.sitter.stripe_account_id
+        destination: sitter.stripe_account_id,
+        currency
       });
 
       const transfer = await stripe.transfers.create({
         amount: Math.round(sitterReceived * 100), // Convert to cents
-        currency: 'nzd',
-        destination: booking.sitter.stripe_account_id,
+        currency,
+        destination: sitter.stripe_account_id,
         description: `Payout for booking ${booking.booking_reference}${penaltyApplied ? ` (penalty: $${penaltyAmount})` : ''}`,
         metadata: {
           booking_id: booking_id,
@@ -275,19 +284,19 @@ serve(async (req) => {
       });
 
     } catch (transferError) {
-      logStep("ERROR creating Stripe Transfer", { error: transferError.message });
+      logStep("ERROR creating Stripe Transfer", { error: (transferError as Error).message });
       
       // Check if it's the test mode insufficient funds error
-      if (transferError.message?.includes('insufficient available funds')) {
+      if ((transferError as Error).message?.includes('insufficient available funds')) {
         throw new Error(
           `STRIPE TEST MODE ERROR: Your test platform account needs funds before transfers can be made. ` +
           `To fix this in test mode, create a test payment using card 4000000000000077 which adds funds to your available balance. ` +
           `In production, this won't be an issue as real payments add to your balance automatically. ` +
-          `Original error: ${transferError.message}`
+          `Original error: ${(transferError as Error).message}`
         );
       }
       
-      throw new Error(`Failed to transfer payout to sitter: ${transferError.message}`);
+      throw new Error(`Failed to transfer payout to sitter: ${(transferError as Error).message}`);
     }
 
     // ONLY update booking status AFTER successful transfer
@@ -333,9 +342,9 @@ serve(async (req) => {
     // Send success email to sitter
     await supabaseClient.functions.invoke('send-payout-success-email', {
       body: {
-        sitter_email: booking.sitter.email,
-        sitter_name: `${booking.sitter.first_name} ${booking.sitter.last_name}`,
-        owner_name: `${booking.owner.first_name} ${booking.owner.last_name}`,
+      sitter_email: sitter.email,
+      sitter_name: `${sitter.first_name} ${sitter.last_name}`,
+      owner_name: `${owner.first_name} ${owner.last_name}`,
         booking_reference: booking.booking_reference,
         payout_amount: sitterReceived,
         penalty_applied: penaltyApplied,
@@ -366,9 +375,9 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    logStep("ERROR in process-booking-payout", { error: error.message });
+    logStep("ERROR in process-booking-payout", { error: (error as Error).message });
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as Error).message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
