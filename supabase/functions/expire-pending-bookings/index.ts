@@ -71,7 +71,7 @@ serve(async (req) => {
           .from('profiles')
           .select('first_name, last_name, email')
           .eq('id', booking.owner_id)
-          .single();
+          .maybeSingle();
 
         const { data: sitter } = await supabaseClient
           .from('profiles')
