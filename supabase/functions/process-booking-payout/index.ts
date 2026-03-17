@@ -278,19 +278,19 @@ serve(async (req) => {
       });
 
     } catch (transferError) {
-      logStep("ERROR creating Stripe Transfer", { error: transferError.message });
+      logStep("ERROR creating Stripe Transfer", { error: (transferError as Error).message });
       
       // Check if it's the test mode insufficient funds error
-      if (transferError.message?.includes('insufficient available funds')) {
+      if ((transferError as Error).message?.includes('insufficient available funds')) {
         throw new Error(
           `STRIPE TEST MODE ERROR: Your test platform account needs funds before transfers can be made. ` +
           `To fix this in test mode, create a test payment using card 4000000000000077 which adds funds to your available balance. ` +
           `In production, this won't be an issue as real payments add to your balance automatically. ` +
-          `Original error: ${transferError.message}`
+          `Original error: ${(transferError as Error).message}`
         );
       }
       
-      throw new Error(`Failed to transfer payout to sitter: ${transferError.message}`);
+      throw new Error(`Failed to transfer payout to sitter: ${(transferError as Error).message}`);
     }
 
     // ONLY update booking status AFTER successful transfer
