@@ -68,7 +68,7 @@ export const ga4 = {
       sitter_name: sitterName,
       service_type: serviceType,
       value: totalAmount,
-      currency: 'NZD',
+      currency: currency || 'NZD',
     });
   },
 
