@@ -71,6 +71,9 @@ serve(async (req) => {
       reports_required: booking.daily_reports_required 
     });
 
+    const sitter = booking.sitter as any;
+    const owner = booking.owner as any;
+
     // Verify booking is completed
     if (booking.status !== "completed") {
       throw new Error("Booking must be completed before processing payout");
@@ -86,11 +89,11 @@ serve(async (req) => {
     });
 
     // Verify sitter's Stripe account
-    if (!booking.sitter.stripe_account_id || !booking.sitter.stripe_account_enabled) {
+    if (!sitter.stripe_account_id || !sitter.stripe_account_enabled) {
       throw new Error("Sitter Stripe account not found or not enabled");
     }
 
-    logStep("Sitter Stripe account verified", { account_id: booking.sitter.stripe_account_id });
+    logStep("Sitter Stripe account verified", { account_id: sitter.stripe_account_id });
 
     // Check if penalty needs to be applied
     let penaltyAmount = 0;
