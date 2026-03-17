@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
           .eq('user_id', userId)
           .order('requested_at', { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
         // Store deleted user information before deletion
         if (userProfile) {

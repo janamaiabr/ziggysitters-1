@@ -34,7 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from('profiles')
       .select('first_name, last_name, suburb, city')
       .eq('id', sitter_id)
-      .single();
+      .maybeSingle();
 
     const documentTypeLabel = document_type === 'id_verification' ? 'ID Verification' : 'Police Vet Check';
 

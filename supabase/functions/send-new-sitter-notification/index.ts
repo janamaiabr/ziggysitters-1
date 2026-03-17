@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("first_name, last_name, avatar_url, bio, suburb, city")
       .eq("id", sitter_id)
-      .single();
+      .maybeSingle();
 
     if (sitterError || !sitter) {
       console.error("Failed to fetch sitter:", sitterError);

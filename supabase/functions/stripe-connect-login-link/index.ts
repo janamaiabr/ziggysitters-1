@@ -39,7 +39,7 @@ serve(async (req) => {
       .from("profiles")
       .select("stripe_account_id")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (!profile?.stripe_account_id) {
       return new Response(

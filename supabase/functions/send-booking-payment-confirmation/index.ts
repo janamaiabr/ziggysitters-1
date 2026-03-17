@@ -39,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
         owner:profiles!owner_id(id, first_name, last_name, email)
       `)
       .eq("id", booking_id)
-      .single();
+      .maybeSingle();
 
     if (bookingError || !booking) {
       console.error("Error fetching booking:", bookingError);

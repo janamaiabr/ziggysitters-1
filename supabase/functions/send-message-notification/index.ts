@@ -55,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("email_subscriptions")
       .select("booking_notifications")
       .eq("user_id", recipientId)
-      .single();
+      .maybeSingle();
 
     // Use booking_notifications setting for messages (they're booking-related)
     if (subscriptions && subscriptions.booking_notifications === false) {

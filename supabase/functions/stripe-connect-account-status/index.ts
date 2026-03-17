@@ -33,7 +33,7 @@ serve(async (req) => {
       .from("profiles")
       .select("id, stripe_account_id, stripe_account_enabled, stripe_onboarding_completed")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (profileError || !profile) {
       throw new Error("Profile not found");
