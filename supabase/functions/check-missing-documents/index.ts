@@ -77,7 +77,7 @@ serve(async (req) => {
           sitter_id: sitter.id,
           email: sitter.email,
           status: 'error',
-          error: emailError.message
+          error: (emailError as Error).message
         });
       }
     }
