@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
           .from('profiles')
           .select('email, first_name, last_name, user_id')
           .eq('user_id', userId)
-          .single();
+          .maybeSingle();
 
         // Get cancellation reason if exists
         const { data: cancellationRequest } = await supabaseClient
