@@ -73,7 +73,7 @@ serve(async (req) => {
       .from("profiles")
       .select("id, user_id")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (!clientProfile || clientProfile.id !== booking.client_id) {
       throw new Error("You are not authorized to pay for this booking");
