@@ -369,9 +369,9 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    logStep("ERROR in process-booking-payout", { error: error.message });
+    logStep("ERROR in process-booking-payout", { error: (error as Error).message });
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as Error).message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
