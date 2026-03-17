@@ -135,7 +135,7 @@ serve(async (req) => {
           limit: 10,
         });
 
-        const totalRefunded = existingRefunds.data.reduce((sum, refund) => {
+        const totalRefunded = existingRefunds.data.reduce((sum: number, refund: any) => {
           return sum + (refund.status === 'succeeded' ? refund.amount : 0);
         }, 0) / 100; // Convert from cents to dollars
 
