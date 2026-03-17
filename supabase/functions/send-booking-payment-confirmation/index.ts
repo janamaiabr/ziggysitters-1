@@ -35,8 +35,8 @@ const handler = async (req: Request): Promise<Response> => {
       .from("bookings")
       .select(`
         *,
-        sitter:profiles!sitter_id(id, first_name, last_name, email),
-        owner:profiles!owner_id(id, first_name, last_name, email)
+        sitter:profiles!bookings_sitter_id_fkey(id, first_name, last_name, email),
+        owner:profiles!bookings_owner_id_fkey(id, first_name, last_name, email)
       `)
       .eq("id", booking_id)
       .maybeSingle();
