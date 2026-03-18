@@ -119,7 +119,7 @@ const handler = async (req: Request): Promise<Response> => {
                             </tr>
                             <tr>
                               <td style="color: #666666; font-size: 14px; padding-bottom: 8px; font-weight: 600;">Service Type:</td>
-                              <td style="color: #333333; font-size: 14px; padding-bottom: 8px; text-align: right;">${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
+                              <td style="color: #333333; font-size: 14px; padding-bottom: 8px; text-align: right;">${booking.service_type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}</td>
                             </tr>
                             <tr>
                               <td style="color: #666666; font-size: 14px; padding-bottom: 8px; font-weight: 600;">Check-in:</td>

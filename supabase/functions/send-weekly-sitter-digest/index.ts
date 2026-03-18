@@ -108,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       } catch (error) {
         console.error(`Error processing ${sitter.email}:`, error);
-        results.errors.push(`${sitter.email}: ${error.message}`);
+        results.errors.push(`${sitter.email}: ${(error as Error).message}`);
       }
     }
 

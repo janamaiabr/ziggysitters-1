@@ -42,7 +42,8 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Could not find user profile');
     }
 
-    const profileId = profileData.id;
+    const profileId = profileData?.id;
+    if (!profileId) throw new Error('Profile not found');
 
     // Check for active bookings (as owner or sitter)
     const { data: activeBookings, error: bookingsError } = await supabase

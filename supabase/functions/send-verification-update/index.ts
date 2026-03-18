@@ -73,14 +73,9 @@ serve(async (req) => {
 
     // If sitter was approved and we have location info, notify users who searched that area
     if (isApproved && sitter_id && suburb) {
-      // Use EdgeRuntime.waitUntil for background task if available
+      // Fire and forget background notification
       const notificationPromise = triggerNewSitterNotification(sitter_id, suburb, city);
-      if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
-        EdgeRuntime.waitUntil(notificationPromise);
-      } else {
-        // Fire and forget
-        notificationPromise.catch(console.error);
-      }
+      notificationPromise.catch(console.error);
     }
 
     const emailContent = isApproved ? `
@@ -221,7 +216,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error sending verification update email:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as Error).message }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

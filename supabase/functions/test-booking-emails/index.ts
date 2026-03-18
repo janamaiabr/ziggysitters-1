@@ -64,7 +64,7 @@ serve(async (req) => {
     results.push({
       test: "Send notification WITH Stripe",
       status: 'FAIL',
-      message: error.message,
+      message: (error as Error).message,
       details: error
     });
   }
@@ -106,7 +106,7 @@ serve(async (req) => {
     results.push({
       test: "Send notification WITHOUT Stripe",
       status: 'FAIL',
-      message: error.message,
+      message: (error as Error).message,
       details: error
     });
   }

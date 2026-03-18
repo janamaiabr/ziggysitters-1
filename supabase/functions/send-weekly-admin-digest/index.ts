@@ -241,7 +241,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         eventsProcessed: events.length,
-        emailId: emailResponse.id 
+        emailId: (emailResponse as any).id 
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

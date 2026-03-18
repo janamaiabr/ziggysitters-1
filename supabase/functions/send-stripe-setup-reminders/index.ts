@@ -147,7 +147,7 @@ serve(async (req) => {
           email: sitter.email,
           name: `${sitter.first_name} ${sitter.last_name}`,
           status: "failed",
-          error: emailError.message,
+          error: (emailError as Error).message,
         });
       }
     }
@@ -167,7 +167,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error sending Stripe reminders:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as Error).message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
