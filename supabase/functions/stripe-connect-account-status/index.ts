@@ -103,10 +103,10 @@ serve(async (req) => {
     console.error("Error in stripe-connect-account-status:", error);
     
     // Check if this is an account access error (old platform)
-    const errorMessage = error?.message || '';
+    const errorMessage = (error as any)?.message || '';
     const isAccountAccessError = errorMessage.includes('does not have access to account') || 
                                   errorMessage.includes('account_invalid') ||
-                                  error?.code === 'account_invalid';
+                                  (error as any)?.code === 'account_invalid';
     
     if (isAccountAccessError) {
       console.log("Detected old platform account - auto-resetting Stripe fields");
