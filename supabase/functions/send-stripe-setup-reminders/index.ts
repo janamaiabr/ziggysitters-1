@@ -147,7 +147,7 @@ serve(async (req) => {
           email: sitter.email,
           name: `${sitter.first_name} ${sitter.last_name}`,
           status: "failed",
-          error: emailError.message,
+          error: (emailError as Error).message,
         });
       }
     }
