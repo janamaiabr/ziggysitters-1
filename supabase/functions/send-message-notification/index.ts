@@ -72,7 +72,7 @@ const handler = async (req: Request): Promise<Response> => {
       const emailResponse = await resend.emails.send({
         from: "Ziggy Sitters <enquiries@ziggysitters.co.nz>",
         to: [recipient.email],
-        replyTo: guestEmail,
+        reply_to: guestEmail,
         subject: `🔔 New enquiry from ${guestName}`,
         html: `
           <!DOCTYPE html>

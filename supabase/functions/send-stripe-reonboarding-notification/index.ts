@@ -209,7 +209,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error sending re-onboarding notifications:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as Error).message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,

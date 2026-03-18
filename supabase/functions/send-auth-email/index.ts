@@ -103,7 +103,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         error: {
-          message: error.message,
+          message: (error as Error).message,
         },
       }),
       {

@@ -69,7 +69,8 @@ const handler = async (req: Request): Promise<Response> => {
       // If no report submitted today, add to reminder list
       if (!todayReport) {
         remindersToSend.push(booking);
-        console.log(`📝 Reminder needed for booking ${booking.id} - sitter: ${booking.sitter.email}`);
+        const sitterData = Array.isArray(booking.sitter) ? booking.sitter[0] : booking.sitter;
+        console.log(`📝 Reminder needed for booking ${booking.id} - sitter: ${sitterData?.email}`);
       } else {
         console.log(`✅ Report already submitted for booking ${booking.id}`);
       }
