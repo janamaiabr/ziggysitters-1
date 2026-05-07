@@ -55,7 +55,8 @@ function generateBlogPageHtml(post: typeof blogPosts[0]): string {
     `<meta property="og:type" content="article" />`
   );
 
-  // Add canonical link
+  // Add exactly one canonical link
+  html = html.replace(/\s*<link rel="canonical" href="[^"]+" \/>\n?/g, '');
   html = html.replace(
     '</head>',
     `  <link rel="canonical" href="${canonical}" />\n  </head>`
@@ -114,6 +115,7 @@ function generateBlogIndexHtml(): string {
     /<meta name="description" content="[^"]*" \/>/,
     `<meta name="description" content="${description}" />`
   );
+  html = html.replace(/\s*<link rel="canonical" href="[^"]+" \/>\n?/g, '');
   html = html.replace('</head>', `  <link rel="canonical" href="https://ziggysitters.com/blog" />\n  </head>`);
 
   // Add noscript blog listing for crawlers

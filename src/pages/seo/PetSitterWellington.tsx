@@ -12,7 +12,7 @@ export default function PetSitterWellington() {
         <title>Pet Sitter Wellington | Trusted Local Pet Sitters | ZiggySitters</title>
         <meta name="description" content="Find trusted pet sitters in Wellington, NZ. Verified local sitters for dogs, cats & more. Book online, secure payments, 24/7 support. From $50/day." />
         <meta name="keywords" content="pet sitter wellington, dog sitter wellington, cat sitter wellington, pet sitting wellington nz, house sitter wellington" />
-        <link rel="canonical" href="https://ziggysitters.co.nz/pet-sitter-wellington" />
+        <link rel="canonical" href="https://ziggysitters.com/pet-sitter-wellington" />
       </Helmet>
       
       <Header />

@@ -3,17 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Canonical set dynamically per route — no hardcoded homepage canonical -->
-    <script>
-      // Set canonical URL immediately (before DOMContentLoaded for Googlebot)
-      (function() {
-        var link = document.createElement('link');
-        link.rel = 'canonical';
-        link.href = 'https://www.ziggysitters.com' + window.location.pathname;
-        document.head.appendChild(link);
-      })();
-    </script>
-    
     <!-- Google tag (gtag.js) - MUST be first for proper detection -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9K8JN5BB9"></script>
     <script>

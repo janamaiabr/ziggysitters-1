@@ -21,7 +21,18 @@ export default function SEOHead({
 }: SEOHeadProps) {
   const fullTitle = title.includes('ZiggySitters') ? title : `${title} | ZiggySitters - Pet Sitters with Daily Updates`;
   const siteUrl = 'https://ziggysitters.com';
-  const fullCanonical = canonical ? `${siteUrl}${canonical}` : undefined;
+  const normalizeCanonical = (value?: string) => {
+    if (!value) return undefined;
+    const raw = value.startsWith('http') ? value : `${siteUrl}${value.startsWith('/') ? value : `/${value}`}`;
+    return raw
+      .replace('https://www.ziggysitters.com', siteUrl)
+      .replace('https://ziggysitters.co.nz', siteUrl)
+      .replace('https://www.ziggysitters.co.nz', siteUrl)
+      .replace('https://ziggysitters.nz', siteUrl)
+      .replace('https://www.ziggysitters.nz', siteUrl)
+      .replace(/\/$/, '');
+  };
+  const fullCanonical = normalizeCanonical(canonical);
 
   return (
     <Helmet>

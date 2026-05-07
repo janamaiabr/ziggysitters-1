@@ -3,17 +3,99 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "redirects": [
-    { "source": "/:path*", "has": [{ "type": "host", "value": "www.ziggysitters.com" }], "destination": "https://ziggysitters.com/:path*", "permanent": true },
-    { "source": "/pet-care-tips", "destination": "/blog", "permanent": true },
-    { "source": "/our-sitters", "destination": "/find-sitters", "permanent": true },
-    { "source": "/security", "destination": "/safety", "permanent": true },
-    { "source": "/daily-reports-info", "destination": "/how-it-works", "permanent": true }
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.ziggysitters.com"
+        }
+      ],
+      "destination": "https://ziggysitters.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "ziggysitters.co.nz"
+        }
+      ],
+      "destination": "https://ziggysitters.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.ziggysitters.co.nz"
+        }
+      ],
+      "destination": "https://ziggysitters.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "ziggysitters.nz"
+        }
+      ],
+      "destination": "https://ziggysitters.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.ziggysitters.nz"
+        }
+      ],
+      "destination": "https://ziggysitters.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/pet-care-tips",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/our-sitters",
+      "destination": "/find-sitters",
+      "permanent": true
+    },
+    {
+      "source": "/security",
+      "destination": "/safety",
+      "permanent": true
+    },
+    {
+      "source": "/daily-reports-info",
+      "destination": "/how-it-works",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/blog", "destination": "/blog/index.html" },
-    { "source": "/blog/:path*", "destination": "/blog/:path*" },
-    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
-    { "source": "/((?!blog/).*)", "destination": "/index.html" }
+    {
+      "source": "/blog",
+      "destination": "/blog/index.html"
+    },
+    {
+      "source": "/blog/:path*",
+      "destination": "/blog/:path*"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/((?!blog/).*)",
+      "destination": "/index.html"
+    }
   ],
   "installCommand": "npm install"
 }
