@@ -4,61 +4,6 @@
   "framework": "vite",
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.ziggysitters.com"
-        }
-      ],
-      "destination": "https://ziggysitters.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "ziggysitters.co.nz"
-        }
-      ],
-      "destination": "https://ziggysitters.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.ziggysitters.co.nz"
-        }
-      ],
-      "destination": "https://ziggysitters.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "ziggysitters.nz"
-        }
-      ],
-      "destination": "https://ziggysitters.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.ziggysitters.nz"
-        }
-      ],
-      "destination": "https://ziggysitters.com/:path*",
-      "permanent": true
-    },
-    {
       "source": "/pet-care-tips",
       "destination": "/blog",
       "permanent": true
