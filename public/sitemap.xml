@@ -1572,14 +1572,12 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://ziggysitters.com/blog/pet-sitting-sunshine-coast-guide-2026</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://ziggysitters.com/blog/dog-car-anxiety-nz-guide</loc>
     <lastmod>2026-06-02</lastmod>
@@ -1603,5 +1601,29 @@
     <lastmod>2026-06-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/cat-diabetes-management-nz-guide</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/crate-training-puppies-dogs-nz</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/pet-friendly-activities-auckland-guide</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ziggysitters.com/blog/pet-vet-visit-preparation-nz</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
