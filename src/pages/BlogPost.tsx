@@ -138,23 +138,38 @@ export default function BlogPost() {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "Article",
     "headline": post.title,
     "description": post.metaDescription || post.excerpt,
-    "image": fallbackImages[post.slug] || post.image,
+    "image": {
+      "@type": "ImageObject",
+      "url": fallbackImages[post.slug] || post.image || 'https://ziggysitters.com/assets/blog-default.jpg',
+      "width": 1200,
+      "height": 630
+    },
     "datePublished": post.date,
+    "dateModified": post.date,
     "author": {
       "@type": "Person",
-      "name": post.author
+      "name": post.author,
+      "url": "https://ziggysitters.com/about"
     },
     "publisher": {
       "@type": "Organization",
       "name": "ZiggySitters",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://ziggysitters.com/assets/logo.svg"
+        "url": "https://ziggysitters.com/assets/logo.svg",
+        "width": 200,
+        "height": 60
       }
-    }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://ziggysitters.com/blog/${post.slug}`
+    },
+    "keywords": post.keywords?.join(', ') || '',
+    "articleSection": post.tag
   };
 
   const getTagColor = (tag: string) => {

@@ -19,13 +19,13 @@ const values = [
 
 const team = [
   {
-    name: 'Jana Maia', role: 'Co-Founder',
-    bio: "Pet parent to a high-needs rescue dog requiring daily medication. Understands the challenges of finding reliable care for special-needs animals.",
+    name: 'Jana Maia', role: 'Co-Founder & CEO',
+    bio: "Pet parent to a high-needs rescue dog requiring daily medication. Jana's firsthand experience navigating unreliable pet care inspired the ZiggySitters platform. She leads product and customer experience, ensuring every feature solves a real pet parent's problem.",
     image: 'https://images.unsplash.com/photo-1494790108755-2616b612b9c5?w=150&h=150&fit=crop&crop=face'
   },
   {
-    name: 'Rachel Nottingham', role: 'Co-Founder',
-    bio: "Experienced with anxious and reactive pets. Rachel's background in animal behavior helps ensure our platform serves pets with unique needs.",
+    name: 'Rachel Nottingham', role: 'Co-Founder & Head of Operations',
+    bio: "Experienced with anxious and reactive pets, Rachel's background in animal behavior shapes our sitter vetting process and care standards. She oversees sitter onboarding and quality assurance across all locations.",
     image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
   }
 ];
@@ -123,6 +123,50 @@ export default function About() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Trust Signals */}
+        <section className="py-20 md:py-28 bg-muted">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-6">Why pet parents trust ZiggySitters</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-primary mb-2">100%</div>
+                  <p className="text-sm text-muted-foreground font-body">ID-verified sitters</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-primary mb-2">Daily</div>
+                  <p className="text-sm text-muted-foreground font-body">Photo updates guaranteed</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-primary mb-2">NZ & AU</div>
+                  <p className="text-sm text-muted-foreground font-body">Local, trusted sitters</p>
+                </div>
+              </div>
+              <div className="mt-12 p-6 bg-card rounded-xl border border-border text-left">
+                <h3 className="font-semibold font-body text-foreground mb-3">Our commitment to pet safety</h3>
+                <p className="text-sm text-muted-foreground font-body leading-relaxed">Every sitter on ZiggySitters undergoes ID verification before they can accept bookings. We maintain transparent reviews from real pet parents, and our daily photo update guarantee means you always know your pet is safe and cared for.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section className="py-20 md:py-28 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl mx-auto text-center">
+              <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-body">Get in touch</p>
+              <h2 className="text-3xl font-bold font-display text-foreground mb-4">We'd love to hear from you</h2>
+              <p className="text-muted-foreground font-body mb-8">Questions about booking, becoming a sitter, or anything else? We're here to help.</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="mailto:hello@ziggysitters.com" className="text-primary hover:underline font-body">hello@ziggysitters.com</a>
+                <span className="text-muted-foreground">|</span>
+                <Button variant="outline" className="font-body" onClick={() => navigate('/contact')}>Contact Us</Button>
+                <Button variant="outline" className="font-body" onClick={() => navigate('/faq')}>Read FAQ</Button>
+              </div>
             </div>
           </div>
         </section>

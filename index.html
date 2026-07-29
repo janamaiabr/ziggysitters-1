@@ -58,6 +58,64 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@ziggysitters" />
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/bXcG7lPwkShKK7kO4V624KN6pK43/social-images/social-1758083499627-SOCIAL SHARING ZIGGYSITTERS.png">
+
+    <!-- JSON-LD: Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "ZiggySitters",
+      "alternateName": "Ziggy Sitters",
+      "url": "https://ziggysitters.com",
+      "logo": "https://ziggysitters.com/assets/logo.svg",
+      "description": "ZiggySitters connects pet parents with verified, trusted pet sitters across New Zealand and Australia's Sunshine Coast. Features include daily photo updates, detailed care reports, and secure booking.",
+      "email": "hello@ziggysitters.com",
+      "foundingDate": "2022",
+      "founders": [
+        { "@type": "Person", "name": "Jana Maia" },
+        { "@type": "Person", "name": "Rachel Nottingham" }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/ziggysitters",
+        "https://www.instagram.com/ziggysitters"
+      ],
+      "areaServed": [
+        { "@type": "Country", "name": "New Zealand" },
+        { "@type": "AdministrativeArea", "name": "Queensland", "description": "Sunshine Coast, Australia" }
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "hello@ziggysitters.com",
+        "contactType": "customer service",
+        "availableLanguage": ["English"]
+      }
+    }
+    </script>
+
+    <!-- JSON-LD: WebSite Schema with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "ZiggySitters",
+      "url": "https://ziggysitters.com",
+      "description": "Find trusted, verified pet sitters in New Zealand and Australia's Sunshine Coast with guaranteed daily photo updates.",
+      "inLanguage": "en-NZ",
+      "publisher": {
+        "@type": "Organization",
+        "name": "ZiggySitters",
+        "url": "https://ziggysitters.com"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://ziggysitters.com/find-sitters?location={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
 
   <body>
