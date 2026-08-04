@@ -1096,6 +1096,156 @@ export const blogPosts: BlogPostData[] = [
 <p class="mb-4">ZiggySitters connects North Shore pet owners with verified local sitters who know and love the area.</p>
 <p class="mb-0 font-medium"><a href="/find-sitters" class="text-primary underline">Browse North Shore Sitters</a></p>
 </div>`
+  },
+  {
+    slug: 'pet-friendly-motels-hotels-nz-budget-guide',
+    title: 'Pet-Friendly Motels and Hotels in New Zealand: Budget Guide for Travellers with Pets',
+    excerpt: 'Find affordable pet-friendly motels and hotels across New Zealand. Region-by-region guide to budget accommodation that welcomes dogs, cats, and other pets.',
+    date: '2026-08-05',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1200&h=630&fit=crop',
+    readTime: '12 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Find affordable pet-friendly motels and hotels across New Zealand. Region-by-region guide to budget accommodation that welcomes dogs, cats, and other pets.',
+    keywords: ['pet friendly motels nz', 'pet friendly hotels new zealand', 'budget pet accommodation nz', 'dog friendly motels nz', 'cat friendly hotels new zealand', 'cheap pet friendly stays nz'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Travelling with pets in New Zealand should not mean emptying your wallet on overpriced accommodation. From Kaikohe to Invercargill, there are hundreds of motels, motor lodges, and hotels that welcome four-legged guests without charging a fortune. This guide covers the best budget pet-friendly options across every major region, what to expect when you book, and how to keep costs down while keeping your pet comfortable on the road.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What to Expect from Pet-Friendly Motels in New Zealand</h2>
+<p class="mb-6">Most pet-friendly motels in New Zealand operate under straightforward rules. You can generally expect ground-floor units with direct outdoor access, which makes toilet breaks and walks far easier than upper-floor hotel rooms. Many motels provide a small grassy area or are located near parks and reserves where your dog can stretch its legs after a long drive.</p>
+<p class="mb-6">Standard pet fees in New Zealand motels range from \$10 to \$30 per night per pet, though a surprising number of places do not charge extra at all. The key is to ask at the time of booking rather than showing up unannounced with a golden retriever. Some motels require pets to be crated when left unattended in the room, while others are happy for well-behaved animals to relax on the bed.</p>
+<p class="mb-6">New Zealand motels tend to be more pet-tolerant than hotels, largely because they are owner-operated and the units have separate entrances. This means no carrying a squirming cat through a lobby full of strangers. Motels are also more likely to have laundries on-site, which is handy after a muddy walk along the West Coast or a day at the beach.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Auckland and Northland</h2>
+<p class="mb-6">Auckland has a decent spread of pet-friendly motels, particularly in the southern and western suburbs where rates are lower. In Manukau and Papakura, you will find motor lodges charging \$120 to \$160 per night for a unit that welcomes one or two small to medium dogs. North Shore motels are slightly pricier but many accept pets if you call ahead, with units close to the numerous off-lead beaches along the coastline.</p>
+<p class="mb-6">Heading north, the Bay of Islands and Whangarei areas have a strong selection of pet-friendly holiday parks and motels. Many coastal properties in Paihia and Russell allow dogs on the grounds, and some even have enclosed yards. Budget around \$100 to \$140 per night in the off-season. Northland holiday parks with cabin accommodation often charge just \$5 to \$15 per pet per night, making them one of the cheapest options for travelling families with dogs.</p>
+<p class="mb-6">For cats, motels are generally more restrictive. Many that welcome dogs will accept cats in carriers, but few advertise this openly. It is always worth a phone call. The Kaipara region has a handful of farm stays that welcome both cats and dogs, often at rates below \$130 per night with pet fees included.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Waikato and Bay of Plenty</h2>
+<p class="mb-6">Hamilton and the surrounding Waikato region offer some of the best-value pet-friendly motels in the country. Units in Hamilton Central and Chartwell start from around \$110 per night, and many have courtyard or garden access. The region's flat terrain and extensive walkways along the Waikato River make it easy to exercise your dog without needing a car.</p>
+<p class="mb-6">Tauranga and Mount Maunganui have a growing number of pet-friendly options, particularly in the older motor lodges along Cameron Road and the southern outskirts. Rates range from \$130 to \$180 in peak season, dropping to \$100 to \$140 outside school holidays. Several motels near the Tauranga harbour allow small dogs on the balconies and have grass strips out the front for quick toilet stops.</p>
+<p class="mb-6">Whakatane and Rotorua are worth considering if you are touring the geothermal region. Rotorua motels tend to be spacious and many are pet-friendly, with rates around \$120 to \$160 per night. The Redwoods and other forest walks are dog-friendly outside of conservation zones, making Rotorua an excellent base for a budget pet-friendly holiday.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Central North Island and Hawke's Bay</h2>
+<p class="mb-6">Taupo and Turangi motels frequently accept pets, particularly the larger motor lodges with ground-floor units and grass areas. Taupo's lakefront motels can be pricey in summer, but those on the main highway a few blocks back often offer pet-friendly rooms from \$110 to \$140 per night. The lakefront walkways are open to dogs on leads, providing easy exercise without leaving town.</p>
+<p class="mb-6">Napier and Hastings in Hawke's Bay are increasingly pet-aware. Several Art Deco motels in central Napier allow small dogs, though you should confirm the pet policy directly as it changes seasonally. Hastings has cheaper options, with motor lodges around \$100 to \$130 per night and easy access to dog-friendly beaches at Clifton and Haumoana.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Wellington and the Lower North Island</h2>
+<p class="mb-6">Wellington presents a challenge for pet-friendly budget accommodation, partly because of its hilly terrain and limited flat motel strips. The Lower Hutt and Petone areas are your best bet, with several motor lodges charging \$120 to \$160 per night and accepting small to medium dogs. Petone's beachfront is dog-friendly, so morning and evening walks are sorted.</p>
+<p class="mb-6">Further north in the Manawatu, Palmerston North motels are among the cheapest pet-friendly options in the North Island. Units from \$95 to \$130 per night are common, and the Esplanade and Hokowhitu Park provide excellent off-lead exercise areas.</p>
+<p class="mb-6">Wanganui motels are similarly affordable and pet-friendly. The riverfront area has several motels that welcome pets at rates around \$90 to \$120 per night, and the extensive riverside walkways make it easy to tire out even the most energetic kelpie before bedtime.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Canterbury and the South Island East Coast</h2>
+<p class="mb-6">Christchurch has rebuilt much of its motel stock since the earthquakes, and pet-friendly options are now plentiful. Riccarton and Addington motor lodges offer pet-friendly units from \$110 to \$150 per night, many with easy access to Hagley Park's extensive off-lead areas.</p>
+<p class="mb-6">Further south, Dunedin and Invercargill motels are among the cheapest in the country, with pet-friendly units from \$85 to \$140 per night, making Southland an affordable base for exploring the Catlins and Stewart Island surrounds.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">West Coast and Alpine Regions</h2>
+<p class="mb-6">The West Coast is a paradise for travelling dogs. Greymouth, Hokitika, and Westport motels are affordable and overwhelmingly pet-friendly, with rates from \$90 to \$130 per night. Many have large grass areas and are close to dog-friendly beaches and bush walks.</p>
+<p class="mb-6">In the alpine regions, Queenstown and Wanaka are pricier but still have budget pet options if you book early. Motels on the outskirts of Queenstown offer pet-friendly rooms from \$150 to \$200 per night in peak season.</p>
+<p class="mb-6">For ski season travellers, note that most ski field carparks do not allow dogs left in vehicles. If you are planning a ski trip, arrange a local pet sitter through ZiggySitters for the day rather than leaving your dog in the motel room for extended periods.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Tips for Keeping Costs Down</h2>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li>Book directly with the motel rather than through third-party platforms. Many motels offer a direct-booking discount of 5 to 10 percent.</li>
+<li>Travel outside school holidays and long weekends. New Zealand motel rates can double during peak periods.</li>
+<li>Consider holiday park cabins from \$70 to \$100 per night — far more likely to accept pets than hotels.</li>
+<li>Travel with a crate. Motels that require pets to be crated when unattended are more likely to accept larger dogs.</li>
+<li>Ask about weekly rates. Five or more nights often means 10 to 20 percent off, and pet fees may be waived entirely.</li>
+<li>Pack your pet's own bedding and bowls to avoid cleaning surcharges.</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What to Ask Before You Book</h2>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li>Is there a pet fee, and if so, how much per night per pet?</li>
+<li>Are there weight or breed restrictions?</li>
+<li>Is the unit ground floor with direct outdoor access?</li>
+<li>Are pets allowed to be left unattended in the room? Must they be crated?</li>
+<li>Is there a grass area nearby for toilet breaks?</li>
+<li>Are cats accepted, or only dogs?</li>
+<li>Is there a refundable damage deposit?</li>
+<li>Are there nearby off-lead exercise areas?</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">When a Motel Is Not the Best Option</h2>
+<p class="mb-6">If you are travelling with a reactive dog, a cat that stress-pants in new environments, or multiple pets, a motel room might not be the most comfortable choice. In these situations, a professional pet sitter staying in your own home is often better for the animal and cheaper than multiple nights of motel pet fees. ZiggySitters connects New Zealand pet owners with vetted, experienced sitters who keep your pets in their familiar environment while you travel.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Making the Most of Your Pet-Friendly NZ Road Trip</h2>
+<p class="mb-6">New Zealand is one of the best countries in the world for road-tripping with pets. Motels and holiday parks are widely distributed, distances between towns are manageable, and the landscape offers endless walking opportunities. By choosing budget pet-friendly accommodation, asking the right questions before you book, and travelling outside peak periods, you can explore Aotearoa with your pet without breaking the bank.</p>`
+  },
+  {
+    slug: 'rural-pet-sitting-nz-lifestyle-blocks-farms',
+    title: 'Rural Pet Sitting on NZ Lifestyle Blocks and Farms: A Complete Guide',
+    excerpt: 'Everything you need to know about pet sitting on New Zealand lifestyle blocks and farms. From livestock care to rural hazards, this guide covers the unique challenges of rural pet sitting in NZ.',
+    date: '2026-08-05',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&h=630&fit=crop',
+    readTime: '14 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Everything you need to know about pet sitting on NZ lifestyle blocks and farms. From livestock care to rural hazards, this guide covers the unique challenges of rural pet sitting.',
+    keywords: ['rural pet sitting nz', 'lifestyle block pet sitting', 'farm pet sitter new zealand', 'pet sitting rural property nz', 'lifestyle block animal care', 'rural house sitting nz'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Pet sitting in rural New Zealand is a different world from minding a cat in a Wellington apartment. Lifestyle blocks, farmlets, and full-scale working farms bring a unique set of animals, routines, hazards, and responsibilities that urban sitters rarely encounter. Whether you are a pet sitter considering your first rural booking or a lifestyle block owner looking for someone reliable to care for your property, this guide covers everything you need to know about rural pet sitting in New Zealand.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What Makes Rural Pet Sitting Different</h2>
+<p class="mb-6">A lifestyle block in New Zealand typically ranges from one to ten hectares and may include a mix of companion animals and small livestock. Dogs and cats are standard, but you might also find chickens, ducks, a few sheep, goats, alpacas, or even a kunekune pig. Working farms are a step up again, with dairy herds, beef cattle, and large flocks of sheep requiring daily attention.</p>
+<p class="mb-6">The key difference is responsibility. An urban pet sitter feeds the cat and walks the dog. A rural sitter manages water troughs, checks fences, collects eggs, and watches for signs of illness in animals that cannot tell you something is wrong. The scope is broader, the stakes are higher, and the isolation is real.</p>
+<p class="mb-6">Rural properties also have infrastructure that needs monitoring. Pumps, septic systems, electric fences, and gas hot water systems can all malfunction. A good rural sitter is part animal carer, part handyman, and part problem solver.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Understanding NZ Lifestyle Block Animals</h2>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Chickens and Poultry</h3>
+<p class="mb-6">Chickens are the most common lifestyle block livestock in New Zealand. A small flock of six to twelve hens is standard on most blocks. Daily care involves collecting eggs, checking water and feed, and ensuring the coop is securely closed at dusk to protect against stoats, ferrets, and roaming dogs.</p>
+<p class="mb-6">Ducks are increasingly popular on lifestyle blocks, particularly Indian Runners and Khaki Campbells, which are excellent for pest control and egg production. Ducks need access to fresh water for bathing and are messier than chickens, so their enclosure requires more frequent cleaning.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Sheep and Goats</h3>
+<p class="mb-6">Many lifestyle block owners keep a handful of sheep as lawnmowers and for occasional freezer fill. Pet sheep, particularly hand-reared orphans called pet lambs, can be surprisingly affectionate and will follow you around the paddock. Goats are mischievous escape artists and will test every fence on the property. If you are sitting a block with goats, check fences daily.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Alpacas and Kunekune Pigs</h3>
+<p class="mb-6">Alpacas have become a fixture on New Zealand lifestyle blocks, prized for their fleece and gentle nature. They are relatively low maintenance but do require shearing annually and vaccination against clostridial diseases. Kunekune pigs are a uniquely New Zealand breed — friendly, intelligent, and surprisingly clean. Care involves feeding once or twice daily with pig nuts and fresh vegetables, providing clean water, and ensuring shelter is dry and draught-free.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Rural Hazards That Urban Sitters Underestimate</h2>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Water Systems</h3>
+<p class="mb-6">Most rural New Zealand properties rely on rainwater tanks, bore water, or a combination of both. If the pump fails, there is no water for animals, toilets, or showers. Before the owner leaves, make sure you know where the pump switch is, how to reset it, and who to call for emergency repairs.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Electric Fences</h3>
+<p class="mb-6">Electric fences keep livestock in and predators out, but they can also trip or short. Check the fence energiser daily. If the voltage drops below 3000 volts, stock can push through.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Fires and Weather</h3>
+<p class="mb-6">Rural New Zealand properties face real fire risk, particularly in Canterbury, Marlborough, and Central Otago during dry summers. In winter, heavy snow can collapse structures, block roads, and freeze water lines.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Stock Escapes</h3>
+<p class="mb-6">If a gate is left open or a fence fails, livestock on a lifestyle block will wander onto the road. Walk the boundary fences on your first day and report any damage immediately.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">The Rural Pet Sitting Checklist</h2>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li><strong>Daily routine:</strong> What time are animals fed, watered, and checked?</li>
+<li><strong>Feed quantities and locations:</strong> How much hay, grain, or pellets does each animal group receive?</li>
+<li><strong>Water systems:</strong> Where is the pump? How do you reset it?</li>
+<li><strong>Fence checks:</strong> Which fences need daily inspection?</li>
+<li><strong>Veterinary contacts:</strong> After-hours emergency numbers and large-animal vets.</li>
+<li><strong>Neighbour contacts:</strong> Who can help in an emergency?</li>
+<li><strong>Emergency veterinary budget:</strong> How much can you spend before calling the owner?</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What Rural Pet Sitters Should Charge</h2>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li><strong>Lifestyle block with dogs, cats, and chickens:</strong> \$80 to \$120 per night</li>
+<li><strong>Lifestyle block with small livestock (sheep, goats, alpacas):</strong> \$100 to \$150 per night</li>
+<li><strong>Working farm with livestock requiring twice-daily checks:</strong> \$150 to \$250 per night</li>
+<li><strong>Properties requiring milking or intensive animal care:</strong> \$200 to \$300 per night</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Finding the Right Rural Pet Sitter</h2>
+<p class="mb-6">Not every pet sitter is suited to rural assignments. Prioritise experience with livestock, comfort with isolation, physical fitness, problem-solving ability, and reliable transport. ZiggySitters lists experienced rural pet sitters across New Zealand who understand the demands of lifestyle block and farm care.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Seasonal Considerations</h2>
+<p class="mb-6"><strong>Spring:</strong> Lambing and calving season. Be prepared for night checks and possible assistance with births. <strong>Summer:</strong> Heat, flies, and flystrike risk in sheep. Ensure shade and water access. <strong>Autumn:</strong> Check water systems before winter and ensure shelters are in good repair. <strong>Winter:</strong> Frost can freeze water troughs. Supplementary feeding increases. Mud becomes a real issue on clay soils.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Legal Responsibilities</h2>
+<p class="mb-6">New Zealand's Animal Welfare Act 1999 applies to anyone in charge of an animal, including pet sitters. All animals must have access to clean water, sick animals must receive veterinary care, shelter must be available during extreme weather, and handling must minimise pain and distress.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Making Rural Pet Sitting Work</h2>
+<p class="mb-6">Rural pet sitting can be incredibly rewarding. You get to live in beautiful surroundings, care for fascinating animals, and experience a side of New Zealand life that most visitors never see. But it demands more preparation, more vigilance, and more common sense than urban sitting assignments.</p>
+<p class="mb-6">If you are a lifestyle block owner, invest time in a thorough handover before you leave. If you are a sitter, be honest about your experience level. Start with smaller lifestyle blocks, build your skills, and work your way up. ZiggySitters makes it easy to find rural pet sitting opportunities that match your experience level and comfort zone.</p>`
   }
 ];
 
