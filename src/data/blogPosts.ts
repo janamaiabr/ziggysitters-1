@@ -1246,6 +1246,162 @@ export const blogPosts: BlogPostData[] = [
 <h2 class="text-2xl font-bold mt-12 mb-6">Making Rural Pet Sitting Work</h2>
 <p class="mb-6">Rural pet sitting can be incredibly rewarding. You get to live in beautiful surroundings, care for fascinating animals, and experience a side of New Zealand life that most visitors never see. But it demands more preparation, more vigilance, and more common sense than urban sitting assignments.</p>
 <p class="mb-6">If you are a lifestyle block owner, invest time in a thorough handover before you leave. If you are a sitter, be honest about your experience level. Start with smaller lifestyle blocks, build your skills, and work your way up. ZiggySitters makes it easy to find rural pet sitting opportunities that match your experience level and comfort zone.</p>`
+  },
+  {
+    slug: 'pet-friendly-cafes-auckland-nz',
+    title: 'Best Dog-Friendly Cafés in Auckland: Where to Eat Out with Your Pup',
+    excerpt: 'Auckland\'s top dog-friendly cafés and restaurants, from waterfront spots in Devonport to hidden gems in Ponsonby. Know the rules, find the best outdoor seating, and enjoy brunch with your best mate.',
+    date: '2026-08-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&h=630&fit=crop',
+    readTime: '11 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Auckland\'s best dog-friendly cafés and restaurants. Complete guide to dining out with your dog in Auckland, including local rules, top venues by suburb, and tips for a great experience.',
+    keywords: ['dog-friendly cafes Auckland', 'pet-friendly restaurants Auckland NZ', 'Auckland dog cafes', 'Auckland outdoor dining dogs', 'best cafes Auckland dogs welcome', 'Auckland brunch with dog'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Auckland loves its dogs. From the off-leash beaches of Takapuna to the bush walks of the Waitākere Ranges, the City of Sails is one of New Zealand\'s most pet-friendly cities. But when it comes to grabbing a coffee or settling in for brunch, knowing which cafés genuinely welcome dogs — and which merely tolerate them — makes all the difference. This guide covers Auckland\'s best dog-friendly cafés, the local rules you need to know, and how to dine out with your pup like a local.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">The Rules: Dogs in Auckland Cafés</h2>
+<p class="mb-6">New Zealand food safety legislation under the Food Act 2014 and the Food Hygiene Regulations 1974 prohibits live animals in areas where food is prepared or served indoors. The key word is <em>indoors</em>. Dogs are welcome in outdoor dining areas, courtyards, and sidewalk tables provided the café owner consents. This means the vast majority of Auckland\'s café culture — which revolves around outdoor seating anyway — is inherently dog-friendly.</p>
+<p class="mb-6">There are exceptions. Assistance dogs (guide dogs, hearing dogs, and service dogs certified under the Dog Control Act 1996) are legally permitted indoors. Puppies not yet fully vaccinated should stay home for their own safety and that of other dogs. And individual cafés may set their own policies — always check before arriving with a large or boisterous breed.</p>
+<p class="mb-6">Auckland Council\'s Dog Control Bylaw 2023 designates specific beach and park areas as on-leash, off-leash, or dog-prohibited. Before heading to a café near a beach, check the council\'s dog access map so you know which routes allow dogs and which do not. Most coastal walkways allow leashed dogs outside of restricted bird-nesting areas.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Central Auckland and the CBD</h2>
+<p class="mb-6">Central Auckland has fewer dog-friendly options than the suburbs, simply because outdoor space is limited. But a few standouts make the list. <strong>Orleans</strong> on Britomart\'s Customs Street East has a spacious courtyard where well-behaved dogs are welcome. The atmosphere is lively, the brunch menu is excellent, and the staff genuinely like dogs — water bowls appear without asking.</p>
+<p class="mb-6"><strong>Britomart Country Club</strong> on Takutai Square offers outdoor seating in a covered, dog-friendly area. It is a great spot for after-work drinks with your pup, though weekends can get crowded. For a quick coffee, <strong>Cargo</strong> on Lower Hobson Street has outdoor tables and a relaxed attitude towards dogs resting at your feet.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Ponsonby and Grey Lynn</h2>
+<p class="mb-6">Ponsonby is Auckland\'s brunch capital, and several venues roll out the welcome mat for dogs. <strong>Ponsonby Central</strong> is a food hall rather than a single café, but the surrounding outdoor seating on Ponsonby Road is dog-friendly and you can grab food from multiple vendors. <strong>Dizengoff</strong> on Ponsonby Road has been a local favourite for decades, and their outdoor tables welcome dogs.</p>
+<p class="mb-6">In Grey Lynn, <strong>Wise Cicada</strong> on Richmond Road is a health-food store with an excellent outdoor café that welcomes dogs. It is a popular weekend spot for the Grey Lynn dog crowd. <strong>The Grey Lynn Local</strong> also has outdoor seating and a community feel that extends to four-legged visitors.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Devonport and the North Shore</h2>
+<p class="mb-6">Devonport is perhaps Auckland\'s most dog-friendly suburb, and the café scene reflects this. <strong>The Depot Eatery</strong> on Devonport\'s Victoria Road has outdoor seating with a relaxed dog policy, and the proximity to Devonport Beach — an off-leash area outside of summer restricted times — makes it a perfect brunch-and-walk combination.</p>
+<p class="mb-6"><strong>The Velo Café</strong> on King Edward Parade is a cyclist café that also loves dogs. Their outdoor seating overlooks the harbour, and dogs are genuinely welcome. Further along the North Shore, <strong>Suburbia</strong> in Takapuna has a large outdoor area and is popular with the local dog-walking community, particularly on weekends after a run at Takapuna Beach.</p>
+<p class="mb-6"><strong>Milford Café</strong> near Milford Beach is another solid option. The café has outdoor seating and is a five-minute walk from the beach\'s off-leash area. Perfect for a post-walk coffee.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Mission Bay and Kohimarama</h2>
+<p class="mb-6">The eastern beaches are classic Auckland dog territory. <strong>The Tank Farm</strong> in Mission Bay has outdoor seating and a laid-back vibe that suits dog owners. After coffee, walk the Mission Bay promenade — leashed dogs are welcome on the path year-round. <strong>Kohimarama Beach Café</strong> offers outdoor tables with sea views, and the adjacent beach has off-leash access during winter months.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">West Auckland and the Waitākeres</h2>
+<p class="mb-6">Out west, the café culture is more rustic and the dog-friendliness is baked in. <strong>The Piha Café</strong> near Piha Beach is legendary — surfers and dogs are equally welcome on the outdoor deck. It is the perfect stop after a beach walk, though check seasonal opening hours. <strong>Titanella</strong> in Titirangi has a beautiful garden setting with outdoor tables where dogs are welcome, and the surrounding native bush walks make it a full day out.</p>
+<p class="mb-6"><strong>Swanson Café</strong> on Swanson Road is a straightforward local café with outdoor seating and a dog-friendly policy. It is a good pit stop on the way to or from the Waitākere ranges.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Tips for Dining Out with Your Dog</h2>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li><strong>Always ask first.</strong> Even dog-friendly cafés may have days when they cannot accommodate dogs — private events, weather, or staffing changes. A quick call saves disappointment.</li>
+<li><strong>Bring a mat.</strong> A portable mat gives your dog a defined space under the table and keeps them off wet or hot ground.</li>
+<li><strong>Pack water.</strong> Most dog-friendly cafés provide water bowls, but bring your own collapsible bowl as backup, especially on hot days.</li>
+<li><strong>Keep your dog on a lead.</strong> Even the best-behaved dog can be startled by a dropped plate, a child running past, or another dog. Leash = control = welcome back.</li>
+<li><strong>Time your visit.</strong> Weekday mornings are quietest. Weekend brunch is peak time and your dog will be calmer with fewer people around.</li>
+<li><strong>Know the beach rules.</strong> Auckland Council restricts dog access on many beaches during summer (1 December to 1 March, 10am–6pm). Check before you plan a beach-café day.</li>
+<li><strong>Clean up.</strong> Always carry waste bags. If your dog has an accident near a café, clean it immediately. This is how dog-friendly privileges get revoked.</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Auckland Dog-Friendly Cafés Quick List</h2>
+<table class="w-full mb-8 border-collapse">
+<thead><tr class="border-b-2"><th class="text-left py-2">Café</th><th class="text-left py-2">Area</th><th class="text-left py-2">Notes</th></tr></thead>
+<tbody>
+<tr class="border-b"><td class="py-2">Orleans</td><td class="py-2">Britomart/CBD</td><td class="py-2">Courtyard, dog water bowls</td></tr>
+<tr class="border-b"><td class="py-2">Britomart Country Club</td><td class="py-2">Britomart</td><td class="py-2">Covered outdoor area</td></tr>
+<tr class="border-b"><td class="py-2">Ponsonby Central</td><td class="py-2">Ponsonby</td><td class="py-2">Food hall, outdoor seating</td></tr>
+<tr class="border-b"><td class="py-2">Dizengoff</td><td class="py-2">Ponsonby</td><td class="py-2">Classic brunch, outdoor tables</td></tr>
+<tr class="border-b"><td class="py-2">Wise Cicada</td><td class="py-2">Grey Lynn</td><td class="py-2">Health food, outdoor café</td></tr>
+<tr class="border-b"><td class="py-2">The Depot Eatery</td><td class="py-2">Devonport</td><td class="py-2">Near off-leash beach</td></tr>
+<tr class="border-b"><td class="py-2">The Velo Café</td><td class="py-2">Devonport</td><td class="py-2">Harbour views, dog-welcome</td></tr>
+<tr class="border-b"><td class="py-2">Suburbia</td><td class="py-2">Takapuna</td><td class="py-2">Large outdoor area, weekend vibe</td></tr>
+<tr class="border-b"><td class="py-2">The Tank Farm</td><td class="py-2">Mission Bay</td><td class="py-2">Laid-back, beach-adjacent</td></tr>
+<tr class="border-b"><td class="py-2">The Piha Café</td><td class="py-2">Piha</td><td class="py-2">Surf-café, dog-heaven</td></tr>
+<tr class="border-b"><td class="py-2">Titanella</td><td class="py-2">Titirangi</td><td class="py-2">Garden setting, bush walks nearby</td></tr>
+</tbody>
+</table>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What If Your Dog Cannot Come Along?</h2>
+<p class="mb-6">Not every outing suits a dog — formal dinners, indoor events, or hot summer days when pavement burns paws. When you need quality pet care so you can enjoy Auckland\'s café scene child-free, ZiggySitters connects you with vetted local sitters who understand Auckland\'s unique environment. Whether it is a two-hour brunch or a weekend away, our sitters keep your dog happy, exercised, and safe.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Find a Dog-Friendly Sitter</h3>
+<p class="mb-0">ZiggySitters lists experienced Auckland pet sitters who know the local dog parks, beaches, and cafés. <a href="/find-sitters" class="text-primary underline">Find a sitter near you.</a></p>
+</div>`
+  },
+  {
+    slug: 'nz-pet-breeding-regulations-guide',
+    title: 'New Zealand Pet Breeding Regulations: What Every Breeder and Buyer Needs to Know',
+    excerpt: 'NZ breeding laws explained — the Animal Welfare Act, council permits, the Animal Welfare Regulations 2018, and what responsible breeding actually looks like in practice.',
+    date: '2026-08-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=630&fit=crop',
+    readTime: '13 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Complete guide to pet breeding regulations in New Zealand. Covers the Animal Welfare Act, council bylaws, breeding standards, puppy farming laws, and buyer protections.',
+    keywords: ['pet breeding regulations NZ', 'New Zealand dog breeding laws', 'Animal Welfare Act NZ breeding', 'puppy farm regulations NZ', 'cat breeding regulations New Zealand', 'NZ responsible breeding standards'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Breeding pets in New Zealand is not as simple as letting two animals mate and finding homes for the offspring. A framework of national legislation, regional council bylaws, and industry codes of practice governs who can breed, under what conditions, and what responsibilities breeders and buyers share. Whether you are considering breeding your first litter, looking to buy from a responsible breeder, or simply want to understand the rules, this guide covers the legal landscape and practical expectations for pet breeding in New Zealand.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">The Animal Welfare Act 1999</h2>
+<p class="mb-6">The Animal Welfare Act 1999 is the cornerstone of New Zealand\'s animal protection law. It applies to every person who owns or is in charge of an animal — including breeders, pet sitters, and new owners. The Act establishes a duty of care: every animal must be provided with adequate food, water, shelter, and veterinary treatment. It is an offence to neglect, ill-treat, or abandon an animal, and penalties include fines up to \$50,000 for individuals and \$250,000 for body corporates, or up to 12 months\' imprisonment.</p>
+<p class="mb-6">For breeders, the Act means every breeding animal and every puppy or kitten produced must have proper care throughout its life — from birth to rehoming. This includes appropriate housing, socialisation, veterinary care, and honest representation of the animal\'s health and temperament to prospective buyers.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Animal Welfare Regulations 2018 — Breeding-Specific Provisions</h2>
+<p class="mb-6">The Animal Welfare (Care Procedures and Code of Welfare for Dogs) Regulations 2018 introduced specific requirements for dog breeders. These regulations address several critical areas that anyone breeding dogs in New Zealand must understand.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Maximum Litter Frequency</h3>
+<p class="mb-6">A female dog must not be mated on her first season if she is under 12 months of age for small breeds, or under 18 months for large breeds. This gives the dog time to mature physically before bearing the strain of pregnancy. The regulations also state that a dog should not produce more than five litters in her lifetime, and breeders must keep records of every litter born.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Housing and Environment</h3>
+<p class="mb-6">Breeding dogs and their puppies must have access to clean, dry, and temperature-appropriate housing. The regulations specify minimum space requirements based on the size of the dog, mandate daily exercise for adult breeding dogs, and require that puppies be socialised to human contact and normal household environments before going to new homes at a minimum of eight weeks of age.</p>
+
+<h3 class="text-xl font-semibold mt-8 mb-4">Health Testing and Veterinary Care</h3>
+<p class="mb-6">Responsible breeders in New Zealand are expected to health-test their breeding stock before mating. For dogs, this includes hip and elbow scoring through the New Zealand Veterinary Association (NZVA) scheme, eye testing by a certified ophthalmologist, and DNA testing for breed-specific genetic conditions. While the regulations do not mandate every test for every breed, failure to perform relevant health testing and knowingly breeding from affected animals can constitute a breach of the duty of care under the Act.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Puppy Farming and the Fight Against Puppy Mills</h2>
+<p class="mb-6">New Zealand has taken a strong stance against intensive puppy farming. The Animal Welfare (Puppy Farming) Amendment Act 2021, which came into effect progressively, targets the worst practices of commercial puppy mills. It introduces tighter controls on high-volume breeders and gives MPI (the Ministry for Primary Industries) stronger enforcement powers.</p>
+<p class="mb-6">The legislation defines a puppy farmer as any person who breeds five or more litters per year from dogs. These breeders must now meet enhanced record-keeping requirements, allow inspectors access to their premises, and comply with stricter welfare standards. The legislation also restricts the sale of dogs through third-party dealers and pet shops, requiring that puppies be sold directly to their new owners or through registered rehoming organisations.</p>
+<p class="mb-6">For buyers, this means you should never purchase a puppy from a seller who will not let you visit the premises where the puppy was born and meet the mother. Refusal to allow a visit, meeting in a car park, or selling through a pet shop are all red flags for puppy mill operations.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Council Bylaws and Local Regulations</h2>
+<p class="mb-6">Beyond national legislation, every territorial authority in New Zealand has its own dog control bylaw. These bylaws typically address the number of dogs that can be kept on a property, registration requirements, and conditions for breeding. In Auckland, the Dog Control Bylaw 2023 limits the number of dogs on a residential property to two without a permit. If you want to keep three or more dogs — which includes most breeding situations — you must apply for a permit from Auckland Council.</p>
+<p class="mb-6">The permit process involves a property inspection, neighbour consultation, and evidence that you can provide adequate fencing, shelter, and exercise areas. Other councils have similar thresholds. Wellington requires a permit for three or more dogs. Christchurch sets the limit at two on properties smaller than 2,000 square metres. Always check your local council\'s bylaws before setting up a breeding programme — the fines for non-compliance are significant and can include seizure of the animals.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Cat Breeding Regulations</h2>
+<p class="mb-6">Cat breeding in New Zealand is less heavily regulated than dog breeding, but the Animal Welfare Act still applies. The New Zealand Companion Animal Council (NZCAC) and the Cat Fancy breed registry both publish codes of practice that responsible breeders follow. These include minimum ages for breeding (queens should be at least 12 months old before their first litter), maximum litter frequency (no more than three litters in 18 months), and requirements for veterinary care and socialisation.</p>
+<p class="mb-6">Several councils are beginning to introduce mandatory desexing bylaws for cats. The Wellington City Council was one of the first, requiring all cats over six months of age to be desexed unless the owner holds a breeding permit. Auckland Council has also explored cat containment and desexing requirements. If you intend to breed cats, check your local council\'s current bylaws and be prepared for them to tighten.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Registration and Microchipping Requirements</h2>
+<p class="mb-6">All dogs in New Zealand must be registered with their local council by the age of three months and microchipped. Registration must be renewed annually. Puppies born to registered dogs must be registered in their own right before they go to new homes. The New Zealand Companion Animal Register (NZCAR) is the national microchip database and is the primary way lost pets are reunited with their owners.</p>
+<p class="mb-6">Cat microchipping is strongly recommended but not yet mandatory nationwide, although some councils require it as part of desexing bylaws. Breeder responsibilities include ensuring all puppies and kittens are microchipped before sale, registering the microchip on NZCAR, and providing the new owner with transfer documentation.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">What Buyers Should Look For</h2>
+<p class="mb-6">If you are buying a puppy or kitten in New Zealand, responsible breeders will have the following in order:</p>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li><strong>Health testing results</strong> for both parents, relevant to the breed</li>
+<li><strong>Registration papers</strong> from Dogs New Zealand (formerly NZKC) or the relevant breed club</li>
+<li><strong>Microchip and NZCAR registration</strong> for the puppy or kitten</li>
+<li><strong>Vaccination records</strong> showing at least the first round of vaccinations</li>
+<li><strong>A willingness to let you visit</strong> the premises and meet the mother</li>
+<li><strong>A written health guarantee</strong> covering genetic conditions</li>
+<li><strong>Ongoing support</strong> — responsible breeders stay in touch and are available for questions</li>
+</ul>
+<p class="mb-6">Red flags include: no health testing, refusal to let you visit, no microchip, selling puppies under eight weeks of age, cash-only transactions with no paperwork, and unwillingness to provide references or previous buyer contacts.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">The Cost of Responsible Breeding</h2>
+<p class="mb-6">Responsible breeding is expensive. Health testing for hip dysplasia, elbow dysplasia, and breed-specific genetic conditions typically costs \$500 to \$1,500 per dog before you even begin. Veterinary care during pregnancy and whelping, quality food, vaccinations, microchipping, registration, and socialisation all add up. A responsible breeder who does everything right is unlikely to make significant money from a litter — the profit motive is precisely what drives puppy mills to cut corners.</p>
+<p class="mb-6">Typical costs for a responsible dog litter in New Zealand:</p>
+<ul class="list-disc list-inside mb-6 space-y-2">
+<li><strong>Health testing (both parents):</strong> \$800–\$2,000</li>
+<li><strong>Stud fee or AI:</strong> \$500–\$2,500</li>
+<li><strong>Pregnancy veterinary care:</strong> \$300–\$800</li>
+<li><strong>Emergency C-section (if needed):</strong> \$1,500–\$3,500</li>
+<li><strong>Puppy food, worming, and initial vet visits:</strong> \$200–\$400 per puppy</li>
+<li><strong>Vaccinations and microchipping:</strong> \$150–\$300 per puppy</li>
+<li><strong>Registration:</strong> \$50–\$100 per puppy</li>
+</ul>
+<p class="mb-6">For a litter of six puppies, a responsible breeder may spend \$5,000 to \$8,000 before any puppy goes to its new home. This is why ethically bred puppies cost \$1,500 to \$3,500 or more depending on the breed — and why bargain puppies from unverified sources should raise immediate suspicion.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Pet Sitting for Breeding and Nursing Animals</h2>
+<p class="mb-6">Breeding animals and new mothers with litters require specialised care that not every pet sitter can provide. If you are a breeder who needs pet sitting while you travel, look for sitters with experience in whelping, neonatal care, and breed-specific needs. ZiggySitters lists sitters across New Zealand with experience caring for pregnant dogs, nursing mothers, and young puppies and kittens. The right sitter can monitor for complications, maintain feeding schedules, and ensure the safety of vulnerable young animals.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Need a Sitter for Your Breeding Dog or Cat?</h3>
+<p class="mb-0">ZiggySitters connects breeders with experienced sitters who understand the demands of caring for pregnant and nursing animals. <a href="/find-sitters" class="text-primary underline">Find a specialised sitter near you.</a></p>
+</div>`
   }
 ];
 
