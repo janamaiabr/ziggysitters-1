@@ -1323,6 +1323,124 @@ export const blogPosts: BlogPostData[] = [
 </div>`
   },
   {
+    slug: 'pet-friendly-cafes-wellington-nz',
+    title: 'Best Dog-Friendly Cafés in Wellington NZ: Where to Eat Out with Your Pup',
+    excerpt: 'Wellington\'s best dog-friendly cafés and restaurants, from Cuba Street hidden gems to waterfront brunch spots in Oriental Bay. Know the rules, find the best outdoor seating, and enjoy coffee with your dog in the coolest little capital.',
+    date: '2026-08-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&h=630&fit=crop',
+    readTime: '9 min read',
+    tag: 'Pet Activities & Outdoors',
+    metaDescription: 'Complete guide to dog-friendly cafés in Wellington NZ. Best outdoor dining spots, Cuba Street cafés, waterfront brunch, and etiquette for dining with your dog.',
+    keywords: ['dog friendly cafes Wellington', 'pet friendly cafes Wellington NZ', 'dog friendly restaurants Wellington', 'dog friendly brunch Wellington', 'outdoor dining with dogs Wellington', 'dog friendly coffee shops Wellington NZ', 'Wellington dog friendly dining', 'Cuba Street dog friendly', 'Wellington waterfront cafes dogs'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Wellington is New Zealand\'s café capital — more roasters per capita than anywhere else in the country, a thriving brunch culture, and a population that genuinely loves dogs. The city\'s compact walkability and abundance of outdoor seating make it one of the easiest places in NZ to enjoy a flat white with your four-legged mate by your side. But knowing which cafés actually welcome dogs — and what the rules are — saves you from awkward moments at the door.</p>
+
+<p class="mb-6">This guide covers Wellington\'s best dog-friendly cafés, the local bylaws you need to know, etiquette tips for dining with your dog, and seasonal considerations that only locals understand (yes, the wind is a factor).</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Food Safety Rules: Where Dogs Can and Cannot Go</h2>
+<p class="mb-6">New Zealand\'s Food Act 2014 and food safety regulations generally prohibit dogs from indoor dining and food preparation areas. This is a national rule, not a Wellington-specific one. However, there are important nuances:</p>
+<ul class="mb-6">
+<li><strong>Outdoor seating areas</strong> — Courtyards, pavement tables, and verandahs are fair game, and this is where most Wellington cafés welcome dogs.</li>
+<li><strong>Service dogs</strong> — Disability assist dogs are legally permitted indoors under the Human Rights Act 1993. Café owners cannot refuse entry to a verified service dog.</li>
+<li><strong>Individual café policies</strong> — Some cafés are more welcoming than others. Many Wellington owners are dog owners themselves and actively encourage well-behaved dogs in outdoor areas.</li>
+<li><strong>Bylaw areas</strong> — Wellington City Council allows dogs on-leash in most public areas, but specific beach and park restrictions apply during summer (1 December to 1 March).</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Wellington Waterfront &amp; Oriental Bay</h2>
+<p class="mb-6">The waterfront is Wellington\'s dog-friendly dining heart. With harbour views, wide promenades, and a concentration of cafés with outdoor seating, it is the easiest place to find a table where your dog is welcome.</p>
+
+<p class="mb-6">Maranui Café in Lyall Bay is a beloved Wellington institution right on the beach. The café has outdoor tables with ocean views, and dogs are welcome on the beachside seating. It is the perfect spot after a beach walk — your dog can play on the sand, then settle under the table while you enjoy brunch.</p>
+
+<p class="mb-6">Several cafés along Oriental Parade have outdoor seating that welcomes dogs, particularly those with tables facing the beach. The wide promenade is perfect for a pre-brunch walk, and dogs can cool off in the shallows (off-leash permitted before 10am and after 7pm during summer restricted hours).</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Cuba Street &amp; Te Aro</h2>
+<p class="mb-6">Cuba Street is Wellington\'s creative heart, and several cafés here have embraced the dog-friendly ethos. The pedestrian section of lower Cuba Street has multiple cafés with outdoor tables. Dogs are generally welcome at outdoor tables along the mall. Be mindful that Cuba Street can be loud and crowded on weekends — consider your dog\'s temperament before visiting during peak hours.</p>
+
+<p class="mb-6">Hannahs Laneway off Cuba Street has several cafés and eateries with outdoor seating that welcome dogs. The sheltered laneway means less wind — a real Wellington advantage — and a relaxed atmosphere that works well for calm dogs.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Suburban Dog-Friendly Spots</h2>
+<p class="mb-6">Newtown is one of Wellington\'s most dog-friendly suburbs. Several cafés along Riddiford Street have outdoor tables that welcome dogs, and the nearby Newtown Park provides excellent pre-café walking routes. The community is relaxed and dog-savvy, making it a low-stress outing for dogs that find the CBD overwhelming.</p>
+
+<p class="mb-6">The Miramar Peninsula has a growing café scene with outdoor seating that welcomes dogs. Scorching Bay Beach Café is a standout — right on the beach with outdoor tables, it combines a beach walk with a coffee stop. Island Bay\'s village atmosphere includes cafés with outdoor seating, and the Taputeranga Marine Reserve walkway provides excellent off-lead exercise areas nearby.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Café Etiquette for Dog Owners</h2>
+<ul class="mb-6">
+<li><strong>Always ask before sitting down.</strong> Even dog-friendly cafés appreciate a quick check.</li>
+<li><strong>Keep your dog on a short lead.</strong> Retractable leads are café hazards — they trip staff and other customers.</li>
+<li><strong>Bring your own water bowl.</strong> A collapsible silicone bowl costs about $10 and fits in a pocket.</li>
+<li><strong>Do not feed your dog from café plates or tables.</strong> Bring your own treats.</li>
+<li><strong>Be realistic about your dog\'s temperament.</strong> If your dog barks at strangers, a busy café is not the right environment.</li>
+<li><strong>Clean up after your dog immediately.</strong> Carry waste bags at all times.</li>
+<li><strong>Tip generously at dog-friendly cafés.</strong> These businesses are making an effort to accommodate your dog.</li>
+</ul>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Wellington Weather Tips for Café Visits</h2>
+<p class="mb-6">Wellington averages 173 days per year with wind gusts over 58 km/h. Outdoor seating may be unavailable or unpleasant on windy days — have a backup plan. Many waterfront and Cuba Street cafés have awnings and covered outdoor areas that work in light rain. Carry a dog rain jacket, and remember that from 1 December to 1 March, Oriental Bay and some beach areas have restricted dog access hours.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Combine Your Café Visit with a Dog Walk</h2>
+<p class="mb-6">Wellington\'s best dog-friendly café outings combine a good walk with great coffee. The Oriental Bay promenade + waterfront cafés loop is about 3km return. Mount Victoria walk + Newtown cafés is about 4km with excellent harbour views. Scorching Bay loop + beach café is a perfect weekend outing. The Botanic Garden + Tinakori Road cafés route is about 3km and works rain or shine.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Need a Pet Sitter While You Visit Wellington\'s Best Cafés?</h3>
+<p class="mb-0">Whether you want a dog-free brunch or need someone to walk your pup while you enjoy a long lunch, <a href="/find-sitters" class="text-primary underline">ZiggySitters connects you with trusted, local pet sitters across Wellington</a>. Book a sitter who knows the best dog walks in your neighbourhood.</p>
+</div>`
+  },
+  {
+    slug: 'settling-new-cat-home-nz-guide',
+    title: 'How to Settle a New Cat Into Your Home: Complete NZ Guide',
+    excerpt: 'Bringing a new cat home in New Zealand? This complete guide covers settling-in periods, safe room setup, introducing other pets, NZ-specific considerations, and when to call the vet.',
+    date: '2026-08-06',
+    author: 'ZiggySitters Team',
+    image: 'https://images.unsplash.com/photo-1574158622612-a742fd81bc8a?w=1200&h=630&fit=crop',
+    readTime: '11 min read',
+    tag: 'For Pet Owners',
+    metaDescription: 'Complete NZ guide to settling a new cat into your home. Safe room setup, first 72 hours, introducing other pets, NZ-specific considerations, and when to call the vet.',
+    keywords: ['settling new cat home NZ', 'new cat introduction', 'cat settling in period', 'bringing new cat home', 'introducing cat to new home', 'cat safe room setup', 'introducing cats NZ', 'new kitten home NZ', 'cat adjustment period', 'cat stress new home', 'cat behaviour new home NZ', 'pet sitter new cat NZ'],
+    content: `<p class="text-lg text-muted-foreground mb-8">Bringing a new cat home is exciting — and stressful, for both of you. Whether you are adopting a kitten from a Wellington breeder, rescuing an adult cat from the SPCA, or welcoming a stray into your Auckland apartment, the first few weeks determine how well your cat adjusts to their new life. New Zealand\'s unique environment, from our native wildlife hazards to rental restrictions, adds local considerations that overseas guides do not cover.</p>
+
+<p class="mb-6">This guide walks you through the entire settling-in process: from preparing your home before the cat arrives, through the critical first days, to full household integration.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Before You Bring Your Cat Home</h2>
+<p class="mb-6">Cat-proof your home before the cat arrives. Remove or secure toxic plants (lilies are extremely toxic to cats — even the pollen can cause kidney failure). Install window screens in upper-story apartments. Secure blind cords with cord winders. Store household chemicals, ant baits, and snail pellets in locked cuppets. Block access to small spaces behind appliances.</p>
+
+<p class="mb-6">Register with a vet and book a check within the first week. If your new cat is not already microchipped, arrange this at your first vet visit. The New Zealand Companion Animal Register (NZCAR) is the national microchip database — ensure your details are registered and transferred to your name.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Setting Up a Safe Room</h2>
+<p class="mb-6">The single most important step in the settling-in process. Do not let your new cat have free run of the house on day one. Set up a single, quiet room with food and water bowls placed away from the litter box, an unscented clumping litter box, hiding spots (cardboard boxes work well), a vertical scratching post, a comfortable bed, toys, and a window to look out of.</p>
+
+<p class="mb-6">Use a Feliway diffuser in the safe room. These synthetic pheromone diffusers (available from NZ vet clinics and pet stores for approximately $50 to $70) help reduce stress and are particularly effective for cats adjusting to new environments. Plug it in 24 hours before your cat arrives.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">The First 72 Hours</h2>
+<p class="mb-6"><strong>Day 1:</strong> Transport your cat in a secure carrier covered with a light towel. Carry the carrier directly to the safe room and close the door before opening it. Open the carrier door and step back. Let the cat emerge when ready. Offer high-value food near — but not on — your body. If the cat hides, that is normal. Do not force interaction.</p>
+
+<p class="mb-6"><strong>Days 2-3:</strong> Continue spending quiet time in the room. Read aloud softly. Offer treats by hand when the cat approaches. Stroke along the cheek and chin — these are scent gland areas cats find reassuring. Start interactive play with a wand toy. Monitor eating, drinking, and litter box use.</p>
+
+<p class="mb-6">If your cat has not eaten or used the litter box within 24 hours, contact your vet. Stress can cause cats to stop eating, which can lead to hepatic lipidosis (a dangerous liver condition) within 48 to 72 hours.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Settling-In Timeline</h2>
+<p class="mb-6"><strong>Days 1-3:</strong> Hiding is normal. Cat may not eat much. Stay calm and consistent. Use Feliway. <strong>Days 3-7:</strong> Cat begins exploring the safe room. May approach you voluntarily. Eating and litter habits normalising. <strong>Days 7-14:</strong> Cat is comfortable in the safe room and curious about beyond the door. Start opening the door to let them explore — one room at a time. <strong>Weeks 2-4:</strong> Cat has established territory. Personality emerges. <strong>Weeks 4-8:</strong> Full adjustment. Cat is confident and showing true personality.</p>
+
+<p class="mb-6">Shy, anxious, or rescue cats may take 8 to 12 weeks. That is normal. Pushing a cat faster than they are ready creates setbacks that take longer to resolve than going slowly.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Introducing Your New Cat to Other Pets</h2>
+<p class="mb-6"><strong>To another cat:</strong> Separate rooms (Days 1-3) → Scent swapping (Days 3-5) → Visual contact through barrier (Days 5-7) → Supervised meetings (Days 7-10) → Gradual integration (Weeks 2-4). The rule is always one litter box per cat, plus one extra.</p>
+
+<p class="mb-6"><strong>To a dog:</strong> Never leave them unsupervised. Keep the dog on a lead during initial introductions. Reward the dog for calm behaviour. Give the cat high escape routes — cat shelves, tall scratching posts, or rooms the dog cannot reach. Feed separately. Be patient with high-prey-drive breeds.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">NZ-Specific Considerations</h2>
+<p class="mb-6">New Zealand does not yet have national cat containment requirements, but several councils are moving in that direction. The SPCA NZ recommends keeping cats indoors or in enclosed outdoor areas (catios) to protect both native wildlife and the cats themselves. New Zealand\'s native birds — kiwi, kakariki, kereru, tui — are vulnerable to cat predation. Keep cats indoors at dawn and dusk when birds are most active.</p>
+
+<p class="mb-6">For rental properties, the 2024 tenancy law changes gave tenants more rights to request pets, but landlords can still impose conditions. Get written permission, offer a pet agreement, use scratching posts, keep the litter box on a waterproof mat, and document property condition before and after the cat arrives.</p>
+
+<h2 class="text-2xl font-bold mt-12 mb-6">Using a Pet Sitter During the Settling Period</h2>
+<p class="mb-6">If you need to travel during your cat\'s first few weeks, choose a sitter experienced with new cats. Introduce the sitter before you leave so your cat can get used to their scent. Prepare a detailed care sheet with feeding schedule, food type and quantity, litter box routine, vet contact details, and your cat\'s current settling stage. Ask for daily updates with photos.</p>
+
+<div class="bg-primary/10 border-l-4 border-primary p-6 my-8 rounded-r">
+<h3 class="font-semibold mb-3">Need a Pet Sitter for Your New Cat?</h3>
+<p class="mb-0">ZiggySitters connects you with trusted, experienced cat sitters across New Zealand. Every sitter on our platform is vetted, reviewed, and experienced with cats at every stage — including the settling-in period. <a href="/find-sitters" class="text-primary underline">Book a meet-and-greet today.</a></p>
+</div>`
+  },
+  {
     slug: 'nz-pet-breeding-regulations-guide',
     title: 'New Zealand Pet Breeding Regulations: What Every Breeder and Buyer Needs to Know',
     excerpt: 'NZ breeding laws explained — the Animal Welfare Act, council permits, the Animal Welfare Regulations 2018, and what responsible breeding actually looks like in practice.',
